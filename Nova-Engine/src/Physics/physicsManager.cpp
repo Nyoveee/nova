@@ -404,13 +404,12 @@ void PhysicsManager::removeBodiesFromSystem(entt::registry&, entt::entity entity
 		return;
 	}
 
-	bodyInterface.RemoveBody(rigidBody->bodyId);
-
 	auto it = std::find(createdBodies.begin(), createdBodies.end(), rigidBody->bodyId);
-
 	std::swap(*it, *(createdBodies.end() - 1));
-
 	createdBodies.erase(createdBodies.end() - 1);
+
+	bodyInterface.RemoveBody(rigidBody->bodyId);
+	bodyInterface.DestroyBody(rigidBody->bodyId);
 
 	rigidBody->bodyId = JPH::BodyID{};
 }

@@ -1794,6 +1794,7 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 			// We perform additional render passes..
 			for (auto i = model->materialNames.size(); i < materialIds.size(); ++i) {
 				auto materialId = materialIds[i];
+				auto const& instanced = skinnedMeshRenderer ? skinnedMeshRenderer->isMaterialInstanced : meshRenderer->isMaterialInstanced;
 
 				for (auto& mesh : model->meshes) {
 					createMaterialBatchEntry(camera, *model, materialId, mesh, entity, meshType, layerIndex, renderQueueConfig);

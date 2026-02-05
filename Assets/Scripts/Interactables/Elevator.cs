@@ -80,4 +80,9 @@ class Elevator : Script
     public void CloseTutorialDoor() {
         tutorialDoor.CloseDoor();
     }
+
+    public void OpenTutorialDoor()
+    {
+        tutorialDoor.OpenDoor();
+    }
 }

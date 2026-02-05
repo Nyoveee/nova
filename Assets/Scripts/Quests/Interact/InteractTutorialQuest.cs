@@ -33,6 +33,7 @@ class InteractTutorialQuest : InteractableQuest
         if (playerTransform != null && playerCheckpoint != null)
             playerTransform.position = playerCheckpoint.position;
     }
+
     private void CheckInteraction()
     {
         if (IsLookingAtInteractable())

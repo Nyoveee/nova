@@ -23,6 +23,9 @@ class Switch : Script
     [SerializableField]
     private Audio switchSfx;
 
+    [SerializableField]
+    private bool isEnabledAtStart = true;
+
     private GameObject player;
 
     private bool isAnimating = false;
@@ -35,7 +38,7 @@ class Switch : Script
 
     private AudioComponent_ audioComponent;
 
-    public bool isActivated = false;
+    private bool isActivated = false;
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
@@ -44,6 +47,8 @@ class Switch : Script
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
+        isActivated = !isEnabledAtStart;
+
         player = GameObject.FindWithTag("Player");
         initialRotation = gameObject.transform.localRotation;
         finalRotation = Quaternion.AngleAxis(Mathf.Deg2Rad * rotation, Vector3.Front()) * gameObject.transform.localRotation;
@@ -67,9 +72,6 @@ class Switch : Script
         }
 
         float distance = Vector3.Distance(player.transform.position, gameObject.transform.position);
-
-        Debug.Log(distance);
-
         isInteractable = distance <= switchActivationDistance;
 
         switchMesh?.setMaterialBool(1, "isActive", isInteractable);
@@ -108,5 +110,10 @@ class Switch : Script
             isAnimating = true;
             switchMesh?.setMaterialBool(1, "isActive", false);
         }
+    }
+
+    public bool isSwitchActivated()
+    {
+        return isActivated;
     }
 }

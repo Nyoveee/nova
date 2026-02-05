@@ -17,6 +17,7 @@ public class QuestManager : Script
     {
         gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
         GameObject[] children = gameObject.GetChildren();
+
         foreach (var child in children)
         {
             Quest quest = child.getScript<Quest>();
@@ -99,6 +100,8 @@ public class QuestManager : Script
 
     private void StartCurrentQuest()
     {
+        Debug.Log("Quest started");
+
         currentQuest.OnQuestStateChanged += HandleQuestStateChanged;
         currentQuest.OnEnter();
         if (gameUIManager != null)

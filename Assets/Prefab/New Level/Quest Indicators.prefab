@@ -1,0 +1,961 @@
+{
+    "RootEntity": 44040409,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Quest Indicators",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    44040410,
+                    44040411,
+                    44040412,
+                    47186172
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10816679296975045463,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 44040409
+        },
+        {
+            "EntityData": {
+                "name": "Indicator 1",
+                "tag": "",
+                "parent": 44040409,
+                "attachedSocket": 65535,
+                "children": [
+                    9,
+                    2097173
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 5052071773940810585,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 44040410
+        },
+        {
+            "EntityData": {
+                "name": "Quest Location Trigger 1",
+                "tag": "",
+                "parent": 44040410,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 11969600801581580477,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -236.9204559326172,
+                    "y": 77.7811508178711,
+                    "z": 121.49362182617188
+                },
+                "scale": {
+                    "x": 7.754116535186768,
+                    "y": 7.24342679977417,
+                    "z": 8.39310073852539
+                },
+                "rotation": {
+                    "w": 0.9923628568649292,
+                    "x": 0.0,
+                    "y": 0.12335295975208282,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.24733588099479675,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -236.9204559326172,
+                    "y": 77.7811508178711,
+                    "z": 121.49362182617188
+                },
+                "localScale": {
+                    "x": 7.754116535186768,
+                    "y": 7.24342679977417,
+                    "z": 8.39310073852539
+                },
+                "localRotation": {
+                    "w": 0.9923628568649292,
+                    "x": 0.0,
+                    "y": 0.12335295975208282,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 0.24733588099479675,
+                    "z": 0.0
+                }
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "NonMoving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": false,
+                "isTrigger": true,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 4618934467222765575,
+                        "fields": [
+                            {
+                                "name": "quest",
+                                "data": {
+                                    "__variant_value": 15,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 9
+        },
+        {
+            "EntityData": {
+                "name": "Check Point Marker 1",
+                "tag": "",
+                "parent": 44040410,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6204993278547575439,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -236.92051696777344,
+                    "y": 73.26408386230469,
+                    "z": 121.49363708496094
+                },
+                "scale": {
+                    "x": 1.0005319118499756,
+                    "y": 1.0,
+                    "z": 1.0004923343658447
+                },
+                "rotation": {
+                    "w": 0.9973989129066467,
+                    "x": 0.0,
+                    "y": 0.07207877188920975,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.14428265392780304,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -236.92051696777344,
+                    "y": 73.26408386230469,
+                    "z": 121.49363708496094
+                },
+                "localScale": {
+                    "x": 1.0005319118499756,
+                    "y": 1.0,
+                    "z": 1.0004923343658447
+                },
+                "localRotation": {
+                    "w": 0.9973990321159363,
+                    "x": 0.0,
+                    "y": 0.07207876443862915,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 0.14428266882896423,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    9644898874447265793
+                ],
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "id": 2097173
+        },
+        {
+            "EntityData": {
+                "name": "Indicator 2",
+                "tag": "",
+                "parent": 44040409,
+                "attachedSocket": 65535,
+                "children": [
+                    10,
+                    22
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 15428365315402433371,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 44040411
+        },
+        {
+            "EntityData": {
+                "name": "Quest Location Trigger 2",
+                "tag": "",
+                "parent": 44040411,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9087297040064479423,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -165.10061645507813,
+                    "y": 85.43660736083984,
+                    "z": 103.65788269042969
+                },
+                "scale": {
+                    "x": 2.1574044227600098,
+                    "y": 8.717082023620605,
+                    "z": 7.729144096374512
+                },
+                "rotation": {
+                    "w": 0.991399884223938,
+                    "x": 0.0,
+                    "y": 0.13086768984794617,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.2624882757663727,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -165.10061645507813,
+                    "y": 85.43660736083984,
+                    "z": 103.65788269042969
+                },
+                "localScale": {
+                    "x": 2.1574044227600098,
+                    "y": 8.717082023620605,
+                    "z": 7.729144096374512
+                },
+                "localRotation": {
+                    "w": 0.991399884223938,
+                    "x": 0.0,
+                    "y": 0.13086768984794617,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 0.2624882757663727,
+                    "z": 0.0
+                }
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "NonMoving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": false,
+                "isTrigger": true,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 4618934467222765575,
+                        "fields": [
+                            {
+                                "name": "quest",
+                                "data": {
+                                    "__variant_value": 16,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 10
+        },
+        {
+            "EntityData": {
+                "name": "Check Point Marker 2",
+                "tag": "",
+                "parent": 44040411,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17157747572312408265,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -165.10000610351563,
+                    "y": 84.45521545410156,
+                    "z": 103.66116333007813
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 0.9758874177932739,
+                    "x": 0.0,
+                    "y": -0.21827444434165955,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.4400918483734131,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -165.10000610351563,
+                    "y": 84.45521545410156,
+                    "z": 103.66116333007813
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 0.9758874177932739,
+                    "x": 0.0,
+                    "y": -0.21827444434165955,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.4400918483734131,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    9644898874447265793
+                ],
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "id": 22
+        },
+        {
+            "EntityData": {
+                "name": "Indicator 3",
+                "tag": "",
+                "parent": 44040409,
+                "attachedSocket": 65535,
+                "children": [
+                    14,
+                    6291814
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6781454030851081053,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 44040412
+        },
+        {
+            "EntityData": {
+                "name": "Quest Location Trigger 3",
+                "tag": "",
+                "parent": 44040412,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9663757792367902913,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -83.6090087890625,
+                    "y": 99.2916488647461,
+                    "z": 83.96974182128906
+                },
+                "scale": {
+                    "x": 7.792689800262451,
+                    "y": 19.941736221313477,
+                    "z": 33.1689567565918
+                },
+                "rotation": {
+                    "w": 0.9921289682388306,
+                    "x": 0.0,
+                    "y": 0.12522022426128387,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.2510995864868164,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -83.6090087890625,
+                    "y": 99.2916488647461,
+                    "z": 83.96974182128906
+                },
+                "localScale": {
+                    "x": 7.792689800262451,
+                    "y": 19.941736221313477,
+                    "z": 33.1689567565918
+                },
+                "localRotation": {
+                    "w": 0.9921289682388306,
+                    "x": 0.0,
+                    "y": 0.12522022426128387,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 0.2510995864868164,
+                    "z": 0.0
+                }
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "NonMoving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": false,
+                "isTrigger": true,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 4618934467222765575,
+                        "fields": [
+                            {
+                                "name": "quest",
+                                "data": {
+                                    "__variant_value": 30,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 14
+        },
+        {
+            "EntityData": {
+                "name": "Check Point Marker 3",
+                "tag": "",
+                "parent": 44040412,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9087297040064742137,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -88.71600341796875,
+                    "y": 113.85084533691406,
+                    "z": 60.025482177734375
+                },
+                "scale": {
+                    "x": 0.9999999403953552,
+                    "y": 1.000002384185791,
+                    "z": 0.9999999403953552
+                },
+                "rotation": {
+                    "w": 0.9012410640716553,
+                    "x": 0.0,
+                    "y": 0.43331804871559143,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.896342396736145,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -88.71600341796875,
+                    "y": 113.85084533691406,
+                    "z": 60.025482177734375
+                },
+                "localScale": {
+                    "x": 0.9999999403953552,
+                    "y": 1.000002384185791,
+                    "z": 0.9999999403953552
+                },
+                "localRotation": {
+                    "w": 0.9012410640716553,
+                    "x": 0.0,
+                    "y": 0.43331804871559143,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 0.896342396736145,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    9644898874447265793
+                ],
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "id": 6291814
+        },
+        {
+            "EntityData": {
+                "name": "Indicator 4",
+                "tag": "",
+                "parent": 44040409,
+                "attachedSocket": 65535,
+                "children": [
+                    46137589
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 7934375535457928039,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 47186172
+        },
+        {
+            "EntityData": {
+                "name": "Quest Location Trigger 4",
+                "tag": "",
+                "parent": 47186172,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 7357914783154504545,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -61.96342849731445,
+                    "y": 85.70784759521484,
+                    "z": 77.29486083984375
+                },
+                "scale": {
+                    "x": 3.2374427318573,
+                    "y": 7.110090732574463,
+                    "z": 7.7978997230529785
+                },
+                "rotation": {
+                    "w": 0.9900025129318237,
+                    "x": 0.0,
+                    "y": 0.1410500556230545,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.2830440104007721,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -61.96342849731445,
+                    "y": 85.70784759521484,
+                    "z": 77.29486083984375
+                },
+                "localScale": {
+                    "x": 3.2374427318573,
+                    "y": 7.110090732574463,
+                    "z": 7.7978997230529785
+                },
+                "localRotation": {
+                    "w": 0.9900025129318237,
+                    "x": 0.0,
+                    "y": 0.1410500556230545,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 0.2830440104007721,
+                    "z": 0.0
+                }
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "NonMoving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": false,
+                "isTrigger": true,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 4618934467222765575,
+                        "fields": [
+                            {
+                                "name": "quest",
+                                "data": {
+                                    "__variant_value": 46137591,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 46137589
+        }
+    ]
+}

@@ -210,6 +210,7 @@ class Door : Script
     public void OpenDoor()
     {
         doorState = DoorState.Opening;
+        currentDoorMovingTime = 0;
         audioComponent?.PlaySound(openSFX);
         // AudioAPI.PlaySound(gameObject, "slidingDoor_open_01");
     }

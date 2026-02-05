@@ -1,0 +1,399 @@
+{
+    "RootEntity": 1048680,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Arena Manager",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    3145877
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1711957763125236913,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 11796871828727513133,
+                        "fields": [
+                            {
+                                "name": "timerMode",
+                                "data": {
+                                    "__variant_value": false,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "survivalDuration",
+                                "data": {
+                                    "__variant_value": 60.0,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "scriptId": 12252861389414160655,
+                        "fields": null
+                    }
+                ]
+            },
+            "id": 1048680
+        },
+        {
+            "EntityData": {
+                "name": "Wave 1",
+                "tag": "",
+                "parent": 1048680,
+                "attachedSocket": 65535,
+                "children": [
+                    1048642,
+                    2097219,
+                    2097224
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 4182410857167001917,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 39.82728576660156,
+                    "y": 29.710092544555664,
+                    "z": 68.4361343383789
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 39.82728576660156,
+                    "y": 29.710092544555664,
+                    "z": 68.4361343383789
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 4511252696445698053,
+                        "fields": null
+                    }
+                ]
+            },
+            "id": 3145877
+        },
+        {
+            "EntityData": {
+                "name": "Grunt Position",
+                "tag": "",
+                "parent": 3145877,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1876567847953684799,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 11.168355941772461,
+                    "y": 16.006925582885742,
+                    "z": -16.094276428222656
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -28.6589298248291,
+                    "y": -13.703166961669922,
+                    "z": -84.53041076660156
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 8894750470941245441,
+                        "fields": [
+                            {
+                                "name": "enemy",
+                                "data": {
+                                    "__variant_value": 3247368569598771203,
+                                    "__variant_type": 10
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 1048642
+        },
+        {
+            "EntityData": {
+                "name": "Grunt Position",
+                "tag": "",
+                "parent": 3145877,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1876567847953684799,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 12.316017150878906,
+                    "y": 16.00705337524414,
+                    "z": -9.980621337890625
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -27.511268615722656,
+                    "y": -13.703039169311523,
+                    "z": -78.41675567626953
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 8894750470941245441,
+                        "fields": [
+                            {
+                                "name": "enemy",
+                                "data": {
+                                    "__variant_value": 3247368569598771203,
+                                    "__variant_type": 10
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 2097219
+        },
+        {
+            "EntityData": {
+                "name": "Grunt Position",
+                "tag": "",
+                "parent": 3145877,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1876567847953684799,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 8.523151397705078,
+                    "y": 16.00715446472168,
+                    "z": -6.242179870605469
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -31.304134368896484,
+                    "y": -13.702938079833984,
+                    "z": -74.67831420898438
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 8894750470941245441,
+                        "fields": [
+                            {
+                                "name": "enemy",
+                                "data": {
+                                    "__variant_value": 3247368569598771203,
+                                    "__variant_type": 10
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 2097224
+        }
+    ]
+}

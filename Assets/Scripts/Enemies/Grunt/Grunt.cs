@@ -63,7 +63,7 @@ class Grunt : Enemy
     protected override void init()
     {
         base.init();
-        gameObject.transform.rotation = Quaternion.Identity();
+        //gameObject.transform.rotation = Quaternion.Identity();
         gruntStats = getScript<GruntStats>();
         audioComponent = getComponent<AudioComponent_>();
  

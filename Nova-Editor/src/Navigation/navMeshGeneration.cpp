@@ -104,7 +104,7 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 
 			for (glm::vec3 const& localPosition : meshData.positions)
 			{
-				glm::vec4 worldPos =  model->scale * transform.modelMatrix * glm::vec4(localPosition, 1.0f);
+				glm::vec4 worldPos = transform.modelMatrix * glm::vec4(model->scale * localPosition, 1.0f);
 
 				vertexSoup.push_back(worldPos.x);
 				vertexSoup.push_back(worldPos.y);

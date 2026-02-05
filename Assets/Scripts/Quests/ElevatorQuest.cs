@@ -32,6 +32,7 @@ class ElevatorQuest : Quest
 
     private AudioComponent_ audioComponent;
     private GameUIManager gameUIManager;
+
     protected override void init()
     {
         audioComponent = getComponent<AudioComponent_>();
@@ -51,8 +52,6 @@ class ElevatorQuest : Quest
             audioComponent.PlaySound(elevatorSpeechAudio);
             gameUIManager.ActivateDialogue(speaker, dialogues, timings, finalDialogueTime);
         }, delayForDialogue);
-        
-
     }
 
     public override void OnFail(Transform_ playerTransform)
