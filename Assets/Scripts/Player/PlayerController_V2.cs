@@ -51,6 +51,8 @@ class PlayerController_V2 : Script
     private Transform_? playerOrientation = null;
     [SerializableField]
     private GameUIManager? gameUIManager = null;
+    [SerializableField]
+    private PlayerMotionAnimations? playerMotionAnimations = null;
     private Transform_? transform;
     private Rigidbody_? rigidbody;
     private AudioComponent_? audioComponent;
@@ -59,7 +61,7 @@ class PlayerController_V2 : Script
     // Runtime Variables
     // ==================================
     // WASD
-    private PlayerMoveStates playerMoveStates = PlayerMoveStates.Disabled;
+    public PlayerMoveStates playerMoveStates = PlayerMoveStates.Disabled;
     private bool isMovingForward = false;
     private bool isMovingBackward = false;
     private bool isMovingLeft = false;
@@ -98,6 +100,7 @@ class PlayerController_V2 : Script
         transform = getComponent<Transform_>();
         rigidbody = getComponent<Rigidbody_>();
         audioComponent = getComponent<AudioComponent_>();
+        playerMotionAnimations = getScript<PlayerMotionAnimations>();
 
         //TBH should get other system to check for lockedmouse
         CameraAPI.LockMouse();
@@ -133,7 +136,8 @@ class PlayerController_V2 : Script
         jumpTimer += Time.V_FixedDeltaTime();
         dashCooldownTimer += Time.V_FixedDeltaTime();
 
-        Debug.Log("Horizontal Velocity: " + GetCurrentHorizontalVelocity());
+        // Debug.Log("Horizontal Velocity: " + GetCurrentHorizontalVelocity());
+
         //Debug.Log(contactSurfaces);
         //Debug.Log("Jump Speed: " + rigidbody.GetVelocity().y);
 
@@ -670,10 +674,14 @@ class PlayerController_V2 : Script
         return currentVelocity.Length();
     }
 
+    public Vector3 GetDirectionVector() //for movement controller
+    {
+        return directionVector;
+    }
 }
 
 
-enum PlayerMoveStates 
+public enum PlayerMoveStates 
 {
     Disabled,
     InitState,

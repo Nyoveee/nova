@@ -57,6 +57,8 @@ class PlayerWeaponController : Script
     const int SNIPER_MATERIAL_MATERIAL_INDEX = 0;
     const int SNIPER_BARREL_MATERIAL_INDEX = 1;
 
+    private float lerpVariable = 0;
+
     public enum WeaponControlStates
     { 
         Busy,
@@ -89,6 +91,9 @@ class PlayerWeaponController : Script
         // Regardless of weapon state, we handle the glow VFX of sniper..
         handleWeaponGlow();
 
+        lerpVariable = Math.Clamp(lerpVariable, 0, 1);
+        gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, lerpVariable);
+
         switch (weaponControlStates)
         {
             case WeaponControlStates.Busy:
@@ -114,17 +119,18 @@ class PlayerWeaponController : Script
                 {
                     armTimeElapsed += Time.V_DeltaTime();
 
-                    float t = armTimeElapsed / armingTime;
+                    //float t = armTimeElapsed / armingTime;
+                    lerpVariable = armTimeElapsed / armingTime;
 
-
-                    if (t >= 1)
+                    if (lerpVariable >= 1)
                     {
                         weaponControlStates = WeaponControlStates.ThrowReady;
                         armTimeElapsed = armingTime;
+                        lerpVariable = 1;
                     }
                     else
                     {
-                        gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
+                       // gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
 
                     }
 
@@ -135,16 +141,17 @@ class PlayerWeaponController : Script
                 {
                     armTimeElapsed -= Time.V_DeltaTime();
 
-                    float t = armTimeElapsed / armingTime;
+                    lerpVariable = armTimeElapsed / armingTime;
 
-                    if (t <= 0)
+                    if (lerpVariable <= 0)
                     {
                         weaponControlStates = WeaponControlStates.WeaponFree;
                         armTimeElapsed = 0;
+                        lerpVariable = 0;
                     }
                     else
                     {
-                        gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
+                      //  gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
                     }
                 }
                 break;
