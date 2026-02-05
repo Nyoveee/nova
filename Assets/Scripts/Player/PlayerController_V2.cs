@@ -113,7 +113,11 @@ class PlayerController_V2 : Script
     private float currentHealth = 0f;
 
     public bool ToEnable = true;
-
+    // ==================================
+    // Player Callbacks
+    // ==================================
+    // Empty death event
+    public event EventHandler OnPlayerDeath;
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
@@ -156,7 +160,7 @@ class PlayerController_V2 : Script
         jumpTimer += Time.V_FixedDeltaTime();
         dashCooldownTimer += Time.V_FixedDeltaTime();
 
-        Debug.Log("Horizontal Velocity: " + GetCurrentHorizontalVelocity());
+        //Debug.Log("Horizontal Velocity: " + GetCurrentHorizontalVelocity());
         //Debug.Log(contactSurfaces);
         //Debug.Log("Jump Speed: " + rigidbody.GetVelocity().y);
 
@@ -498,7 +502,7 @@ class PlayerController_V2 : Script
         if (currentHealth <= 0f)
         {
             audioComponent.PlayRandomSound(deathSFX);
-            //OnPlayerDeath?.Invoke(this, EventArgs.Empty);
+            OnPlayerDeath?.Invoke(this, EventArgs.Empty);
         }
     }
     void InitiateDashing()

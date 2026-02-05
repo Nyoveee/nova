@@ -8,7 +8,7 @@ public class QuestManager : Script
     private List<Quest> quests = new List<Quest>();
     private Quest? currentQuest;
     private int questIndex;
-    private PlayerController? player;
+    private PlayerController_V2? player;
     private GameUIManager gameUIManager;
 
     [SerializableField]
@@ -42,7 +42,7 @@ public class QuestManager : Script
         GameObject playerGO = GameObject.FindWithTag("Player");
         if (playerGO != null)
         {
-            player = playerGO.getScript<PlayerController>();
+            player = playerGO.getScript<PlayerController_V2>();
             if (player != null)
             {
                 player.OnPlayerDeath += HandlePlayerDeath;

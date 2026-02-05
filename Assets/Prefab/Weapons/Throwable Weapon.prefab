@@ -1,5 +1,5 @@
 {
-    "RootEntity": 6,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    7,
-                    9,
-                    10,
-                    11,
-                    12
+                    1,
+                    3,
+                    4,
+                    5,
+                    6
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -29,9 +29,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -13.512504577636719,
-                    "y": 10.913664817810059,
-                    "z": -9.893901824951172
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -1.0
                 },
                 "scale": {
                     "x": 1.0,
@@ -50,9 +50,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -13.512504577636719,
-                    "y": 10.913664817810059,
-                    "z": -9.893901824951172
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -1.0
                 },
                 "localScale": {
                     "x": 1.0,
@@ -129,15 +129,27 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 7,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "contactSparkVFXPrefab",
                                 "data": {
-                                    "__variant_value": 18446744073709551615,
+                                    "__variant_value": 563029678012612857,
                                     "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "weakPointHitSparkColour",
+                                "data": {
+                                    "__variant_value": {
+                                        "x": 1.0,
+                                        "y": 0.0,
+                                        "z": 0.0,
+                                        "w": 1.0
+                                    },
+                                    "__variant_type": 2
                                 }
                             },
                             {
@@ -317,16 +329,16 @@
                     }
                 ]
             },
-            "id": 6
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 6,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    8
+                    2
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -343,14 +355,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": -13.512504577636719,
-                    "y": 10.913664817810059,
-                    "z": -10.22642993927002
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -1.3325281143188477
                 },
                 "scale": {
-                    "x": 0.9999319314956665,
+                    "x": 0.999931812286377,
                     "y": 1.0,
-                    "z": 0.9999319314956665
+                    "z": 0.999931812286377
                 },
                 "rotation": {
                     "w": 0.7071067094802856,
@@ -369,9 +381,9 @@
                     "z": -0.33252811431884766
                 },
                 "localScale": {
-                    "x": 0.9999318718910217,
+                    "x": 0.9999317526817322,
                     "y": 1.0,
-                    "z": 0.9999318718910217
+                    "z": 0.9999317526817322
                 },
                 "localRotation": {
                     "w": 0.7071067094802856,
@@ -400,13 +412,13 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 7
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "Rifle Outline",
                 "tag": "",
-                "parent": 7,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -419,14 +431,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": -13.512495994567871,
-                    "y": 10.913662910461426,
-                    "z": -10.226425170898438
+                    "x": 9.536091056361329e-06,
+                    "y": -9.5367431640625e-07,
+                    "z": -1.3325233459472656
                 },
                 "scale": {
-                    "x": 0.999881386756897,
+                    "x": 0.9998811483383179,
                     "y": 1.0,
-                    "z": 0.999881386756897
+                    "z": 0.9998811483383179
                 },
                 "rotation": {
                     "w": 0.7071067094802856,
@@ -440,24 +452,24 @@
                     "z": 3.1415927410125732
                 },
                 "localPosition": {
-                    "x": 4.76837158203125e-06,
+                    "x": 4.887580871582031e-06,
                     "y": -9.5367431640625e-07,
-                    "z": -9.5367431640625e-06
+                    "z": -9.536742254567798e-06
                 },
                 "localScale": {
-                    "x": 0.9999493956565857,
+                    "x": 0.9999492764472961,
                     "y": 1.0,
-                    "z": 0.9999493956565857
+                    "z": 0.9999492764472961
                 },
                 "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
-                    "y": 3.5528936733017925e-15,
+                    "y": 3.552894096818266e-15,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": 7.105786499570638e-15,
+                    "y": 7.105787346603585e-15,
                     "z": 0.0
                 }
             },
@@ -470,13 +482,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 8
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 6,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -493,9 +505,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -13.512504577636719,
-                    "y": 11.549622535705566,
-                    "z": -9.300095558166504
+                    "x": 0.0,
+                    "y": 0.6359577178955078,
+                    "z": -0.40619373321533203
                 },
                 "scale": {
                     "x": 1.0,
@@ -568,7 +580,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 6,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -576,13 +588,13 @@
                     }
                 ]
             },
-            "id": 9
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 6,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -595,9 +607,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -13.512504577636719,
-                    "y": 11.574258804321289,
-                    "z": -6.496476173400879
+                    "x": 0.0,
+                    "y": 0.6605939865112305,
+                    "z": 2.397425651550293
                 },
                 "scale": {
                     "x": 1.0,
@@ -745,13 +757,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 10
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 6,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -764,9 +776,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -13.512504577636719,
-                    "y": 11.424875259399414,
-                    "z": -11.503804206848145
+                    "x": 0.0,
+                    "y": 0.5112104415893555,
+                    "z": -2.6099023818969727
                 },
                 "scale": {
                     "x": 1.0,
@@ -914,13 +926,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 11
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 6,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -933,9 +945,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -13.512504577636719,
-                    "y": 11.113329887390137,
-                    "z": -11.503804206848145
+                    "x": 0.0,
+                    "y": 0.19966506958007813,
+                    "z": -2.6099023818969727
                 },
                 "scale": {
                     "x": 1.0,
@@ -1083,7 +1095,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 12
+            "id": 6
         }
     ]
 }
