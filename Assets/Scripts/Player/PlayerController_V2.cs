@@ -622,6 +622,7 @@ class PlayerController_V2 : Script
     {
         if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false && currentStamina >= dashStaminaConsumption)
         {
+            audioComponent.PlayRandomSound(dashSFX);
             currentStamina -= dashStaminaConsumption;
             playerMoveStates = PlayerMoveStates.Dashing;
             //rigidbody.SetVelocity(Vector3.Zero());

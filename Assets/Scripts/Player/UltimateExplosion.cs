@@ -24,8 +24,8 @@ class UltimateExplosion : Script
 
     public float angularVelocity = 100f;
 
-    //[SerializableField]
-    //private Audio ultExplodeSFX;
+    [SerializableField]
+    private Audio ultExplodeSFX;
 
     // ======================================
     // Runtime variables.

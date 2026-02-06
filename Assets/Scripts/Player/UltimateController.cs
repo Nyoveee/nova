@@ -42,6 +42,13 @@ class UltimateController : Script
     private bool isAnimatingVignetteFadeOut = false;
     private float vignetteTimeElapsed = 0f;
 
+    // ===========================================
+    // Components
+    // ===========================================
+    private AudioComponent_? audioComponent;
+
+    [SerializableField]
+    private Audio ultSFX;
 
     // This function is first invoked when game starts.
     protected override void init()
@@ -99,7 +106,6 @@ class UltimateController : Script
         }
 
         // AudioAPI.PlaySound(gameObject, "sniper_specialFire_01");
-
         playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.Busy;
 
         isCasting = true;
@@ -147,6 +153,7 @@ class UltimateController : Script
         isAnimatingVignette = false;
         isAnimatingVignetteFadeOut = true;
         vignetteTimeElapsed = 0f;
+
 
         GameObject projectile = Instantiate(ultimate, muzzle.transform.position);
 
