@@ -39,7 +39,7 @@ class ElevatorQuest : Quest
         gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
     }
 
-    public void OnEnter()
+    public override void OnEnter()
     {
         elevator.OpenTutorialDoor();
     }

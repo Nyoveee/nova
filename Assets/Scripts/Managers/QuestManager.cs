@@ -20,6 +20,11 @@ public class QuestManager : Script
 
         foreach (var child in children)
         {
+            if(!child.IsActive())
+            {
+                continue;
+            }
+
             Quest quest = child.getScript<Quest>();
             if (quest != null) {
                 quests.Add(quest);

@@ -45,7 +45,7 @@ class Elevator : Script
         
         elevatorState = ElevatorState.Idle;
 
-        tutorialDoor.OpenDoor();
+        //tutorialDoor.OpenDoor();
         
         // hack
         b_reachedHub = true;
@@ -93,6 +93,7 @@ class Elevator : Script
 
     public void OpenTutorialDoor()
     {
+        Debug.Log("asd");
         tutorialDoor.OpenDoor();
     }
 }
