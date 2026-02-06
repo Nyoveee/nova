@@ -9,9 +9,6 @@ class SwitchQuest : Quest
     [SerializableField]
     private float questCompleteDelay;
 
-    [SerializableField]
-    private Elevator elevator;
-
     private bool succeeded = false;
 
     public override void OnSuccess() {}
@@ -31,7 +28,6 @@ class SwitchQuest : Quest
             Invoke(() =>
             {
                 SetQuestState(QuestState.Success);
-                elevator?.OpenTutorialDoor();
             }, questCompleteDelay);
         }
     }

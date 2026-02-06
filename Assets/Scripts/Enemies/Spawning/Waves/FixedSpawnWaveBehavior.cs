@@ -45,12 +45,10 @@ public class FixedSpawnWaveBehavior : WaveBehavior
 
     public override bool IsWaveComplete(List<GameObject> enemies)
     {
-        if (AliveCount == 0)
-            return false;
         bool allDead = true;
         foreach (GameObject enemy in enemies)
         {
-            Enemy enemyScript = enemy.getScript<Enemy>();
+            Enemy enemyScript = enemy?.getScript<Enemy>();
             if (enemyScript != null && !enemyScript.IsDead())
                 allDead = false;
         }

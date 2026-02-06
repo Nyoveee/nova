@@ -23,6 +23,8 @@ public abstract class Gun : Script
 
     private GameUIManager gameUIManager;
 
+    
+
 
     // Private backing field
     private int currentAmmo;

@@ -4,44 +4,55 @@
 
 using ScriptingAPI;
 
-class UnlockGateQuest : InteractableQuest
+class UnlockGateQuest : Quest
 {
     [SerializableField]
-    private MeshRenderer_ buttonRenderer;
+    private Door vaultDoor;
+
     [SerializableField]
-    private GameObject teleporter;
+    private Door turbineToHubDoor;
+
     [SerializableField]
-    private GameObject gate;
-    private AudioComponent_ audioComponent;
+    private Switch hubSwitch;
+
     [SerializableField]
-    private Audio interactClickSFX;
+    private float questCompletionDelay;
+
+    private bool hasSucceeded = false;
+
     // This function is first invoked when game starts.
     protected override void init()
     {
-        base.init();
-        audioComponent = getComponent<AudioComponent_>();
     }
+
     public override void OnEnter()
     {
-        MapKey(Key.E, CheckInteraction);
+        turbineToHubDoor.UnlockDoor();
+        hubSwitch.activateSwitch();
     }
+   
     public override void OnSuccess()
     {
-        // AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
-        audioComponent.PlaySound(interactClickSFX);
-        buttonRenderer.setMaterialFloat(0, "emissiveStrength", 9f);
-        teleporter.SetActive(false);
-        gate.SetActive(false);
+        vaultDoor.UnlockDoor();
+        vaultDoor.OpenDoor();
     }
+
+    public override void UpdateQuest()
+    {
+        if(!hasSucceeded && hubSwitch.isSwitchActivated())
+        {
+            hasSucceeded = true;
+
+            Invoke(() =>
+            {
+                SetQuestState(QuestState.Success);
+            }, questCompletionDelay);
+        }    
+    }
+
     public override void OnFail(Transform_ playerTransform)
     {
         if (playerTransform != null && playerCheckpoint != null)
             playerTransform.position = playerCheckpoint.position;
     }
-    private void CheckInteraction()
-    {
-        if (IsLookingAtInteractable())
-            SetQuestState(QuestState.Success);
-    }
-
 }

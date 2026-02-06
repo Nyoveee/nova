@@ -35,23 +35,32 @@ class PlayerController_V2 : Script
     [SerializableField]
     private float desiredDashSpeed = 100f;
     [SerializableField]
-    private float dashDuration = 1f;
+    public float dashDuration = 1f;
     [SerializableField]
-    private float dashCooldown = 0.5f;
+    public float dashCooldown = 0.5f;
     [SerializableField]
     private float speedChangeSmoothTime = 0.1f;
     [SerializableField]
     private float baseGravityFactor = 1f; //gravity factor for groundbased movements
 
-    [SerializableField] //health
-    private float maxHealth = 100f;
+
+
+    // ==================================
+    // Events
+    // ==================================
+    public event EventHandler OnPlayerDeath;
+
 
     // ==================================
     // References
     // ==================================
     private GameUIManager gameUIManager;
+    
     [SerializableField]
     private Transform_? playerOrientation = null;
+    
+    [SerializableField]
+    private PlayerMotionAnimations? playerMotionAnimations = null;
     private Transform_? transform;
     private Rigidbody_? rigidbody;
     private AudioComponent_? audioComponent;
@@ -60,7 +69,7 @@ class PlayerController_V2 : Script
     // Runtime Variables
     // ==================================
     // WASD
-    private PlayerMoveStates playerMoveStates = PlayerMoveStates.Disabled;
+    public PlayerMoveStates playerMoveStates = PlayerMoveStates.Disabled;
     private bool isMovingForward = false;
     private bool isMovingBackward = false;
     private bool isMovingLeft = false;
@@ -85,6 +94,23 @@ class PlayerController_V2 : Script
     private float gravityLerpTimer = 0.0f;
     private float dashTimeElapsed = 0.0f;
 
+    // ==================================
+    // Player Stats
+    // ==================================
+    [SerializableField] //health
+    public float maxHealth = 100f;
+    private float currentHealth = 0f;
+    [SerializableField]
+    public float maxStamina = 3f;
+    [SerializableField]
+    public float dashStaminaConsumption = 1f;
+    [SerializableField]
+    public float dashStaminaRecovery = 1.0f;
+    public float currentStamina;
+
+    //public bool ToEnable = true;
+
+
     // Hurt
     private int hitsBeforeSound = 3;
     private int hitsTaken = 0;
@@ -106,17 +132,6 @@ class PlayerController_V2 : Script
     private float timeBetweenSteps = 0.36f;
     private float timeSinceLastFootstep = 0f;
 
-    // ==================================
-    // Player Stats
-    // ==================================
-    private float currentHealth = 0f;
-
-    public bool ToEnable = true;
-    // ==================================
-    // Player Callbacks
-    // ==================================
-    // Empty death event
-    public event EventHandler OnPlayerDeath;
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
@@ -124,13 +139,14 @@ class PlayerController_V2 : Script
         transform = getComponent<Transform_>();
         rigidbody = getComponent<Rigidbody_>();
         audioComponent = getComponent<AudioComponent_>();
-        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
+        playerMotionAnimations = getScript<PlayerMotionAnimations>();
 
         //TBH should get other system to check for lockedmouse
         CameraAPI.LockMouse();
 
         // Health
         currentHealth = maxHealth;
+        currentStamina = maxStamina;
 
         rigidbody.SetGravityFactor(baseGravityFactor);
         
@@ -145,11 +161,13 @@ class PlayerController_V2 : Script
 
         MapKey(Key.LeftShift, triggerDash, dashkeyUpHandler);
 
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
     }
 
     // This function is invoked every update.
     protected override void update()
     {
+        currentStamina = Mathf.Clamp(currentStamina + Time.V_DeltaTime() * dashStaminaRecovery, 0f, maxStamina);
 
     }
 
@@ -161,6 +179,7 @@ class PlayerController_V2 : Script
         dashCooldownTimer += Time.V_FixedDeltaTime();
 
         // Debug.Log("Horizontal Velocity: " + GetCurrentHorizontalVelocity());
+
         //Debug.Log(contactSurfaces);
         //Debug.Log("Jump Speed: " + rigidbody.GetVelocity().y);
 
@@ -300,7 +319,7 @@ class PlayerController_V2 : Script
             rigidbody.SetLinearDamping(groundDrag);
             rigidbody.SetVelocityLimits(groundMaxMoveSpeed);
             jumpEnabled = true;
-            // Debug.Log("Grounded");
+            //Debug.Log("Grounded");
 
 
         }
@@ -310,7 +329,7 @@ class PlayerController_V2 : Script
             rigidbody.SetLinearDamping(airDrag);
             rigidbody.SetVelocityLimits(100000); //player movespeed is uncapped in air
             jumpEnabled = false;
-           // Debug.Log("Airborne");
+            //Debug.Log("Airborne");
         }
     }
 
@@ -475,29 +494,7 @@ class PlayerController_V2 : Script
 
 
     }
-    /***********************************************************
-    Public Functions
-    ***********************************************************/
-    public void TakeDamage(float damage)
-    {
-        hitsTaken++;
-        if (hitsTaken >= hitsBeforeSound)
-        {
-            audioComponent.PlayRandomSound(hurtSFX);
-            hitsTaken = 0;
-        }
-        currentHealth = Mathf.Max(0, currentHealth - damage);
-        gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
-        if (gameUIManager != null)
-            gameUIManager.ActivateDamageUI();
 
-        // Placeholder for a player death 
-        if (currentHealth <= 0f)
-        {
-            audioComponent.PlayRandomSound(deathSFX);
-            OnPlayerDeath?.Invoke(this, EventArgs.Empty);
-        }
-    }
     void InitiateDashing()
     {
         UpdateMovementVector();
@@ -623,8 +620,9 @@ class PlayerController_V2 : Script
     //dash callback
     void triggerDash()
     {
-        if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false)
+        if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false && currentStamina >= dashStaminaConsumption)
         {
+            currentStamina -= dashStaminaConsumption;
             playerMoveStates = PlayerMoveStates.Dashing;
             //rigidbody.SetVelocity(Vector3.Zero());
             onDashTrigger = true;
@@ -638,18 +636,7 @@ class PlayerController_V2 : Script
         dashCooldownTimer = 0;
     }
 
-    private void HandleFootstepSound()
-    {
-        if (isGrounded && IsMoving())
-        {
-            timeSinceLastFootstep += Time.V_FixedDeltaTime();
-            if (timeSinceLastFootstep >= timeBetweenSteps)
-            {
-                audioComponent.PlayRandomSound(footstepSFX);
-                timeSinceLastFootstep = 0;
-            }
-        }
-    }
+
 
     protected override void onCollisionEnter(GameObject other)
     {
@@ -700,6 +687,30 @@ class PlayerController_V2 : Script
     }
 
 
+    // ============ public function==========
+
+    public void TakeDamage(float damage)
+    {
+        hitsTaken++;
+        if (hitsTaken >= hitsBeforeSound)
+        {
+            audioComponent.PlayRandomSound(hurtSFX);
+            hitsTaken = 0;
+        }
+        currentHealth = Mathf.Max(0, currentHealth - damage);
+        gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+        if (gameUIManager != null)
+            gameUIManager.ActivateDamageUI();
+
+        // Placeholder for a player death 
+        if (currentHealth <= 0f)
+        {
+            audioComponent.PlayRandomSound(deathSFX);
+            OnPlayerDeath?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+
     //Helper function
     float CalculateSmoothDampVelocityChange(float currentVel,float desiredVel, float smoothTime, float deltaTime)
     {
@@ -725,20 +736,59 @@ class PlayerController_V2 : Script
         return currentVelocity.Length();
     }
 
+    public Vector3 GetDirectionVector() //for movement controller
+    {
+        return directionVector;
+    }
+
+
+    //Sound function
+    private void HandleFootstepSound()
+    {
+        if (isGrounded && IsMoving())
+        {
+            timeSinceLastFootstep += Time.V_FixedDeltaTime();
+            if (timeSinceLastFootstep >= timeBetweenSteps)
+            {
+                audioComponent.PlayRandomSound(footstepSFX);
+                timeSinceLastFootstep = 0;
+            }
+        }
+    }
+
+
     private bool IsMoving() => isMovingBackward || isMovingForward || isMovingLeft || isMovingRight;
     /****************************************************************
-       Public Functions
+    Public Functions
     ****************************************************************/
-    public void Reset() { 
+
+    public void GravityFreeze(bool value)
+    {
+        if (value)
+        {
+            isLerpingGravity = false;
+            rigidbody.SetGravityFactor(0f);
+        }
+        else
+        {
+            isLerpingGravity = true;
+            rigidbody.SetGravityFactor(float.Lerp(jumpGravityFactor, baseGravityFactor, gravityLerpTimer / lerpGravityFactorDuration));
+        }
+
+
+    }
+    public void Reset()
+    {
         isMovingBackward = isMovingForward = isMovingLeft = isMovingRight = false;
         rigidbody.SetVelocity(Vector3.Zero());
         currentHealth = maxHealth;
         gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
     }
+
 }
 
 
-enum PlayerMoveStates 
+public enum PlayerMoveStates 
 {
     Disabled,
     InitState,

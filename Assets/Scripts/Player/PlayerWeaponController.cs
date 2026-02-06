@@ -33,11 +33,14 @@ class PlayerWeaponController : Script
     public float peakGlowStrength = 1.5f;
     public float noAmmoGlowStrength = 0.6f;
     public float ammoGlowScalePower = 2f;
+    
 
     // ===========================================
     // Components
     // ===========================================
     private AudioComponent_ audioComponent;
+
+
 
     // ===========================================
     // Runtime variables
@@ -46,6 +49,8 @@ class PlayerWeaponController : Script
     private Gun currentlyHeldGun;
     private float timeElapsed;
     private float armTimeElapsed = 0f;
+    private bool isArmingDisabled = false; //required by animation controller disable animations while other animation are playing
+    private bool isArmingRequest = false;
 
     public WeaponControlStates weaponControlStates;
 
@@ -56,6 +61,8 @@ class PlayerWeaponController : Script
 
     const int SNIPER_MATERIAL_MATERIAL_INDEX = 0;
     const int SNIPER_BARREL_MATERIAL_INDEX = 1;
+
+    private float lerpVariable = 0;
 
     public enum WeaponControlStates
     { 
@@ -79,7 +86,7 @@ class PlayerWeaponController : Script
         //ScrollCallback(SwapWeaponHandler);
         weaponControlStates = WeaponControlStates.WeaponFree;
         currentlyHeldGun = sniper;
-
+        
         audioComponent = getComponent<AudioComponent_>();
     }
 
@@ -88,6 +95,9 @@ class PlayerWeaponController : Script
     {
         // Regardless of weapon state, we handle the glow VFX of sniper..
         handleWeaponGlow();
+
+        lerpVariable = Math.Clamp(lerpVariable, 0, 1);
+        gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, lerpVariable);
 
         switch (weaponControlStates)
         {
@@ -98,14 +108,22 @@ class PlayerWeaponController : Script
                 break;
             case WeaponControlStates.WeaponFree:
                 {
-                    if (currentlyHeldGun.CurrentAmmo != 0)
+                    if (currentlyHeldGun.CurrentAmmo != 0 && isArmingDisabled == false)
                     {
 
                     }
-                    else if (currentlyHeldGun.CurrentAmmo <= 0)
+                    else if (currentlyHeldGun.CurrentAmmo <= 0 && isArmingDisabled == false)
                     {
+                        
                         weaponControlStates = WeaponControlStates.ArmingThrow;
 
+                    }
+
+                    //player is trying to arm while weapon is busy with animation, now animation is over play arming
+                    if (isArmingRequest == true && isArmingDisabled == false)
+                    { 
+                        weaponControlStates = WeaponControlStates.ArmingThrow;
+                        isArmingRequest = false;
                     }
 
                 }
@@ -114,17 +132,18 @@ class PlayerWeaponController : Script
                 {
                     armTimeElapsed += Time.V_DeltaTime();
 
-                    float t = armTimeElapsed / armingTime;
+                    //float t = armTimeElapsed / armingTime;
+                    lerpVariable = armTimeElapsed / armingTime;
 
-
-                    if (t >= 1)
+                    if (lerpVariable >= 1)
                     {
                         weaponControlStates = WeaponControlStates.ThrowReady;
                         armTimeElapsed = armingTime;
+                        lerpVariable = 1;
                     }
                     else
                     {
-                        gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
+                       // gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
 
                     }
 
@@ -135,16 +154,17 @@ class PlayerWeaponController : Script
                 {
                     armTimeElapsed -= Time.V_DeltaTime();
 
-                    float t = armTimeElapsed / armingTime;
+                    lerpVariable = armTimeElapsed / armingTime;
 
-                    if (t <= 0)
+                    if (lerpVariable <= 0)
                     {
                         weaponControlStates = WeaponControlStates.WeaponFree;
                         armTimeElapsed = 0;
+                        lerpVariable = 0;
                     }
                     else
                     {
-                        gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
+                      //  gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
                     }
                 }
                 break;
@@ -184,9 +204,16 @@ class PlayerWeaponController : Script
 
     private void Arming()
     {
-        if (currentlyHeldGun.CurrentAmmo != 0 && (weaponControlStates == WeaponControlStates.WeaponFree || weaponControlStates == WeaponControlStates.DisarmingFree ) )
+        if (currentlyHeldGun.CurrentAmmo != 0 && (weaponControlStates == WeaponControlStates.WeaponFree || weaponControlStates == WeaponControlStates.DisarmingFree ) && isArmingDisabled == false)
         {
             weaponControlStates = WeaponControlStates.ArmingThrow;
+
+        }
+
+
+        if (isArmingDisabled)
+        {
+            isArmingRequest = true;
         }
     }
 
@@ -196,6 +223,7 @@ class PlayerWeaponController : Script
         {
 
             weaponControlStates = WeaponControlStates.DisarmingFree;
+            isArmingRequest = false;
 
         }
     }
@@ -218,11 +246,13 @@ class PlayerWeaponController : Script
 
             // The final glow strength scales with how low the ammo count is..
             finalGlowStrength = noAmmoGlowStrength * Mathf.Pow(1f - (float)currentlyHeldGun.CurrentAmmo / (float)currentlyHeldGun.MaxAmmo, ammoGlowScalePower);
-            Debug.Log(finalGlowStrength);
+            //Debug.Log(finalGlowStrength);
             // ---------------------------------------------------------------
 
             // Emit particles at muzzle position..
             muzzle.emit(30);
+            isArmingDisabled = true;
+
 
             // We raycast only to specific physics layers..
             string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall" };
@@ -242,9 +272,9 @@ class PlayerWeaponController : Script
             else
             {
                 GameObject ammoTrail = Instantiate(ammoTrailPrefab, muzzle.gameObject.transform.position, muzzle.gameObject.transform.rotation);
-
+                Debug.Log("Miss");
                 ammoTrail.getScript<ammoTrails>().startPosition = muzzle.gameObject.transform.position;
-                ammoTrail.getScript<ammoTrails>().endPosition = muzzle.gameObject.transform.position + (muzzle.gameObject.transform.front * 500f);
+                ammoTrail.getScript<ammoTrails>().endPosition = muzzle.gameObject.transform.position + (muzzle.gameObject.transform.right * 500f);
 
             }
 
@@ -273,11 +303,11 @@ class PlayerWeaponController : Script
         thrownRifle.getScript<ThrowableRifle>().mappedWeapon = currentlyHeldGun;
         weaponControlStates = WeaponControlStates.AwaitWeaponReturn;
 
-        //string[] layerMask = { "Enemy", "Wall", "Ground" };
+        string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall" };
 
-       // RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front,500f,layerMask);
+        // RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front,500f,layerMask);
 
-        RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 500f,playerCollider);
+        RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 500f, mask);
 
 
        
@@ -286,6 +316,7 @@ class PlayerWeaponController : Script
         //Do a raycast to objects
         if (result != null)
         {
+            Debug.Log("Hit: " + result.Value.point.ToString());
             Vector3 targetDirection = (result.Value.point - throwPosition.position);
             targetDirection.Normalize();
 
@@ -322,6 +353,7 @@ class PlayerWeaponController : Script
         {
             currentlyHeldGun.gameObject.SetActive(true);
             gunHolder.localPosition =  gunPosition.localPosition;
+            lerpVariable = 0;
             weaponControlStates = WeaponControlStates.WeaponFree;
 
         }
@@ -331,9 +363,19 @@ class PlayerWeaponController : Script
 
     }
 
+
     public void ResetGunPosition()
     {
         gunHolder.localPosition = gunPosition.localPosition;
+    }
+    public void DisableWeaponArm()
+    {
+        isArmingDisabled = true;
+    }
+
+    public void EnableWeaponArm()
+    {
+        isArmingDisabled = false;
     }
 
 

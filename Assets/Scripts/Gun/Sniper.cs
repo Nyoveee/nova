@@ -23,20 +23,22 @@ class Sniper : Gun
         Components
     ***********************************************************/
     private AudioComponent_ audioComponent;
+    private WeaponAnimationController weaponAnimationController;
 
     /***********************************************************
         Runtime variables..
     ***********************************************************/
     private float timeElapsed = 0f;
     private bool onCooldown = false;
-    private bool isRecoiling = false;
-    private Vector3 startPosition;
-    private Vector3 backPosition;
+    //private bool isRecoiling = false;
+    //private Vector3 startPosition;
+    //private Vector3 backPosition;
 
     protected override void init()
     {
         base.init();
         audioComponent = getComponent<AudioComponent_>();
+        weaponAnimationController = getScript<WeaponAnimationController>();
     }
     protected override void update()
     {
@@ -46,19 +48,19 @@ class Sniper : Gun
         }
 
         // Handle gun recoil lerping..
-        if(timeElapsed < recoilDuration)
-        {
-            gameObject.transform.localPosition = Vector3.Lerp(startPosition, backPosition, Mathf.Pow(timeElapsed / recoilDuration, 0.3f));
-        }
-        else if (timeElapsed < recoilDuration * 2)
-        {
-            gameObject.transform.localPosition = Vector3.Lerp(backPosition, startPosition, Mathf.Pow((timeElapsed - recoilDuration) / recoilDuration, (1 / 0.3f)));
-        }
-        else if (isRecoiling)
-        {
-            isRecoiling = false;
-            gameObject.transform.localPosition = startPosition;
-        }
+        //if(timeElapsed < recoilDuration)
+        //{
+        //    gameObject.transform.localPosition = Vector3.Lerp(startPosition, backPosition, Mathf.Pow(timeElapsed / recoilDuration, 0.3f));
+        //}
+        //else if (timeElapsed < recoilDuration * 2)
+        //{
+        //    gameObject.transform.localPosition = Vector3.Lerp(backPosition, startPosition, Mathf.Pow((timeElapsed - recoilDuration) / recoilDuration, (1 / 0.3f)));
+        //}
+        //else if (isRecoiling)
+        //{
+        //    isRecoiling = false;
+        //    gameObject.transform.localPosition = startPosition;
+        //}
 
         if (timeElapsed > cooldown)
         {
@@ -80,15 +82,17 @@ class Sniper : Gun
         }
 
         onCooldown = true;
-        isRecoiling = true;
+        //isRecoiling = true;
         CurrentAmmo--;
 
         audioComponent.PlayRandomSound(fireSFX);
 
         RayCastFire(camera.position, camera.front, range, damage);
 
-        startPosition = gameObject.transform.localPosition;
-        backPosition = startPosition - (Vector3.Front() * 2f);
+        weaponAnimationController.PlayRecoilAnimation(cooldown);
+
+        //startPosition = gameObject.transform.localPosition;
+        //backPosition = startPosition - (Vector3.Front() * 2f);
         
         return true;
     }

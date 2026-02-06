@@ -39,6 +39,11 @@ class ElevatorQuest : Quest
         gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
     }
 
+    public void OnEnter()
+    {
+        elevator.OpenTutorialDoor();
+    }
+
     public override void OnSuccess()
     {
         Destroy(checkPointIndicator);

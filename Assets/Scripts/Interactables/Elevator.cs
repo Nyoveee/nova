@@ -40,15 +40,22 @@ class Elevator : Script
         updateState.Add(ElevatorState.MovingDown, Update_MovingDown);
         topPosition = elevatorTransform.position;
         bottomPosition = topPosition - new Vector3(0, moveHeight, 0);
-        tutorialDoor.OpenDoor();
 
         playerBody = GameObject.FindWithTag("Player");
+        
+        elevatorState = ElevatorState.Idle;
+
+        tutorialDoor.OpenDoor();
+        
+        // hack
+        b_reachedHub = true;
     }
 
     protected override void update()
     {
         updateState[elevatorState]();
     }
+
     private void Update_Idle() {
         if (tutorialDoor.IsFullyClosed() && !b_reachedHub)
             elevatorState = ElevatorState.MovingDown;
@@ -79,6 +86,9 @@ class Elevator : Script
     **********************************************************************/
     public void CloseTutorialDoor() {
         tutorialDoor.CloseDoor();
+
+        // hack
+        b_reachedHub = false;
     }
 
     public void OpenTutorialDoor()

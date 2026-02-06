@@ -9,7 +9,7 @@ class Switch : Script
     private float switchActivationDistance = 10f;
 
     [SerializableField]
-    private float rotation = 45f;
+    private float rotation = 110f;
 
     [SerializableField]
     private float turningDuration = 0.4f;
@@ -50,8 +50,8 @@ class Switch : Script
         isActivated = !isEnabledAtStart;
 
         player = GameObject.FindWithTag("Player");
-        initialRotation = gameObject.transform.localRotation;
-        finalRotation = Quaternion.AngleAxis(Mathf.Deg2Rad * rotation, Vector3.Front()) * gameObject.transform.localRotation;
+        initialRotation = gameObject.transform.rotation;
+        finalRotation = Quaternion.AngleAxis(Mathf.Deg2Rad * rotation, gameObject.transform.front) * gameObject.transform.rotation;
 
         MapKey(Key.E, handleSwitchActivation);
 
@@ -85,7 +85,10 @@ class Switch : Script
 
         float interval = timeElapsed / turningDuration;
 
-        gameObject.transform.localRotation = Quaternion.Slerp(initialRotation, finalRotation, Mathf.Pow(Mathf.SmoothLerp(0f, 1f, interval), turningLerpPower));
+        if (switchMesh != null)
+        {
+            switchMesh.gameObject.transform.rotation = Quaternion.Slerp(initialRotation, finalRotation, Mathf.Pow(Mathf.SmoothLerp(0f, 1f, interval), turningLerpPower));
+        }
 
         if (timeElapsed == turningDuration)
         {
@@ -103,7 +106,10 @@ class Switch : Script
 
     private void handleSwitchActivation()
     {
-        if(!isActivated && isInteractable) {
+        float distance = Vector3.Distance(player.transform.position, gameObject.transform.position);
+        isInteractable = distance <= switchActivationDistance;
+
+        if (!isActivated && isInteractable) {
             audioComponent?.PlaySound(switchSfx);
 
             isActivated = true;
@@ -115,5 +121,11 @@ class Switch : Script
     public bool isSwitchActivated()
     {
         return isActivated;
+    }
+
+    public void activateSwitch()
+    {
+        // isActivated here means has it been used.
+        isActivated = false;
     }
 }

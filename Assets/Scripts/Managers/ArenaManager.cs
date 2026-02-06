@@ -71,6 +71,8 @@ public class ArenaManager : Script
 
     void StartNextSequentialWave()
     {
+        Debug.Log("wave star");
+
         if (currentWave < waves.Count)
         {
             WaveBehavior wave = waves[currentWave];
