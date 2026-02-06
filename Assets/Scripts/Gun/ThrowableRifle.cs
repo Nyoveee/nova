@@ -144,9 +144,9 @@ class ThrowableRifle : Script
 
         weaponRB.SetVelocity(angledFlightPath * weaponFlyingSpeed);
         angledFlightPath.Normalize();
-        gameObject.transform.rotation = Quaternion.LookRotation(-angledFlightPath);
+        gameObject.transform.rotation = Quaternion.LookRotation(angledFlightPath) * Quaternion.AngleAxis(180 * Mathf.Deg2Rad, new Vector3(0, 1, 0));
 
-        
+
 
         //Quaternion baseRotation = Quaternion.LookRotation(flightPath);
         //Quaternion angleOffset = Quaternion.Euler(angledFlight, 0f, 0f);
@@ -244,6 +244,7 @@ class ThrowableRifle : Script
                 break;
             case ThrowingWeaponState.HitDelay:
                 {
+                    Debug.Log("Called");
                     HitDelay();
                 
                 }
@@ -279,7 +280,7 @@ class ThrowableRifle : Script
 
        Vector3 playerPos =  playerGameobject.transform.position;
        playerPos.y += playerHeight;
-       Vector3 directionToTarget = gameObject.transform.position - playerPos;
+       Vector3 directionToTarget = playerPos - gameObject.transform.position;
         directionToTarget.Normalize();
 
         float steerPower = timeElapsed / maxReturnTime;
@@ -299,7 +300,7 @@ class ThrowableRifle : Script
         }
 
 
-        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget) * Quaternion.AngleAxis(180 * Mathf.Deg2Rad, new Vector3(0, 1, 0));
         Quaternion newRotation = Quaternion.Slerp(gameObject.transform.rotation, targetRotation, rotationFactor);
 
 
@@ -323,8 +324,7 @@ class ThrowableRifle : Script
             seekingFailed = true;
 
         }
-
-        Vector3 directionToTarget = (targetObject.transform.position - gameObject.transform.position);
+        Vector3 directionToTarget = targetObject.transform.position - gameObject.transform.position;
 
         directionToTarget.Normalize();
 
@@ -353,7 +353,7 @@ class ThrowableRifle : Script
             rotationFactor = 1.0f;
         }
 
-        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget) * Quaternion.AngleAxis(180 * Mathf.Deg2Rad, new Vector3(0, 1, 0));
 
         Quaternion newRotation = Quaternion.Slerp(gameObject.transform.rotation, targetRotation, rotationFactor);
 
@@ -390,10 +390,10 @@ class ThrowableRifle : Script
         playerPosition.y += playerHeight;
 
 
-        Vector3 directionToTarget = gameObject.transform.position - playerPosition;
+        Vector3 directionToTarget = playerPosition - gameObject.transform.position;
         directionToTarget.Normalize();
        
-       gameObject.transform.rotation = Quaternion.LookRotation(directionToTarget);
+       gameObject.transform.rotation = Quaternion.LookRotation(directionToTarget) * Quaternion.AngleAxis(180 * Mathf.Deg2Rad, new Vector3(0,1,0));
     }
 
 
