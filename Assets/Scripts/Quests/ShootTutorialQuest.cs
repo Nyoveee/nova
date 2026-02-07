@@ -11,12 +11,6 @@ class ShootTutorialQuest : Quest
 
     private bool succeeded;
 
-    public override void OnFail(Transform_ playerTransform)
-    {
-        if (playerTransform != null && playerCheckpoint != null)
-            playerTransform.position = playerCheckpoint.position;
-    }
-
     public override void UpdateQuest() {
         if (!succeeded && grunt != null && grunt.getScript<Grunt>().IsDead())
         {

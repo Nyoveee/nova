@@ -18,15 +18,6 @@ public class ArenaQuest : Quest
         foreach (Door door in unlockableDoors)
             door.UnlockDoor();
     }
-	public override void OnFail(Transform_ playerTransform)
-    {
-        Debug.Log("Arena failed");
-		arenaManager.ResetArenaQuest();
-		if (playerTransform != null && playerCheckpoint != null)
-		{
-			playerTransform.position = playerCheckpoint.position;
-		}
-    }
 
     public override void UpdateQuest()
     {

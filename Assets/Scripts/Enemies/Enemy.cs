@@ -87,8 +87,17 @@ public abstract class Enemy : Script
     {
         string[] mask = { "Floor" };
         var result = PhysicsAPI.Raycast(gameObject.transform.position, Vector3.Down(), enemyStats.groundDetectionRayCast, mask);
-
-        return result != null;
+        if(result != null){
+            gameObject.transform.position = result.Value.point;
+            return true;
+        }
+        result = PhysicsAPI.Raycast(gameObject.transform.position, Vector3.Up(), enemyStats.groundDetectionRayCast, mask);
+        if (result != null)
+        {
+            gameObject.transform.position = result.Value.point;
+            return true;
+        }
+        return false;
     }
 
     public void ActivateRigidbody()

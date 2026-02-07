@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 3,
     "Entities": [
         {
             "EntityData": {
@@ -8,15 +8,15 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    2,
-                    3,
                     4,
-                    11,
-                    17,
-                    25,
-                    37,
-                    41
+                    5,
+                    6,
+                    7,
+                    14,
+                    20,
+                    28,
+                    40,
+                    44
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -83,13 +83,13 @@
             "Canvas": {
                 "placeholder": ""
             },
-            "id": 0
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "UI Crosshair",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -160,13 +160,13 @@
                 },
                 "toTile": false
             },
-            "id": 1
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "UI Base Crosshair",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -237,13 +237,13 @@
                 },
                 "toTile": false
             },
-            "id": 2
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Damaged Background",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -316,17 +316,17 @@
                 },
                 "toTile": false
             },
-            "id": 3
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "Quest Container",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    5,
-                    8
+                    8,
+                    11
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -380,17 +380,17 @@
                     "z": 0.0
                 }
             },
-            "id": 4
+            "id": 7
         },
         {
             "EntityData": {
                 "name": "Mission Objective Container",
                 "tag": "",
-                "parent": 4,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": [
-                    6,
-                    7
+                    9,
+                    10
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -446,13 +446,13 @@
                     "z": 0.0
                 }
             },
-            "id": 5
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "Mission Objective Background",
                 "tag": "",
-                "parent": 5,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 1,
@@ -467,7 +467,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 836.9555053710938,
+                    "x": 836.9140625,
                     "y": 178.95120239257813,
                     "z": 0.0
                 },
@@ -488,7 +488,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.02209472842514515,
+                    "x": -0.0766601637005806,
                     "y": -0.00022888185048941523,
                     "z": 0.0
                 },
@@ -525,13 +525,13 @@
                 },
                 "toTile": false
             },
-            "id": 6
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Mission Objective Text",
                 "tag": "",
-                "parent": 5,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
@@ -546,7 +546,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 836.9555053710938,
+                    "x": 836.9140625,
                     "y": 178.95120239257813,
                     "z": 0.0
                 },
@@ -567,7 +567,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.02209472842514515,
+                    "x": -0.0766601637005806,
                     "y": -0.00022888185048941523,
                     "z": 0.0
                 },
@@ -598,17 +598,17 @@
                     "b": 0.6931034326553345
                 }
             },
-            "id": 7
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Quest Information Container",
                 "tag": "",
-                "parent": 4,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": [
-                    9,
-                    10
+                    12,
+                    13
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -664,13 +664,13 @@
                     "z": 0.0
                 }
             },
-            "id": 8
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Quest Background",
                 "tag": "",
-                "parent": 8,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 1,
@@ -685,7 +685,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 1283.36474609375,
+                    "x": 1283.3101806640625,
                     "y": 126.75751495361328,
                     "z": 0.0
                 },
@@ -706,7 +706,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 94.35694122314453,
+                    "x": 94.28516387939453,
                     "y": -0.00012207032705191523,
                     "z": 0.0
                 },
@@ -743,13 +743,13 @@
                 },
                 "toTile": false
             },
-            "id": 9
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Quest Text",
                 "tag": "",
-                "parent": 8,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
@@ -764,7 +764,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 846.9390869140625,
+                    "x": 846.8873291015625,
                     "y": 116.39627075195313,
                     "z": 0.0
                 },
@@ -785,7 +785,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -479.8869934082031,
+                    "x": -479.9551086425781,
                     "y": -13.633332252502441,
                     "z": 0.0
                 },
@@ -816,18 +816,18 @@
                     "b": 1.0
                 }
             },
-            "id": 10
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Player UI Container",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    12,
-                    13,
-                    15
+                    15,
+                    16,
+                    18
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -881,13 +881,13 @@
                     "z": 0.0
                 }
             },
-            "id": 11
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Player UI Image",
                 "tag": "",
-                "parent": 11,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -958,16 +958,16 @@
                 },
                 "toTile": false
             },
-            "id": 12
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "Health Container",
                 "tag": "",
-                "parent": 11,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": [
-                    14
+                    17
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -1021,13 +1021,13 @@
                     "z": 0.0
                 }
             },
-            "id": 13
+            "id": 16
         },
         {
             "EntityData": {
                 "name": "Health Bar",
                 "tag": "",
-                "parent": 13,
+                "parent": 16,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
@@ -1100,16 +1100,16 @@
                 },
                 "toTile": false
             },
-            "id": 14
+            "id": 17
         },
         {
             "EntityData": {
                 "name": "Dash Container",
                 "tag": "",
-                "parent": 11,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": [
-                    16
+                    19
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -1163,13 +1163,13 @@
                     "z": 0.0
                 }
             },
-            "id": 15
+            "id": 18
         },
         {
             "EntityData": {
                 "name": "Dash Bar",
                 "tag": "",
-                "parent": 15,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
@@ -1240,17 +1240,17 @@
                 },
                 "toTile": false
             },
-            "id": 16
+            "id": 19
         },
         {
             "EntityData": {
                 "name": "Ammo UI Container",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    18,
-                    22
+                    21,
+                    25
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1304,16 +1304,16 @@
                     "z": 0.0
                 }
             },
-            "id": 17
+            "id": 20
         },
         {
             "EntityData": {
                 "name": "Ammo UI",
                 "tag": "",
-                "parent": 17,
+                "parent": 20,
                 "attachedSocket": 65535,
                 "children": [
-                    19
+                    22
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1383,17 +1383,17 @@
                 },
                 "toTile": false
             },
-            "id": 18
+            "id": 21
         },
         {
             "EntityData": {
                 "name": "Ammo Text Container",
                 "tag": "",
-                "parent": 18,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": [
-                    20,
-                    21
+                    23,
+                    24
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1447,13 +1447,13 @@
                     "z": 0.0
                 }
             },
-            "id": 19
+            "id": 22
         },
         {
             "EntityData": {
                 "name": "Max Ammo Count",
                 "tag": "",
-                "parent": 19,
+                "parent": 22,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
@@ -1469,7 +1469,7 @@
             "Transform": {
                 "position": {
                     "x": 200.82943725585938,
-                    "y": 301.5130615234375,
+                    "y": 301.4994201660156,
                     "z": 0.0
                 },
                 "scale": {
@@ -1490,7 +1490,7 @@
                 },
                 "localPosition": {
                     "x": 63.057159423828125,
-                    "y": 1.204986572265625,
+                    "y": 1.18603515625,
                     "z": 0.0
                 },
                 "localScale": {
@@ -1520,13 +1520,13 @@
                     "b": 0.0
                 }
             },
-            "id": 20
+            "id": 23
         },
         {
             "EntityData": {
                 "name": "Current Ammo Count",
                 "tag": "",
-                "parent": 19,
+                "parent": 22,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
@@ -1542,8 +1542,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 155.3860321044922,
-                    "y": 300.4870910644531,
+                    "x": 155.37921142578125,
+                    "y": 300.47344970703125,
                     "z": 0.0
                 },
                 "scale": {
@@ -1563,8 +1563,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.07623291015625,
-                    "y": -0.220367431640625,
+                    "x": -0.0857086181640625,
+                    "y": -0.23931884765625,
                     "z": 0.0
                 },
                 "localScale": {
@@ -1594,17 +1594,17 @@
                     "b": 0.0
                 }
             },
-            "id": 21
+            "id": 24
         },
         {
             "EntityData": {
                 "name": "Ultimate UI BG",
                 "tag": "",
-                "parent": 17,
+                "parent": 20,
                 "attachedSocket": 65535,
                 "children": [
-                    23,
-                    24
+                    26,
+                    27
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1658,13 +1658,13 @@
                     "z": 0.0
                 }
             },
-            "id": 22
+            "id": 25
         },
         {
             "EntityData": {
                 "name": "Ultimate UI Frame",
                 "tag": "",
-                "parent": 22,
+                "parent": 25,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
@@ -1735,13 +1735,13 @@
                 },
                 "toTile": false
             },
-            "id": 23
+            "id": 26
         },
         {
             "EntityData": {
                 "name": "Ultimate UI Bar",
                 "tag": "",
-                "parent": 22,
+                "parent": 25,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 1,
@@ -1812,16 +1812,16 @@
                 },
                 "toTile": false
             },
-            "id": 24
+            "id": 27
         },
         {
             "EntityData": {
                 "name": "Pause Menu UI",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    26
+                    29
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -1877,16 +1877,16 @@
                     "z": 0.0
                 }
             },
-            "id": 25
+            "id": 28
         },
         {
             "EntityData": {
                 "name": "Pause Overlay",
                 "tag": "",
-                "parent": 25,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": [
-                    27
+                    30
                 ],
                 "layerId": 4,
                 "isActive": false,
@@ -1959,20 +1959,20 @@
                 },
                 "toTile": false
             },
-            "id": 26
+            "id": 29
         },
         {
             "EntityData": {
                 "name": "Buttons Container",
                 "tag": "",
-                "parent": 26,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": [
-                    28,
-                    30,
-                    32,
-                    34,
-                    36
+                    31,
+                    33,
+                    35,
+                    37,
+                    39
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -2028,16 +2028,16 @@
                     "z": 0.0
                 }
             },
-            "id": 27
+            "id": 30
         },
         {
             "EntityData": {
                 "name": "MM Box",
                 "tag": "",
-                "parent": 27,
+                "parent": 30,
                 "attachedSocket": 65535,
                 "children": [
-                    29
+                    32
                 ],
                 "layerId": 5,
                 "isActive": false,
@@ -2129,7 +2129,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 28,
+                    "entity": 31,
                     "script": 4644100093332668417
                 },
                 "normalColor": {
@@ -2172,13 +2172,13 @@
                     "z": 0.0
                 }
             },
-            "id": 28
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "MM Word",
                 "tag": "",
-                "parent": 28,
+                "parent": 31,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
@@ -2245,16 +2245,16 @@
                     "b": 1.0
                 }
             },
-            "id": 29
+            "id": 32
         },
         {
             "EntityData": {
                 "name": "Quit Box",
                 "tag": "",
-                "parent": 27,
+                "parent": 30,
                 "attachedSocket": 65535,
                 "children": [
-                    31
+                    34
                 ],
                 "layerId": 5,
                 "isActive": false,
@@ -2268,14 +2268,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 926.2361450195313,
-                    "y": 378.7139892578125,
+                    "x": 926.2911987304688,
+                    "y": 378.7135009765625,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.01611328125,
-                    "y": 106.38343048095703,
-                    "z": 1.0399984121322632
+                    "x": 312.03399658203125,
+                    "y": 106.38340759277344,
+                    "z": 1.0399985313415527
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2289,14 +2289,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 920.58251953125,
-                    "y": 345.68267822265625,
+                    "x": 920.58447265625,
+                    "y": 345.6822204589844,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0005798339844,
-                    "y": 99.99995422363281,
-                    "z": 0.999999463558197
+                    "x": 300.00115966796875,
+                    "y": 99.99993133544922,
+                    "z": 0.9999995231628418
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2345,7 +2345,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 30,
+                    "entity": 33,
                     "script": 4644100093332668417
                 },
                 "normalColor": {
@@ -2388,13 +2388,13 @@
                     "z": 0.0
                 }
             },
-            "id": 30
+            "id": 33
         },
         {
             "EntityData": {
                 "name": "Quit Word",
                 "tag": "",
-                "parent": 30,
+                "parent": 33,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
@@ -2410,14 +2410,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 814.9232788085938,
-                    "y": 359.56512451171875,
+                    "x": 814.9676513671875,
+                    "y": 359.5636291503906,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400547981262207,
-                    "y": 1.0638377666473389,
-                    "z": 1.0399974584579468
+                    "x": 1.0401136875152588,
+                    "y": 1.0638395547866821,
+                    "z": 1.0399978160858154
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2431,14 +2431,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.3567535877227783,
-                    "y": -0.17999863624572754,
+                    "x": -0.3567674160003662,
+                    "y": -0.1800079345703125,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.0033333369065076113,
-                    "y": 0.010000032372772694,
-                    "z": 0.9999991059303284
+                    "x": 0.0033333345782011747,
+                    "y": 0.01000005193054676,
+                    "z": 0.9999992847442627
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2462,16 +2462,16 @@
                     "b": 1.0
                 }
             },
-            "id": 31
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "Resume Box",
                 "tag": "",
-                "parent": 27,
+                "parent": 30,
                 "attachedSocket": 65535,
                 "children": [
-                    33
+                    36
                 ],
                 "layerId": 5,
                 "isActive": false,
@@ -2485,14 +2485,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 926.2361450195313,
-                    "y": 686.4349975585938,
+                    "x": 926.2911987304688,
+                    "y": 686.441650390625,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.01611328125,
-                    "y": 106.38343048095703,
-                    "z": 1.0399984121322632
+                    "x": 312.03399658203125,
+                    "y": 106.38340759277344,
+                    "z": 1.0399985313415527
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2506,14 +2506,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 920.58251953125,
-                    "y": 634.9390869140625,
+                    "x": 920.58447265625,
+                    "y": 634.9453735351563,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0005798339844,
-                    "y": 99.99995422363281,
-                    "z": 0.999999463558197
+                    "x": 300.00115966796875,
+                    "y": 99.99993133544922,
+                    "z": 0.9999995231628418
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2562,7 +2562,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 32,
+                    "entity": 35,
                     "script": 4644100093332668417
                 },
                 "normalColor": {
@@ -2605,13 +2605,13 @@
                     "z": 0.0
                 }
             },
-            "id": 32
+            "id": 35
         },
         {
             "EntityData": {
                 "name": "Resume Word",
                 "tag": "",
-                "parent": 32,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
@@ -2626,14 +2626,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 844.2952880859375,
-                    "y": 665.7711181640625,
-                    "z": 2.0799949169158936
+                    "x": 844.3417358398438,
+                    "y": 665.7752685546875,
+                    "z": 2.079995632171631
                 },
                 "scale": {
-                    "x": 1.5513490438461304,
-                    "y": 1.5868202447891235,
-                    "z": 1.551262617111206
+                    "x": 1.5514423847198486,
+                    "y": 1.586824655532837,
+                    "z": 1.5512629747390747
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2647,14 +2647,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.2626173496246338,
-                    "y": -0.19423961639404297,
-                    "z": 1.9999982118606567
+                    "x": -0.26262998580932617,
+                    "y": -0.19426298141479492,
+                    "z": 1.9999985694885254
                 },
                 "localScale": {
-                    "x": 0.0049720159731805325,
-                    "y": 0.01491604745388031,
-                    "z": 1.4916009902954102
+                    "x": 0.004972029943019152,
+                    "y": 0.014916092157363892,
+                    "z": 1.4916011095046997
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2678,16 +2678,16 @@
                     "b": 1.0
                 }
             },
-            "id": 33
+            "id": 36
         },
         {
             "EntityData": {
                 "name": "Restart Box",
                 "tag": "",
-                "parent": 27,
+                "parent": 30,
                 "attachedSocket": 65535,
                 "children": [
-                    35
+                    38
                 ],
                 "layerId": 5,
                 "isActive": false,
@@ -2780,7 +2780,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 34,
+                    "entity": 37,
                     "script": 4644100093332668417
                 },
                 "normalColor": {
@@ -2823,13 +2823,13 @@
                     "z": 0.0
                 }
             },
-            "id": 34
+            "id": 37
         },
         {
             "EntityData": {
                 "name": "Restart Word",
                 "tag": "",
-                "parent": 34,
+                "parent": 37,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
@@ -2896,13 +2896,13 @@
                     "b": 1.0
                 }
             },
-            "id": 35
+            "id": 38
         },
         {
             "EntityData": {
                 "name": "Game Paused Text",
                 "tag": "",
-                "parent": 27,
+                "parent": 30,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
@@ -2967,18 +2967,18 @@
                     "b": 1.0
                 }
             },
-            "id": 36
+            "id": 39
         },
         {
             "EntityData": {
                 "name": "Dialogue",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    38,
-                    39,
-                    40
+                    41,
+                    42,
+                    43
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -3042,7 +3042,7 @@
                             {
                                 "name": "dialogueTextBackgroundTransform",
                                 "data": {
-                                    "__variant_value": 39,
+                                    "__variant_value": 42,
                                     "__variant_type": 4
                                 }
                             },
@@ -3056,14 +3056,14 @@
                             {
                                 "name": "dialogueText",
                                 "data": {
-                                    "__variant_value": 38,
+                                    "__variant_value": 41,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "speakerText",
                                 "data": {
-                                    "__variant_value": 40,
+                                    "__variant_value": 43,
                                     "__variant_type": 4
                                 }
                             }
@@ -3071,13 +3071,13 @@
                     }
                 ]
             },
-            "id": 37
+            "id": 40
         },
         {
             "EntityData": {
                 "name": "Dialogue Text",
                 "tag": "",
-                "parent": 37,
+                "parent": 40,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
@@ -3091,7 +3091,7 @@
             "Transform": {
                 "position": {
                     "x": 846.6347045898438,
-                    "y": 119.29948425292969,
+                    "y": 119.29607391357422,
                     "z": 0.0
                 },
                 "scale": {
@@ -3112,7 +3112,7 @@
                 },
                 "localPosition": {
                     "x": 16.055908203125,
-                    "y": 24.231521606445313,
+                    "y": 24.228111267089844,
                     "z": 0.0
                 },
                 "localScale": {
@@ -3133,7 +3133,7 @@
                 }
             },
             "Text": {
-                "font": 436541759683510273,
+                "font": 11263476825637552129,
                 "text": "[Dialogue]",
                 "fontSize": 32,
                 "fontColor": {
@@ -3142,13 +3142,13 @@
                     "b": 0.8901960849761963
                 }
             },
-            "id": 38
+            "id": 41
         },
         {
             "EntityData": {
                 "name": "Dialogue Background",
                 "tag": "",
-                "parent": 37,
+                "parent": 40,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3162,7 +3162,7 @@
             "Transform": {
                 "position": {
                     "x": 822.0592041015625,
-                    "y": 95.06655883789063,
+                    "y": 95.06314849853516,
                     "z": 0.0
                 },
                 "scale": {
@@ -3183,7 +3183,7 @@
                 },
                 "localPosition": {
                     "x": -0.0001220703125,
-                    "y": -0.0014495849609375,
+                    "y": -0.00485992431640625,
                     "z": 0.0
                 },
                 "localScale": {
@@ -3219,13 +3219,13 @@
                 },
                 "toTile": false
             },
-            "id": 39
+            "id": 42
         },
         {
             "EntityData": {
                 "name": "Speaker Text",
                 "tag": "",
-                "parent": 37,
+                "parent": 40,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3281,7 +3281,7 @@
                 }
             },
             "Text": {
-                "font": 436541759683510273,
+                "font": 11263476825637552129,
                 "text": "[Speaker]",
                 "fontSize": 30,
                 "fontColor": {
@@ -3290,16 +3290,16 @@
                     "b": 1.0
                 }
             },
-            "id": 40
+            "id": 43
         },
         {
             "EntityData": {
                 "name": "Death Menu UI",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    42
+                    45
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -3355,16 +3355,16 @@
                     "z": 0.0
                 }
             },
-            "id": 41
+            "id": 44
         },
         {
             "EntityData": {
                 "name": "Death Overlay",
                 "tag": "",
-                "parent": 41,
+                "parent": 44,
                 "attachedSocket": 65535,
                 "children": [
-                    43
+                    46
                 ],
                 "layerId": 4,
                 "isActive": false,
@@ -3436,18 +3436,18 @@
                 },
                 "toTile": false
             },
-            "id": 42
+            "id": 45
         },
         {
             "EntityData": {
                 "name": "Buttons Container",
                 "tag": "",
-                "parent": 42,
+                "parent": 45,
                 "attachedSocket": 65535,
                 "children": [
-                    44,
-                    46,
-                    48
+                    47,
+                    49,
+                    51
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -3462,11 +3462,11 @@
             "Transform": {
                 "position": {
                     "x": -28.2562255859375,
-                    "y": 19.17333984375,
+                    "y": 19.14544677734375,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400515794754028,
+                    "x": 1.0401092767715454,
                     "y": 1.0638347864151,
                     "z": 1.039999008178711
                 },
@@ -3483,11 +3483,11 @@
                 },
                 "localPosition": {
                     "x": -0.49640288949012756,
-                    "y": -0.46045443415641785,
+                    "y": -0.4604787230491638,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.0005208592629060149,
+                    "x": 0.000520888133905828,
                     "y": 0.0009259259095415473,
                     "z": 0.9999991059303284
                 },
@@ -3503,16 +3503,16 @@
                     "z": 0.0
                 }
             },
-            "id": 43
+            "id": 46
         },
         {
             "EntityData": {
                 "name": "MM Box",
                 "tag": "",
-                "parent": 43,
+                "parent": 46,
                 "attachedSocket": 65535,
                 "children": [
-                    45
+                    48
                 ],
                 "layerId": 5,
                 "isActive": false,
@@ -3527,13 +3527,13 @@
             },
             "Transform": {
                 "position": {
-                    "x": 929.197021484375,
-                    "y": 458.9519958496094,
+                    "x": 929.2510986328125,
+                    "y": 458.92431640625,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0160827636719,
-                    "y": 106.38343811035156,
+                    "x": 312.03399658203125,
+                    "y": 106.38340759277344,
                     "z": 1.0399985313415527
                 },
                 "rotation": {
@@ -3548,14 +3548,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 920.5824584960938,
-                    "y": 413.38995361328125,
+                    "x": 920.5833740234375,
+                    "y": 413.39019775390625,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0005798339844,
-                    "y": 99.99995422363281,
-                    "z": 0.999999463558197
+                    "x": 300.00115966796875,
+                    "y": 99.99993133544922,
+                    "z": 0.9999995231628418
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -3604,7 +3604,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 44,
+                    "entity": 47,
                     "script": 10337081121383874561
                 },
                 "normalColor": {
@@ -3647,13 +3647,13 @@
                     "z": 0.0
                 }
             },
-            "id": 44
+            "id": 47
         },
         {
             "EntityData": {
                 "name": "MM Word",
                 "tag": "",
-                "parent": 44,
+                "parent": 47,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
@@ -3668,14 +3668,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 819.795654296875,
-                    "y": 432.8584289550781,
+                    "x": 819.8407592773438,
+                    "y": 432.8314208984375,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400546789169312,
-                    "y": 1.0638377666473389,
-                    "z": 1.0399975776672363
+                    "x": 1.0401136875152588,
+                    "y": 1.0638395547866821,
+                    "z": 1.0399978160858154
                 },
                 "rotation": {
                     "w": 1.0,
@@ -3689,14 +3689,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.35062742233276367,
-                    "y": -0.24527859687805176,
+                    "x": -0.35063600540161133,
+                    "y": -0.24527215957641602,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.0033333369065076113,
-                    "y": 0.010000032372772694,
-                    "z": 0.9999991059303284
+                    "x": 0.0033333345782011747,
+                    "y": 0.01000005193054676,
+                    "z": 0.9999992847442627
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -3720,16 +3720,16 @@
                     "b": 1.0
                 }
             },
-            "id": 45
+            "id": 48
         },
         {
             "EntityData": {
                 "name": "Restart Box",
                 "tag": "",
-                "parent": 43,
+                "parent": 46,
                 "attachedSocket": 65535,
                 "children": [
-                    47
+                    50
                 ],
                 "layerId": 5,
                 "isActive": false,
@@ -3741,13 +3741,13 @@
             },
             "Transform": {
                 "position": {
-                    "x": 929.197021484375,
-                    "y": 585.572998046875,
+                    "x": 929.2510986328125,
+                    "y": 585.5444946289063,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0160827636719,
-                    "y": 106.38343811035156,
+                    "x": 312.03399658203125,
+                    "y": 106.38340759277344,
                     "z": 1.0399985313415527
                 },
                 "rotation": {
@@ -3762,14 +3762,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 920.5824584960938,
-                    "y": 532.4131469726563,
+                    "x": 920.5833740234375,
+                    "y": 532.41259765625,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0005798339844,
-                    "y": 99.99995422363281,
-                    "z": 0.999999463558197
+                    "x": 300.00115966796875,
+                    "y": 99.99993133544922,
+                    "z": 0.9999995231628418
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -3818,7 +3818,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 46,
+                    "entity": 49,
                     "script": 10337081121383874561
                 },
                 "normalColor": {
@@ -3861,13 +3861,13 @@
                     "z": 0.0
                 }
             },
-            "id": 46
+            "id": 49
         },
         {
             "EntityData": {
                 "name": "Restart Word",
                 "tag": "",
-                "parent": 46,
+                "parent": 49,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
@@ -3880,14 +3880,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 846.4845581054688,
-                    "y": 564.4597778320313,
+                    "x": 846.5321044921875,
+                    "y": 564.431640625,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400546789169312,
-                    "y": 1.0638377666473389,
-                    "z": 1.0399975776672363
+                    "x": 1.0401136875152588,
+                    "y": 1.0638395547866821,
+                    "z": 1.0399978160858154
                 },
                 "rotation": {
                     "w": 1.0,
@@ -3901,14 +3901,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.2650904655456543,
-                    "y": -0.19846343994140625,
+                    "x": -0.26509618759155273,
+                    "y": -0.19845962524414063,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.0033333369065076113,
-                    "y": 0.010000032372772694,
-                    "z": 0.9999991059303284
+                    "x": 0.0033333345782011747,
+                    "y": 0.01000005193054676,
+                    "z": 0.9999992847442627
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -3932,13 +3932,13 @@
                     "b": 1.0
                 }
             },
-            "id": 47
+            "id": 50
         },
         {
             "EntityData": {
                 "name": "Game Paused Text",
                 "tag": "",
-                "parent": 43,
+                "parent": 46,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
@@ -3951,13 +3951,13 @@
             },
             "Transform": {
                 "position": {
-                    "x": 829.6116943359375,
-                    "y": 735.0162963867188,
+                    "x": 829.6607666015625,
+                    "y": 734.9882202148438,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400508642196655,
-                    "y": 1.063833475112915,
+                    "x": 1.0401084423065186,
+                    "y": 1.063833236694336,
                     "z": 1.0399985313415527
                 },
                 "rotation": {
@@ -3972,14 +3972,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 824.83203125,
-                    "y": 672.8892211914063,
+                    "x": 824.83349609375,
+                    "y": 672.8890380859375,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999992847442627,
-                    "y": 0.9999986886978149,
-                    "z": 0.999999463558197
+                    "x": 0.9999992251396179,
+                    "y": 0.9999985694885254,
+                    "z": 0.9999995231628418
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -4003,7 +4003,7 @@
                     "b": 1.0
                 }
             },
-            "id": 48
+            "id": 51
         }
     ]
 }

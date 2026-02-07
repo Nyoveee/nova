@@ -29,10 +29,6 @@ class InteractTutorialQuest : InteractableQuest
         audioComponent.PlaySound(interactClickSFX);
         // AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
     }
-    public override void OnFail(Transform_ playerTransform){
-        if (playerTransform != null && playerCheckpoint != null)
-            playerTransform.position = playerCheckpoint.position;
-    }
 
     private void CheckInteraction()
     {

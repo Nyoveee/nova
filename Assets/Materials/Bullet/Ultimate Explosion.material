@@ -5,7 +5,7 @@
             "glslType": "sampler2D",
             "identifier": "dissolveTexture",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 1794271476785463393,
                 "__variant_type": 9
             }
         },
@@ -13,7 +13,7 @@
             "glslType": "NormalizedFloat",
             "identifier": "dissolveThreshold",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 1.0,
                 "__variant_type": 12
             }
         },
@@ -21,7 +21,7 @@
             "glslType": "NormalizedFloat",
             "identifier": "edgeWidth",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 0.10000000149011612,
                 "__variant_type": 12
             }
         },
@@ -29,7 +29,7 @@
             "glslType": "sampler2D",
             "identifier": "mainTexture",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 10320764278144565249,
                 "__variant_type": 9
             }
         },
@@ -38,9 +38,9 @@
             "identifier": "edgeColor",
             "value": {
                 "__variant_value": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0
+                    "r": 0.0,
+                    "g": 0.2235294133424759,
+                    "b": 0.6352941393852234
                 },
                 "__variant_type": 10
             }
@@ -49,12 +49,12 @@
             "glslType": "float",
             "identifier": "intensity",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 10.0,
                 "__variant_type": 3
             }
         }
     ],
-    "blendingConfig": "Disabled",
+    "blendingConfig": "AlphaBlending",
     "depthTestingMethod": "DepthTest",
     "cullingConfig": "Disable"
 }
