@@ -1339,22 +1339,12 @@ void Renderer::recompileShaders() {
 void Renderer::debugRenderPhysicsCollider() {
 	// Bind Debug Physics VBO to VAO.
 	constexpr GLuint positionBindingIndex = 0;
+	
 	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugPhysicsVBO.id(), 0, sizeof(glm::vec3));
 
 	// ================================================
 	// 1. We first render all debug shapes (triangles and lines) into a separate FBO
 	// ================================================
-	glBindVertexArray(mainVAO);
-	glBindFramebuffer(GL_FRAMEBUFFER, physicsDebugFrameBuffer.fboId());
-
-	// Clear physics debug framebuffer.
-	glClearColor(0.f, 0.f, 0.f, 0.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glDisable(GL_STENCIL_TEST);
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-
 	debugShader.use();
 
 	// enable wireframe mode only for debug overlay.
@@ -1363,6 +1353,7 @@ void Renderer::debugRenderPhysicsCollider() {
 	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
 
 	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugPhysicsLineVBO.id(), 0, sizeof(glm::vec3));
+	glEnableVertexArrayAttrib(mainVAO, 0);
 
 	glDisable(GL_CULL_FACE);
 
@@ -1372,25 +1363,7 @@ void Renderer::debugRenderPhysicsCollider() {
 	numOfPhysicsDebugTriangles = 0;
 	numOfPhysicsDebugLines = 0;
 
-	glDisable(GL_DEPTH_TEST);
-	overlayShader.use();
-
-	// ================================================
-	// 2. We overlay this resulting debug shapes into our main FBO, with alpha blending.
-	// (so post processing)
-	// ================================================
-	// disable wireframe mode, restoring to normal fill
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	setBlendMode(BlendingConfig::AlphaBlending);
-	glBindFramebuffer(GL_FRAMEBUFFER, editorMainFrameBuffer.getActiveFrameBuffer().fboId());
-
-	// set image uniform accordingly..
-	glBindTextureUnit(0, physicsDebugFrameBuffer.textureIds()[0]);
-	overlayShader.setImageUniform("overlay", 0);
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDisable(GL_BLEND);
 }
 
 void Renderer::debugRenderNavMesh() {
@@ -3627,17 +3600,18 @@ void Renderer::randomiseChromaticAberrationoffset() {
 
 void Renderer::debugRender() {
 	debugShader.setMatrix("model", glm::mat4{ 1.f });
+	glBindVertexArray(mainVAO);
 
 	// make a copy of the depth texture.. (i want depth testing..)
-	//glCopyImageSubData(
-	//	editorMainFrameBuffer.getReadFrameBuffer().depthStencilId(),   GL_TEXTURE_2D, 0, 0, 0, 0,
-	//	editorMainFrameBuffer.getActiveFrameBuffer().depthStencilId(), GL_TEXTURE_2D, 0, 0, 0, 0,
-	//	gameWidth, gameHeight, 1
-	//);
+	glCopyImageSubData(
+		editorMainFrameBuffer.getReadFrameBuffer().depthStencilId(),   GL_TEXTURE_2D, 0, 0, 0, 0,
+		editorMainFrameBuffer.getActiveFrameBuffer().depthStencilId(), GL_TEXTURE_2D, 0, 0, 0, 0,
+		gameWidth, gameHeight, 1
+	);
 
-	//// no depth write but i want depth test..
-	//setDepthMode(DepthTestingMethod::NoDepthWrite);
-	//setBlendMode(BlendingConfig::AlphaBlending);
+	// no depth write but i want depth test..
+	setDepthMode(DepthTestingMethod::NoDepthWrite);
+	setBlendMode(BlendingConfig::AlphaBlending);
 
 	if (engine.toDebugRenderPhysics) {
 		debugRenderPhysicsCollider();
