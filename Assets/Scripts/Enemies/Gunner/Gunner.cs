@@ -256,7 +256,6 @@ class Gunner : Enemy
             // Walk towards vantage Point
             if (targetVantagePoint != null)
             {
-                Debug.Log("found los");
                 audioComponent.PlayRandomSound(spotSFX);
                 gunnerState = GunnerState.Walk;
                 animator.PlayAnimation("Gunner_Walk");
@@ -270,11 +269,8 @@ class Gunner : Enemy
         {
             GetVantagePoint();
 
-            // Debug.Log(targetVantagePoint);
-
             if (targetVantagePoint == null)
             {
-                Debug.Log("nroken los");
                 gunnerState = GunnerState.Idle;
                 animator.PlayAnimation("Gunner_Idle");
                 NavigationAPI.stopAgent(gameObject);
