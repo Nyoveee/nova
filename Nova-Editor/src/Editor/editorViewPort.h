@@ -25,5 +25,7 @@ public:
 private:
 	Editor& editor;
 	Engine& engine;
+
+public:
 	Gizmo gizmo;
 };

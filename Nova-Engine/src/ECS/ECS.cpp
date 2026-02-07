@@ -170,6 +170,10 @@ bool ECS::isParentCanvas(entt::entity entity) {
 		return false;
 	}
 
+	if (!registry.valid(entity)) {
+		return false;
+	}
+
 	if (registry.any_of<Canvas>(entity)) {
 		return true;
 	}

@@ -252,9 +252,11 @@ class Gunner : Enemy
         if(GetDistanceFromPlayer() <= gunnerStats.shootingRange)
         {
             GetVantagePoint();
+
             // Walk towards vantage Point
             if (targetVantagePoint != null)
             {
+                Debug.Log("found los");
                 audioComponent.PlayRandomSound(spotSFX);
                 gunnerState = GunnerState.Walk;
                 animator.PlayAnimation("Gunner_Walk");
@@ -267,8 +269,12 @@ class Gunner : Enemy
         if (!HasLineOfSightToPlayer(targetVantagePoint))
         {
             GetVantagePoint();
+
+            // Debug.Log(targetVantagePoint);
+
             if (targetVantagePoint == null)
             {
+                Debug.Log("nroken los");
                 gunnerState = GunnerState.Idle;
                 animator.PlayAnimation("Gunner_Idle");
                 NavigationAPI.stopAgent(gameObject);
@@ -284,7 +290,12 @@ class Gunner : Enemy
             LookAt(GetTargetJumpPosition());
             return;
         }
-        if(Vector3.Distance(targetVantagePoint.transform.position, gameObject.transform.position) <= gunnerStats.targetDistanceFromVantagePoint)
+
+        Vector3 vanatagePoint = new Vector3(targetVantagePoint.transform.position.x, 0, targetVantagePoint.transform.position.z);
+        Vector3 gunnerPos     = new Vector3(gameObject.transform.position.x,         0, gameObject.transform.position.z);
+      
+
+        if (Vector3.Distance(vanatagePoint, gunnerPos) <= gunnerStats.targetDistanceFromVantagePoint)
         {
             gunnerState = GunnerState.Shoot;
             animator.PlayAnimation("Gunner_Attack");

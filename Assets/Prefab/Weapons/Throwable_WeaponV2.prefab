@@ -1,5 +1,5 @@
 {
-    "RootEntity": 3,
+    "RootEntity": 29,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    4,
-                    6,
-                    7,
-                    8,
-                    9
+                    30,
+                    32,
+                    33,
+                    34,
+                    35
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -129,7 +129,7 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 4,
+                                    "__variant_value": 30,
                                     "__variant_type": 4
                                 }
                             },
@@ -329,16 +329,16 @@
                     }
                 ]
             },
-            "id": 3
+            "id": 29
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 3,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": [
-                    5
+                    31
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -412,13 +412,13 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 4
+            "id": 30
         },
         {
             "EntityData": {
                 "name": "Rifle Outline",
                 "tag": "",
-                "parent": 4,
+                "parent": 30,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -482,13 +482,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 5
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 3,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -580,7 +580,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 29,
                                     "__variant_type": 4
                                 }
                             }
@@ -588,13 +588,13 @@
                     }
                 ]
             },
-            "id": 6
+            "id": 32
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 3,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -757,13 +757,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 7
+            "id": 33
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 3,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -926,13 +926,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 8
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 3,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1095,7 +1095,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 9
+            "id": 35
         }
     ]
 }

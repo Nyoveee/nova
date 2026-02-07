@@ -3,11 +3,23 @@
 // Editor will automatically rename and recompile this file.
 class GameGlobalReferenceManager : Script
 {
-    public GameObject[] vantagePoints;
+    public List<GameObject> vantagePoints;
     // This function is first invoked when game starts.
     protected override void init()
     {
-        vantagePoints = GameObject.FindGameObjectsWithTag("Vantage Point");
+        foreach(GameObject vantagePoint in GameObject.FindGameObjectsWithTag("Vantage Point"))
+        {
+            if(vantagePoint.IsActive())
+            {
+                vantagePoints.Add(vantagePoint);
+            }
+        }
+
+#if false
+        foreach (GameObject vantagePoint in vantagePoints) {
+            Debug.Log(vantagePoint.transform.position);
+        }
+#endif
     }
 
     // This function is invoked every fixed update.

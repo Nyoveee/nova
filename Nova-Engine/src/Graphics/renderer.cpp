@@ -1354,7 +1354,7 @@ void Renderer::debugRenderPhysicsCollider() {
 	glDisable(GL_STENCIL_TEST);
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
-	
+
 	debugShader.use();
 
 	// enable wireframe mode only for debug overlay.
@@ -1374,7 +1374,7 @@ void Renderer::debugRenderPhysicsCollider() {
 
 	glDisable(GL_DEPTH_TEST);
 	overlayShader.use();
-	
+
 	// ================================================
 	// 2. We overlay this resulting debug shapes into our main FBO, with alpha blending.
 	// (so post processing)
@@ -1384,7 +1384,7 @@ void Renderer::debugRenderPhysicsCollider() {
 
 	setBlendMode(BlendingConfig::AlphaBlending);
 	glBindFramebuffer(GL_FRAMEBUFFER, editorMainFrameBuffer.getActiveFrameBuffer().fboId());
-	
+
 	// set image uniform accordingly..
 	glBindTextureUnit(0, physicsDebugFrameBuffer.textureIds()[0]);
 	overlayShader.setImageUniform("overlay", 0);
@@ -1393,25 +1393,17 @@ void Renderer::debugRenderPhysicsCollider() {
 	glDisable(GL_BLEND);
 }
 
-
 void Renderer::debugRenderNavMesh() {
 	// Bind Debug Navmesh VBO to VAO.
 	constexpr GLuint positionBindingIndex = 0;
 	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugNavMeshVBO.id(), 0, sizeof(glm::vec3));
 
 	glBindVertexArray(mainVAO);
-	
-	// glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
-
-	glDisable(GL_STENCIL_TEST);
-	setBlendMode(BlendingConfig::AlphaBlending);
-	glEnable(GL_DEPTH_TEST);
 
 	debugShader.use();
 	debugShader.setVec4("color", { 0.f, 0.8f, 0.8f, 0.5f });
 	glDrawArrays(GL_TRIANGLES, 0, numOfNavMeshDebugTriangles * 3);
-
-	setBlendMode(BlendingConfig::Disabled);
+	
 	numOfNavMeshDebugTriangles = 0;
 }
 
@@ -1420,11 +1412,7 @@ void Renderer::debugRenderParticleEmissionShape()
 	debugShader.use();
 	debugShader.setVec4("color", { 0.f,1.0f,1.0f,1.0f });
 	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
-
 	glBindVertexArray(mainVAO);
-
-	glEnable(GL_DEPTH_TEST);
-	setBlendMode(BlendingConfig::AlphaBlending);
 
 	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
 		glm::mat4 model = glm::identity<glm::mat4>();
@@ -1479,9 +1467,8 @@ void Renderer::debugRenderBoundingVolume() {
 	debugShader.setVec4("color", { 1.f, 1.0f, 0.0f, 1.0f });
 	debugShader.setMatrix("model", glm::identity<glm::mat4>());
 
-	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
 	glBindVertexArray(mainVAO);
-	glEnable(GL_DEPTH_TEST);
+	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
 
 	for (auto&& [entityID, entityData, transform, meshRenderer] : engine.ecs.registry.view<EntityData, Transform, MeshRenderer>().each()) {
 		// pointless to do frustum culling on disabled objects.
@@ -3641,6 +3628,17 @@ void Renderer::randomiseChromaticAberrationoffset() {
 void Renderer::debugRender() {
 	debugShader.setMatrix("model", glm::mat4{ 1.f });
 
+	// make a copy of the depth texture.. (i want depth testing..)
+	//glCopyImageSubData(
+	//	editorMainFrameBuffer.getReadFrameBuffer().depthStencilId(),   GL_TEXTURE_2D, 0, 0, 0, 0,
+	//	editorMainFrameBuffer.getActiveFrameBuffer().depthStencilId(), GL_TEXTURE_2D, 0, 0, 0, 0,
+	//	gameWidth, gameHeight, 1
+	//);
+
+	//// no depth write but i want depth test..
+	//setDepthMode(DepthTestingMethod::NoDepthWrite);
+	//setBlendMode(BlendingConfig::AlphaBlending);
+
 	if (engine.toDebugRenderPhysics) {
 		debugRenderPhysicsCollider();
 	}
@@ -3667,9 +3665,8 @@ void Renderer::debugRender() {
 void Renderer::renderDebugSelectedObjects() {
 	debugShader.use();
 	debugShader.setVec4("color", { 0.f, 1.0f, 1.0f, 1.0f });
-	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
 	glBindVertexArray(mainVAO);
-	glEnable(GL_DEPTH_TEST);
+	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
 
 	for (entt::entity entity : selectedEntities) {
 		Transform const* transform				= registry.try_get<Transform>(entity);
@@ -3738,6 +3735,12 @@ void Renderer::renderDebugSelectedObjects() {
 
 			// same radius, same mesh.
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+
+			// draw link.
+			model = glm::identity<glm::mat4>();
+			debugShader.setMatrix("model", model);
+			debugParticleShapeVBO.uploadData(DebugShapes::Line(navMeshOffLinks->startPoint, navMeshOffLinks->endPoint));
+			glDrawArrays(GL_LINES, 0, 2);
 		}
 
 		// Render camera frustum

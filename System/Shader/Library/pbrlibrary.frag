@@ -295,7 +295,7 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
         ambient         = (kD * diffuse + specular); 
     }
     else {
-        ambient = albedoColor * 0.07 * occulusion;
+        ambient = albedoColor * 0.01 * occulusion;
     }
 
     // --------------------------------------------------------------------

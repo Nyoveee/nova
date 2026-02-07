@@ -27,6 +27,10 @@ DebugUI::DebugUI(Editor& editor) :
 void DebugUI::update() {
 	ImGui::Begin(ICON_FA_MOBILE_SCREEN " Statistics");
 
+	editor.displayEnumDropDownList<EditingMode>(editor.editorViewPort.gizmo.editingMode, "Gizmo Editing Mode", [&](EditingMode editingMode) {
+		editor.editorViewPort.gizmo.editingMode = editingMode;
+	});
+
 	if (ImGui::Button("Bake skybox")) {
 		AssetSerializer::serialiseCubeMap(renderer.bakeDiffuseIrradianceMap([&] {
 			renderer.renderSkyBox();

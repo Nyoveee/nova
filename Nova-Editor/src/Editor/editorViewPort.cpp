@@ -138,7 +138,7 @@ void EditorViewPort::update(float dt) {
 				videoPlayer.videoId = TypedResourceID<Video>{ id };
 
 				// Load the video resource
-				auto [video, refCount] = editor.resourceManager.getResource<Video>(id);
+				auto [video, __] = editor.resourceManager.getResource<Video>(id);
 
 				// Select the new entity
 				editor.selectEntities({ entity });
