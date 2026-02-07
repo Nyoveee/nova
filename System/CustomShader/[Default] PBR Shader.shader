@@ -20,6 +20,7 @@ Properties{
     NormalizedFloat occulusion;
 
     Color colorTint;
+    Color emissiveColorMultiplier;
 
     float emissiveStrength;
 
@@ -68,7 +69,7 @@ Frag{
     vec3 emissiveColor = vec3(0);
 
     if(toUseEmissiveMap) {
-        emissiveColor = emissiveStrength * vec3(texture(emissiveMap, uv));
+        emissiveColor = emissiveStrength * emissiveColorMultiplier * vec3(texture(emissiveMap, uv));
     }
 
     vec4 albedo = texture(albedoMap, uv);

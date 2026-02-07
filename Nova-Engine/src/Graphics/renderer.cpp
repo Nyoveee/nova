@@ -1793,8 +1793,9 @@ void Renderer::frustumCullAndSetupShadowRenderQueue(glm::mat4 const& viewProject
 		// inactive..
 		if (
 				!entityData.isActive 
-			||	(meshRenderer		 && !engine.ecs.isComponentActive<MeshRenderer>(entity)) 
-			||  (skinnedMeshRenderer && !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) ) 
+			||	(meshRenderer		 && (!engine.ecs.isComponentActive<MeshRenderer>(entity)			|| !meshRenderer->castShadow))
+			||  (skinnedMeshRenderer && (!engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)		|| !skinnedMeshRenderer->castShadow))
+		)
 		{
 			continue;
 		}

@@ -273,12 +273,18 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 		return;
 	}
 
+	const char* name = assetName->empty() ? "<no name>" : assetName->c_str();
+
+	if (!isAMatchWithSearchQuery(name)) {
+		return;
+	}
+
 	ImTextureID texture = getAssetThumbnailImage(resourceId);
 
 	displayThumbnail(
 		static_cast<std::size_t>(resourceId),
 		texture,
-		assetName->empty() ? "<no name>" : assetName->c_str(),
+		name,
 
 		// callback when the thumbnail gets clicked.
 		[&]() {
@@ -480,10 +486,6 @@ Frag{
 
 
 void AssetManagerUI::displayThumbnail(std::size_t resourceOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback, std::function<void()> additionalLogicAfterThumbnail) {
-	if (!isAMatchWithSearchQuery(name)) {
-		return;
-	}
-
 	ImGui::TableNextColumn();
 
 	ImVec2 padding = ImGui::GetStyle().WindowPadding;
