@@ -1,22 +1,46 @@
 {
-    "selectedShader": 2,
+    "selectedShader": 1772861812701872129,
     "uniformDatas": [
         {
             "glslType": "sampler2D",
-            "identifier": "albedo",
+            "identifier": "dissolveTexture",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 1794271476785463393,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "dissolveThreshold",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "edgeWidth",
+            "value": {
+                "__variant_value": 0.10000000149011612,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "sampler2D",
+            "identifier": "mainTexture",
+            "value": {
+                "__variant_value": 10320764278144565249,
                 "__variant_type": 9
             }
         },
         {
             "glslType": "Color",
-            "identifier": "color",
+            "identifier": "edgeColor",
             "value": {
                 "__variant_value": {
-                    "r": 0.12068963050842285,
-                    "g": 1.0,
-                    "b": 0.9454219341278076
+                    "r": 0.0,
+                    "g": 0.2235294133424759,
+                    "b": 0.6352941393852234
                 },
                 "__variant_type": 10
             }
@@ -28,39 +52,9 @@
                 "__variant_value": 5.0,
                 "__variant_type": 3
             }
-        },
-        {
-            "glslType": "NormalizedFloat",
-            "identifier": "transparency",
-            "value": {
-                "__variant_value": 0.0,
-                "__variant_type": 12
-            }
-        },
-        {
-            "glslType": "vec2",
-            "identifier": "UVTiling",
-            "value": {
-                "__variant_value": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "__variant_type": 4
-            }
-        },
-        {
-            "glslType": "vec2",
-            "identifier": "UVOffset",
-            "value": {
-                "__variant_value": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "__variant_type": 4
-            }
         }
     ],
-    "blendingConfig": "Disabled",
+    "blendingConfig": "AlphaBlending",
     "depthTestingMethod": "DepthTest",
-    "cullingConfig": "Enable"
+    "cullingConfig": "Disable"
 }

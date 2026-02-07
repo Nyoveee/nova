@@ -38,7 +38,8 @@ public abstract class Quest : Script
     ***********************************************************/
     public virtual void OnEnter() { }
     public virtual void OnSuccess() { }
-    public virtual void OnFail(Transform_ playerTransform){}
+    public virtual void OnFail() { }
+    public virtual void OnRestart(){}
 
     public virtual void UpdateQuest() { }
 

@@ -378,7 +378,10 @@ class PlayerWeaponController : Script
         isArmingDisabled = false;
     }
 
-
+    public void Reset()
+    {
+        currentlyHeldGun.CurrentAmmo = currentlyHeldGun.MaxAmmo;
+    }
 
     //public GameObject SeekTarget(Vector3 origin, Vector3 end, float seekDistance)
     //{

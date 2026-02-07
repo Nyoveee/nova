@@ -28,7 +28,7 @@ class UnlockGateQuest : Quest
     public override void OnEnter()
     {
         turbineToHubDoor.UnlockDoor();
-        hubSwitch.activateSwitch();
+        hubSwitch.deactivateSwitch();
     }
    
     public override void OnSuccess()
@@ -48,11 +48,5 @@ class UnlockGateQuest : Quest
                 SetQuestState(QuestState.Success);
             }, questCompletionDelay);
         }    
-    }
-
-    public override void OnFail(Transform_ playerTransform)
-    {
-        if (playerTransform != null && playerCheckpoint != null)
-            playerTransform.position = playerCheckpoint.position;
     }
 }

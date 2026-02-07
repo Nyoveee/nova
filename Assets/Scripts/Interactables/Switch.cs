@@ -126,6 +126,14 @@ class Switch : Script
     public void activateSwitch()
     {
         // isActivated here means has it been used.
+        isActivated = true;
+    }
+    public void deactivateSwitch()
+    {
         isActivated = false;
+        isAnimating = false;
+        timeElapsed = 0f;
+        switchMesh?.setMaterialBool(1, "isActive", true);
+        switchMesh.gameObject.transform.rotation = initialRotation;
     }
 }

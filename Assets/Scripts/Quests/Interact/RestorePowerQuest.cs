@@ -55,11 +55,6 @@ class RestorePowerQuest : InteractableQuest
         foreach (Door door in unlockableDoors)
             door.UnlockDoor();
     }
-    public override void OnFail(Transform_ playerTransform)
-    {
-        if (playerTransform != null && playerCheckpoint != null)
-            playerTransform.position = playerCheckpoint.position;
-    }
     private void CheckInteraction()
     {
         if (IsLookingAtInteractable())

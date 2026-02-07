@@ -23,10 +23,4 @@ class MoveToTurbineRoomQuest : MovementBasedQuest
     {
     }
 
-    public override void OnFail(Transform_ playerTransform)
-    {
-        if (playerTransform != null && playerCheckpoint != null)
-            playerTransform.position = playerCheckpoint.position;
-    }
-
 }

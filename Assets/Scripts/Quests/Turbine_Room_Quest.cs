@@ -1,10 +1,24 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+
 class Turbine_Room_Quest : Quest
 {
     [SerializableField]
     private List<Switch> switches = new List<Switch>();
+
+    [SerializableField]
+    private Prefab gunnerPrefab;
+
+    [SerializableField]
+    private List<GameObject> gunnerSpawnLocations1;
+
+    [SerializableField]
+    private List<GameObject> gunnerSpawnLocations2;
+
+    [SerializableField]
+    private List<GameObject> gunnerSpawnLocations3;
 
     [SerializableField]
     private Door turbineExitDoor;
@@ -12,40 +26,29 @@ class Turbine_Room_Quest : Quest
     [SerializableField]
     private float questCompleteDelay = 1f;
 
-    bool numOfActivatedSwitches;
-
-    // This function is invoked once before init when gameobject is active.
-    protected override void awake()
-    {}
+    private List<List<GameObject>> spawnLocations = new List<List<GameObject>>();
+    private List<GameObject> spawnedEnemies = new List<GameObject>();
+    private List<Switch> activeSwitches = new List<Switch>();
 
     // This function is invoked once when gameobject is active.
     protected override void init()
-    {}
-
-    // This function is invoked every update.
-    protected override void update()
     {
-          
+        OnRestart();
     }
-
-    // This function is invoked every update.
-    protected override void fixedUpdate()
-    {}
-
-    // This function is invoked when destroyed.
-    protected override void exit()
-    {}
 
     public override void UpdateQuest()
     {
-        foreach(Switch switchObj in switches)
+        for (int i = activeSwitches.Count - 1; i >= 0; --i)
         {
-            if(!switchObj.isSwitchActivated())
-            {
-                return;
-            }
+            if (!activeSwitches[i].isSwitchActivated())
+                continue;
+            foreach (GameObject spawnLocation in spawnLocations[spawnLocations.Count-1])
+                spawnedEnemies.Add(Instantiate(gunnerPrefab, spawnLocation.transform.position));
+            spawnLocations.RemoveAt(spawnLocations.Count-1);
+            activeSwitches.RemoveAt(i);
         }
-
+        if (activeSwitches.Count > 0)
+            return;
         // at this point all switches are turned on.
         Invoke(() =>
         {
@@ -54,5 +57,24 @@ class Turbine_Room_Quest : Quest
 
         }, questCompleteDelay);
     }
-
+    public override void OnRestart()
+    {
+        foreach (GameObject spawnEnemy in spawnedEnemies)
+        {
+            if (spawnEnemy != null)
+                Destroy(spawnEnemy);
+        }
+        spawnedEnemies.Clear();
+        spawnLocations.Clear();
+        spawnLocations.Add(gunnerSpawnLocations3);
+        spawnLocations.Add(gunnerSpawnLocations2);
+        spawnLocations.Add(gunnerSpawnLocations1);
+        activeSwitches.Clear();
+        foreach (Switch switch_ in switches)
+        { 
+            switch_.deactivateSwitch();
+            activeSwitches.Add(switch_);
+           
+        }
+    }
 }

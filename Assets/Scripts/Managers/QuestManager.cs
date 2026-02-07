@@ -82,7 +82,7 @@ public class QuestManager : Script
         }
         else if (e.NewState == Quest.QuestState.Fail)
         {
-            currentQuest.OnFail(player.gameObject.transform);
+            currentQuest.OnFail();
         }
     }
 
@@ -130,12 +130,17 @@ public class QuestManager : Script
     private void RestartQuest()
     {
         if (currentQuest != null)
+        {
+            currentQuest.OnRestart();
             currentQuest.SetQuestState(Quest.QuestState.InProgress);
+        }
+           
         if (player != null)
         {
             player.gameObject.transform.position = currentQuest.GetCheckpointPosition();
             player.playerMoveStates = PlayerMoveStates.GroundedMovement;
             player.Reset();
+            player.getScript<PlayerWeaponController>()?.Reset();
             foreach (GameObject hitbox in GameObject.FindGameObjectsWithTag("EnemyHitBox"))
                 Destroy(hitbox);
         }
