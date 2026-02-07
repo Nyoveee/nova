@@ -85,7 +85,7 @@ struct ReflectionProbe {
     float intensity;
 };
 
-const int MAX_SHADOW_CASTER = 15;
+const int MAX_SHADOW_CASTER = 30;
 
 layout(std140, binding = 0) uniform Camera {
     mat4 view;

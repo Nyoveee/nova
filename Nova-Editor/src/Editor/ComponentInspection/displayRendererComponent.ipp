@@ -16,9 +16,18 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 			return;
 		}
 
+		auto const* descriptor = editor.assetManager.getDescriptor(rendererComponent.modelId);
+		AssetInfo<Model> const* typedDescriptor = dynamic_cast<AssetInfo<Model> const*>(descriptor);
 		std::vector<TypedResourceID<Material>> materialIds{};
-		materialIds.resize(model->materialNames.size(), TypedResourceID<Material>{ DEFAULT_PBR_MATERIAL_ID });
-		rendererComponent.materialIds = materialIds;
+
+		if (!typedDescriptor) {
+			materialIds.resize(model->materialNames.size(), TypedResourceID<Material>{ DEFAULT_PBR_MATERIAL_ID });
+		}
+		else {
+			materialIds = typedDescriptor->materials;
+		}
+
+		rendererComponent.materialIds = std::move(materialIds);
 	});
 
 	if (!model) {

@@ -9,7 +9,7 @@ layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 const float MIN_UNIFORM_TRANSMITTANCE = 0.3; // Uniform darken limit
 const float MIN_TRANSMITTANCE = 0.2f; // Optimization to reduce uncessary accumulation calculation
 
-const int MAX_SHADOW_CASTER = 15;
+const int MAX_SHADOW_CASTER = 30;
 
 /// Uniforms
 // Configurations..

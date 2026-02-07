@@ -97,7 +97,7 @@ constexpr int DIRECTIONAL_SHADOW_MAP_HEIGHT = 2048;
 
 constexpr int SHADOW_MAP_WIDTH				= 1024;
 constexpr int SHADOW_MAP_HEIGHT				= 1024;
-constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 15;
+constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 30;
 
 // IBL.
 constexpr int IRRADIANCE_MAP_WIDTH			= 512;
@@ -1031,6 +1031,7 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 
 		case Light::Type::Spotlight:
 			if (numOfSpotlightShadowCaster >= MAX_SPOTLIGHT_SHADOW_CASTER) {
+				Logger::warn("Too many spotlight caster..");
 				continue;
 			}
 
