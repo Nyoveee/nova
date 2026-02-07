@@ -13,7 +13,8 @@ class Grunt : Enemy
     ***********************************************************/
     [SerializableField]
     private ParticleEmitter_ emitter = null;
-
+    [SerializableField]
+    private GameObject headPosition = null;
     [SerializableField]
     private Prefab? hitboxPrefab = null;
     [SerializableField]
@@ -266,7 +267,7 @@ class Grunt : Enemy
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        if(GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSightToPlayer(gameObject))
+        if(GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSightToPlayer(headPosition))
         {
             //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
             if(Random.Range(0, 1) <= this.spotCallSFXChance)
@@ -289,7 +290,7 @@ class Grunt : Enemy
             LookAt(GetTargetJumpPosition());
             return;
         }
-        if (GetDistanceFromPlayer() > gruntStats.chasingRadius || !HasLineOfSightToPlayer(gameObject))
+        if (GetDistanceFromPlayer() > gruntStats.chasingRadius || !HasLineOfSightToPlayer(headPosition))
         {
             animator.PlayAnimation("Grunt Idle (Base)");
             gruntState = GruntState.Idle;

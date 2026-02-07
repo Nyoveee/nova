@@ -43,6 +43,7 @@ public abstract class Enemy : Script
         Local Variables
     ***********************************************************/
     protected GameObject? player = null;
+    protected GameObject? playerHead = null;
     private EnemyStats? enemyStats = null;
     private bool wasRecentlyDamaged = false;
     private float ichorSpawnPositionVariance = 1.5f;
@@ -154,8 +155,8 @@ public abstract class Enemy : Script
     protected bool HasLineOfSightToPlayer(GameObject from)
     {
         string[] layerMask = { "Wall","Floor" };
-        float distance = Vector3.Distance(from.transform.position, player.transform.position);
-        return PhysicsAPI.Linecast(from.transform.position, player.transform.position, layerMask) == null;
+        float distance = Vector3.Distance(from.transform.position, playerHead.transform.position);
+        return PhysicsAPI.Linecast(from.transform.position, playerHead.transform.position, layerMask) == null;
     }
 
     protected void SpawnIchorFrame()
@@ -223,6 +224,7 @@ public abstract class Enemy : Script
     {
         enemyStats = getScript<EnemyStats>();
         player = GameObject.FindWithTag("Player");
+        playerHead = GameObject.FindWithTag("PlayerHead");
         navMeshAgent.setAutomateNavMeshOfflinksState(false);
     }
 
