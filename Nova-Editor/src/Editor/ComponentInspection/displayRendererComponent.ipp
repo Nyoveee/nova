@@ -125,4 +125,7 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 		}
 	}
 
+	// Display others..
+	ImGui::Checkbox("Casts Shadow?", &rendererComponent.castShadow);
+	ImGui::Checkbox("Cull front face for shadow pass?", &rendererComponent.shadowCullFrontFace);
 }

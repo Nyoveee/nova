@@ -219,12 +219,14 @@ struct SkinnedMeshRenderer {
 	std::unordered_map<BoneIndex, entt::entity> socketConnections	{};
 
 	bool castShadow = true;
+	bool shadowCullFrontFace = true;
 
 	REFLECTABLE(
 		modelId,
 		materialIds,
 		socketConnections,
-		castShadow
+		castShadow,
+		shadowCullFrontFace
 	)
 
 	std::unordered_set<int>					isMaterialInstanced;

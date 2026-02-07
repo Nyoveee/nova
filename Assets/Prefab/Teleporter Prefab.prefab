@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 22,
     "Entities": [
         {
             "EntityData": {
@@ -8,8 +8,8 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    2
+                    23,
+                    24
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -65,13 +65,13 @@
                     "z": 0.0
                 }
             },
-            "id": 0
+            "id": 22
         },
         {
             "EntityData": {
                 "name": "Teleporter Destination",
                 "tag": "",
-                "parent": 0,
+                "parent": 22,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -134,13 +134,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 1
+            "id": 23
         },
         {
             "EntityData": {
                 "name": "Teleporter Source",
                 "tag": "",
-                "parent": 0,
+                "parent": 22,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -241,7 +241,7 @@
                     }
                 ]
             },
-            "id": 2
+            "id": 24
         }
     ]
 }
