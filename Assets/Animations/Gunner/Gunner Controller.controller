@@ -1,12 +1,17 @@
 {
     "entryNode": 1000,
     "nodes": {
-        "9868178887971946501": {
-            "id": 9868178887971946501,
-            "animation": 7295743889278828547,
-            "transitions": null,
+        "1000": {
+            "id": 1000,
+            "animation": 18446744073709551615,
+            "transitions": [
+                {
+                    "nextNode": 9868178887971946501,
+                    "conditions": null
+                }
+            ],
             "toLoop": true,
-            "name": "Gunner_Idle",
+            "name": "Entry Node",
             "animationEvents": null
         },
         "1221267603423068175": {
@@ -23,17 +28,12 @@
                 }
             ]
         },
-        "1000": {
-            "id": 1000,
-            "animation": 18446744073709551615,
-            "transitions": [
-                {
-                    "nextNode": 9868178887971946501,
-                    "conditions": null
-                }
-            ],
+        "9868178887971946501": {
+            "id": 9868178887971946501,
+            "animation": 7295743889278828547,
+            "transitions": null,
             "toLoop": true,
-            "name": "Entry Node",
+            "name": "Gunner_Idle",
             "animationEvents": null
         },
         "13903404154096713735": {
@@ -50,6 +50,14 @@
                 }
             ]
         },
+        "16209247163311652875": {
+            "id": 16209247163311652875,
+            "animation": 4680032117239234563,
+            "transitions": null,
+            "toLoop": false,
+            "name": "Gunner_Death",
+            "animationEvents": null
+        },
         "5832953621849931785": {
             "id": 5832953621849931785,
             "animation": 2684057870851440649,
@@ -57,20 +65,6 @@
             "toLoop": true,
             "name": "Gunner_Walk",
             "animationEvents": null
-        },
-        "16209247163311652875": {
-            "id": 16209247163311652875,
-            "animation": 4680032117239234563,
-            "transitions": null,
-            "toLoop": false,
-            "name": "Gunner_Death",
-            "animationEvents": [
-                {
-                    "key": 77,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent3"
-                }
-            ]
         },
         "9291718135670767629": {
             "id": 9291718135670767629,

@@ -1,20 +1,6 @@
 {
     "entryNode": 1000,
     "nodes": {
-        "5707081516392038407": {
-            "id": 5707081516392038407,
-            "animation": 8029637102303461393,
-            "transitions": null,
-            "toLoop": false,
-            "name": "Grunt Death",
-            "animationEvents": [
-                {
-                    "key": 67,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent4"
-                }
-            ]
-        },
         "1000": {
             "id": 1000,
             "animation": 18446744073709551615,
@@ -28,18 +14,19 @@
             "name": "Entry Node",
             "animationEvents": null
         },
-        "1671856250268090377": {
-            "id": 1671856250268090377,
-            "animation": 17253009139158237203,
-            "transitions": [
+        "5707081516392038407": {
+            "id": 5707081516392038407,
+            "animation": 8029637102303461393,
+            "transitions": null,
+            "toLoop": false,
+            "name": "Grunt Death",
+            "animationEvents": [
                 {
-                    "nextNode": 3977699259481686017,
-                    "conditions": null
+                    "key": 67,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent4"
                 }
-            ],
-            "toLoop": true,
-            "name": "Grunt Forward",
-            "animationEvents": null
+            ]
         },
         "14930453553246748675": {
             "id": 14930453553246748675,
@@ -65,6 +52,19 @@
                 }
             ]
         },
+        "1671856250268090377": {
+            "id": 1671856250268090377,
+            "animation": 17253009139158237203,
+            "transitions": [
+                {
+                    "nextNode": 3977699259481686017,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "name": "Grunt Forward",
+            "animationEvents": null
+        },
         "1671856250268041221": {
             "id": 1671856250268041221,
             "animation": 1688568826965803029,
@@ -85,6 +85,20 @@
             "toLoop": true,
             "name": "Grunt Running",
             "animationEvents": null
+        },
+        "7863461440795232589": {
+            "id": 7863461440795232589,
+            "animation": 16985018599458111491,
+            "transitions": null,
+            "toLoop": true,
+            "name": "Grunt Jump",
+            "animationEvents": [
+                {
+                    "key": 0,
+                    "scriptId": 18446744073709551615,
+                    "functionName": "TriggerEvent5"
+                }
+            ]
         }
     },
     "parameters": [
