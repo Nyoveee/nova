@@ -1,5 +1,5 @@
 {
-    "RootEntity": 2097623,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,18 +8,18 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    448,
-                    1049036,
-                    461,
-                    479,
-                    1049089,
-                    1049056,
-                    524,
-                    1049017
+                    1,
+                    2,
+                    24,
+                    39,
+                    72,
+                    73,
+                    78,
+                    94
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 9256912107680114013,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -69,18 +69,18 @@
                     "z": 0.0
                 }
             },
-            "id": 2097623
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "Fog",
                 "tag": "",
-                "parent": 2097623,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 9833372859970134455,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -144,22 +144,22 @@
                 "endDistance": 75.0,
                 "rayMarchingStepSize": 1.0
             },
-            "id": 448
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "Tutorial Area",
                 "tag": "",
-                "parent": 2097623,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    437,
-                    433,
-                    432
+                    3,
+                    12,
+                    17
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 8093945466448582491,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -209,23 +209,23 @@
                     "z": 0.0
                 }
             },
-            "id": 1049036
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "Tutorial Elevator Area",
                 "tag": "",
-                "parent": 1049036,
+                "parent": 2,
                 "attachedSocket": 65535,
                 "children": [
-                    1049029,
-                    429,
-                    457,
-                    2097610
+                    4,
+                    8,
+                    10,
+                    11
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 13585733368193701701,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -275,22 +275,22 @@
                     "z": 0.0
                 }
             },
-            "id": 437
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Corridor Lamp",
                 "tag": "",
-                "parent": 437,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    1049031,
-                    1049030,
-                    1049028
+                    5,
+                    6,
+                    7
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -348,18 +348,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 1049029
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 1049029,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 10399788475632047961,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -430,18 +430,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049031
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049029,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 10399788475632047961,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -512,18 +512,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049030
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 1049029,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 10399788475632047961,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -594,20 +594,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049028
+            "id": 7
         },
         {
             "EntityData": {
                 "name": "Elevator Lamp",
                 "tag": "",
-                "parent": 437,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    456
+                    9
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -665,18 +665,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 429
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 429,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -747,18 +747,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 456
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 437,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -829,18 +829,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 457
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 437,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -911,21 +911,21 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 2097610
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Tutorial Corridor Area",
                 "tag": "",
-                "parent": 1049036,
+                "parent": 2,
                 "attachedSocket": 65535,
                 "children": [
-                    427,
-                    435
+                    13,
+                    14
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 13585733368193701701,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -975,18 +975,18 @@
                     "z": 0.0
                 }
             },
-            "id": 433
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 433,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 15770806020179138361,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1057,21 +1057,21 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 427
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Corridor Lamp",
                 "tag": "",
-                "parent": 433,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": [
-                    3146162,
-                    436
+                    15,
+                    16
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1129,18 +1129,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 435
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 435,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 10399788475632047961,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1211,18 +1211,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 3146162
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 435,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 10399788475632047961,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1293,25 +1293,25 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 436
+            "id": 16
         },
         {
             "EntityData": {
                 "name": "Tutorial Start Area",
                 "tag": "",
-                "parent": 1049036,
+                "parent": 2,
                 "attachedSocket": 65535,
                 "children": [
-                    337,
-                    426,
-                    430,
-                    283,
-                    1049023,
-                    2097614
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 13585733368193701701,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1361,18 +1361,18 @@
                     "z": 0.0
                 }
             },
-            "id": 432
+            "id": 17
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 432,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 15770806020179138361,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1443,18 +1443,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 337
+            "id": 18
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 432,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 15770806020179138361,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1525,18 +1525,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 426
+            "id": 19
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 432,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 15770806020179138361,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1607,18 +1607,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 430
+            "id": 20
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 432,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 15770806020179138361,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1689,18 +1689,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 283
+            "id": 21
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 432,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 15770806020179138361,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1771,18 +1771,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049023
+            "id": 22
         },
         {
             "EntityData": {
                 "name": "Start Area Lamp",
                 "tag": "",
-                "parent": 432,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1840,28 +1840,28 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 2097614
+            "id": 23
         },
         {
             "EntityData": {
                 "name": "Hub Area",
                 "tag": "",
-                "parent": 2097623,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    2097617,
-                    1049043,
-                    470,
-                    1049048,
-                    473,
-                    477,
-                    1049063,
-                    522,
-                    544
+                    25,
+                    26,
+                    27,
+                    28,
+                    29,
+                    31,
+                    33,
+                    35,
+                    37
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 6364563209538492253,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1911,18 +1911,18 @@
                     "z": 0.0
                 }
             },
-            "id": 461
+            "id": 24
         },
         {
             "EntityData": {
                 "name": "Hub Central Spotlight",
                 "tag": "",
-                "parent": 461,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 8093945466449057631,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1993,18 +1993,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 2097617
+            "id": 25
         },
         {
             "EntityData": {
                 "name": "Hub Central Spotlight",
                 "tag": "",
-                "parent": 461,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 8093945466449057631,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2075,18 +2075,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049043
+            "id": 26
         },
         {
             "EntityData": {
                 "name": "Hub Central Spotlight",
                 "tag": "",
-                "parent": 461,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 8093945466449057631,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2157,18 +2157,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 470
+            "id": 27
         },
         {
             "EntityData": {
                 "name": "Hub Central Spotlight",
                 "tag": "",
-                "parent": 461,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 8093945466449057631,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2239,20 +2239,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049048
+            "id": 28
         },
         {
             "EntityData": {
                 "name": "Closed Range Door Lamp",
                 "tag": "",
-                "parent": 461,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": [
-                    474
+                    30
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2310,18 +2310,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 473
+            "id": 29
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 473,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2392,20 +2392,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 474
+            "id": 30
         },
         {
             "EntityData": {
                 "name": "Disabled Door Lamp",
                 "tag": "",
-                "parent": 461,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": [
-                    478
+                    32
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2463,18 +2463,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 477
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 477,
+                "parent": 31,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2545,20 +2545,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 478
+            "id": 32
         },
         {
             "EntityData": {
                 "name": "Disabled Door Lamp",
                 "tag": "",
-                "parent": 461,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": [
-                    515
+                    34
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2616,18 +2616,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 1049063
+            "id": 33
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049063,
+                "parent": 33,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2698,20 +2698,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 515
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "Sewer Door Lamp",
                 "tag": "",
-                "parent": 461,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": [
-                    523
+                    36
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2769,18 +2769,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 522
+            "id": 35
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 522,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2851,20 +2851,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 523
+            "id": 36
         },
         {
             "EntityData": {
                 "name": "Disabled Door Lamp",
                 "tag": "",
-                "parent": 461,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": [
-                    545
+                    38
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2922,18 +2922,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 544
+            "id": 37
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 544,
+                "parent": 37,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3004,31 +3004,31 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 545
+            "id": 38
         },
         {
             "EntityData": {
                 "name": "Closed Ranged Area",
                 "tag": "",
-                "parent": 2097623,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    484,
-                    486,
-                    482,
-                    493,
-                    494,
-                    1049066,
-                    499,
-                    1049073,
-                    1049079,
-                    511,
-                    518,
-                    1049088
+                    40,
+                    42,
+                    45,
+                    46,
+                    47,
+                    51,
+                    54,
+                    57,
+                    59,
+                    67,
+                    69,
+                    71
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 6364563209538492253,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3078,20 +3078,20 @@
                     "z": 0.0
                 }
             },
-            "id": 479
+            "id": 39
         },
         {
             "EntityData": {
                 "name": "Closed Range Ceiling Lamp",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": [
-                    485
+                    41
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3149,18 +3149,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 484
+            "id": 40
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 484,
+                "parent": 40,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3231,21 +3231,21 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 485
+            "id": 41
         },
         {
             "EntityData": {
                 "name": "Generator Room Exit Lamp",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": [
-                    488,
-                    502
+                    43,
+                    44
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3303,18 +3303,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 486
+            "id": 42
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 486,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3385,18 +3385,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 488
+            "id": 43
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 486,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3467,18 +3467,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 502
+            "id": 44
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3549,18 +3549,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 482
+            "id": 45
         },
         {
             "EntityData": {
                 "name": "Cave Light",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3631,22 +3631,22 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 493
+            "id": 46
         },
         {
             "EntityData": {
                 "name": "Closed Range Ceiling Lamp",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": [
-                    498,
-                    2097641,
-                    517
+                    48,
+                    49,
+                    50
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3704,18 +3704,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 494
+            "id": 47
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 494,
+                "parent": 47,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3786,18 +3786,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 498
+            "id": 48
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 494,
+                "parent": 47,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3868,18 +3868,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 2097641
+            "id": 49
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 494,
+                "parent": 47,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3950,21 +3950,21 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 517
+            "id": 50
         },
         {
             "EntityData": {
                 "name": "Closed Range Ceiling Lamp",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": [
-                    1049071,
-                    516
+                    52,
+                    53
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4022,18 +4022,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 1049066
+            "id": 51
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 1049066,
+                "parent": 51,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4104,18 +4104,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049071
+            "id": 52
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049066,
+                "parent": 51,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4186,21 +4186,21 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 516
+            "id": 53
         },
         {
             "EntityData": {
                 "name": "Cave Wall Lamp",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": [
-                    500,
-                    501
+                    55,
+                    56
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4258,18 +4258,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 499
+            "id": 54
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 499,
+                "parent": 54,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4340,18 +4340,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 500
+            "id": 55
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 499,
+                "parent": 54,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4422,20 +4422,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 501
+            "id": 56
         },
         {
             "EntityData": {
                 "name": "Closed Ranged Cave Lamp",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": [
-                    504
+                    58
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4493,18 +4493,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 1049073
+            "id": 57
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049073,
+                "parent": 57,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4575,22 +4575,22 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 504
+            "id": 58
         },
         {
             "EntityData": {
                 "name": "Generator Area",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": [
-                    505,
-                    506,
-                    510
+                    60,
+                    61,
+                    62
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 13387636557546002331,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4640,18 +4640,18 @@
                     "z": 0.0
                 }
             },
-            "id": 1049079
+            "id": 59
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 1049079,
+                "parent": 59,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 13387636557546002331,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4722,18 +4722,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 505
+            "id": 60
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 1049079,
+                "parent": 59,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 13387636557546002331,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4804,23 +4804,23 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 506
+            "id": 61
         },
         {
             "EntityData": {
                 "name": "Generator Corner Lights",
                 "tag": "",
-                "parent": 1049079,
+                "parent": 59,
                 "attachedSocket": 65535,
                 "children": [
-                    1049072,
-                    507,
-                    508,
-                    509
+                    63,
+                    64,
+                    65,
+                    66
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 10505332796035520413,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4870,18 +4870,18 @@
                     "z": 0.0
                 }
             },
-            "id": 510
+            "id": 62
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 510,
+                "parent": 62,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 13387636557546002331,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -4952,18 +4952,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049072
+            "id": 63
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 510,
+                "parent": 62,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 13387636557546002331,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5034,18 +5034,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 507
+            "id": 64
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 510,
+                "parent": 62,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 13387636557546002331,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5116,18 +5116,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 508
+            "id": 65
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 510,
+                "parent": 62,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 13387636557546002331,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5198,20 +5198,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 509
+            "id": 66
         },
         {
             "EntityData": {
                 "name": "Cave Wall Lamp",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": [
-                    514
+                    68
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5269,18 +5269,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 511
+            "id": 67
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 511,
+                "parent": 67,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5351,20 +5351,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 514
+            "id": 68
         },
         {
             "EntityData": {
                 "name": "Closed Range Cave Lamp",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": [
-                    519
+                    70
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5422,18 +5422,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 518
+            "id": 69
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 518,
+                "parent": 69,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5504,18 +5504,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 519
+            "id": 70
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 479,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5586,18 +5586,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049088
+            "id": 71
         },
         {
             "EntityData": {
                 "name": "Sewer + Turbine Area",
                 "tag": "",
-                "parent": 2097623,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 17856271715197769677,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5647,23 +5647,23 @@
                     "z": 0.0
                 }
             },
-            "id": 1049089
+            "id": 72
         },
         {
             "EntityData": {
                 "name": "Pump Room",
                 "tag": "",
-                "parent": 2097623,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    1049067,
-                    520,
-                    521,
-                    1049004
+                    74,
+                    75,
+                    76,
+                    77
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 17856271715197769677,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5713,18 +5713,18 @@
                     "z": 0.0
                 }
             },
-            "id": 1049056
+            "id": 73
         },
         {
             "EntityData": {
                 "name": "Literal Signposting Light",
                 "tag": "",
-                "parent": 1049056,
+                "parent": 73,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 17856271715197769677,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5795,18 +5795,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049067
+            "id": 74
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 1049056,
+                "parent": 73,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 17856271715197769677,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5877,18 +5877,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 520
+            "id": 75
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049056,
+                "parent": 73,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 17856271715197769677,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -5959,18 +5959,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 521
+            "id": 76
         },
         {
             "EntityData": {
                 "name": "Sewer Disabled Door Lamp",
                 "tag": "",
-                "parent": 1049056,
+                "parent": 73,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6028,32 +6028,32 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 1049004
+            "id": 77
         },
         {
             "EntityData": {
                 "name": "Sewer Room",
                 "tag": "",
-                "parent": 2097623,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    1049103,
-                    1049102,
-                    1049101,
-                    530,
-                    531,
-                    1049051,
-                    533,
-                    534,
-                    536,
-                    537,
-                    1049111,
-                    1049014,
-                    1049020
+                    79,
+                    80,
+                    81,
+                    82,
+                    83,
+                    84,
+                    86,
+                    87,
+                    88,
+                    89,
+                    90,
+                    91,
+                    92
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 17856271715197769677,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6103,18 +6103,18 @@
                     "z": 0.0
                 }
             },
-            "id": 524
+            "id": 78
         },
         {
             "EntityData": {
                 "name": "Spotlight",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6185,18 +6185,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049103
+            "id": 79
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6267,18 +6267,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049102
+            "id": 80
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6349,18 +6349,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049101
+            "id": 81
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6431,18 +6431,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 530
+            "id": 82
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6513,20 +6513,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 531
+            "id": 83
         },
         {
             "EntityData": {
                 "name": "Sewer Door Lamp",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": [
-                    532
+                    85
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6584,18 +6584,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 1049051
+            "id": 84
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049051,
+                "parent": 84,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6666,18 +6666,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 532
+            "id": 85
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6748,18 +6748,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 533
+            "id": 86
         },
         {
             "EntityData": {
                 "name": "Spotlight",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6830,18 +6830,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 534
+            "id": 87
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6912,18 +6912,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 536
+            "id": 88
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -6994,18 +6994,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 537
+            "id": 89
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7076,18 +7076,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049111
+            "id": 90
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7158,20 +7158,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049014
+            "id": 91
         },
         {
             "EntityData": {
                 "name": "Sewer Door Lamp",
                 "tag": "",
-                "parent": 524,
+                "parent": 78,
                 "attachedSocket": 65535,
                 "children": [
-                    1049019
+                    93
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7229,18 +7229,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 1049020
+            "id": 92
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049020,
+                "parent": 92,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7311,27 +7311,27 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049019
+            "id": 93
         },
         {
             "EntityData": {
                 "name": "Turbine Room",
                 "tag": "",
-                "parent": 2097623,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    1049104,
-                    2097594,
-                    1049015,
-                    1049016,
-                    1049114,
-                    539,
-                    541,
-                    1049040
+                    95,
+                    98,
+                    99,
+                    100,
+                    101,
+                    102,
+                    104,
+                    106
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 5637381403612062871,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7381,21 +7381,21 @@
                     "z": 0.0
                 }
             },
-            "id": 1049017
+            "id": 94
         },
         {
             "EntityData": {
                 "name": "Sewer Door Lamp",
                 "tag": "",
-                "parent": 1049017,
+                "parent": 94,
                 "attachedSocket": 65535,
                 "children": [
-                    1049105,
-                    543
+                    96,
+                    97
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7453,18 +7453,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 1049104
+            "id": 95
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049104,
+                "parent": 95,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7535,18 +7535,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049105
+            "id": 96
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049104,
+                "parent": 95,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7617,18 +7617,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 543
+            "id": 97
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049017,
+                "parent": 94,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7699,18 +7699,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 2097594
+            "id": 98
         },
         {
             "EntityData": {
                 "name": "Spotlight Shadow Caster",
                 "tag": "",
-                "parent": 1049017,
+                "parent": 94,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7781,18 +7781,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049015
+            "id": 99
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049017,
+                "parent": 94,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7863,18 +7863,18 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049016
+            "id": 100
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049017,
+                "parent": 94,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7945,20 +7945,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049114
+            "id": 101
         },
         {
             "EntityData": {
                 "name": "Sewer Door Lamp",
                 "tag": "",
-                "parent": 1049017,
+                "parent": 94,
                 "attachedSocket": 65535,
                 "children": [
-                    540
+                    103
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -8016,18 +8016,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 539
+            "id": 102
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 539,
+                "parent": 102,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -8098,20 +8098,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 540
+            "id": 103
         },
         {
             "EntityData": {
                 "name": "Sewer Door Lamp",
                 "tag": "",
-                "parent": 1049017,
+                "parent": 94,
                 "attachedSocket": 65535,
                 "children": [
-                    542
+                    105
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -8169,18 +8169,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 541
+            "id": 104
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 541,
+                "parent": 104,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -8251,20 +8251,20 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 542
+            "id": 105
         },
         {
             "EntityData": {
                 "name": "Disabled Door Lamp",
                 "tag": "",
-                "parent": 1049017,
+                "parent": 94,
                 "attachedSocket": 65535,
                 "children": [
-                    1049052
+                    107
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -8322,18 +8322,18 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 1049040
+            "id": 106
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 1049040,
+                "parent": 106,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3944265438256207901,
                 "entityGUID": 7821125845150111553,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -8404,7 +8404,7 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1049052
+            "id": 107
         }
     ]
 }
