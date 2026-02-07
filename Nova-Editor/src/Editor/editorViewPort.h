@@ -20,12 +20,12 @@ public:
 public:
 	bool isHoveringOver;
 	bool isActive;
-	ControlOverlay controlOverlay;
 
 private:
-	Editor& editor;
 	Engine& engine;
+	Editor& editor;
 
 public:
+	ControlOverlay controlOverlay;
 	Gizmo gizmo;
 };
