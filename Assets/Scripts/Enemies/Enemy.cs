@@ -30,7 +30,7 @@ public abstract class Enemy : Script
     [SerializableField]
     protected NavMeshAgent_? navMeshAgent = null;
     [SerializableField]
-    public GameObject [] enemyColliders;
+    public List<GameObject> enemyColliders;
     // 1f = 100% 
     [SerializableField]
     public float spotCallSFXChance =  0.5f;
@@ -100,6 +100,8 @@ public abstract class Enemy : Script
         return false;
     }
 
+    //Yo btw .enable/disable does not actually work???, so just set object inactive better
+
     public void ActivateRigidbody()
     {
         physicsRigidbody.SetVelocity(Vector3.Zero());
@@ -114,8 +116,12 @@ public abstract class Enemy : Script
         navMeshRigidBody.enable = true;
     }
     public void DisablePhysicalInteraction()
-    {
-        physicsRigidbody.enable = false;
+    {   
+        foreach(var collider in enemyColliders)
+        {
+            collider.SetActive(false);
+        }
+
         navMeshAgent.enable = false;
     }
     /***********************************************************

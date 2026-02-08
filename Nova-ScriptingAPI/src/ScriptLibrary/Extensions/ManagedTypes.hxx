@@ -252,6 +252,7 @@ ManagedComponentDeclaration(
 )
 
 System::String^ GetLayerName();
+void SetPhysicsLayer(System::String^ layerName);
 
 void AddForce(Vector3 forceVector);
 void AddImpulse(Vector3 forceVector);

@@ -641,6 +641,17 @@ void PhysicsManager::submitCollisionExit(entt::entity entityOne, entt::entity en
 }
 
 
+void PhysicsManager::SetPhysicsLayer(Rigidbody& rigidbody, Rigidbody::Layer physicsLayer)
+{
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	rigidbody.layer = physicsLayer;
+
+	bodyInterface.SetObjectLayer(rigidbody.bodyId, static_cast<JPH::ObjectLayer>(physicsLayer));
+}
+
 PhysicsRay PhysicsManager::getRayFromMouse() const {
 	glm::vec3 farClipPos = { engine.window.getClipSpacePos(), 1.f };
 	glm::vec3 nearClipPos = { farClipPos.x, farClipPos.y, -1.f };

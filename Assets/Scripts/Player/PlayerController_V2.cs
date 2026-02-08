@@ -88,6 +88,8 @@ class PlayerController_V2 : Script
 
     private Vector3 directionVector = Vector3.Zero();
     private float   desiredSpeed = 0.0f; //the speed of the player the player should move at.
+    private bool    isIFrames = false;
+    private Vector3 restoreVelocity = Vector3.Zero(); //used for ulti only please :( unless you need other things dont touch this
 
     //Timers
     private float jumpTimer = 0.0f;
@@ -167,6 +169,7 @@ class PlayerController_V2 : Script
         MapKey(Key.LeftShift, triggerDash, dashkeyUpHandler);
 
         gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
+        isIFrames = false;
     }
 
     // This function is invoked every update.
@@ -503,10 +506,12 @@ class PlayerController_V2 : Script
     {
         UpdateMovementVector();
 
+        SetIframes(true); //set iframes for dashing
         dashTimeElapsed = 0;
         rigidbody.SetLinearDamping(0);
         rigidbody.SetVelocityLimits(100000f);
         onDashTrigger = false;
+
 
         if (directionVector == Vector3.Zero())
         {
@@ -534,6 +539,7 @@ class PlayerController_V2 : Script
         if(dashTimeElapsed > dashDuration)
         {
             playerMoveStates = PlayerMoveStates.AirborneMovement;
+            SetIframes(false);
         }
     }
 
@@ -672,6 +678,7 @@ class PlayerController_V2 : Script
             contactSurfaces++;
         }
 
+
         if (other.tag == "EnemyHitBox")
         {
             EnemyHitBox enemyHitBox = other.getScript<EnemyHitBox>();
@@ -710,6 +717,12 @@ class PlayerController_V2 : Script
 
     public void TakeDamage(float damage)
     {
+
+        if (isIFrames == true)
+        {
+            return; //no damage taken
+        }
+
         hitsTaken++;
         if (hitsTaken >= hitsBeforeSound)
         {
@@ -730,7 +743,9 @@ class PlayerController_V2 : Script
     }
 
 
-    //Helper function
+    /****************************************************************
+    Helper Functions
+    ****************************************************************/
     float CalculateSmoothDampVelocityChange(float currentVel,float desiredVel, float smoothTime, float deltaTime)
     {
         float omega = 2.0f / smoothTime;
@@ -760,6 +775,19 @@ class PlayerController_V2 : Script
         return directionVector;
     }
 
+    public void SetIframes(bool value)
+    {
+        if (value == true)
+        {
+            isIFrames = value;
+            rigidbody.SetPhysicsLayer("PlayerGhost");
+        }
+        else 
+        {
+            isIFrames = value;
+            rigidbody.SetPhysicsLayer("Moving");
+        }
+    }
 
     //Sound function
     private void HandleFootstepSound()
@@ -796,6 +824,23 @@ class PlayerController_V2 : Script
 
 
     }
+
+    public void PositionFreeze(bool value)
+    {
+        if (value)
+        {
+            restoreVelocity = rigidbody.GetVelocity();
+            rigidbody.SetVelocity(Vector3.Zero());
+            directionVector = Vector3.Zero();
+        }
+        //we might want to conserve momentum after unfreezing so there is this possibility of a boolean
+        else if (!value)
+        {
+            rigidbody.SetVelocity(restoreVelocity);
+        }
+    }
+
+
     public void Reset()
     {
         isMovingBackward = isMovingForward = isMovingLeft = isMovingRight = false;

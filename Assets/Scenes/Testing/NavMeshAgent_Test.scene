@@ -1,0 +1,963 @@
+{
+    "entities": [
+        {
+            "EntityData": {
+                "name": "Floor",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 7897924533614166947,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "NonMoving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "id": 3145746
+        },
+        {
+            "EntityData": {
+                "name": "Camera",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 2133317010581226407,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 9.641268730163574,
+                    "z": -21.523956298828125
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.000020980834961,
+                    "z": 1.0000193119049072
+                },
+                "rotation": {
+                    "w": 0.9536309242248535,
+                    "x": 0.30097854137420654,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.611437201499939,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 9.641268730163574,
+                    "z": -21.523956298828125
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.000020980834961,
+                    "z": 1.0000193119049072
+                },
+                "localRotation": {
+                    "w": 0.9536309242248535,
+                    "x": 0.30097854137420654,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.611437201499939,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 451292918478685253,
+                        "fields": [
+                            {
+                                "name": "agentPrefab",
+                                "data": {
+                                    "__variant_value": 7897924533618623403,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "camera",
+                                "data": {
+                                    "__variant_value": 3145729,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "pt0",
+                                "data": {
+                                    "__variant_value": 4194408,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "pt1",
+                                "data": {
+                                    "__variant_value": 7340188,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "pt2",
+                                "data": {
+                                    "__variant_value": 7340140,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "pt3",
+                                "data": {
+                                    "__variant_value": 1048576,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "CameraComponent": {
+                "camStatus": true,
+                "fov": 45.0,
+                "nearPlane": 0.30000001192092896,
+                "farPlane": 1000.0
+            },
+            "id": 3145729
+        },
+        {
+            "EntityData": {
+                "name": "NavMeshSurface_Humanoid",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6168542276711449525,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "NavMeshSurface": {
+                "label": "Humanoid",
+                "navMeshId": 2189198408433270785
+            },
+            "id": 2097154
+        },
+        {
+            "EntityData": {
+                "name": "p3",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 11646529108648543229,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 7.110950469970703,
+                    "y": 0.6254316568374634,
+                    "z": 6.824161529541016
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 7.110950469970703,
+                    "y": 0.6254316568374634,
+                    "z": 6.824161529541016
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048576
+        },
+        {
+            "EntityData": {
+                "name": "p2",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 11646529108648543229,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 7.3667778968811035,
+                    "y": 0.6254316568374634,
+                    "z": -8.046503067016602
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 7.3667778968811035,
+                    "y": 0.6254316568374634,
+                    "z": -8.046503067016602
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 7340140
+        },
+        {
+            "EntityData": {
+                "name": "p1",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 11646529108648543229,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -7.816329002380371,
+                    "y": 0.6254316568374634,
+                    "z": -8.046503067016602
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -7.816329002380371,
+                    "y": 0.6254316568374634,
+                    "z": -8.046503067016602
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 7340188
+        },
+        {
+            "EntityData": {
+                "name": "P0",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 11646529108648543229,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -7.816329002380371,
+                    "y": 0.6254316568374634,
+                    "z": 6.824161529541016
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -7.816329002380371,
+                    "y": 0.6254316568374634,
+                    "z": 6.824161529541016
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 4194408
+        },
+        {
+            "EntityData": {
+                "name": "Agent",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7897924533618623403,
+                "entityGUID": 10780228295134430121,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": false,
+                    "15908289914940614865": true,
+                    "16652763906952685383": false,
+                    "11935986701403193153": false,
+                    "9059764703561530457": false,
+                    "452538415452204233": false,
+                    "10599230719904143524": false,
+                    "17421316227555880647": false,
+                    "13953638462837156301": false,
+                    "6152912775364972041": false,
+                    "10106385962890515953": false,
+                    "394579324703252227": false,
+                    "17464486586416021590": false,
+                    "8055902242766887362": false,
+                    "16861337649669213096": false,
+                    "14828643033174927893": false,
+                    "17237801994024849853": false,
+                    "16533173024327387273": false,
+                    "2785545264285399722": false,
+                    "11834285525760392891": false,
+                    "3548010661223935717": false,
+                    "9644886267844571682": false,
+                    "13437837940854190620": false,
+                    "8302729333555196098": false,
+                    "13484132868097894827": false,
+                    "7111564935354361005": false,
+                    "9204931689134171219": false,
+                    "17461210185115697313": false,
+                    "16921322617277318829": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -3.1593775749206543,
+                    "y": 1.298659086227417,
+                    "z": 0.4176139831542969
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -3.1593775749206543,
+                    "y": 1.298659086227417,
+                    "z": 0.4176139831542969
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshAgent": {
+                "agentName": "Humanoid",
+                "agentMaxSpeed": 0.0,
+                "agentMaxAcceleration": 0.0,
+                "agentRotationSpeed": 0.0,
+                "separationWeight": 0.0
+            },
+            "id": 1048579
+        },
+        {
+            "EntityData": {
+                "name": "Agent",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7897924533618623403,
+                "entityGUID": 10780228295134430121,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": false,
+                    "394579324703252227": false,
+                    "10106385962890515953": false,
+                    "15908289914940614865": false,
+                    "16652763906952685383": false,
+                    "11935986701403193153": false,
+                    "9059764703561530457": false,
+                    "452538415452204233": false,
+                    "17421316227555880647": false,
+                    "10599230719904143524": false,
+                    "13953638462837156301": false,
+                    "6152912775364972041": false,
+                    "17464486586416021590": false,
+                    "8055902242766887362": false,
+                    "16861337649669213096": false,
+                    "14828643033174927893": false,
+                    "17237801994024849853": false,
+                    "16533173024327387273": false,
+                    "2785545264285399722": false,
+                    "11834285525760392891": false,
+                    "3548010661223935717": false,
+                    "9644886267844571682": false,
+                    "13437837940854190620": false,
+                    "8302729333555196098": false,
+                    "13484132868097894827": false,
+                    "7111564935354361005": false,
+                    "9204931689134171219": false,
+                    "17461210185115697313": false,
+                    "16921322617277318829": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -7.248456001281738,
+                    "y": 1.298659086227417,
+                    "z": 6.960687637329102
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -7.248456001281738,
+                    "y": 1.298659086227417,
+                    "z": 6.960687637329102
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshAgent": {
+                "agentName": "Humanoid",
+                "agentMaxSpeed": 1.0,
+                "agentMaxAcceleration": 0.0,
+                "agentRotationSpeed": 0.0,
+                "separationWeight": 0.0
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "name": "Agent",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7897924533618623403,
+                "entityGUID": 10780228295134430121,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "15908289914940614865": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 3.832305431365967,
+                    "y": 1.298659086227417,
+                    "z": 6.874797821044922
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 3.832305431365967,
+                    "y": 1.298659086227417,
+                    "z": 6.874797821044922
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshAgent": {
+                "agentName": "Humanoid",
+                "agentMaxSpeed": 1.0,
+                "agentMaxAcceleration": 0.0,
+                "agentRotationSpeed": 0.0,
+                "separationWeight": 0.0
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "name": "Agent",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7897924533618623403,
+                "entityGUID": 10780228295134430121,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": false,
+                    "394579324703252227": false,
+                    "10106385962890515953": false,
+                    "15908289914940614865": false,
+                    "16652763906952685383": false,
+                    "11935986701403193153": false,
+                    "9059764703561530457": false,
+                    "452538415452204233": false,
+                    "17421316227555880647": false,
+                    "10599230719904143524": false,
+                    "13953638462837156301": false,
+                    "6152912775364972041": false,
+                    "17464486586416021590": false,
+                    "8055902242766887362": false,
+                    "16861337649669213096": false,
+                    "14828643033174927893": false,
+                    "17237801994024849853": false,
+                    "16533173024327387273": false,
+                    "2785545264285399722": false,
+                    "11834285525760392891": false,
+                    "3548010661223935717": false,
+                    "9644886267844571682": false,
+                    "13437837940854190620": false,
+                    "8302729333555196098": false,
+                    "13484132868097894827": false,
+                    "7111564935354361005": false,
+                    "9204931689134171219": false,
+                    "17461210185115697313": false,
+                    "16921322617277318829": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 3.832305431365967,
+                    "y": 1.298659086227417,
+                    "z": -7.0068888664245605
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 3.832305431365967,
+                    "y": 1.298659086227417,
+                    "z": -7.0068888664245605
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshAgent": {
+                "agentName": "Humanoid",
+                "agentMaxSpeed": 1.0,
+                "agentMaxAcceleration": 0.0,
+                "agentRotationSpeed": 0.0,
+                "separationWeight": 0.0
+            },
+            "id": 6
+        }
+    ],
+    "layers": [
+        {
+            "name": "Default"
+        }
+    ]
+}

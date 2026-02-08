@@ -7,6 +7,7 @@
 #include <glm/gtx/fast_trigonometry.hpp>
 #include "Profiling.h"
 #include "../Detour/Detour/DetourCommon.h"
+#
 
 #undef min
 #undef max
@@ -710,10 +711,6 @@ void NavigationSystem::stopAgent(entt::entity entityID)
 	}
 
 
-	if (agent == nullptr) {
-		return;
-	}
-
 	crowdManager[agent->agentName]->resetMoveTarget(GetDTCrowdIndex(agent->agentName,agent->agentIndex ));
 
 }
@@ -728,6 +725,7 @@ int NavigationSystem::AddAgent(std::string const& agentName, NavMeshAgent& agent
 	//check if an active index exist, return it instead
 	if (agentToIndexMap[agentName].find(agent.agentIndex) != agentToIndexMap[agentName].end())
 	{
+		Logger::warn("Possible Index Sharing");
 		return agentToIndexMap[agentName][agent.agentIndex]; 
 	}
 

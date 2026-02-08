@@ -760,6 +760,7 @@ void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descri
 
 	if (ImGui::CollapsingHeader("Prefab Data")) {
 		ImGui::InputText("Name", &prefabEntityData->name);
+		ImGui::InputText("Tag", &prefabEntityData->tag);
 
 		ImGui::Text("Entity GUID: %zu", static_cast<std::size_t>(prefabEntityData->entityGUID));
 		ImGui::Text("Attached bone socket: %hu", prefabEntityData->attachedSocket);

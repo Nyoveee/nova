@@ -205,6 +205,18 @@ System::String^  Rigidbody_::GetLayerName()
 	return nullptr;
 }
 
+void Rigidbody_::SetPhysicsLayer(System::String^ layerName)
+{
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		std::string layerNameConverted = Convert(layerName);
+		Interface::engine->physicsManager.SetPhysicsLayer(*rigidbody, magic_enum::enum_cast<Rigidbody::Layer>(layerNameConverted.c_str()).value());
+	}
+
+}
+
+
 void Rigidbody_::AddForce(Vector3 forceVector) {
 	Rigidbody* rigidbody = nativeComponent();
 
@@ -695,3 +707,4 @@ bool VideoPlayer_::IsVideoFinished()
 	VideoPlayer* videoPlayer = nativeComponent();
 	return Interface::engine->videoSystem.IsVideoFinished(*videoPlayer);
 }
+

@@ -489,6 +489,7 @@ class PlayerController : Script
 
             if (enemyHitBox == null || enemyHitBox.HasHitPlayerThisAttack())
                 return;
+
             TakeDamage(enemyHitBox.GetDamage());
             enemyHitBox.OnPlayerHit();
         }
