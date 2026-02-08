@@ -20,6 +20,11 @@ public:
 	FRAMEWORK_DLL_API ResourceID id() const { return _id; };
 	FRAMEWORK_DLL_API ResourceFilePath const& getFilePath() const { return filePath; };
 
+public:
+	// DONT USE THIS FUNCTION UNLESS U KNOW WHAT U ARE DOING.
+	// (currently in this case runtime material instances needs to override the original id)
+	FRAMEWORK_DLL_API void setId(ResourceID id) { _id = id; };
+
 private:
 	ResourceID _id;
 	ResourceFilePath filePath;

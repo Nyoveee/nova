@@ -112,6 +112,8 @@ class Switch : Script
         if (!isActivated && isInteractable) {
             audioComponent?.PlaySound(switchSfx);
 
+            Debug.Log(gameObject.transform.front);
+
             isActivated = true;
             isAnimating = true;
             switchMesh?.setMaterialBool(1, "isActive", false);
@@ -128,12 +130,14 @@ class Switch : Script
         // isActivated here means has it been used.
         isActivated = true;
     }
+
     public void deactivateSwitch()
     {
         isActivated = false;
         isAnimating = false;
         timeElapsed = 0f;
-        switchMesh?.setMaterialBool(1, "isActive", true);
         switchMesh.gameObject.transform.rotation = initialRotation;
+        
+        // switchMesh?.setMaterialBool(1, "isActive", true); // ??
     }
 }

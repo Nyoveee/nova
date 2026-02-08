@@ -18,7 +18,13 @@ class TrailerSceneScript : Script
         audioComponent = getComponent<AudioComponent_>();
         videoPlayer = getComponent<VideoPlayer_>();
         audioComponent.PlaySound(videoAudio);
+
+        MapKey(Key.P, () =>
+        {
+            SceneAPI.ChangeScene(sceneToChange);
+        });
     }
+
     protected override void update()
     {
         if (videoPlayer.IsVideoFinished())

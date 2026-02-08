@@ -705,8 +705,11 @@ void Renderer::renderUI()
 }
 
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint historyTexture) {
-	glViewport(0, 0, gameWidth, gameHeight);
+	// Set up initial state..
+	glBindVertexArray(mainVAO);
 	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
+	glViewport(0, 0, gameWidth, gameHeight);
 
 	// We clear this pair frame buffer..
 	frameBuffers.clearFrameBuffers();
@@ -848,65 +851,6 @@ void Renderer::renderCapturePass(Camera const& camera, std::function<void()> set
 
 	// We render individual game objects..
 	renderModels(RenderPass::ColorPass, frameBuffer.depthStencilId());
-
-#if false
-	// for each material batch..
-	for (auto const& materialBatch : renderQueue.opaqueMaterials) {
-		// we set up the shader and uniforms of this particular material..
-		auto const& shaderData = materialBatch.customShader.get().customShaderData;
-
-		// ===========================================================================
-		// Set rendering fixed pipeline configuration.
-		// ===========================================================================
-
-		setBlendMode(materialBatch.material.get().materialData.blendingConfig);
-		setDepthMode(materialBatch.material.get().materialData.depthTestingMethod);
-		setCullMode(materialBatch.material.get().materialData.cullingConfig);
-
-		// ===========================================================================
-		// Set uniform data..
-		// ===========================================================================
-		if (shaderData.pipeline == Pipeline::PBR)
-		{
-			// setup SSAO
-			if (renderConfig.toEnableSSAO) {
-				glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureIds()[0]); //	SSAO.. (sampler2D)
-			}
-
-			// setup spotlight shadow
-			glBindTextureUnit(4, spotlightShadowMaps.getTextureId()); // All spotlight shadow maps.. (sampler2DArray)
-
-			// setup IBL irradiance maps..
-			auto&& [diffuseIrradianceMap, __] = resourceManager.getResource<CubeMap>(engine.gameConfig.environmentDiffuseMap);
-			auto&& [prefilteredEnvironmentMap, ___] = resourceManager.getResource<CubeMap>(engine.gameConfig.environmentSpecularMap);
-
-			if (renderConfig.toEnableIBL && diffuseIrradianceMap && prefilteredEnvironmentMap) {
-				glBindTextureUnit(2, BRDFLUT->getTextureId());						// BRDF Lookup Table texture.. (sampler2D)
-				glBindTextureUnit(5, diffuseIrradianceMap->getTextureId());			// Diffuse irradiance map.. (samplerCube), 
-				glBindTextureUnit(6, prefilteredEnvironmentMap->getTextureId());	// Prefiltered environment map.. (samplerCube)
-			}
-
-			glBindTextureUnit(0, directionalLightShadowFBO.textureId());			// Directional light shadow map.. (sampler2D)
-			glBindTextureUnit(7, loadedReflectionProbesMap.getTextureId());			// All Reflection probes map.. (samplerCubeArray)
-		}
-
-		setupCustomShaderUniforms(materialBatch.customShader, materialBatch.shader, materialBatch.material, numOfTextureUnitBound);
-		
-		// Use the shader
-		materialBatch.shader.get().use();
-
-		// for each model batch..
-		for (auto const& modelBatch : materialBatch.models) {
-			// set the uniforms of the model..
-			setupModelUniforms(modelBatch.entity, materialBatch.shader, modelBatch.modelScale, modelBatch.boundingBoxMin, modelBatch.boundingBoxMax, modelBatch.meshType);
-
-			// for each mesh..
-			for (auto const& mesh : modelBatch.meshes) {
-				renderMesh(mesh);
-			}
-		}
-	}
-#endif
 
 	glDepthFunc(GL_LESS);
 
@@ -1637,8 +1581,6 @@ void Renderer::prepareRendering() {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
 
-	// Set up initial state..
-	glBindVertexArray(mainVAO);
 	engine.particleSystem.populateParticleLights(MAX_NUMBER_OF_LIGHT);
 
 	// We calculate AABB for every model.. (to prepare for frustum culling..)
@@ -1816,7 +1758,7 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 			for (auto i = model->materialNames.size(); i < materialIds.size(); ++i) {
 				auto materialId = materialIds[i];
 				auto const& instanced = skinnedMeshRenderer ? skinnedMeshRenderer->isMaterialInstanced : meshRenderer->isMaterialInstanced;
-
+				
 				for (auto& mesh : model->meshes) {
 					createMaterialBatchEntry(camera, *model, materialId, mesh, entity, meshType, layerIndex, renderQueueConfig);
 				}
