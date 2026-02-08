@@ -139,7 +139,7 @@ int FrameBuffer::getHeight() const {
 
 void FrameBuffer::clear() {
 	// https://stackoverflow.com/questions/44756898/opengl-different-clear-color-for-individual-color-attachments
-	constexpr float defaultColor[4] = { 0.1f, 0.1f, 0.1f, 1.f };
+	constexpr float defaultColor[4] = { 0.0f, 0.0f, 0.0f, 1.f };
 	constexpr float color[4] = { 0.f, 0.f, 0.f, 1.f };
 
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO_id);
