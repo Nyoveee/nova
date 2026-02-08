@@ -84,6 +84,7 @@ class PlayerController_V2 : Script
     private bool isDashKeyHeld = false; //we dw to chain dash if key is held down.
     private float jumpCD = 0.5f;
     private int contactSurfaces = 0;
+    private bool isLanded = true;
 
     private Vector3 directionVector = Vector3.Zero();
     private float   desiredSpeed = 0.0f; //the speed of the player the player should move at.
@@ -111,9 +112,11 @@ class PlayerController_V2 : Script
     //public bool ToEnable = true;
 
 
-    // Hurt
+    // Hurt & Jump
     private int hitsBeforeSound = 3;
     private int hitsTaken = 0;
+    private int jumpsBeforeSound = 5;
+    private int jumpsDone = 0;
 
     // Audio
     [SerializableField]
@@ -128,6 +131,8 @@ class PlayerController_V2 : Script
     private List<Audio> jumpSFX;
     [SerializableField]
     private List<Audio> footstepSFX;
+    [SerializableField]
+    private List<Audio> landingSFX;
     [SerializableField]
     private float timeBetweenSteps = 0.36f;
     private float timeSinceLastFootstep = 0f;
@@ -315,12 +320,12 @@ class PlayerController_V2 : Script
         //is in contact with one or more valid surfaces
         if (contactSurfaces > 0)
         {
+            triggerLandSFX();
             playerMoveStates = PlayerMoveStates.GroundedMovement;
             rigidbody.SetLinearDamping(groundDrag);
             rigidbody.SetVelocityLimits(groundMaxMoveSpeed);
             jumpEnabled = true;
             //Debug.Log("Grounded");
-
 
         }
         else
@@ -440,6 +445,7 @@ class PlayerController_V2 : Script
             rigidbody.SetLinearDamping(groundDrag);
         }
 
+
     }
 
     void UpdateAirborneMovement()
@@ -491,8 +497,6 @@ class PlayerController_V2 : Script
         //    rigidbody.AddForce(-resistiveDirection * aerialResistiveForceFactor);
         //}
 
-
-
     }
 
     void InitiateDashing()
@@ -531,14 +535,17 @@ class PlayerController_V2 : Script
         {
             playerMoveStates = PlayerMoveStates.AirborneMovement;
         }
-
-    
-    
     }
 
     void InitiateJump()
     {
-
+        jumpsDone++;
+        if (jumpsDone >= jumpsBeforeSound)
+        {
+            audioComponent.PlayRandomSound(jumpVOSFX);
+            jumpsDone = 0;
+        }
+        isLanded = false;
         //rigidbody.AddVelocity(Vector3.Up() * jumpStrength);
         playerMoveStates = PlayerMoveStates.Jumping;
 
@@ -613,6 +620,17 @@ class PlayerController_V2 : Script
         if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && jumpEnabled && (jumpTimer > jumpCD))
         {
             playerMoveStates = PlayerMoveStates.StartJump;
+        }
+
+    }
+
+    void triggerLandSFX()
+    {
+        //check if jumped airborne
+        if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && !jumpEnabled && playerMoveStates == PlayerMoveStates.AirborneMovement)
+        {
+            audioComponent.PlayRandomSound(landingSFX);
+            isLanded = true;
         }
 
     }

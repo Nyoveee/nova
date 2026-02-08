@@ -142,7 +142,6 @@ class Gunner : Enemy
                 Explode();
 
                 gunnerState = GunnerState.Death;
-                audioComponent.PlayRandomSound(deathSFX);
                 Destroy(gameObject);
             }
             else 
@@ -211,6 +210,7 @@ class Gunner : Enemy
                 if (gunnerState != GunnerState.Death/* && !WasRecentlyDamaged()*/)
                 {
                     gunnerState = GunnerState.Death;
+                    audioComponent.PlayRandomSound(deathSFX);
                     animator.PlayAnimation("Gunner_Death");
                     DisablePhysicalInteraction();
                 }
