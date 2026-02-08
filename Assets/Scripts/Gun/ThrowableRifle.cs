@@ -219,6 +219,8 @@ class ThrowableRifle : Script
 
                     if (timeElapsed > maxFlyingTime)
                     {
+                        throwingEmitters.SetActive(false);
+                        absorbtionEmitters.SetActive(true);
                         weaponSpinSequence.play();
                         throwingWeaponState = ThrowingWeaponState.HitDelay;
                         timeElapsed = 0f;

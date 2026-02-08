@@ -9,13 +9,25 @@ class Ichor : Script
         Inspector Variables
     ***********************************************************/
     [SerializableField]
-    private float ichorLifeTime = 10f;
+    private float ichorLifeTime = 30f;
     [SerializableField]
     private float expandedSizeMultiplier = 1.5f;
     [SerializableField]
     private float expandTime = 1f;
     [SerializableField]
     private float pullTime = 0.2f;
+    [SerializableField]
+    private float minForce = 10f;
+    [SerializableField]
+    private float maxForce = 10f;
+    [SerializableField]
+    private float rapidSlowTime = 1f;
+    [SerializableField]
+    private float minGravityFactor = 1f;
+    [SerializableField]
+    private float maxGravityFactor = 1f;
+    [SerializableField]
+    private float damping = 1f;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -27,12 +39,16 @@ class Ichor : Script
     private Vector3 endDistance;
 
     private float elapsedTime = 0;
+    private float pullElapsedTime = 0;
     protected override void init()
     {
         rigidbody = getComponent<Rigidbody_>();
         startSize = gameObject.transform.scale;
-        Vector3 force = new Vector3(Random.Range(-300f, 300f), Random.Range(1f, 700f), Random.Range(-300f, 300f));
+        Vector3 direction = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        direction.Normalize();
+        Vector3 force =  direction * Random.Range(minForce, maxForce);
         rigidbody.AddForce(force);
+        rigidbody.SetGravityFactor(Random.Range(minGravityFactor, maxGravityFactor));
         Invoke(() =>
         {
             Destroy(gameObject);
@@ -41,15 +57,27 @@ class Ichor : Script
     protected override void update()
     {
         // Make sure collision is only affectted by the newly set postiion
-        expandTime = Mathf.Max(0, expandTime - Time.V_DeltaTime());
-        gameObject.transform.scale = Vector3.Lerp(startSize, startSize * expandedSizeMultiplier, expandTime);
+        //expandTime = Mathf.Max(0, expandTime - Time.V_DeltaTime());
+        //gameObject.transform.scale = Vector3.Lerp(startSize, startSize * expandedSizeMultiplier, expandTime);
+        elapsedTime += Time.V_DeltaTime();
 
+        if(elapsedTime < expandTime)
+        {
+            gameObject.transform.scale = Vector3.Lerp(startSize, startSize * expandedSizeMultiplier, elapsedTime / expandTime);
+        }
+
+        if (elapsedTime > rapidSlowTime)
+        { 
+            rigidbody.SetLinearDamping(damping);
+
+        }
+       
 
         if (gunPull == true)
-        { 
-            elapsedTime += Time.V_DeltaTime();
+        {
+            pullElapsedTime += Time.V_DeltaTime();
 
-            float t = elapsedTime / pullTime;
+            float t = pullElapsedTime / pullTime;
             gameObject.transform.position = Vector3.Lerp(startDistance, endDistance,t );
 
             if (t > 1)
@@ -73,7 +101,12 @@ class Ichor : Script
 
     protected override void onCollisionEnter(GameObject other)
     {
-        if (other.tag == "Floor")
-           rigidbody.SetVelocity(Vector3.Zero());
+        //if (other.tag == "Floor" 
+        //    || other.tag == "Props" 
+        //    || other.getComponent<Rigidbody_>().GetLayerName() == "Floor" 
+        //    || other.getComponent<Rigidbody_>().GetLayerName() == "Props"
+        //    || other.getComponent<Rigidbody_>().GetLayerName() == "Wall")
+        //   rigidbody.SetVelocity(Vector3.Zero());
+
     }
 }
