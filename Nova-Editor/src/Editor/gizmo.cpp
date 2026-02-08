@@ -12,10 +12,10 @@
 #include "InputManager/inputEvent.h"
 #include "component.h"
 
-Gizmo::Gizmo(Editor& editor, ECS& ecs) : 
-	editor		{ editor },
-	ecs			{ ecs },
-	operation	{ ImGuizmo::OPERATION::TRANSLATE }
+Gizmo::Gizmo(Editor& editor, ECS& ecs) :
+	editor{ editor },
+	ecs{ ecs },
+	operation{ ImGuizmo::OPERATION::TRANSLATE }
 {
 	editor.inputManager.subscribe<GizmoMode>(
 		[&](GizmoMode gizmoMode) {
@@ -47,15 +47,19 @@ void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, 
 	// Early exit depending on whether selected entities has ui components
 	const std::vector<entt::entity>& selectedEntities = editor.getSelectedEntities();
 
-	for (entt::entity entity : selectedEntities) {
-		if (ecs.isParentCanvas(entity)) {
-			if (!isUI) {
-				return;
-			}
-		}
-		else if (isUI) {
-			return;
-		}
+	if (selectedEntities.empty()) {
+		return;
+	}
+
+	entt::entity entity = selectedEntities[0];
+
+	bool parentCanvas = ecs.isParentCanvas(entity);
+
+	if (!isUI && parentCanvas) {
+		return;
+	}
+	else if (isUI && !parentCanvas) {
+		return;
 	}
 
 	ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
@@ -125,7 +129,7 @@ Math::DecomposedMatrix Gizmo::showGizmo(glm::mat4& modelMatrix, bool isUI) {
 
 	ImGuizmo::SetOrthographic(isUI);
 	glm::mat4 viewMat = isUI ? glm::mat4(1.0f) : editor.engine.renderer.getEditorCamera().view();
-	glm::mat4 projMat = isUI ? glm::mat4(1.0f) : editor.engine.renderer.getEditorCamera().projection();
+	glm::mat4 projMat = isUI ? editor.engine.renderer.getUIProjection() : editor.engine.renderer.getEditorCamera().projection();
 
 	// variable here because of lifetime.
 	glm::vec3 snappingValues;
@@ -151,7 +155,7 @@ Math::DecomposedMatrix Gizmo::showGizmo(glm::mat4& modelMatrix, bool isUI) {
 		}
 
 		return glm::value_ptr(snappingValues);
-	}();
+		}();
 
 	ImGuizmo::Manipulate(
 		glm::value_ptr(viewMat),
