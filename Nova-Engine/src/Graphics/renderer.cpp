@@ -563,6 +563,8 @@ void Renderer::renderMain(RenderMode renderMode) {
 			// Apply HDR tone mapping + gamma correction post-processing
 			renderHDRTonemapping(gameMainFrameBuffer);
 		}
+		else if (isUIScreenShown)
+			renderUI();
 
 		// Main editor render function
 		if (isEditorScreenShown) {
@@ -577,8 +579,6 @@ void Renderer::renderMain(RenderMode renderMode) {
 			renderObjectIds();
 		}
 
-		if (isUIScreenShown)
-			renderUI();
 		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.

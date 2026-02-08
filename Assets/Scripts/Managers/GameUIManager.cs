@@ -48,6 +48,17 @@ class GameUIManager : Script
     [SerializableField]
     private GameObject? deathUI = null;
 
+    // Cutscene related stuff..
+    [SerializableField]
+    private float blackOverlayLerpDuration = 1f;
+
+    [SerializableField]
+    private float blackOverlayLerpPower = 0.4f;
+
+    private bool isAnimatingBlackOverlay = false;
+
+    private float timeElapsed = 0f;
+
     protected override void init()
     {
         progressBars[ProgressBarType.DashBar] = dashBar;
@@ -169,6 +180,7 @@ class GameUIManager : Script
     {
         dialogueScript.gameObject.SetActive(true);
         dialogueScript.BeginDialogueSequence(speaker, text, times, finalDialogueTime);
+
 
     }
     /***********************************************************

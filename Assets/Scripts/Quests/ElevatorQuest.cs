@@ -23,6 +23,7 @@ class ElevatorQuest : Quest
     private GameObject missionObjectiveContainer;
     [SerializableField]
     private GameObject questInformationContainer;
+
     [SerializableField]
     private Vector3 newMissionObjectiveUILocation;
     [SerializableField]
