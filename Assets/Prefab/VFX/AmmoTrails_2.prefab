@@ -1,26 +1,26 @@
 {
-    "RootEntity": 8,
+    "RootEntity": 292,
     "Entities": [
         {
             "EntityData": {
-                "name": "Contact Spark ",
+                "name": "AmmoTrails_2",
                 "tag": "",
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 563029678012612857,
-                "entityGUID": 591080421111595247,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 5525292791501374229,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": -3.8255276679992676,
-                    "y": 6.37125825881958,
-                    "z": 38.17927932739258
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "scale": {
                     "x": 1.0,
@@ -39,9 +39,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -3.8255276679992676,
-                    "y": 6.37125825881958,
-                    "z": 38.17927932739258
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "localScale": {
                     "x": 1.0,
@@ -63,18 +63,55 @@
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "scriptId": 14639373361379885057,
-                        "fields": null
+                        "scriptId": 12406634593317568515,
+                        "fields": [
+                            {
+                                "name": "endPosition",
+                                "data": {
+                                    "__variant_value": {
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "__variant_type": 1
+                                }
+                            },
+                            {
+                                "name": "startPosition",
+                                "data": {
+                                    "__variant_value": {
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "__variant_type": 1
+                                }
+                            },
+                            {
+                                "name": "killTime",
+                                "data": {
+                                    "__variant_value": 0.009999999776482582,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "totalDuration",
+                                "data": {
+                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
                     }
                 ]
             },
             "ParticleEmitter": {
-                "texture": 5391556884225917121,
-                "startSize": 0.20000000298023224,
+                "texture": 18446744073709551615,
+                "startSize": 1.0,
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
-                "startSpeed": 10.0,
-                "initialAngularVelocity": 0.0,
+                "startSpeed": 1.0,
+                "initialAngularVelocity": 30.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
@@ -82,35 +119,35 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "lifeTime": 0.4000000059604645,
-                "particleRate": 0.0,
+                "lifeTime": 1.0,
+                "particleRate": 100.0,
                 "burstRate": 0.0,
-                "burstAmount": 60,
+                "burstAmount": 30,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
                     "y": 0.09000000357627869,
                     "z": 0.03200000151991844
                 },
-                "lightRadius": 0.0,
+                "lightRadius": 10.0,
                 "looping": true,
                 "randomizedDirection": false,
                 "invertMovement": false,
                 "particleEmissionTypeSelection": {
-                    "emissionShape": "Cone",
+                    "emissionShape": "Point",
                     "radiusEmitter": {
-                        "radius": 0.009999999776482582
+                        "radius": 5.0
                     },
                     "cubeEmitter": {
                         "min": {
-                            "x": -1.0,
-                            "y": -1.0,
-                            "z": -1.0
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
                         },
                         "max": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
                         }
                     },
                     "coneEmitter": {
@@ -120,9 +157,9 @@
                 },
                 "particleColorSelection": {
                     "color": {
-                        "r": 0.7529411911964417,
-                        "g": 0.7529411911964417,
-                        "b": 0.7529411911964417,
+                        "r": 0.9241379499435425,
+                        "g": 0.823043167591095,
+                        "b": 0.3377883732318878,
                         "a": 1.0
                     },
                     "colorOffsetMin": {
@@ -135,7 +172,7 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "emissiveMultiplier": 50.0
+                    "emissiveMultiplier": 10.0
                 },
                 "sizeOverLifetime": {
                     "selected": true,
@@ -153,14 +190,14 @@
                     }
                 },
                 "trails": {
-                    "selected": false,
-                    "trailTexture": 0,
-                    "distancePerEmission": 0.10000000149011612,
-                    "trailSize": 0.10000000149011612,
+                    "selected": true,
+                    "trailTexture": 11156164407260069997,
+                    "distancePerEmission": 0.05000000074505806,
+                    "trailSize": 0.20000000298023224,
                     "trailColor": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
+                        "r": 0.9172413945198059,
+                        "g": 0.8005412220954895,
+                        "b": 0.24038052558898926,
                         "a": 1.0
                     },
                     "trailColorOffsetMin": {
@@ -173,10 +210,10 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "trailEmissiveMultiplier": 1.0
+                    "trailEmissiveMultiplier": 5.0
                 }
             },
-            "id": 8
+            "id": 292
         }
     ]
 }

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 2,
+    "RootEntity": 9,
     "Entities": [
         {
             "EntityData": {
@@ -71,7 +71,7 @@
             "Rigidbody": {
                 "motionType": "Dynamic",
                 "layer": "Item",
-                "motionQuality": "Discrete",
+                "motionQuality": "Continuous",
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -101,7 +101,7 @@
                             {
                                 "name": "ichorLifeTime",
                                 "data": {
-                                    "__variant_value": 10.0,
+                                    "__variant_value": 30.0,
                                     "__variant_type": 18
                                 }
                             },
@@ -123,6 +123,48 @@
                                 "name": "pullTime",
                                 "data": {
                                     "__variant_value": 0.20000000298023224,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "minForce",
+                                "data": {
+                                    "__variant_value": 500.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxForce",
+                                "data": {
+                                    "__variant_value": 500.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "rapidSlowTime",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "minGravityFactor",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxGravityFactor",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "damping",
+                                "data": {
+                                    "__variant_value": 10.0,
                                     "__variant_type": 18
                                 }
                             }
@@ -238,7 +280,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 2
+            "id": 9
         }
     ]
 }
