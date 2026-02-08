@@ -12,10 +12,7 @@
                 "layerId": 2,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
+                "entityGUID": 1667343983611036663,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -27,8 +24,8 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1920.0,
-                    "y": 1080.0,
+                    "x": 1474.0,
+                    "y": 1000.0,
                     "z": 1.0
                 },
                 "rotation": {
@@ -48,8 +45,8 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1920.0,
-                    "y": 1080.0,
+                    "x": 1474.0,
+                    "y": 1000.0,
                     "z": 1.0
                 },
                 "localRotation": {
@@ -92,10 +89,7 @@
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
+                "entityGUID": 11467176772769235961,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -172,23 +166,20 @@
                 "layerId": 4,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
+                "entityGUID": 17808245048106894331,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 960.0,
+                    "x": 960.0000610351563,
                     "y": 540.0,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1280.0,
-                    "y": 719.9999389648438,
+                    "x": 1125.0,
+                    "y": 599.999755859375,
                     "z": 1.0
                 },
                 "rotation": {
@@ -203,13 +194,13 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
+                    "x": 5.960464477539063e-08,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.6666666865348816,
-                    "y": 0.6666666269302368,
+                    "x": 0.7632293105125427,
+                    "y": 0.599999725818634,
                     "z": 1.0
                 },
                 "localRotation": {
@@ -254,18 +245,15 @@
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
+                "entityGUID": 2243804735914460157,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 900.0,
-                    "y": 20.0,
+                    "x": 345.0,
+                    "y": 863.0,
                     "z": 0.0
                 },
                 "scale": {
@@ -285,8 +273,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 900.0,
-                    "y": 20.0,
+                    "x": 345.0,
+                    "y": 863.0,
                     "z": 0.0
                 },
                 "localScale": {
@@ -306,6 +294,10 @@
                     "z": 0.0
                 }
             },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
+            },
             "Scripts": {
                 "scriptDatas": [
                     {
@@ -316,6 +308,20 @@
                                 "data": {
                                     "__variant_value": 12767626241908719617,
                                     "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "onHoverSFX",
+                                "data": {
+                                    "__variant_value": 18282072967288242303,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "onClickSFX",
+                                "data": {
+                                    "__variant_value": 5023475664309502081,
+                                    "__variant_type": 15
                                 }
                             }
                         ]
@@ -352,9 +358,9 @@
                     "b": 1.0,
                     "a": 1.0
                 },
-                "onClickReleasedFunction": "",
-                "onPressFunction": "",
-                "onHoverFunction": "",
+                "onClickReleasedFunction": "onReleased",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
                 "fadeDuration": 0.10000000149011612,
                 "colorMultiplier": 1.0,
                 "offset": {
@@ -380,22 +386,19 @@
                 "layerId": 4,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
+                "entityGUID": 2243804735914460159,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 899.9998779296875,
-                    "y": 20.0,
+                    "x": 344.9994812011719,
+                    "y": 863.0000610351563,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 424.9999694824219,
+                    "x": 424.99993896484375,
                     "y": 85.0,
                     "z": 1.0
                 },
@@ -411,12 +414,12 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -4.76837158203125e-07,
-                    "y": 0.0,
+                    "x": -1.2516975402832031e-06,
+                    "y": 9.5367431640625e-07,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999998807907104,
+                    "x": 0.9999998211860657,
                     "y": 1.0,
                     "z": 1.0
                 },
@@ -433,7 +436,7 @@
                 }
             },
             "Text": {
-                "font": 4736291944169553927,
+                "font": 11263476825637552129,
                 "text": "Back",
                 "fontSize": 60,
                 "fontColor": {
