@@ -463,9 +463,14 @@ struct AudioComponent
 {
 	float volume{ 1.f };
 	bool loop{};
+	enum class AudioGroup {
+		SFX,
+		BGM
+	}audioGroup = AudioGroup::SFX;
 	REFLECTABLE(
 		volume,
-		loop
+		loop,
+		audioGroup
 	)
 };
 
