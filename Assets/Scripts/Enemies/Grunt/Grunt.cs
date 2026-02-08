@@ -26,6 +26,8 @@ class Grunt : Enemy
     [SerializableField]
     private List<Audio> hurtSFX;
     [SerializableField]
+    private List<Audio> impactSFX;
+    [SerializableField]
     private List<Audio> attackSFX;
     [SerializableField]
     private List<Audio> deathSFX;
@@ -112,6 +114,7 @@ class Grunt : Enemy
 
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
+            audioComponent.PlayRandomSound(impactSFX);
 
             if (colliderTag == "Enemy_ArmouredSpot")
             {

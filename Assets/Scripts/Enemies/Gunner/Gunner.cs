@@ -18,6 +18,8 @@ class Gunner : Enemy
     [SerializableField]
     private List<Audio> attackSFX;
     [SerializableField]
+    private List<Audio> impactSFX;
+    [SerializableField]
     private List<Audio> deathSFX;
     [SerializableField]
     private List<Audio> spotSFX;
@@ -107,6 +109,8 @@ class Gunner : Enemy
     ***********************************************************/
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
+        audioComponent.PlayRandomSound(impactSFX);
+
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
             if (colliderTag == "Enemy_ArmouredSpot")

@@ -269,7 +269,6 @@ class PlayerWeaponController : Script
                 muzzle.gameObject.transform.rotation = Quaternion.LookRotation(directionTOLookAt);
                 ammoTrail.getScript<ammoTrails>().startPosition = muzzle.gameObject.transform.position;
                 ammoTrail.getScript<ammoTrails>().endPosition = result.Value.point;
-                
 
             }
             else
