@@ -14,10 +14,12 @@ class Grunt : Enemy
     [SerializableField]
     private ParticleEmitter_ emitter = null;
 
+    //[SerializableField]
+    //private Prefab? hitboxPrefab = null; //NOTE: Prefab has been change to socket collider
     [SerializableField]
-    private Prefab? hitboxPrefab = null;
-    [SerializableField]
-    private GameObject? hitboxPosition = null;
+    private GameObject? attackHitbox = null;
+    //[SerializableField]
+    //private GameObject? hitboxPosition = null;
     [SerializableField]
     private float spawningDuration = 1f;
     [SerializableField]
@@ -56,8 +58,6 @@ class Grunt : Enemy
     // State machine
     private GruntState gruntState = GruntState.Spawning;
     private Dictionary<GruntState, CurrentState> updateState = new Dictionary<GruntState, CurrentState>();
-    private float spawningTimeElapsed = 0f;
-    private GameObject? hitbox = null;
 
     // This function is first invoked when game starts.
     protected override void init()
@@ -79,6 +79,11 @@ class Grunt : Enemy
         animator.PlayAnimation("Grunt Idle (Base)");
 
         ActivateRigidbody();
+
+        if (attackHitbox != null)
+        {
+            attackHitbox.SetActive(false);
+        }
     }
 
     // This function is invoked every fixed update.
@@ -101,6 +106,8 @@ class Grunt : Enemy
         {
             return;
         }
+
+        Debug.Log("Grunt took damage: " + damage);
 
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
@@ -317,7 +324,9 @@ class Grunt : Enemy
         }
         LookAt(player);
     }
-    private void Update_PreJump() { }
+    private void Update_PreJump() {
+
+    }
     private void Update_Jump()
     {
         if (IsJumpFinished())
@@ -334,6 +343,7 @@ class Grunt : Enemy
             navMeshAgent.CompleteOffMeshLink();
             navMeshAgent.enable = true;
         }
+
     }
     /****************************************************************
         Animation Events
@@ -341,9 +351,9 @@ class Grunt : Enemy
     public void Slash()
     {
         emitter.emit(1000);
-
-        if (hitbox != null)
-            Destroy(hitbox);
+        attackHitbox.SetActive(false);
+        //if (hitbox != null)
+        //    Destroy(hitbox);
     }
     public void EndAttack()
     {
@@ -356,16 +366,31 @@ class Grunt : Enemy
     public void BeginSwing()
     {
         audioComponent.PlayRandomSound(attackSFX);
-        if (hitboxPrefab == null)
-            return;
-        hitbox = Instantiate(hitboxPrefab);
-        if(hitbox!= null && hitboxPosition!= null){
-            hitbox.transform.localPosition = hitboxPosition.transform.position;
-            EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();
-            if (enemyHitBox != null && gruntStats != null)
-                enemyHitBox.SetDamage(gruntStats.damage);
+        //if (hitboxPrefab == null)
+        //    return;
+        //hitbox = Instantiate(hitboxPrefab);
+        //if(hitbox!= null && hitboxPosition!= null){
+        //    hitbox.transform.localPosition = hitboxPosition.transform.position;
+        //    EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();
+        //    if (enemyHitBox != null && gruntStats != null)
+        //        enemyHitBox.SetDamage(gruntStats.damage);
+        //}
+        if (attackHitbox != null)
+        {
+            //Debug.Log("Attack Hitbox Activated");
+            attackHitbox.SetActive(true);
+            attackHitbox.getScript<EnemyHitBox>().ResetValues();
+            attackHitbox.getScript<EnemyHitBox>().SetDamage(gruntStats.damage);
         }
+
     }
+
+    public void EndDeath()
+    {
+    
+    }
+
+
     public void BeginJump()
     {
         gruntState = GruntState.Jump;

@@ -31,12 +31,7 @@
         "1671856250268090377": {
             "id": 1671856250268090377,
             "animation": 17253009139158237203,
-            "transitions": [
-                {
-                    "nextNode": 3977699259481686017,
-                    "conditions": null
-                }
-            ],
+            "transitions": null,
             "toLoop": true,
             "name": "Grunt Forward",
             "animationEvents": null
@@ -49,17 +44,17 @@
             "name": "Grunt Attack",
             "animationEvents": [
                 {
-                    "key": 21,
+                    "key": 10,
                     "scriptId": 16372493856992313355,
                     "functionName": "TriggerEvent3"
                 },
                 {
-                    "key": 31,
+                    "key": 25,
                     "scriptId": 16372493856992313355,
                     "functionName": "TriggerEvent1"
                 },
                 {
-                    "key": 71,
+                    "key": 44,
                     "scriptId": 16372493856992313355,
                     "functionName": "TriggerEvent2"
                 }
@@ -76,12 +71,7 @@
         "3977699259481686017": {
             "id": 3977699259481686017,
             "animation": 12064862368427425815,
-            "transitions": [
-                {
-                    "nextNode": 1671856250268090377,
-                    "conditions": null
-                }
-            ],
+            "transitions": null,
             "toLoop": true,
             "name": "Grunt Running",
             "animationEvents": null

@@ -2,7 +2,6 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
-using System.ComponentModel;
 using static ThrowableRifle;
 
 class ThrowableRifle : Script
@@ -64,6 +63,18 @@ class ThrowableRifle : Script
     private int spGainPerIchor = 2; //gain X amount of sp per ichor
     [SerializableField]
     private int ichorFindRadius = 5; //gain X amount of sp per ichor
+
+    //Particle Effects
+    [SerializableField]
+    public GameObject absorbtionEmitters;
+    [SerializableField]
+    public GameObject throwingEmitters;
+    [SerializableField]
+    public GameObject slicingEmitters;
+    [SerializableField]
+    public GameObject jetStreamEmitters;
+    [SerializableField]
+    public Prefab     hitEnviromentSparkVFXPrefab;
 
     private float currentIchorGained =0;
     private float totalIchorGained = 0;
@@ -127,10 +138,11 @@ class ThrowableRifle : Script
         //}
 
         throwingWeaponState = ThrowingWeaponState.Seeking;
-        
 
-
-
+        absorbtionEmitters.SetActive(false);
+        throwingEmitters.SetActive(false);
+        slicingEmitters.SetActive(false);
+        jetStreamEmitters.SetActive(false);
     }
 
     public void InitWeapon()
@@ -145,7 +157,9 @@ class ThrowableRifle : Script
         weaponRB.SetVelocity(angledFlightPath * weaponFlyingSpeed);
         angledFlightPath.Normalize();
         gameObject.transform.rotation = Quaternion.LookRotation(angledFlightPath) * Quaternion.AngleAxis(180 * Mathf.Deg2Rad, new Vector3(0, 1, 0));
-
+        
+        
+        throwingEmitters.SetActive(true);
 
 
         //Quaternion baseRotation = Quaternion.LookRotation(flightPath);
@@ -227,9 +241,14 @@ class ThrowableRifle : Script
                 }
                 break;
             case ThrowingWeaponState.HitEnviroment:
-                
-                if(weaponSpinSequence != null)
+
+                if (weaponSpinSequence != null)
                 weaponSpinSequence.play();
+                absorbtionEmitters.SetActive(true);
+                slicingEmitters.SetActive(false);
+                throwingEmitters.SetActive(false);
+                jetStreamEmitters.SetActive(false);
+                Instantiate(hitEnviromentSparkVFXPrefab,absorbtionEmitters.transform.position, Quaternion.Identity()).SetActive(true);
                 //audioComponent.PlayRandomSound(hitWallSFX);
                 throwingWeaponState = ThrowingWeaponState.HitDelay;
                 timeElapsed = 0;
@@ -238,13 +257,17 @@ class ThrowableRifle : Script
 
                 if (weaponSpinSequence != null)
                     weaponSpinSequence.play();
+                absorbtionEmitters.SetActive(false);
+                slicingEmitters.SetActive(true);
+                throwingEmitters.SetActive(false);
+                jetStreamEmitters.SetActive(true);
                 DamageEnemy();
                 throwingWeaponState = ThrowingWeaponState.HitDelay;
                 timeElapsed = 0;
                 break;
             case ThrowingWeaponState.HitDelay:
                 {
-                    Debug.Log("Called");
+                    //Debug.Log("Called");
                     HitDelay();
                 
                 }
@@ -410,7 +433,6 @@ class ThrowableRifle : Script
 
         if ( (other.tag == "Wall" || other.tag == "Floor") && throwingWeaponState == ThrowingWeaponState.Flying)
         {
-            Debug.Log("HIT SMTH");
             //audioComponent.PlayRandomSound(hitWallSFX);
             weaponRB.SetVelocity(Vector3.Zero());
             throwingWeaponState = ThrowingWeaponState.HitEnviroment;
@@ -537,6 +559,13 @@ class ThrowableRifle : Script
 
         foreach (var enemy in candidateEnemies)
         {
+            //reject disabled colliders
+
+            if (enemy.IsActive() == false)
+            {
+                continue;
+            }
+
             Vector3 otherVector = enemy.transform.position - origin;
 
             Vector3 pointOnLine = Vector3.Proj(otherVector, rayCast);
@@ -556,15 +585,11 @@ class ThrowableRifle : Script
 
                 if (currentDistance < smallestDistance)
                 {
-
                     smallestDistance = currentDistance;
                     candidateTarget = enemy;
                 }
 
             }
-
-
-
 
         }
 

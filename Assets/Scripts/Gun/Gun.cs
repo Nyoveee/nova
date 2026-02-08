@@ -141,7 +141,7 @@ public abstract class Gun : Script
             ParticleEmitter_ emitter = contactSparkVFX.getComponent<ParticleEmitter_>();
             if (collidedEntity.tag == "Enemy_WeakSpot")
             {
-                Debug.Log("Called");
+                //Debug.Log("Called");
                 emitter.setParticleColor(weakPointHitSparkColour);
             }
             

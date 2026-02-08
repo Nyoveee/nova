@@ -111,6 +111,7 @@ class UltimateController : Script
         isCasting = true;
         //rigidbody.enable = false;
         playerController.GravityFreeze(true);
+        playerController.PositionFreeze(true);
         playerController.playerMoveStates = PlayerMoveStates.Disabled;
 
         Invoke(() =>
@@ -130,6 +131,7 @@ class UltimateController : Script
         playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.WeaponFree;
         playerWeaponController.ResetGunPosition();
         playerController.GravityFreeze(false);
+        playerController.PositionFreeze(false);
 
         isCasting = false;
         originalGun.enable = true;

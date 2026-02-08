@@ -28,6 +28,8 @@ class Engine;
 
 #include "export.h"
 #include "physics.h"
+#include "component.h"
+
 
 struct Transform;
 struct Rigidbody;
@@ -63,6 +65,8 @@ public:
 	
 public:
 	// These interfaces are invoked by C# scripting..
+	ENGINE_DLL_API void SetPhysicsLayer(Rigidbody& rigidbody, Rigidbody::Layer physicsLayer);
+
 	ENGINE_DLL_API PhysicsRay getRayFromMouse() const;
 	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance, std::vector<entt::entity> const& ignoredEntities = {});
 	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance, std::vector<uint8_t> const& layerMask = {});
