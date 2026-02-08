@@ -1,5 +1,5 @@
 {
-    "RootEntity": 36700464,
+    "RootEntity": 21,
     "Entities": [
         {
             "EntityData": {
@@ -8,15 +8,15 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    40894845,
-                    35651914,
-                    3146013,
-                    38797639,
-                    281
+                    22,
+                    23,
+                    28,
+                    32,
+                    35
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 15864537180317254659,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -124,7 +124,7 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 35651914,
+                                    "__variant_value": 23,
                                     "__variant_type": 4
                                 }
                             },
@@ -276,28 +276,28 @@
                             {
                                 "name": "absorbtionEmitters",
                                 "data": {
-                                    "__variant_value": 3146013,
+                                    "__variant_value": 28,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "throwingEmitters",
                                 "data": {
-                                    "__variant_value": 38797639,
+                                    "__variant_value": 32,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "slicingEmitters",
                                 "data": {
-                                    "__variant_value": 255,
+                                    "__variant_value": 25,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "jetStreamEmitters",
                                 "data": {
-                                    "__variant_value": 281,
+                                    "__variant_value": 35,
                                     "__variant_type": 4
                                 }
                             },
@@ -359,18 +359,18 @@
                     }
                 ]
             },
-            "id": 36700464
+            "id": 21
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 36700464,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 11193020142114675265,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 4911782886552208391,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -483,7 +483,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 36700464,
+                                    "__variant_value": 21,
                                     "__variant_type": 4
                                 }
                             }
@@ -491,21 +491,21 @@
                     }
                 ]
             },
-            "id": 40894845
+            "id": 22
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 36700464,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": [
-                    34603313,
-                    255
+                    24,
+                    25
                 ],
                 "layerId": 1,
                 "isActive": true,
-                "prefabID": 11193020142114675265,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 9523468904979596293,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -600,18 +600,18 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 35651914
+            "id": 23
         },
         {
             "EntityData": {
                 "name": "Rifle Outline",
                 "tag": "",
-                "parent": 35651914,
+                "parent": 23,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 11193020142114675265,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 7794086648069325825,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -700,21 +700,21 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 34603313
+            "id": 24
         },
         {
             "EntityData": {
                 "name": "BladeSliceEmitter",
                 "tag": "",
-                "parent": 35651914,
+                "parent": 23,
                 "attachedSocket": 65535,
                 "children": [
-                    276,
-                    280
+                    26,
+                    27
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 14796893805774898115,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -764,18 +764,18 @@
                     "z": 0.2142057567834854
                 }
             },
-            "id": 255
+            "id": 25
         },
         {
             "EntityData": {
                 "name": "BlueSpark",
                 "tag": "",
-                "parent": 255,
+                "parent": 25,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 7302904025832588229,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -933,18 +933,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 276
+            "id": 26
         },
         {
             "EntityData": {
                 "name": "Yellowpark",
                 "tag": "",
-                "parent": 255,
+                "parent": 25,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 7302904025832588229,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1102,22 +1102,22 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 280
+            "id": 27
         },
         {
             "EntityData": {
                 "name": "Abs_Emitter",
                 "tag": "",
-                "parent": 36700464,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": [
-                    3146052,
-                    23069005,
-                    23069008
+                    29,
+                    30,
+                    31
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 8550489083151371263,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1167,18 +1167,18 @@
                     "z": 0.0
                 }
             },
-            "id": 3146013
+            "id": 28
         },
         {
             "EntityData": {
                 "name": "Halo",
                 "tag": "",
-                "parent": 3146013,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 1632960055510813697,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1336,18 +1336,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 3146052
+            "id": 29
         },
         {
             "EntityData": {
                 "name": "Star Shine",
                 "tag": "",
-                "parent": 3146013,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 16620939615404493827,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1505,18 +1505,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 23069005
+            "id": 30
         },
         {
             "EntityData": {
                 "name": "absorption effect",
                 "tag": "",
-                "parent": 3146013,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 6244646073954405381,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1674,21 +1674,21 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 23069008
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "ThrowingEmitter",
                 "tag": "",
-                "parent": 36700464,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": [
-                    145,
-                    3146054
+                    33,
+                    34
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 10188295215564964795,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -1768,18 +1768,18 @@
                     "z": 0.0
                 }
             },
-            "id": 38797639
+            "id": 32
         },
         {
             "EntityData": {
                 "name": "SparkStream",
                 "tag": "",
-                "parent": 38797639,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 964923178710909885,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -1967,18 +1967,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 145
+            "id": 33
         },
         {
             "EntityData": {
                 "name": "ArcTrail",
                 "tag": "",
-                "parent": 38797639,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 14891557358482639869,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2136,25 +2136,25 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 3146054
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "StreamLines_Emitter",
                 "tag": "",
-                "parent": 36700464,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": [
-                    286,
-                    289,
-                    291,
-                    292,
-                    295,
-                    296
+                    36,
+                    37,
+                    38,
+                    39,
+                    40,
+                    41
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 10551793760248169415,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2204,18 +2204,18 @@
                     "z": 0.0
                 }
             },
-            "id": 281
+            "id": 35
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 281,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 12281176017158767561,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2373,18 +2373,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 286
+            "id": 36
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 281,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 12281176017158767561,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2542,18 +2542,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 289
+            "id": 37
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 281,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 12281176017158767561,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2711,18 +2711,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 291
+            "id": 38
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 281,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 12281176017158767561,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2880,18 +2880,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 292
+            "id": 39
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 281,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 12281176017158767561,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3049,18 +3049,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 295
+            "id": 40
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 281,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 2634949400516527797,
                 "entityGUID": 12281176017158767561,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3218,7 +3218,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 296
+            "id": 41
         }
     ]
 }

@@ -85,6 +85,9 @@ class ThrowableRifle : Script
     private Audio pickupSFX;
     [SerializableField]
     private List<Audio> throwSFX;
+
+    private bool isFlightSFXPlaying = false;
+
     [SerializableField]
     private List<Audio> hitWallSFX;
     [SerializableField]
@@ -207,8 +210,14 @@ class ThrowableRifle : Script
                 }
                 break;
             case ThrowingWeaponState.Flying:
-                { 
-                    if(timeElapsed > maxFlyingTime)
+                {
+                    if (!isFlightSFXPlaying)
+                    {
+                        audioComponent.PlayRandomSound(throwSFX);
+                        isFlightSFXPlaying = true;
+                    }
+
+                    if (timeElapsed > maxFlyingTime)
                     {
                         weaponSpinSequence.play();
                         throwingWeaponState = ThrowingWeaponState.HitDelay;
@@ -249,7 +258,8 @@ class ThrowableRifle : Script
                 throwingEmitters.SetActive(false);
                 jetStreamEmitters.SetActive(false);
                 Instantiate(hitEnviromentSparkVFXPrefab,absorbtionEmitters.transform.position, Quaternion.Identity()).SetActive(true);
-                //audioComponent.PlayRandomSound(hitWallSFX);
+                isFlightSFXPlaying = false;
+                audioComponent.PlayRandomSound(hitWallSFX);
                 throwingWeaponState = ThrowingWeaponState.HitDelay;
                 timeElapsed = 0;
                 break;
@@ -261,7 +271,8 @@ class ThrowableRifle : Script
                 slicingEmitters.SetActive(false);
                 throwingEmitters.SetActive(false);
                 jetStreamEmitters.SetActive(false);
-                
+                isFlightSFXPlaying = false;
+                audioComponent.PlayRandomSound(hitSFX);
                 DamageEnemy();
                 throwingWeaponState = ThrowingWeaponState.HitDelay;
                 timeElapsed = 0;

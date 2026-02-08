@@ -26,6 +26,8 @@ class Charger : Enemy
     [SerializableField]
     private List<Audio> hurtSFX;
     [SerializableField]
+    private List<Audio> impactSFX;
+    [SerializableField]
     private List<Audio> spotSFX;
     [SerializableField]
     private List<Audio> footstepSFX;
@@ -111,6 +113,7 @@ class Charger : Enemy
 
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
+            audioComponent.PlayRandomSound(impactSFX);
             if (colliderTag == "Enemy_ArmouredSpot" || colliderTag == "Enemy")
             {
                 damage *= chargerstats.enemyArmouredMultiplier;

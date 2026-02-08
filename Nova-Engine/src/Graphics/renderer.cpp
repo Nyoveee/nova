@@ -3669,7 +3669,7 @@ void Renderer::renderDebugSelectedObjects() {
 			case Light::Type::Directional:
 				debugShader.setMatrix("model", model);
 
-				debugParticleShapeVBO.uploadData(DebugShapes::Line(glm::vec3{0.f}, transform->front * 2.f));
+				debugParticleShapeVBO.uploadData(DebugShapes::Line(glm::vec3{ 0.f }, transform->front * 2.f));
 				glDrawArrays(GL_LINES, 0, 2);
 				break;
 			case Light::Type::PointLight:
@@ -3767,6 +3767,32 @@ void Renderer::renderDebugSelectedObjects() {
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 
 			debugShader.setVec4("color", { 0.f, 1.0f, 1.0f, 1.0f });
+		}
+
+		// Render positional audio area
+		if (positionalAudio) {
+			glm::mat4 model = glm::identity<glm::mat4>();
+			model = glm::translate(model, transform->position);
+
+			debugShader.setMatrix("model", model);
+
+			debugShader.setVec4("color", { 0.f, 1.0f, 1.0f, 1.0f });
+
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(positionalAudio->innerRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(positionalAudio->innerRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(positionalAudio->innerRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+
+			debugShader.setVec4("color", { 0.f, 1.0f, 0.0f, 1.0f });
+
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(positionalAudio->maxRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(positionalAudio->maxRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(positionalAudio->maxRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 		}
 
 		// Render positional audio area
