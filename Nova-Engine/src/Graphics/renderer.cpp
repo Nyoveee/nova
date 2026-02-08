@@ -3654,6 +3654,7 @@ void Renderer::renderDebugSelectedObjects() {
 		NavMeshOffLinks const* navMeshOffLinks  = registry.try_get<NavMeshOffLinks>(entity);
 		CameraComponent const* cameraComponent	= registry.try_get<CameraComponent>(entity);
 		ReflectionProbe const* reflectionProbe	= registry.try_get<ReflectionProbe>(entity);
+		PositionalAudio const* positionalAudio  = registry.try_get<PositionalAudio>(entity);
 
 		if (!transform) {
 			return;
@@ -3766,6 +3767,32 @@ void Renderer::renderDebugSelectedObjects() {
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 
 			debugShader.setVec4("color", { 0.f, 1.0f, 1.0f, 1.0f });
+		}
+
+		// Render positional audio area
+		if (positionalAudio) {
+			glm::mat4 model = glm::identity<glm::mat4>();
+			model = glm::translate(model, transform->position);
+
+			debugShader.setMatrix("model", model);
+
+			debugShader.setVec4("color", { 0.f, 1.0f, 1.0f, 1.0f });
+
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(positionalAudio->innerRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(positionalAudio->innerRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(positionalAudio->innerRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+
+			debugShader.setVec4("color", { 0.f, 1.0f, 0.0f, 1.0f });
+
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(positionalAudio->maxRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(positionalAudio->maxRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(positionalAudio->maxRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 		}
 	}
 }

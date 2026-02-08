@@ -14,27 +14,68 @@ class UnlockGateQuest : Quest
 
     [SerializableField]
     private Switch hubSwitch;
+    
+    [SerializableField]
+    private List<Light_> shadowCasters = new List<Light_>();
+
+    [SerializableField]
+    private GameObject switchSpotlight;
 
     [SerializableField]
     private float questCompletionDelay;
 
+    [SerializableField]
+    private float lightOffduration = 0.3f;
+
+    private float timeElapsed = 0f;
+
+    private float initialIntensity = 0f;
+
     private bool hasSucceeded = false;
+    private bool isAnimating = false;
 
     // This function is first invoked when game starts.
-    protected override void init()
+    protected override void update()
     {
+        if(isAnimating)
+        {
+            timeElapsed += Time.V_DeltaTime();
+            timeElapsed = Mathf.Min(timeElapsed, lightOffduration);
+
+            float interval = timeElapsed / lightOffduration;
+
+            foreach (Light_ light in shadowCasters)
+            {
+                light.intensity = Mathf.Interpolate(initialIntensity, 0f, interval, 1f);
+            }
+
+            if (timeElapsed == lightOffduration) {
+                isAnimating = false;
+            }
+        }
     }
 
     public override void OnEnter()
     {
-        turbineToHubDoor.UnlockDoor();
-        hubSwitch.enableSwitch();
+        Invoke(() =>
+        {
+            if(shadowCasters.Count != 0)
+            {
+                initialIntensity = shadowCasters[0].intensity;
+            }
+
+            turbineToHubDoor.UnlockDoor();
+            hubSwitch.enableSwitch();
+            switchSpotlight.SetActive(true);
+        }, 0f);
     }
    
     public override void OnSuccess()
     {
         vaultDoor.UnlockDoor();
         vaultDoor.OpenDoor();
+
+        isAnimating = true;
     }
 
     public override void UpdateQuest()

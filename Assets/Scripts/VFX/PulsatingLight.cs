@@ -12,6 +12,8 @@ class PulsatingLight : Script
     private Light_ light;
     private float timeElapsed = 0f;
 
+    public bool isActive = true;
+
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
     {}
@@ -25,6 +27,11 @@ class PulsatingLight : Script
     // This function is invoked every update.
     protected override void update()
     {
+        if(!isActive)
+        {
+            return;
+        }
+
         if(light == null)
         {
             return;

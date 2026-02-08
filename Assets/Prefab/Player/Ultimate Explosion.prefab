@@ -1,5 +1,5 @@
 {
-    "RootEntity": 26,
+    "RootEntity": 12,
     "Entities": [
         {
             "EntityData": {
@@ -116,7 +116,8 @@
             },
             "AudioComponent": {
                 "volume": 1.0,
-                "loop": false
+                "loop": false,
+                "audioGroup": "SFX"
             },
             "Scripts": {
                 "scriptDatas": [
@@ -211,7 +212,7 @@
                     }
                 ]
             },
-            "id": 26
+            "id": 12
         }
     ]
 }

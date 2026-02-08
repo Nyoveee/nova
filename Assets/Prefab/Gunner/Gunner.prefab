@@ -1,5 +1,5 @@
 {
-    "RootEntity": 28,
+    "RootEntity": 9,
     "Entities": [
         {
             "EntityData": {
@@ -8,10 +8,10 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    29,
-                    30,
-                    31,
-                    33
+                    10,
+                    11,
+                    12,
+                    14
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -99,7 +99,8 @@
             },
             "AudioComponent": {
                 "volume": 1.0,
-                "loop": false
+                "loop": false,
+                "audioGroup": "SFX"
             },
             "Scripts": {
                 "scriptDatas": [
@@ -212,14 +213,14 @@
                             {
                                 "name": "projectileSpawnPoint",
                                 "data": {
-                                    "__variant_value": 33,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rigidBody",
                                 "data": {
-                                    "__variant_value": 30,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             },
@@ -296,29 +297,40 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 29,
+                                    "__variant_value": 10,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "animator",
                                 "data": {
-                                    "__variant_value": 31,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "renderer",
                                 "data": {
-                                    "__variant_value": 31,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshAgent",
                                 "data": {
-                                    "__variant_value": 28,
+                                    "__variant_value": 9,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "enemyColliders",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 4
+                                    },
+                                    "__variant_type": 20
                                 }
                             },
                             {
@@ -331,14 +343,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 28,
+                                    "__variant_value": 9,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 30,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             }
@@ -353,13 +365,13 @@
                 "agentRotationSpeed": 1.0,
                 "separationWeight": 1.0
             },
-            "id": 28
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Ichor Spawn Point",
                 "tag": "",
-                "parent": 28,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -368,30 +380,30 @@
                 "entityGUID": 10473209455727116359,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
+                    "11935986701403193153": false,
                     "9059764703561530457": false,
                     "452538415452204233": false,
                     "10599230719904143524": false,
                     "17421316227555880647": false,
-                    "6152912775364972041": false,
                     "13953638462837156301": false,
-                    "394579324703252227": false,
+                    "6152912775364972041": false,
                     "10106385962890515953": false,
+                    "394579324703252227": false,
                     "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "2785545264285399722": false,
                     "16533173024327387273": false,
+                    "2785545264285399722": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "8302729333555196098": false,
                     "13437837940854190620": false,
-                    "7111564935354361005": false,
+                    "8302729333555196098": false,
                     "13484132868097894827": false,
+                    "7111564935354361005": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -442,13 +454,13 @@
                     "z": 0.0
                 }
             },
-            "id": 29
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Navmesh Collider",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 28,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -457,30 +469,30 @@
                 "entityGUID": 4708601932692881477,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
+                    "11935986701403193153": false,
                     "9059764703561530457": false,
                     "452538415452204233": false,
                     "10599230719904143524": false,
                     "17421316227555880647": false,
-                    "6152912775364972041": false,
                     "13953638462837156301": false,
-                    "394579324703252227": false,
+                    "6152912775364972041": false,
                     "10106385962890515953": false,
+                    "394579324703252227": false,
                     "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "2785545264285399722": false,
                     "16533173024327387273": false,
+                    "2785545264285399722": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "8302729333555196098": false,
                     "13437837940854190620": false,
-                    "7111564935354361005": false,
+                    "8302729333555196098": false,
                     "13484132868097894827": false,
+                    "7111564935354361005": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -569,7 +581,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 28,
+                                    "__variant_value": 9,
                                     "__variant_type": 4
                                 }
                             }
@@ -577,16 +589,16 @@
                     }
                 ]
             },
-            "id": 30
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Gunner Model",
                 "tag": "",
-                "parent": 28,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": [
-                    32
+                    13
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -594,30 +606,30 @@
                 "entityGUID": 13355513217244233795,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "16652763906952685383": false,
                     "15908289914940614865": false,
+                    "11935986701403193153": false,
                     "452538415452204233": false,
                     "9059764703561530457": false,
                     "17421316227555880647": false,
                     "10599230719904143524": true,
-                    "13953638462837156301": false,
                     "6152912775364972041": false,
-                    "10106385962890515953": false,
+                    "13953638462837156301": false,
                     "394579324703252227": false,
+                    "10106385962890515953": false,
                     "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -748,13 +760,13 @@
             "Animator": {
                 "controllerId": 14235729342422597637
             },
-            "id": 31
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Gunner_ColliderWeak",
                 "tag": "Enemy_WeakSpot",
-                "parent": 31,
+                "parent": 12,
                 "attachedSocket": 5,
                 "children": null,
                 "layerId": 0,
@@ -763,30 +775,30 @@
                 "entityGUID": 13355513217244233803,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
+                    "11935986701403193153": false,
                     "9059764703561530457": false,
                     "452538415452204233": false,
                     "10599230719904143524": false,
                     "17421316227555880647": false,
-                    "6152912775364972041": false,
                     "13953638462837156301": false,
-                    "394579324703252227": false,
+                    "6152912775364972041": false,
                     "10106385962890515953": false,
+                    "394579324703252227": false,
                     "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "2785545264285399722": false,
                     "16533173024327387273": false,
+                    "2785545264285399722": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "8302729333555196098": false,
                     "13437837940854190620": false,
-                    "7111564935354361005": false,
+                    "8302729333555196098": false,
                     "13484132868097894827": false,
+                    "7111564935354361005": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -870,7 +882,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 28,
+                                    "__variant_value": 9,
                                     "__variant_type": 4
                                 }
                             }
@@ -878,13 +890,13 @@
                     }
                 ]
             },
-            "id": 32
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Projectile Spawn Point",
                 "tag": "",
-                "parent": 28,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -893,30 +905,30 @@
                 "entityGUID": 2979219675782611009,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
+                    "11935986701403193153": false,
                     "9059764703561530457": false,
                     "452538415452204233": false,
                     "10599230719904143524": false,
                     "17421316227555880647": false,
-                    "6152912775364972041": false,
                     "13953638462837156301": false,
-                    "394579324703252227": false,
+                    "6152912775364972041": false,
                     "10106385962890515953": false,
+                    "394579324703252227": false,
                     "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "2785545264285399722": false,
                     "16533173024327387273": false,
+                    "2785545264285399722": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "8302729333555196098": false,
                     "13437837940854190620": false,
-                    "7111564935354361005": false,
+                    "8302729333555196098": false,
                     "13484132868097894827": false,
+                    "7111564935354361005": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -967,7 +979,7 @@
                     "z": 0.0
                 }
             },
-            "id": 33
+            "id": 14
         }
     ]
 }
