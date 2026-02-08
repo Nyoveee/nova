@@ -5,19 +5,22 @@ using ScriptingAPI;
 
 class SliderScript : Script
 {
+    // Sliders Components
+    [SerializableField]
+    private GameObject sliderFill;
     // Slider boundaries
-    public float minX = 599f;   // left boundary
-    public float maxX = 1299f;  // right boundary
+    private float knobMinX;  
+    private float knobMaxX;  
 
     // Slider value settings
-    public float minValue = 0f;
-    public float maxValue = 100f;
-    public float currentValue = 50f;
+    public float minValue;
+    public float maxValue;
+    public float defaultValue;
 
-    public string fillEntityName = "Slider fill";
-    public string saveKey = "SliderVolume"; // Must have to save/load the value
-    public float maxVerticalDistance = 50f; // when u go to far it stops the mouse 
+    // Must have to save/load the value
+    public string saveKey;
 
+    private float maxVerticalDistance = 50f; // when u go to far it stops the mouse 
     private bool isDragging = false;
     private Vector2 mouseInitialPosition;
     private float clickOffset;
@@ -26,7 +29,8 @@ class SliderScript : Script
     protected override void init()
     {
         sliderCenterY = gameObject.transform.position.y;
-
+        knobMinX = sliderFill.transform.position.x;
+        knobMaxX = sliderFill.transform.position.x + sliderFill.transform.scale.x;
         // load saved value
         LoadSliderValue();
 
@@ -35,7 +39,7 @@ class SliderScript : Script
         UpdateFillBar();
 
         Debug.Log("Initial position X: " + gameObject.transform.position.x);
-        Debug.Log("Loaded volume: " + currentValue);
+        Debug.Log("Loaded volume: " + defaultValue);
     }
     protected override void update()
     {
@@ -52,6 +56,7 @@ class SliderScript : Script
             {
                 //mouse is too far away, stop dragging
                 isDragging = false;
+                SaveSliderValue();
                 Debug.Log("Stopped dragging mouse too far away");
                 return;
             }
@@ -59,17 +64,17 @@ class SliderScript : Script
             float newX = currentMousePos.x - clickOffset;
 
             // clamp the x position
-            if (newX < minX) newX = minX;
-            if (newX > maxX) newX = maxX;
+            if (newX < knobMinX) newX = knobMinX;
+            if (newX > knobMaxX) newX = knobMaxX;
 
             // update position
             Vector3 currentPos = gameObject.transform.position;
             gameObject.transform.position = new Vector3(newX, currentPos.y, 0f);
 
             // calculate the slider value
-            float sliderWidth = maxX - minX;
-            float valuePercentage = (newX - minX) / sliderWidth;
-            currentValue = minValue + (maxValue - minValue) * valuePercentage;
+            float sliderWidth = knobMaxX - knobMinX;
+            float valuePercentage = (newX - knobMinX) / sliderWidth;
+            defaultValue = minValue + (maxValue - minValue) * valuePercentage;
 
             //update the fill bar
             UpdateFillBar();
@@ -92,7 +97,7 @@ class SliderScript : Script
         // save the value when user releases the slider
         SaveSliderValue();
 
-        Debug.Log("Final Value: " + currentValue);
+        Debug.Log("Final Value: " + defaultValue);
         Debug.Log("Volume saved!");
     }
 
@@ -102,31 +107,31 @@ class SliderScript : Script
         try
         {
             float savedValue = PlayerPrefs.GetFloat(saveKey);
-            currentValue = savedValue;
+            defaultValue = savedValue;
             Debug.Log("Loaded saved value: " + savedValue);
         }
         catch
         {
             // no saved value exists, use default
-            currentValue = 30f;
-            Debug.Log("No saved value found, using default: " + currentValue);
+            defaultValue = 30f;
+            Debug.Log("No saved value found, using default: " + defaultValue);
         }
     }
 
     // save the current slider value
     private void SaveSliderValue()
     {
-        PlayerPrefs.SetFloat(saveKey, currentValue);
+        PlayerPrefs.SetFloat(saveKey, defaultValue);
         PlayerPrefs.Save(); // Make sure it's saved in the json it created.
-        Debug.Log("Saved value: " + currentValue);
+        Debug.Log("Saved value: " + defaultValue);
     }
 
     // update knob position based on current value
     private void UpdateKnobPosition()
     {
-        float sliderWidth = maxX - minX;
-        float valuePercentage = (currentValue - minValue) / (maxValue - minValue);
-        float newX = minX + (sliderWidth * valuePercentage);
+        float sliderWidth = knobMaxX - knobMinX;
+        float valuePercentage = (defaultValue - minValue) / (maxValue - minValue);
+        float newX = knobMinX + (sliderWidth * valuePercentage);
 
         Vector3 currentPos = gameObject.transform.position;
         gameObject.transform.position = new Vector3(newX, currentPos.y, 0f);
@@ -135,12 +140,11 @@ class SliderScript : Script
     // update the fill bar based on current value
     private void UpdateFillBar()
     {
-        GameObject fillObject = GameObject.Find(fillEntityName);
-        if (fillObject != null)
+        if (sliderFill != null)
         {
-            float valuePercentage = (currentValue - minValue) / (maxValue - minValue);
-            Vector3 fillScale = fillObject.transform.localScale;
-            fillObject.transform.localScale = new Vector3(valuePercentage, fillScale.y, fillScale.z);
+            float valuePercentage = (defaultValue - minValue) / (maxValue - minValue);
+            Vector3 fillScale = sliderFill.transform.localScale;
+            sliderFill.transform.localScale = new Vector3(valuePercentage, fillScale.y, fillScale.z);
         }
     }
 }

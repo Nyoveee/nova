@@ -210,8 +210,8 @@ public:
 		bool get() { return Interface::engine->renderer.toneMappingMethod == Renderer::ToneMappingMethod::ACES; };
 		void set(bool value) { Interface::engine->renderer.toneMappingMethod = value ? Renderer::ToneMappingMethod::ACES : Renderer::ToneMappingMethod::None; };
 	};
-#endif
 
+#endif
 	static property bool toPostProcess {
 		bool get() { return Interface::engine->renderer.toPostProcess; };
 		void set(bool value) { Interface::engine->renderer.toPostProcess = value; };
@@ -226,6 +226,23 @@ public:
 		float get() { return Interface::engine->renderer.vignette; };
 		void set(float value) { Interface::engine->renderer.vignette = value; };
 	};
+	static property bool ssaoEnabled {
+		bool get() { return Interface::engine->renderer.renderConfig.toEnableSSAO; };
+		void set(bool value) { Interface::engine->renderer.renderConfig.toEnableSSAO = value; };
+	}
+	static property bool fogEnabled {
+		bool get() { return Interface::engine->renderer.renderConfig.toEnableFog; };
+		void set(bool value) { Interface::engine->renderer.renderConfig.toEnableFog = value; };
+	}
+	static property bool antiAliasingEnabled {
+		bool get() { return Interface::engine->renderer.renderConfig.toEnableAntiAliasing; };
+		void set(bool value) { Interface::engine->renderer.renderConfig.toEnableAntiAliasing = value; };
+	}
+	static property bool shadowsEnabled {
+		bool get() { return Interface::engine->renderer.renderConfig.toEnableShadows; };
+		void set(bool value) { Interface::engine->renderer.renderConfig.toEnableShadows = value; };
+	}
+
 };
 
 #if false
