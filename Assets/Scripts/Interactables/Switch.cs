@@ -31,14 +31,16 @@ class Switch : Script
     private bool isAnimating = false;
     private float timeElapsed = 0f;
 
-    private bool isInteractable = false;
 
     private Quaternion initialRotation;
     private Quaternion finalRotation;
 
     private AudioComponent_ audioComponent;
 
-    private bool isActivated = false;
+    private bool isEnabled = false;
+    private bool hasBeenActivated = false;
+    
+    private bool isPlayerCloseToSwitch = false;
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
@@ -47,7 +49,7 @@ class Switch : Script
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
-        isActivated = !isEnabledAtStart;
+        isEnabled = isEnabledAtStart;
 
         player = GameObject.FindWithTag("Player");
         initialRotation = gameObject.transform.rotation;
@@ -66,20 +68,25 @@ class Switch : Script
             animate();
         }
 
-        if(isActivated)
+        if(hasBeenActivated)
         {
             return;
         }
 
+        if(!isEnabled)
+        {
+            return;
+        }
+            
+        // visual indicator..
         float distance = Vector3.Distance(player.transform.position, gameObject.transform.position);
-        isInteractable = distance <= switchActivationDistance;
+        isPlayerCloseToSwitch = distance <= switchActivationDistance;
 
-        switchMesh?.setMaterialBool(1, "isActive", isInteractable);
+        switchMesh?.setMaterialBool(1, "isActive", isPlayerCloseToSwitch);
     }
 
     private void animate()
     {
-
         timeElapsed += Time.V_DeltaTime();
         timeElapsed = Mathf.Min(turningDuration, timeElapsed);
 
@@ -106,15 +113,10 @@ class Switch : Script
 
     private void handleSwitchActivation()
     {
-        float distance = Vector3.Distance(player.transform.position, gameObject.transform.position);
-        isInteractable = distance <= switchActivationDistance;
-
-        if (!isActivated && isInteractable) {
+        if (!hasBeenActivated && isPlayerCloseToSwitch) {
             audioComponent?.PlaySound(switchSfx);
 
-            Debug.Log(gameObject.transform.front);
-
-            isActivated = true;
+            hasBeenActivated = true;
             isAnimating = true;
             switchMesh?.setMaterialBool(1, "isActive", false);
         }
@@ -122,22 +124,20 @@ class Switch : Script
 
     public bool isSwitchActivated()
     {
-        return isActivated;
+        return hasBeenActivated;
     }
 
-    public void activateSwitch()
+    public void enableSwitch()
     {
-        // isActivated here means has it been used.
-        isActivated = true;
+        isEnabled = true;
+        deactivateSwitch();
     }
 
     public void deactivateSwitch()
     {
-        isActivated = false;
+        hasBeenActivated = false;
         isAnimating = false;
         timeElapsed = 0f;
         switchMesh.gameObject.transform.rotation = initialRotation;
-        
-        // switchMesh?.setMaterialBool(1, "isActive", true); // ??
     }
 }

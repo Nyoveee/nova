@@ -9,6 +9,16 @@ class ElevatorQuest : Quest
     private GameObject checkPointIndicator;
     [SerializableField]
     private Elevator elevator;
+
+    [SerializableField]
+    private GameObject elevatorLamp;
+
+    [SerializableField]
+    private Material elevatorLampActive;
+
+    [SerializableField]
+    private Vector3 activeLightColor;
+
     [SerializableField]
     private GameObject missionObjectiveContainer;
     [SerializableField]
@@ -42,6 +52,20 @@ class ElevatorQuest : Quest
     public override void OnEnter()
     {
         elevator.OpenTutorialDoor();
+
+        if (elevatorLamp != null) {
+            elevatorLamp.getComponent<MeshRenderer_>().changeMaterial(0, elevatorLampActive);
+
+            foreach(GameObject child in elevatorLamp.GetChildren())
+            {
+                Light_ light = child.getComponent<Light_>();
+
+                if(light != null)
+                {
+                    light.color = activeLightColor;
+                }
+            }
+        }
     }
 
     public override void OnSuccess()

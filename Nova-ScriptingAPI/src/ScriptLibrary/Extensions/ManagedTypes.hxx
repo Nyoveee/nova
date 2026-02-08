@@ -403,7 +403,8 @@ ManagedComponentEnd()
 ManagedComponentDeclaration(
 	Light,
 	float, intensity,
-	float, radius
+	float, radius,
+	Vector3, color 
 )
 
 ManagedComponentEnd()

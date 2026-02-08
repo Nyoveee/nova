@@ -463,13 +463,13 @@ class ThrowableRifle : Script
         //audioComponent.PlaySound(pickupSFX);
 
         //update player health
-        if (playerGameobject.getScript<PlayerController>() != null)
+        if (playerGameobject.getScript<PlayerController_V2>() != null)
         {
 
             int heal = (int)( totalIchorGained /healthGainedPerIchor);
             int sp = (int)(totalIchorGained / spGainPerIchor);
 
-            playerGameobject.getScript<PlayerController>().GainHealth(heal);
+            // playerGameobject.getScript<PlayerController_V2>().GainHealth(heal);
             
             mappedWeapon.CurrentSp +=  sp;
 

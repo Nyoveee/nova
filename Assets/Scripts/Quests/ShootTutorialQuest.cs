@@ -7,6 +7,9 @@ class ShootTutorialQuest : Quest
     private GameObject grunt;
 
     [SerializableField]
+    private Switch switchGameObject;
+
+    [SerializableField]
     private float questCompleteDelay = 3f;
 
     private bool succeeded;
@@ -19,6 +22,8 @@ class ShootTutorialQuest : Quest
             Invoke(() =>
             {
                 SetQuestState(QuestState.Success);
+                switchGameObject?.enableSwitch();
+
             }, questCompleteDelay);
         }
     }

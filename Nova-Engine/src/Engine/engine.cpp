@@ -230,6 +230,9 @@ void Engine::SystemsOnLoad() {
 		return;
 	}
 
+	// Force update all entities via the transformation system.. since they are freshly created..
+	transformationSystem.update();
+
 	// Initialise the animator and sequencer components..
 	animationSystem.initialise();
 

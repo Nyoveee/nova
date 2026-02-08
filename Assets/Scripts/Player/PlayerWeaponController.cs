@@ -228,6 +228,17 @@ class PlayerWeaponController : Script
         }
     }
 
+    private void AnimateGunGlow()
+    {
+        // Specify lerp properties..
+        glowChangeDuration = glowDownDuration;
+        glowTimeElapsed = 0;
+
+        initialGlowStrength = peakGlowStrength;
+
+        // The final glow strength scales with how low the ammo count is..
+        finalGlowStrength = noAmmoGlowStrength * Mathf.Pow(1f - (float)currentlyHeldGun.CurrentAmmo / (float)currentlyHeldGun.MaxAmmo, ammoGlowScalePower);
+    }
 
     private void Fire()
     {
@@ -238,15 +249,7 @@ class PlayerWeaponController : Script
             sniperMesh.setMaterialFloat(SNIPER_BARREL_MATERIAL_INDEX, "glowStrength", peakGlowStrength);
             sniperMesh.setMaterialFloat(SNIPER_MATERIAL_MATERIAL_INDEX, "glowStrength", peakGlowStrength);
 
-            // Specify lerp properties..
-            glowChangeDuration = glowDownDuration;
-            glowTimeElapsed = 0;
-
-            initialGlowStrength = peakGlowStrength;
-
-            // The final glow strength scales with how low the ammo count is..
-            finalGlowStrength = noAmmoGlowStrength * Mathf.Pow(1f - (float)currentlyHeldGun.CurrentAmmo / (float)currentlyHeldGun.MaxAmmo, ammoGlowScalePower);
-            //Debug.Log(finalGlowStrength);
+            AnimateGunGlow();
             // ---------------------------------------------------------------
 
             // Emit particles at muzzle position..
@@ -356,11 +359,8 @@ class PlayerWeaponController : Script
             lerpVariable = 0;
             weaponControlStates = WeaponControlStates.WeaponFree;
 
+            AnimateGunGlow();
         }
-
-
-
-
     }
 
 

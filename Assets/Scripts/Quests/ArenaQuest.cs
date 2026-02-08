@@ -5,8 +5,7 @@ public class ArenaQuest : Quest
 {
 	[SerializableField]
     private ArenaManager arenaManager;
-	[SerializableField]
-    private List<Door> unlockableDoors;
+    
     public override void OnEnter()
 	{
 		arenaManager.StartArena(this);
@@ -14,9 +13,6 @@ public class ArenaQuest : Quest
 
 	public override void OnSuccess()
 	{
-		Debug.Log("Arena success");
-        foreach (Door door in unlockableDoors)
-            door.UnlockDoor();
     }
 
     public override void UpdateQuest()

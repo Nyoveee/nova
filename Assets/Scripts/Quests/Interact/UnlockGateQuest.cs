@@ -28,7 +28,7 @@ class UnlockGateQuest : Quest
     public override void OnEnter()
     {
         turbineToHubDoor.UnlockDoor();
-        hubSwitch.deactivateSwitch();
+        hubSwitch.enableSwitch();
     }
    
     public override void OnSuccess()
