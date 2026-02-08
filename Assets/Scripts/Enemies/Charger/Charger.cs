@@ -221,6 +221,7 @@ class Charger : Enemy
                     audioComponent.PlayRandomSound(deathSFX);
                     chargeLines.SetActive(false);
                     DisablePhysicalInteraction();
+                    animator.PlayAnimation("ChargerDeath");
                 }
             }
             else
@@ -230,11 +231,9 @@ class Charger : Enemy
                 {
                     audioComponent.PlayRandomSound(hurtSFX);
                     renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
-                    renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
                     Invoke(() =>
                     {
                         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
-                        renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
                     }, chargerstats.hurtDuration);
                 }
             }

@@ -230,11 +230,13 @@ ResourceID ResourceManager::createResourceInstance(ResourceID id) {
 		return INVALID_RESOURCE_ID;
 	}
 
-	// Makes a copy of the resource. This resource has to implement copy constructor.
-	std::unique_ptr<Resource> resourceInstancePtr = std::make_unique<T>(*resource);
 
 	// Generate a new resource id..
 	ResourceID resourceInstanceId = AssetIO::generateResourceID();
+
+	// Makes a copy of the resource. This resource has to implement copy constructor.
+	std::unique_ptr<Resource> resourceInstancePtr = std::make_unique<T>(*resource);
+	resourceInstancePtr->setId(resourceInstanceId);
 
 	auto&& [resourceIterator, __] = loadedResources.insert({ resourceInstanceId, std::move(resourceInstancePtr) });
 	assert(resourceIterator != loadedResources.end());
