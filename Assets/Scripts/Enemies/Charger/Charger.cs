@@ -7,12 +7,12 @@ class Charger : Enemy
     /***********************************************************
         Inspector Variables
     ***********************************************************/
+
+
     [SerializableField]
-    private Prefab chargerAttackHitBoxPrefab;
+    private GameObject? attackHitbox = null;
     [SerializableField]
     private Prefab stompHitBoxPrefab;
-    [SerializableField]
-    private Transform_? attackHitBoxTransform;
     [SerializableField]
     private Transform_? stompHitBoxTransform;
     [SerializableField]
@@ -50,8 +50,6 @@ class Charger : Enemy
     private float currentFootStepTime = 0f;
     private int footStepIndex = 0;
     Vector3 chargeDirection;
-    // Attack
-    private GameObject? attackHitbox;
     // Stomp
     private float currentStompCooldown = 0f;
     private GameObject? stompHitbox;
@@ -89,6 +87,11 @@ class Charger : Enemy
         updateState.Add(ChargerState.Death, Update_Death);
 
         ActivateRigidbody();
+
+        if (attackHitbox != null)
+        {
+            attackHitbox.SetActive(false);
+        }
 
     }
 
@@ -263,7 +266,7 @@ class Charger : Enemy
         {
             ActivateNavMeshAgent();
             chargerState = ChargerState.Idle;
-            //gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0, gameObject.transform.position.z);
+            gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0, gameObject.transform.position.z);
         }
     }
     private void Update_Idle(){
@@ -323,7 +326,7 @@ class Charger : Enemy
             chargerState = ChargerState.Attack;
             animator.PlayAnimation("ChargerAttack");
             audioComponent.PlayRandomSound(attackSFX);
-            ActivateRigidbody();
+            ActivateNavMeshAgent();
             return;
         }
         // Move Enemy 
@@ -388,12 +391,25 @@ class Charger : Enemy
     }
     public void BeginSwing()
     {
-        attackHitbox = Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.localPosition);
-        attackHitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.damage);
+        //attackHitbox = Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.localPosition);
+        //attackHitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.damage);
+
+       Debug.Log("Rb Hitbox Activated: " + physicsRigidbody.enable);
+
+       
+
+        if (attackHitbox != null)
+        {
+            //Debug.Log("Attack Hitbox Activated");
+            attackHitbox.SetActive(true);
+            attackHitbox.getScript<EnemyHitBox>().ResetValues();
+            attackHitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.damage);
+        }
     }
     public void EndSwing()
     {
-        Destroy(attackHitbox);
+        attackHitbox.SetActive(false);
+        //Destroy(attackHitbox);
     }
     public void EndAttack()
     {
@@ -441,7 +457,19 @@ class Charger : Enemy
             ActivateNavMeshAgent();
             chargeLines.SetActive(false);
         }
-        if (other.tag == "Wall" && chargerState == ChargerState.Charging)
+
+        //change to use physics layers
+
+        //if (other.get == "Wall" && chargerState == ChargerState.Charging)
+        //{
+        //    chargerState = ChargerState.Stagger;
+        //    animator.PlayAnimation("ChargerStagger");
+        //    audioComponent.PlayRandomSound(hurtSFX);
+        //    ActivateNavMeshAgent();
+        //    chargeLines.SetActive(false);
+        //}
+
+        if ((other.getComponent<Rigidbody_>().GetLayerName() == "Wall" || other.getComponent<Rigidbody_>().GetLayerName() == "Props") && chargerState == ChargerState.Charging)
         {
             chargerState = ChargerState.Stagger;
             animator.PlayAnimation("ChargerStagger");

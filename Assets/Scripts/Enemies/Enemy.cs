@@ -37,7 +37,7 @@ public abstract class Enemy : Script
     [SerializableField]
     protected Rigidbody_ physicsRigidbody;
     [SerializableField]
-    protected Rigidbody_ navMeshRigidBody;
+    protected Rigidbody_ navMeshRigidBody; //LEGACY CODE, navmesh rigidbody should be turned into a normal hurt box collider in the future we should not need a navmesh rigidbody
 
     /***********************************************************
         Local Variables
@@ -107,19 +107,20 @@ public abstract class Enemy : Script
         physicsRigidbody.SetVelocity(Vector3.Zero());
         navMeshAgent.enable = false;
         physicsRigidbody.enable = true;
-        navMeshRigidBody.enable = false;
+        //navMeshRigidBody.enable = false;
     }
     public void ActivateNavMeshAgent()
     {
         navMeshAgent.enable = true;
         physicsRigidbody.enable = false;
-        navMeshRigidBody.enable = true;
+        //navMeshRigidBody.enable = true;
     }
     public void DisablePhysicalInteraction()
     {   
         foreach(var collider in enemyColliders)
         {
-            collider.SetActive(false);
+            collider.getComponent<Rigidbody_>().enable = false;
+            //collider.SetActive(false);
         }
 
         navMeshAgent.enable = false;

@@ -116,7 +116,7 @@ public abstract class Gun : Script
     // Returns true if it hits an enemy.. you may wanna do something with it?
     public bool RayCastFire(Vector3 position, Vector3 direction, float range, float damage)
     {
-        string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall"};
+        string[] mask = { "Enemy_HurtSpot", "Wall", "Props", "Floor"};
         // Raycast..
         RayCastResult? result = PhysicsAPI.Raycast(position, direction, range, mask);
 

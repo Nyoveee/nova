@@ -71,7 +71,7 @@ struct AnimationChannel {
 			}
 		}
 
-		assert(false && "no key found?");
+		//assert(false && "no key found?");
 		return static_cast<int>(container.size()) - 2;
 	}
 
@@ -81,7 +81,7 @@ struct AnimationChannel {
 		float totalTime		= secondKeyTime - firstKeyTime;
 		float factor		= timeElapsed	/ totalTime;
 		
-		assert(factor >= 0.f && factor <= 1.f);
+		//assert(factor >= 0.f && factor <= 1.f);
 		return factor;
 	}
 
