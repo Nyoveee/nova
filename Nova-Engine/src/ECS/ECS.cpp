@@ -142,11 +142,16 @@ void ECS::deleteEntity(entt::entity entity, entt::registry& p_registry) {
 }
 
 void ECS::setActive(entt::entity entity, bool isActive) {
-	EntityData& entityData = registry.get<EntityData>(entity);
+	EntityData* entityData = registry.try_get<EntityData>(entity);
 	
+	if (!entityData) {
+		Logger::warn("Set active to an invalid entity? {}", static_cast<unsigned>(entity));
+		return;
+	}
+
 	// there is a change in active status..
-	if (entityData.isActive != isActive) {
-		entityData.isActive = isActive;
+	if (entityData->isActive != isActive) {
+		entityData->isActive = isActive;
 
 		// destruction / construction of physics body when enabling or disabling..
 		if (isActive) {
@@ -160,7 +165,7 @@ void ECS::setActive(entt::entity entity, bool isActive) {
 		}
 	}
 
-	for (entt::entity child : entityData.children) {
+	for (entt::entity child : entityData->children) {
 		setActive(child, isActive);
 	}
 }

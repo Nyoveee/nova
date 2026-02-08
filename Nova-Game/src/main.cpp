@@ -25,8 +25,10 @@ int main() {
 	RenderConfig	renderConfig	= Serialiser::deserialiseRenderConfig("renderConfig.json");
 
 	InputManager	inputManager	{};
-	ResourceManager resourceManager	{};
+
 	Window			window			{ gameConfig.gameName.c_str(), {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::ChangeDuringResize};
+	
+	ResourceManager resourceManager	{};
 	Engine			engine			{ window, inputManager, resourceManager, gameConfig, renderConfig, Engine::State::Game };
 
 	// In the executable, we don't do any compiling. We assume it has been compiled and provided for.
