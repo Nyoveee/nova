@@ -825,6 +825,12 @@ class PlayerController_V2 : Script
 
     }
 
+    public void GainHealth(float heal)
+    {
+        currentHealth += heal;
+        currentHealth = Mathf.Min(maxHealth, currentHealth);
+    }
+
     public void PositionFreeze(bool value)
     {
         if (value)

@@ -228,12 +228,8 @@ class PlayerController : Script
 
     public void GainHealth(float heal)
     {
-
         currentHealth += heal;
-
         currentHealth = Mathf.Min(maxHealth, currentHealth);
-
-
     }
 
     /***********************************************************

@@ -505,8 +505,8 @@ class ThrowableRifle : Script
             int heal = (int)( totalIchorGained /healthGainedPerIchor);
             int sp = (int)(totalIchorGained / spGainPerIchor);
 
-            // playerGameobject.getScript<PlayerController_V2>().GainHealth(heal);
-            
+            playerGameobject.getScript<PlayerController_V2>().GainHealth(heal);
+
             mappedWeapon.CurrentSp +=  sp;
 
             mappedWeapon.CurrentSp = Math.Min(mappedWeapon.CurrentSp,mappedWeapon.MaxSp);
