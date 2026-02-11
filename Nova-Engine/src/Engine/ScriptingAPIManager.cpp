@@ -136,6 +136,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		getHierarchyModifiedScripts_            = GetFunctionPtr<GetHierarchyModifiedScriptsFunctionPtr>("Interface", "GetHierarchyModifiedScripts");
 		getEnumNames							= GetFunctionPtr<GetEnumNamesFunctionPtr>("Interface", "getEnumNames");
 		clearCurrentScriptingState              = GetFunctionPtr<ClearCurrentScriptingStateFunctionPtr>("Interface", "clearCurrentScriptingState");
+		onActiveFunctionPtr						= GetFunctionPtr<OnActiveScriptFunctionPtr>("Interface", "onActive");
+
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
 
@@ -482,6 +484,10 @@ void ScriptingAPIManager::onCollisionExit(entt::entity entityOne, entt::entity e
 
 void ScriptingAPIManager::executeFunction(entt::entity entityOne, ResourceID scriptID, std::string const& functionName) {
 	executeFunction_(static_cast<unsigned>(entityOne), static_cast<unsigned long long>(scriptID), functionName);
+}
+
+void ScriptingAPIManager::onActive(entt::entity entity) {
+	onActiveFunctionPtr(static_cast<unsigned>(entity));
 }
 
 void ScriptingAPIManager::forceLoadAssembly() {

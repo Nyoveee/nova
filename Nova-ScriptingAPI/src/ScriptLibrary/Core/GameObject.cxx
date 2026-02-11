@@ -64,6 +64,12 @@ void GameObject::SetParent(GameObject^ parent)
 
 void GameObject::SetActive(bool active) {
 	Interface::engine->ecs.setActive(static_cast<entt::entity>(entityID), active);
+
+	//// if it's not already intialized, call awake and start
+	//if (!b_Initialized) {
+	//	callAwake();
+	//	callInit();
+	//}
 }
 
 GameObject^ GameObject::GetParent()

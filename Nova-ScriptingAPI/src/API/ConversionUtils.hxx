@@ -41,7 +41,6 @@ inline std::function<void(T)> Convert(EventCallback^ callback, Key key, bool toE
 			}
 			catch (System::Exception^ e) {
 				Logger::error("Unable to call InputEvent: {}", msclr::interop::marshal_as<std::string>(e->Message));
-				Interface::engine->stopSimulation();
 			}
 		}
 			
@@ -70,7 +69,6 @@ inline std::function<void(MousePosition)> CreateMouseCallback(MouseEventCallback
 			}
 			catch (System::Exception^ e) {
 				Logger::error("Unable to call MouseEvent: {}", msclr::interop::marshal_as<std::string>(e->Message));
-				Interface::engine->stopSimulation();
 			}
 		}
 			
@@ -96,7 +94,6 @@ inline std::function<void(Scroll)> CreateScrollCallback(ScrollEventCallback^ cal
 			}
 			catch (System::Exception^ e) {
 				Logger::error("Unable to call ScrollEvent: {}", msclr::interop::marshal_as<std::string>(e->Message));
-				Interface::engine->stopSimulation();
 			}
 		}	
 	};

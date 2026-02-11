@@ -157,7 +157,7 @@ void ECS::setActive(entt::entity entity, bool isActive) {
 		if (isActive) {
 			engine.physicsManager.addBodiesToSystem(registry, entity);
 			engine.navigationSystem.SetAgentActive(entity);
-		
+			engine.scriptingAPIManager.onActive(entity);
 		}
 		else {
 			engine.physicsManager.removeBodiesFromSystem(registry, entity);

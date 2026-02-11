@@ -67,6 +67,7 @@ void Interface::intializeAllScripts()
 			EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
 			if (!entityData.isActive)
 				continue;
+
 			gameObjectScripts[entityID][scriptID]->callAwake();
 		}
 	}	
@@ -127,11 +128,17 @@ void Interface::executeEntityScriptFunction(EntityID entityID, ScriptID scriptId
 	System::Type^ scriptType = script->GetType();
 
 	System::Reflection::MethodInfo^ function = scriptType->GetMethod(functionName);
+
 	if (function) {
-		function->Invoke(script, nullptr);
+		try {
+			function->Invoke(script, nullptr);
+		}
+		catch (System::Exception^ exception) {
+			Logger::warn("{} Error when invoking function name {} of script id {}, {}", GameObject(entityID).GetNameID(), name, scriptId, Convert(exception->ToString()));
+		}
 	}
 	else {
-		Logger::warn("{}Error when invoking function name {} of script id {}",GameObject(entityID).GetNameID(), name, scriptId);
+		Logger::warn("{} Invalid function name {} of script id {}",GameObject(entityID).GetNameID(), name, scriptId);
 	}
 }
 
@@ -192,6 +199,25 @@ void Interface::recursivelyInitialiseEntity(entt::entity entity) {
 
 	for (auto&& child : entityData.children)
 		recursivelyInitialiseEntity(child);
+}
+
+void Interface::onActive(EntityID entityID) {
+	// find all scripts of this entity..
+	if (!gameObjectScripts->ContainsKey(entityID)) {
+		return;
+	}
+
+	for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+		EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
+		if (!entityData.isActive)
+			continue;
+
+		// if it's not already intialized, call awake and init
+		if (!gameObjectScripts[entityID][scriptID]->b_Initialized) {
+			gameObjectScripts[entityID][scriptID]->callAwake();
+			gameObjectScripts[entityID][scriptID]->callInit();
+		}
+	}
 }
 
 std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
@@ -374,8 +400,10 @@ Script^ Interface::delayedAddEntityScript(EntityID entityID, ScriptID scriptId) 
 
 void Interface::initializeScript(Script^ script) {
 	EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(script->entityID)) };
+
 	if (!entityData.isActive)
 		return;
+
 	script->callAwake();
 	script->callInit();
 }
@@ -664,7 +692,6 @@ void Interface::update() {
 	}
 	catch (System::Exception^ exception) {
 		Logger::error("{}", Convert(exception->ToString()));		
-		Interface::engine->stopSimulation();
 	}
 }
 
@@ -688,7 +715,6 @@ void Interface::fixedUpdate() {
 	}
 	catch (System::Exception^ exception) {
 		Logger::error("{}", Convert(exception->ToString()));
-		Interface::engine->stopSimulation();
 	}
 }
 

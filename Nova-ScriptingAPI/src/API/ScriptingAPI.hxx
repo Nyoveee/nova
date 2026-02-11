@@ -54,6 +54,9 @@ internal:
 
 	static void recursivelyInitialiseEntity(entt::entity entity);
 
+	// when an entity is set active.. check if the scripts are inited..
+	static void onActive(EntityID entityID);
+
 internal:
 	// Script Fields
 	static std::vector<FieldData> getScriptFieldDatas(ScriptID scriptID);

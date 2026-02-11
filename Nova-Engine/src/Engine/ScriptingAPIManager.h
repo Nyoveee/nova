@@ -32,6 +32,7 @@ using UpdateFunctionPtr				         = void (*)(void);
 using FixedUpdateFunctionPtr				 = void (*)(void);
 using AddScriptFunctionPtr			         = void (*)(unsigned int, std::size_t);
 using RemoveScriptFunctionPtr		         = void (*)(unsigned int, std::size_t);
+using OnActiveScriptFunctionPtr				 = void (*)(std::size_t);
 using RemoveEntityFunctionPtr                = void (*)(unsigned int);
 using LoadScriptsFunctionPtr		         = void (*)(void);
 using UnloadScriptsFunctionPtr	 	         = void (*)(void);
@@ -108,6 +109,8 @@ public:
 
 	ENGINE_DLL_API void executeFunction(entt::entity entityOne, ResourceID scriptID, std::string const& functionName);
 
+	ENGINE_DLL_API void onActive(entt::entity entity);
+
 	// ONLY USED IN NOVA GAME.
 	ENGINE_DLL_API void forceLoadAssembly();
 
@@ -125,6 +128,7 @@ private:
 	bool hasFieldChanged(serialized_field_type const& oldField, serialized_field_type const& newField);
 
 	void UpdateAllScriptComponentFields(ResourceID scriptID);
+
 private:
 	Engine& engine;
 	std::string runtimeDirectory;
@@ -158,6 +162,8 @@ private:
 	ExecuteFunctionPtr				         executeFunction_;
 	GetHierarchyModifiedScriptsFunctionPtr   getHierarchyModifiedScripts_;
 	GetEnumNamesFunctionPtr                  getEnumNames;
+	OnActiveScriptFunctionPtr				 onActiveFunctionPtr;
+
 private:
 	CompileState compileState;
 	float timeSinceSave;

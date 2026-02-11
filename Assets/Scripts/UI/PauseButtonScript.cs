@@ -12,6 +12,7 @@ class PauseButtonScript : Script
     {
         uiManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
     }
+
     public void ResumeGame()
     {
         uiManager.PauseHandler();

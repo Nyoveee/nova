@@ -82,6 +82,7 @@ internal:
 	System::Collections::Generic::List<std::size_t> scriptObserverIds;
 	System::Collections::Generic::List<std::size_t> mouseMoveObserverIds;
 	System::Collections::Generic::List<std::size_t> mouseScrollObserverIds;
-private:
+	
+	
 	bool b_Initialized{};
 };

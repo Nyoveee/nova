@@ -31,20 +31,15 @@ class ButtonScript : Script
     public void onHover()
     {
         audioComponent.PlaySound(onHoverSFX);
-        Debug.Log("Hover");
     }
 
     public void onPressed()
     {
-        Debug.Log("Pressed");
-
     }
 
     public void onReleased()
     {
         audioComponent.PlaySound(onClickSFX);
-        Debug.Log("Released");
-
         SceneAPI.ChangeScene(nextScene);
     }
 
