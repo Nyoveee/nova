@@ -35,7 +35,7 @@ class ResourceManager;
 
 class Renderer {
 public:
-	Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int gameHeight);
+	Renderer(Engine& engine, int gameWidth, int gameHeight);
 
 	~Renderer();
 	Renderer(Renderer const& other)				= delete;
@@ -329,6 +329,7 @@ private:
 	Engine& engine;
 	ResourceManager& resourceManager;
 	entt::registry& registry;
+	RenderConfig& renderConfig;
 
 	// Main VAO and their related buffers
 	GLuint mainVAO;
@@ -447,8 +448,6 @@ private:
 	int haltonFrameIndex;
 
 public:
-	RenderConfig renderConfig;
-
 	Shader basicShader;
 	Shader standardShader;
 	Shader textureShader;

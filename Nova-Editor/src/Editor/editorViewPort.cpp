@@ -137,9 +137,6 @@ void EditorViewPort::update(float dt) {
 				auto& videoPlayer = engine.ecs.registry.emplace<VideoPlayer>(entity);
 				videoPlayer.videoId = TypedResourceID<Video>{ id };
 
-				// Load the video resource
-				auto [video, __] = editor.resourceManager.getResource<Video>(id);
-
 				// Select the new entity
 				editor.selectEntities({ entity });
 			}

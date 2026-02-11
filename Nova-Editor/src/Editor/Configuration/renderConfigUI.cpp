@@ -7,7 +7,7 @@
 
 RenderConfigUI::RenderConfigUI(Editor& editor) :
 	editor			{ editor },
-	renderConfig	{ editor.engine.renderer.renderConfig }
+	renderConfig	{ editor.engine.dataManager.renderConfig }
 {}
 
 void RenderConfigUI::update() {

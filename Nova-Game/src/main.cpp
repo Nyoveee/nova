@@ -22,14 +22,13 @@ int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	GameConfig		gameConfig		= Serialiser::deserialiseGameConfig("gameConfig.json");
-	RenderConfig	renderConfig	= Serialiser::deserialiseRenderConfig("renderConfig.json");
 
 	InputManager	inputManager	{};
 
 	Window			window			{ gameConfig.gameName.c_str(), {windowWidth, windowHeight}, gameConfig, Window::Configuration::FullScreen, inputManager, Window::Viewport::ChangeDuringResize};
 	
 	ResourceManager resourceManager	{};
-	Engine			engine			{ window, inputManager, resourceManager, gameConfig, renderConfig, Engine::State::Game };
+	Engine			engine			{ window, inputManager, resourceManager, gameConfig, Engine::State::Game };
 
 	// In the executable, we don't do any compiling. We assume it has been compiled and provided for.
 	

@@ -202,11 +202,11 @@ struct alignas(16) ReflectionProbeUBO {
 
 #pragma warning( pop )
 
-Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int gameHeight) :
+Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine							{ engine },
-	renderConfig					{ renderConfig },
 	gameWidth						{ gameWidth },
 	gameHeight						{ gameHeight },
+	renderConfig					{ engine.dataManager.renderConfig },
 	resourceManager					{ engine.resourceManager },
 	registry						{ engine.ecs.registry },
 	basicShader						{ "System/Shader/basic.vert",						"System/Shader/basic.frag" },
@@ -488,9 +488,6 @@ Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &videoVAO);
 
 	if (ssaoNoiseTextureId != INVALID_ID) glDeleteTextures(1, &ssaoNoiseTextureId);
-
-	// serialise render config..
-	Serialiser::serialiseRenderConfig("renderConfig.json", renderConfig);
 }
 
 GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
@@ -605,7 +602,7 @@ void Renderer::renderMain(RenderMode renderMode) {
 	}
 
 	// advance frame index for TAA..	
-	if (renderConfig.toEnableAntiAliasing) {
+	if (engine.dataManager.renderConfig.toEnableAntiAliasing) {
 		haltonFrameIndex = (haltonFrameIndex + 1) % MAX_HALTON_SEQUENCE;
 		glNamedBufferSubData(TAAUBO.id(), offsetof(TAAUBOData, frameIndex), sizeof(int), &haltonFrameIndex);
 	}
@@ -1013,8 +1010,8 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 		light.shadowMapIndex = NO_SHADOW_MAP;
 
 		if (!renderConfig.toEnableShadows)	continue;
-		if (!transform.inCameraFrustum)		continue;
-		if (!light.shadowCaster)			continue;
+		if (!transform.inCameraFrustum)				continue;
+		if (!light.shadowCaster)					continue;
 
 		// We calculate the respective light matrix to generate our shadow maps..
 		switch (light.type)
@@ -2577,8 +2574,8 @@ void Renderer::preparePBRUniforms() {
 	int ssao					= renderConfig.toEnableSSAO;
 	int directionalLightCaster	= hasDirectionalLightShadowCaster;
 	int ibl						= renderConfig.toEnableIBL;
-	float iblDiffuseStrength	= renderConfig.iblDiffuseStrength;
-	float iblSpecularStrength	= renderConfig.iblSpecularStrength;
+	float iblDiffuseStrength	= engine.gameConfig.iblDiffuseStrength;
+	float iblSpecularStrength	= engine.gameConfig.iblSpecularStrength;
 
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightSpaceMatrix), sizeof(glm::mat4x4), glm::value_ptr(directionalLightViewMatrix));
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightDir), sizeof(glm::vec3), glm::value_ptr(directionalLightDir));
@@ -3325,7 +3322,7 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	// Set up tone mapping shader
 	toneMappingShader.use();
 	toneMappingShader.setFloat("exposure", hdrExposure);
-	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(renderConfig.toneMappingMethod));
+	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(engine.gameConfig.toneMappingMethod));
 	toneMappingShader.setBool("toGammaCorrect", toGammaCorrect);
 
 	// Bind the HDR texture from main framebuffer

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <filesystem>
 
 #include "export.h"
 #include "Serialisation/serialisation.h"
@@ -9,7 +10,7 @@ class Engine;
 
 class DataManager {
 public:
-	ENGINE_DLL_API DataManager(Engine& engine);
+	ENGINE_DLL_API DataManager(Engine& engine, GameConfig gameConfig);
 	ENGINE_DLL_API ~DataManager();
 
 public:
@@ -26,8 +27,13 @@ public:
 	ENGINE_DLL_API void removeKey(std::string const& name);
 	ENGINE_DLL_API void clear();
 
+public:
+	RenderConfig renderConfig;
+	std::filesystem::path configDirectory;
+
 private:
 	Engine& engine;
+	
 	Json playerPreferenceData;
 };
 

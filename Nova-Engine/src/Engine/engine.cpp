@@ -13,11 +13,11 @@
 #include "ECS/SceneManager.h"
 
 
-Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, RenderConfig renderConfig, State state) :
+Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, State state) :
 	window					{ window },
 	resourceManager			{ resourceManager },
 	inputManager            { inputManager },
-	renderer				{ *this, renderConfig, gameConfig.gameWidth, gameConfig.gameHeight },
+	renderer				{ *this, gameConfig.gameWidth, gameConfig.gameHeight },
 	cameraSystem			{ *this },
 	ecs						{ *this },
 	scriptingAPIManager		{ *this },
@@ -33,7 +33,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false },
 	prefabManager			{ *this },
-	dataManager				{ *this },
+	dataManager				{ *this, gameConfig },
 	deltaTimeMultiplier		{ 1.f },
 	isPaused				{ false },
 	engineState				{ state }

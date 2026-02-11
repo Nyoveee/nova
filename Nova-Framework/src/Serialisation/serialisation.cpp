@@ -109,10 +109,10 @@ namespace Serialiser {
 		return gameConfig;
 	}
 
-	RenderConfig deserialiseRenderConfig(const char* fileName) {
+	RenderConfig deserialiseRenderConfig(std::filesystem::path const& path) {
 		RenderConfig renderConfig;
 
-		std::ifstream jsonFile{ fileName };
+		std::ifstream jsonFile{ path };
 
 		if (jsonFile) {
 			deserializeFromJsonFile(renderConfig, jsonFile);

@@ -24,14 +24,13 @@ int main() {
 	}
 
 	GameConfig		gameConfig		= Serialiser::deserialiseGameConfig("gameConfig.json");
-	RenderConfig	renderConfig	= Serialiser::deserialiseRenderConfig("renderConfig.json");
 
 	// Nova Engine base applications.
 	InputManager	inputManager	{};
 	Window			window			{ "Nova Editor", {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
 	
 	ResourceManager resourceManager {};
-	Engine			engine			{ window, inputManager, resourceManager, gameConfig, renderConfig, Engine::State::Editor };
+	Engine			engine			{ window, inputManager, resourceManager, gameConfig, Engine::State::Editor };
 
 	AssetManager	assetManager	{ resourceManager, engine };
 

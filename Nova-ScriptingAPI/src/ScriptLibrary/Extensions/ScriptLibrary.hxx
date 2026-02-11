@@ -226,23 +226,27 @@ public:
 		float get() { return Interface::engine->renderer.vignette; };
 		void set(float value) { Interface::engine->renderer.vignette = value; };
 	};
+
 	static property bool ssaoEnabled {
-		bool get() { return Interface::engine->renderer.renderConfig.toEnableSSAO; };
-		void set(bool value) { Interface::engine->renderer.renderConfig.toEnableSSAO = value; };
+		bool get() { return Interface::engine->dataManager.renderConfig.toEnableSSAO; };
+		void set(bool value) { Interface::engine->dataManager.renderConfig.toEnableSSAO = value; };
 	}
 	static property bool fogEnabled {
-		bool get() { return Interface::engine->renderer.renderConfig.toEnableFog; };
-		void set(bool value) { Interface::engine->renderer.renderConfig.toEnableFog = value; };
+		bool get() { return Interface::engine->dataManager.renderConfig.toEnableFog; };
+		void set(bool value) { Interface::engine->dataManager.renderConfig.toEnableFog = value; };
 	}
 	static property bool antiAliasingEnabled {
-		bool get() { return Interface::engine->renderer.renderConfig.toEnableAntiAliasing; };
-		void set(bool value) { Interface::engine->renderer.renderConfig.toEnableAntiAliasing = value; };
+		bool get() { return Interface::engine->dataManager.renderConfig.toEnableAntiAliasing; };
+		void set(bool value) { Interface::engine->dataManager.renderConfig.toEnableAntiAliasing = value; };
 	}
 	static property bool shadowsEnabled {
-		bool get() { return Interface::engine->renderer.renderConfig.toEnableShadows; };
-		void set(bool value) { Interface::engine->renderer.renderConfig.toEnableShadows = value; };
+		bool get() { return Interface::engine->dataManager.renderConfig.toEnableShadows; };
+		void set(bool value) { Interface::engine->dataManager.renderConfig.toEnableShadows = value; };
 	}
-
+	static property bool iblEnabled {
+		bool get() { return Interface::engine->dataManager.renderConfig.toEnableIBL; };
+		void set(bool value) { Interface::engine->dataManager.renderConfig.toEnableIBL = value; };
+	}
 };
 
 #if false

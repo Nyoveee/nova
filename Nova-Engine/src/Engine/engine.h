@@ -38,7 +38,7 @@ public:
 	};
 
 public:
-	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, RenderConfig renderConfig, State state);
+	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, State state);
 
 	ENGINE_DLL_API ~Engine();
 	ENGINE_DLL_API Engine(Engine const& other)				= delete;
@@ -83,6 +83,7 @@ public:
 	ResourceManager&		resourceManager;
 	InputManager&           inputManager;
 
+	DataManager				dataManager;
 	ECS						ecs;
 	Renderer				renderer;
 	CameraSystem			cameraSystem;
@@ -96,7 +97,6 @@ public:
 	PrefabManager			prefabManager;
 	UISystem				uiSystem;
 	VideoSystem             videoSystem;
-	DataManager				dataManager;
 
 	// allows direct modification to render debug info for physics.
 	bool					toDebugRenderPhysics;
@@ -108,6 +108,7 @@ public:
 	bool                    toDebugRenderParticleEmissionShape;
 
 	GameConfig				gameConfig;
+
 	State					engineState;
 
 	float					deltaTimeMultiplier;

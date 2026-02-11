@@ -1,7 +1,11 @@
 #include <fstream>
 #include "dataManager.h"
 
+#include <windows.h>
+#include <shlobj.h>
+
 constexpr const char * playerPreferenceFileName = "PlayerPref.json";
+constexpr const char * renderConfigFileName = "RenderConfig.json";
 
 template<typename T>
 std::optional<T> loadData(Json const& playerPreferenceData, std::string const& name) {
@@ -20,21 +24,54 @@ std::optional<T> loadData(Json const& playerPreferenceData, std::string const& n
 	}
 }
 
-DataManager::DataManager(Engine& engine) : 
-	engine	{ engine } 
+DataManager::DataManager(Engine& engine, GameConfig gameConfig) :
+	engine			{ engine },
+	configDirectory {}
 {
-	// The data manager is responsible for loading a player preferences file.
-	std::ifstream playerPreferenceFile{ playerPreferenceFileName };
-	
-	if (!playerPreferenceFile) {
+	// We get a suitable runtime location..
+	// https://stackoverflow.com/questions/2812760/print-tchar-on-console
+	TCHAR my_documents[MAX_PATH];
+	HRESULT result = SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, my_documents);
+
+	if (result != S_OK) {
+		Logger::error("Error attempting to retrieve documents directory.. Error code: {}");
 		return;
 	}
 
+	configDirectory = std::filesystem::path{ my_documents } / gameConfig.gameName;
+
+	if (!std::filesystem::exists(configDirectory)) {
+		std::filesystem::create_directory(configDirectory);
+	}
+
+	// ----------
+	// Loading player preference file..
 	try {
-		playerPreferenceFile >> playerPreferenceData;
+		// Get documents file directory
+		std::filesystem::path playerPreferenceFilePath = configDirectory / std::filesystem::path{ playerPreferenceFileName };
+		
+		Logger::debug("Player preference file location: {}", playerPreferenceFilePath.string());
+
+		// The data manager is responsible for loading a player preferences file.
+		std::ifstream playerPreferenceFile{ playerPreferenceFilePath };
 	}
 	catch (std::exception const& ex) {
 		Logger::error("Failed to load player preference data. {}", ex.what());
+	}
+	
+	// ----------
+	// Loading render config file..
+	try {
+		// Get documents file directory
+		std::filesystem::path renderConfigFilePath = configDirectory / std::filesystem::path{ renderConfigFileName };
+
+		Logger::debug("Render config file location: {}", renderConfigFilePath.string());
+
+		// The data manager is responsible for loading a player preferences file.
+		renderConfig = Serialiser::deserialiseRenderConfig(renderConfigFilePath.string().c_str());
+	}
+	catch (std::exception const& ex) {
+		Logger::error("Failed to load render config data.. {}", ex.what());
 	}
 }
 
@@ -43,9 +80,12 @@ DataManager::~DataManager() {
 }
 
 void DataManager::savePlayerPreference() {
-	// @TODO: Use a dedicated location meant for storing player preference..
-	std::ofstream playerPreferenceFile{ playerPreferenceFileName };
+	std::ofstream playerPreferenceFile{ configDirectory / playerPreferenceFileName };
 	playerPreferenceFile << std::setw(4) << playerPreferenceData << std::endl;
+
+	std::filesystem::path renderConfigFilePath = configDirectory / std::filesystem::path{ renderConfigFileName };
+
+	Serialiser::serialiseRenderConfig(renderConfigFilePath.string().	c_str(), renderConfig);
 }
 
 std::optional<int> DataManager::loadIntData(std::string const& name) {
