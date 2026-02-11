@@ -5,10 +5,11 @@ in vec2 textureCoords;
 
 uniform sampler2D hdrBuffer;
 uniform float exposure;
-uniform float gamma;
 
 uniform int toneMappingMethod; // 0 = Exposure, 1 = Reinhard, 2 = ACES, 3 = None
 uniform bool toGammaCorrect;
+
+const float gamma = 2.2;
 
 void main()
 {

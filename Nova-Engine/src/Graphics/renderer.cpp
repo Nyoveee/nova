@@ -236,6 +236,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	ssaoShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
 	TAAResolveShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/TAAResolveShader.frag" },
 	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
+	gammaCorrectionShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/gammaCorrection.frag" },
 	videoShader						{ "System/Shader/video.vert",						"System/Shader/video.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
@@ -557,14 +558,16 @@ void Renderer::renderMain(RenderMode renderMode) {
 		// Main game render function
 		if (isGameScreenShown) {
 			render(gameMainFrameBuffer, gameCamera, gameHistoryTexture);
-			renderUI();
-			overlayUIToBuffer(gameMainFrameBuffer);
 
 			// Apply HDR tone mapping + gamma correction post-processing
 			renderHDRTonemapping(gameMainFrameBuffer);
-		}
-		else if (isUIScreenShown)
+
 			renderUI();
+			overlayUIToBuffer(gameMainFrameBuffer);
+		}
+		else if (isUIScreenShown) {
+			renderUI();
+		}
 
 		// Main editor render function
 		if (isEditorScreenShown) {
@@ -637,8 +640,8 @@ void Renderer::renderMain(RenderMode renderMode) {
 
 void Renderer::renderUI()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.fboId());
-	glViewport(0, 0, uiMainFrameBuffer.getWidth(), uiMainFrameBuffer.getHeight());
+	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.getActiveFrameBuffer().fboId());
+	glViewport(0, 0, uiMainFrameBuffer.getActiveFrameBuffer().getWidth(), uiMainFrameBuffer.getActiveFrameBuffer().getHeight());
 
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -700,6 +703,18 @@ void Renderer::renderUI()
 			}
 		}
 	}
+
+	uiMainFrameBuffer.swapFrameBuffer();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.getActiveFrameBuffer().fboId());
+
+	gammaCorrectionShader.use();
+
+	glBindTextureUnit(0, uiMainFrameBuffer.getReadFrameBuffer().textureIds()[0]);
+	gammaCorrectionShader.setImageUniform("overlay", 0);
+
+	// Render fullscreen quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glBindVertexArray(mainVAO);
 }
@@ -1270,7 +1285,7 @@ GLuint Renderer::getGameFrameBufferTexture() const {
 }
 
 GLuint Renderer::getUIFrameBufferTexture() const {
-	return uiMainFrameBuffer.textureIds()[0];
+	return uiMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
 }
 
 GLuint Renderer::getUBOId() const {
@@ -3310,7 +3325,6 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	// Set up tone mapping shader
 	toneMappingShader.use();
 	toneMappingShader.setFloat("exposure", hdrExposure);
-	toneMappingShader.setFloat("gamma", 2.2f);
 	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(renderConfig.toneMappingMethod));
 	toneMappingShader.setBool("toGammaCorrect", toGammaCorrect);
 

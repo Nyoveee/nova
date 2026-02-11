@@ -399,7 +399,7 @@ private:
 	CubeMapArray loadedReflectionProbesMap;
 
 	// contains all physics debug rendering..
-	FrameBuffer uiMainFrameBuffer;
+	PairFrameBuffer uiMainFrameBuffer;
 	FrameBuffer physicsDebugFrameBuffer;
 
 	// contains objectIds for object picking.
@@ -488,6 +488,8 @@ public:
 	Shader TAAResolveShader;
 	// Video shader
 	Shader videoShader;
+
+	Shader gammaCorrectionShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;
