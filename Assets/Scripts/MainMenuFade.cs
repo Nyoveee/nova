@@ -102,7 +102,7 @@ class MainMenuFade : Script
     protected override void update()
     {
         //timeElapsed += ;
-        Debug.Log(Time.V_DeltaTime());
+        // Debug.Log(Time.V_DeltaTime());
 
         // Phase 1: Fade in the logo (0 to 1.5 seconds)
         if (!logoFadeComplete)

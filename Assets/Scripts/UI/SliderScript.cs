@@ -39,7 +39,6 @@ class SliderScript : Script
         sliderCenterY = gameObject.transform.position.y;
         knobMinX = sliderFill.transform.position.x;
         knobMaxX = sliderFill.transform.position.x + sliderFill.transform.scale.x;
-
         // load saved value
         LoadSliderValue();
 
