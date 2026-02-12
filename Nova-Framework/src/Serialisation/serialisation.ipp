@@ -9,8 +9,45 @@
 
 #include "serializeToJson.h"
 #include "deserializeFromJson.h"
+#include "serialisation.h"
 
 namespace Serialiser {
+	template<typename T>
+	void serializeToJsonFile(T const& data, std::ofstream& file) {
+		file << std::setw(4) << serializeToJson<T>(data) << std::endl;
+	}
+
+	template<typename T>
+	void deserializeFromJsonFile(T& data, std::ifstream& file) {
+		Json json;
+		file >> json;
+		deserializeFromJson<T>(data, json);
+	}
+
+	template<typename T>
+	T deserialiseConfig(const char* fileName) {
+		T config;
+
+		std::ifstream jsonFile{ fileName };
+
+		if (jsonFile) {
+			deserializeFromJsonFile<T>(config, jsonFile);
+		}
+
+		return config;
+	}
+
+	template<typename T>
+	void serialiseConfig(const char* fileName, T const& config) {
+		std::ofstream outputFile{ fileName };
+
+		if (!outputFile) {
+			return;
+		}
+
+		serializeToJsonFile<T>(config, outputFile);
+	}
+
 	template<typename ...Components>
 	Json serialiseComponents(entt::registry& registry, entt::entity entity) {
 		Json componentsJson;
@@ -84,17 +121,5 @@ namespace Serialiser {
 		}, component);
 
 		registry.emplace<T>(entity, std::move(component));
-	}
-
-	template<typename T>
-	void serializeToJsonFile(T const& data, std::ofstream& file) {
-		file << std::setw(4) << serializeToJson(data) << std::endl;
-	}
-	
-	template<typename T>
-	void deserializeFromJsonFile(T& data, std::ifstream& file) {
-		Json json;
-		file >> json;
-		deserializeFromJson(data, json);
 	}
 }

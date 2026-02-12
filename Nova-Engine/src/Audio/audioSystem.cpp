@@ -72,7 +72,20 @@ AudioSystem::AudioSystem(Engine& engine) :
 		Logger::error("Failed to initialise fmod system. {}", FMOD_ErrorString(result));
 		return;
 	}
+
 	loadAllSounds();
+
+	fmodSystem->createChannelGroup("Master", &masterSoundGroup);
+	fmodSystem->createChannelGroup("BGM", &bgmSoundGroup);
+	fmodSystem->createChannelGroup("SFX", &sfxSoundGroup);
+
+	masterSoundGroup->addGroup(bgmSoundGroup);
+	masterSoundGroup->addGroup(sfxSoundGroup);
+
+	// Set initial audio group..
+	masterSoundGroup->setVolume(engine.dataManager.audioConfig.masterVolume);
+	bgmSoundGroup->setVolume(engine.dataManager.audioConfig.bgmVolume);
+	sfxSoundGroup->setVolume(engine.dataManager.audioConfig.sfxVolume);
 }
 
 AudioSystem::~AudioSystem() {
@@ -439,7 +452,7 @@ AudioInstanceID AudioSystem::getNewAudioInstanceId() {
 	return idToReturn;
 }
 
-AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId, float volume, entt::entity entity ) {
+AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId, AudioComponent const& audioComponent, entt::entity entity ) {
 	FMOD::Sound* audio = AudioSystem::getSound(audioId);
 
 	if (!audio) {
@@ -454,11 +467,25 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 		AudioInstanceID	audioInstanceId = getNewAudioInstanceId();
 		AudioInstance& audioInstance = audioInstances[audioInstanceId];
 
-		audioInstance = { audioInstanceId, audioId, channel, entity , volume };
+		audioInstance = { audioInstanceId, audioId, channel, entity , audioComponent.volume };
 		audioInstance.channel->setVolume(audioInstance.volume);
 		audioInstance.channel->setCallback(channelCallback);
-		AudioComponent* audioComponent = engine.ecs.registry.try_get<AudioComponent>(entity);
-		audioInstance.channel->setMode(FMOD_3D | (audioComponent && audioComponent->loop? FMOD_LOOP_NORMAL : FMOD_DEFAULT));
+
+		audioInstance.channel->setMode(FMOD_3D | (audioComponent.loop? FMOD_LOOP_NORMAL : FMOD_DEFAULT));
+
+		// assign to proper sound group..
+		switch (audioComponent.audioGroup) {
+		case AudioComponent::AudioGroup::BGM:
+			channel->setChannelGroup(bgmSoundGroup);
+			break;
+		case AudioComponent::AudioGroup::SFX:
+			channel->setChannelGroup(sfxSoundGroup);
+			break;
+		default:
+			channel->setChannelGroup(masterSoundGroup);
+			break;
+		}
+
 		return &audioInstance;
 	}
 	else {
@@ -470,7 +497,7 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 /***********************************************************************************************************
 	Scripting Functions
 ***********************************************************************************************************/
-void AudioSystem::playBGM(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio)
+void AudioSystem::playBGM(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio)
 {
 
 	if (audio == INVALID_RESOURCE_ID) {
@@ -484,14 +511,14 @@ void AudioSystem::playBGM(entt::entity entity, AudioComponent* audioComponent, T
 		currentBGM = nullptr;
 	}
 
-	AudioInstance* audioInstance = createSoundInstance(audio,audioComponent->volume,entity);
+	AudioInstance* audioInstance = createSoundInstance(audio, audioComponent, entity);
 	// Update current BGM
 	if (audioInstance) {
 		currentBGM = audioInstance;
 	}
 
 }
-void AudioSystem::playSFX(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio)
+void AudioSystem::playSFX(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio)
 {
 	if (audio == INVALID_RESOURCE_ID) {
 		Logger::error("Attempting to Play Audio that doesn't exist");
@@ -500,7 +527,7 @@ void AudioSystem::playSFX(entt::entity entity, AudioComponent* audioComponent, T
 
 	Transform const& transform = engine.ecs.registry.get<Transform>(entity);
 
-	AudioInstance* audioInstance = createSoundInstance(audio, audioComponent->volume, entity);
+	AudioInstance* audioInstance = createSoundInstance(audio, audioComponent, entity);
 	if (!audioInstance) return;
 
 	FMOD_VECTOR pos = { transform.position.x, transform.position.y, transform.position.z };
@@ -522,4 +549,16 @@ void AudioSystem::stopSound(entt::entity entity, TypedResourceID<Audio> audio)
 		return;
 	}
 	StopAudio(entity, audio);
+}
+
+void AudioSystem::setMasterVolume(NormalizedFloat volume) {
+	masterSoundGroup->setVolume(volume);
+}
+
+void AudioSystem::setBGMVolume(NormalizedFloat volume) {
+	bgmSoundGroup->setVolume(volume);
+}
+
+void AudioSystem::setSFXVolume(NormalizedFloat volume) {
+	sfxSoundGroup->setVolume(volume);
 }

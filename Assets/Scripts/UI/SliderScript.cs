@@ -3,11 +3,22 @@
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
 
+enum AudioGroup
+{
+    Master,
+    BGM,
+    SFX
+};
+
 class SliderScript : Script
 {
     // Sliders Components
     [SerializableField]
     private GameObject sliderFill;
+
+    [SerializableField]
+    private AudioGroup audioGroup;
+
     // Slider boundaries
     private float knobMinX;  
     private float knobMaxX;  
@@ -16,9 +27,6 @@ class SliderScript : Script
     public float minValue;
     public float maxValue;
     public float defaultValue;
-
-    // Must have to save/load the value
-    public string saveKey;
 
     private float maxVerticalDistance = 50f; // when u go to far it stops the mouse 
     private bool isDragging = false;
@@ -31,6 +39,7 @@ class SliderScript : Script
         sliderCenterY = gameObject.transform.position.y;
         knobMinX = sliderFill.transform.position.x;
         knobMaxX = sliderFill.transform.position.x + sliderFill.transform.scale.x;
+
         // load saved value
         LoadSliderValue();
 
@@ -104,26 +113,35 @@ class SliderScript : Script
     // load the saved slider value
     private void LoadSliderValue()
     {
-        try
+        switch(audioGroup)
         {
-            float savedValue = PlayerPrefs.GetFloat(saveKey);
-            defaultValue = savedValue;
-            Debug.Log("Loaded saved value: " + savedValue);
-        }
-        catch
-        {
-            // no saved value exists, use default
-            defaultValue = 30f;
-            Debug.Log("No saved value found, using default: " + defaultValue);
+            case AudioGroup.Master:
+                defaultValue = AudioAPI.GetMasterVolume();
+                break;
+            case AudioGroup.BGM:
+                defaultValue = AudioAPI.GetBGMVolume();
+                break;
+            case AudioGroup.SFX:
+                defaultValue = AudioAPI.GetSFXVolume();
+                break;
         }
     }
 
     // save the current slider value
     private void SaveSliderValue()
     {
-        PlayerPrefs.SetFloat(saveKey, defaultValue);
-        PlayerPrefs.Save(); // Make sure it's saved in the json it created.
-        Debug.Log("Saved value: " + defaultValue);
+        switch (audioGroup)
+        {
+            case AudioGroup.Master:
+                AudioAPI.SetMasterVolume(defaultValue);
+                break;
+            case AudioGroup.BGM:
+                AudioAPI.SetBGMVolume(defaultValue);
+                break;
+            case AudioGroup.SFX:
+                AudioAPI.SetSFXVolume(defaultValue);
+                break;
+        }
     }
 
     // update knob position based on current value

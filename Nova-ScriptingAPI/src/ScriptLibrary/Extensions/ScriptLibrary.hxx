@@ -247,16 +247,22 @@ public:
 		bool get() { return Interface::engine->dataManager.renderConfig.toEnableIBL; };
 		void set(bool value) { Interface::engine->dataManager.renderConfig.toEnableIBL = value; };
 	}
+	static property bool fullScreen {
+		bool get() { return Interface::engine->dataManager.renderConfig.fullScreen; };
+		void set(bool value) { Interface::engine->dataManager.renderConfig.fullScreen = value; };
+	}
 };
 
-#if false
 // ======================================
 // This class is responsible for providing audio related APIs to the script.
 // ======================================
 public ref class AudioAPI {
 public:
-	static void PlaySound(GameObject^ gameObject, System::String^ string);
-	static void PlayBGM(GameObject^ gameObject, System::String^ string);
-	static void StopSound(GameObject^ gameObject, System::String^ string);
+	static void SetMasterVolume(float volume)	{ Interface::engine->audioSystem.setMasterVolume(volume); Interface::engine->dataManager.audioConfig.masterVolume = volume; };
+	static void SetBGMVolume(float volume)		{ Interface::engine->audioSystem.setBGMVolume(volume); Interface::engine->dataManager.audioConfig.bgmVolume = volume; };
+	static void SetSFXVolume(float volume)		{ Interface::engine->audioSystem.setSFXVolume(volume); Interface::engine->dataManager.audioConfig.sfxVolume = volume; };
+
+	static float GetMasterVolume()	{ return Interface::engine->dataManager.audioConfig.masterVolume; };
+	static float GetBGMVolume()		{ return Interface::engine->dataManager.audioConfig.bgmVolume; };
+	static float GetSFXVolume()		{ return Interface::engine->dataManager.audioConfig.sfxVolume; };
 };
-#endif

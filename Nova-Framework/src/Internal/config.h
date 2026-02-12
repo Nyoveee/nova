@@ -63,3 +63,15 @@ struct RenderConfig {
 struct EditorConfig {
 
 };
+
+struct AudioConfig {
+	NormalizedFloat masterVolume = 1.f;
+	NormalizedFloat bgmVolume = 1.f;
+	NormalizedFloat sfxVolume = 1.f;
+
+	REFLECTABLE(
+		masterVolume,
+		bgmVolume,
+		sfxVolume
+	)
+};

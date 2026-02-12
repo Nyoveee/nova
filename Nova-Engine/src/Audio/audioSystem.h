@@ -95,21 +95,29 @@ public:
 
 public:
 	// These functions is called from the scripting API.
-	ENGINE_DLL_API void playSFX(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio);
-	ENGINE_DLL_API void playBGM(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio);
+	ENGINE_DLL_API void playSFX(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio);
+	ENGINE_DLL_API void playBGM(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio);
 	ENGINE_DLL_API void stopSound(entt::entity entity, TypedResourceID<Audio> audio);
+
+	ENGINE_DLL_API void setMasterVolume(NormalizedFloat volume);
+	ENGINE_DLL_API void setBGMVolume(NormalizedFloat volume);
+	ENGINE_DLL_API void setSFXVolume(NormalizedFloat volume);
 
 private:
 	FMOD::Sound* getSound(ResourceID audioId) const;
 	void loadSound(ResourceID audioId);
 
 	AudioInstanceID getNewAudioInstanceId();
-	AudioInstance* createSoundInstance(ResourceID audioId, float volume = 1.f, entt::entity entity = entt::null);
+	AudioInstance* createSoundInstance(ResourceID audioId, AudioComponent const& audioComponent, entt::entity entity = entt::null);
 
 private:
 	FMOD::System* fmodSystem;
 	Engine& engine;
 	ResourceManager& resourceManager;
+
+	FMOD::ChannelGroup* masterSoundGroup;
+	FMOD::ChannelGroup* bgmSoundGroup;
+	FMOD::ChannelGroup* sfxSoundGroup;
 
 private:
 	AudioInstance* currentBGM;

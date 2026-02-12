@@ -20,12 +20,6 @@ namespace Serialiser {
 	FRAMEWORK_DLL_API void serialiseScene(entt::registry& registry, std::vector<Layer> const& layer, const char* fileName);
 	FRAMEWORK_DLL_API void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, const char* fileName);
 
-	FRAMEWORK_DLL_API GameConfig deserialiseGameConfig(const char* fileName);
-	FRAMEWORK_DLL_API RenderConfig deserialiseRenderConfig(std::filesystem::path const& path);
-
-	FRAMEWORK_DLL_API void serialiseGameConfig(const char* fileName, GameConfig const& config);
-	FRAMEWORK_DLL_API void serialiseRenderConfig(const char* fileName, RenderConfig const& config);
-
 	FRAMEWORK_DLL_API void serialiseEditorConfig(const char* fileName, bool consol, bool debugUi, bool hierarchy, bool componentInspector);
 	FRAMEWORK_DLL_API void deserialiseEditorConfig(const char* fileName);
 
@@ -55,6 +49,12 @@ namespace Serialiser {
 
 	template <typename T>
 	void deserialiseComponent(Json jsonComponent, entt::registry& registry, entt::entity entity);
+
+	template <typename T>
+	T deserialiseConfig(const char* fileName);
+
+	template <typename T>
+	void serialiseConfig(const char* fileName, T const& config);
 
 	// =============================================
 	// General purpose reflection serialization.

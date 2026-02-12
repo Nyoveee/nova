@@ -23,7 +23,7 @@ int main() {
 		return -1;
 	}
 
-	GameConfig		gameConfig		= Serialiser::deserialiseGameConfig("gameConfig.json");
+	GameConfig		gameConfig		= Serialiser::deserialiseConfig<GameConfig>("gameConfig.json");
 
 	// Nova Engine base applications.
 	InputManager	inputManager	{};
