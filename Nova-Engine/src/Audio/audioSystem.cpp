@@ -86,7 +86,7 @@ AudioSystem::~AudioSystem() {
 }
 
 void AudioSystem::update() {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 

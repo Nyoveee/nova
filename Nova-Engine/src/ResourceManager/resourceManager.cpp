@@ -38,7 +38,7 @@ void ResourceManager::reload() {
 }
 
 void ResourceManager::update() {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 

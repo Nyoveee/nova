@@ -539,7 +539,7 @@ void Renderer::update(float dt) {
 }
 
 void Renderer::renderMain(RenderMode renderMode) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 
@@ -1589,7 +1589,7 @@ void Renderer::submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm
 }
 
 void Renderer::prepareRendering() {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
 
@@ -1627,7 +1627,7 @@ void Renderer::renderSkyBox() {
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
 
@@ -2052,7 +2052,7 @@ void Renderer::createShadowBatchEntry(Model const& model, Mesh& mesh, entt::enti
 }
 
 void Renderer::renderModels(RenderPass renderPass, std::optional<GLuint> depthTextureId) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
 
@@ -3310,7 +3310,7 @@ void Renderer::renderUiObjectIds() {
 }
 
 void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 
@@ -3360,7 +3360,7 @@ void Renderer::computeFog(PairFrameBuffer& frameBuffers, Fog const& fog, Camera 
 }
 
 void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fog) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 

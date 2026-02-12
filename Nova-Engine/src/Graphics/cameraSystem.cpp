@@ -73,7 +73,7 @@ CameraSystem::CameraSystem(Engine& engine) :
 }
 
 void CameraSystem::update(float dt) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 

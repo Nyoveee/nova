@@ -21,7 +21,7 @@ TransformationSystem::TransformationSystem(Engine& engine, ECS& ecs) :
 {}
 
 void TransformationSystem::update() {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 

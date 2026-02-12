@@ -354,7 +354,7 @@ bool ScriptingAPIManager::isNotCompiled() const
 }
 	
 void ScriptingAPIManager::update() {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 
@@ -362,7 +362,7 @@ void ScriptingAPIManager::update() {
 }
 
 void ScriptingAPIManager::fixedUpdate() {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 
@@ -370,7 +370,7 @@ void ScriptingAPIManager::fixedUpdate() {
 }
 
 void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 

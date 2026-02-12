@@ -224,7 +224,7 @@ void PhysicsManager::clear() {
 }
 
 void PhysicsManager::updatePhysics(float dt) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 

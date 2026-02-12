@@ -53,7 +53,7 @@ Engine::~Engine() {
 }
 
 void Engine::fixedUpdate(float dt) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 
@@ -72,7 +72,7 @@ void Engine::fixedUpdate(float dt) {
 }
 
 void Engine::update(float dt) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 
@@ -112,7 +112,7 @@ void Engine::setupSimulation() {
 }
 
 void Engine::render(RenderMode renderMode) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 

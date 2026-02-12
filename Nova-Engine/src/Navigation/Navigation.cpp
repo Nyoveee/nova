@@ -54,7 +54,7 @@ NavigationSystem::~NavigationSystem()
 
 void NavigationSystem::update(float const& dt)
 {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
 

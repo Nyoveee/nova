@@ -169,7 +169,7 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 	double before = 0;
 
 	while (!glfwWindowShouldClose(glfwWindow)) {
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 		ZoneScoped;
 #endif
 
@@ -199,20 +199,20 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 
 
 		{
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 			ZoneScopedNC("glfwSwapBuffers", tracy::Color::AliceBlue);
 #endif
 			glfwSwapBuffers(glfwWindow);
 		}
 		{
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 			ZoneScopedNC("glfwPollEvents", tracy::Color::AliceBlue);
 #endif
 		
 			glfwPollEvents();
 
 		}
-#if defined(DEBUG)
+#if !defined(NOVA_INSTALLER)
 		FrameMark;
 #endif
 	}
