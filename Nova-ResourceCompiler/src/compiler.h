@@ -19,7 +19,7 @@ private:
 	static int compileFont			(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, unsigned int fontSize);
 
 	static int compileModel			(ResourceFilePath const& resourceFilePath, AssetInfo<Model> descriptor);
-	static int compileScriptAsset	(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, bool AdminScript);
+	static int compileScriptAsset	(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, bool adminScript, bool toExecuteEvenWhenPaused);
 	static int compileShaderAsset   (ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, Pipeline pipeline);
 	
 	// default compiling an asset just makes a copy of the original intermediary asset as resource.

@@ -422,12 +422,17 @@ bool ScriptingAPIManager::startSimulation() {
 	// Instantiate all entities' script..
 	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
 		for (auto&& script : scripts.scriptDatas) {
-#if defined(NOVA_INSTALLER)
 			auto&& [asset, result] = engine.resourceManager.getResource<ScriptAsset>(script.scriptId);
+
+			if (!asset) {
+				Logger::error("Entity {} has invalid script of {}!", static_cast<unsigned>(entity), static_cast<std::size_t>(script.scriptId));
+				continue;
+			}
+#if defined(NOVA_INSTALLER)
 			if (asset->isAdminScript())
 				continue;
 #endif
-			addEntityScript(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId));
+			addEntityScript(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId), asset->toExecuteWhenPaused());
 		}
 	}
 

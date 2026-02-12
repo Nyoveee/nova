@@ -25,6 +25,9 @@ UISystem::UISystem(Engine& engine) :
 			leftMouseReleased = true;
 		}
 	);
+
+	//Hear construct and destroy functions ------------
+	registry.on_construct<Button>().connect<&UISystem::onButtonCreation>(*this);
 }
 
 void UISystem::update(float dt) {
@@ -69,18 +72,19 @@ void UISystem::updateSimulation(float dt) {
 
 				executeButtonCallback(button, button.onPressFunction);
 			}
-
-			// determine if the pressed button was released.. this check is done outside
-			if (button.state == Button::State::Pressed && leftMouseReleased) {
-				button.timeElapsed = 0.f;
-				button.state = Button::State::Hovered;
-
-				executeButtonCallback(button, button.onClickReleasedFunction);
-			}
 		}
-		else {
+		// transition back to normal when not hovered over.. 
+		else if (button.state == Button::State::Hovered) {
 			button.state = Button::State::Normal;
 			button.finalColor = button.normalColor;
+		}
+		
+		// determine if the pressed button was released.. this check is done outside
+		if (button.state == Button::State::Pressed && leftMouseReleased) {
+			button.timeElapsed = 0.f;
+			button.state = Button::State::Hovered;
+
+			executeButtonCallback(button, button.onClickReleasedFunction);
 		}
 
 		// update the color lerp of all buttons.. (hovering & pressed)
@@ -114,4 +118,10 @@ void UISystem::executeButtonCallback(Button const& button, std::string const& fu
 	if (functionName.size() && button.reference.entity != entt::null && button.reference.script != INVALID_RESOURCE_ID) {
 		engine.scriptingAPIManager.executeFunction(button.reference.entity, button.reference.script, functionName);
 	}
+}
+
+void UISystem::onButtonCreation(entt::registry& registry, entt::entity entityId) {
+	Button& button = registry.get<Button>(entityId);
+	button.state = Button::State::Normal;
+	button.finalColor = button.normalColor;
 }

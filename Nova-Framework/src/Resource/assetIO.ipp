@@ -125,9 +125,20 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 			assetInfo.materials = std::move(materials);
 		}
 		else if constexpr (std::same_as<T, ScriptAsset>) {
-			std::string adminScriptString;
-			std::getline(descriptorFile, adminScriptString);
-			assetInfo.adminScript = static_cast<bool>(std::stoul(adminScriptString));
+			try {
+				std::string adminScriptString;
+				std::getline(descriptorFile, adminScriptString);
+
+				assetInfo.adminScript = static_cast<bool>(std::stoul(adminScriptString));
+
+				std::string toExecuteEvenWhenPausedString;
+				std::getline(descriptorFile, toExecuteEvenWhenPausedString);
+
+				assetInfo.toExecuteEvenWhenPaused = static_cast<bool>(std::stoul(toExecuteEvenWhenPausedString));
+			}
+			catch (std::exception const& ex) {
+				Logger::error("Failed to parse additional properties for script asset.. default constructing..");
+			}
 		}
 		// ============================
 		return assetInfo;
@@ -179,7 +190,7 @@ static AssetInfo<T> AssetIO::createDescriptorFile(ResourceID id, std::filesystem
 		descriptorFile << DEFAULT_PBR_MATERIAL_ID << '\n';
 	}
 	else if constexpr (std::same_as <T, ScriptAsset>) {
-		descriptorFile << false << '\n';
+		descriptorFile << false << '\n' << false << '\n';
 	}
 
 	// ============================

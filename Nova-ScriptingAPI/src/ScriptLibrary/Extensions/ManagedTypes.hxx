@@ -321,6 +321,15 @@ void SetText(System::String^ text);
 ManagedComponentEnd()
 
 // ======================================
+// Button Component
+// ======================================
+ManagedComponentDeclaration(
+	Button,
+	bool, isInteractable
+)
+ManagedComponentEnd()
+
+// ======================================
 // MeshRenderer & SkinnedMeshRenderer Component
 // ======================================
 ManagedComponentDeclaration(

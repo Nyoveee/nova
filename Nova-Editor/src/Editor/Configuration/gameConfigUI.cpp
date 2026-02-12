@@ -4,6 +4,7 @@
 #include "Editor/editor.h"
 #include "Engine/engine.h"
 #include "Serialisation/serialisation.h"
+#include "Editor/ComponentInspection/PropertyDisplay/displayProperties.h"
 
 #include <fstream>
 #include <json/json.hpp>
@@ -63,6 +64,9 @@ void GameConfigUI::update() {
 		gameConfig.gravityStrength = gravity;
 		editor.engine.physicsManager.setGravity(gravity);
 	}
+
+	DisplayProperty<NormalizedFloat>(editor, "IBL Diffuse Strength", gameConfig.iblDiffuseStrength);
+	DisplayProperty<NormalizedFloat>(editor, "IBL Specular Strength", gameConfig.iblSpecularStrength);
 
     ImGui::Separator();
 

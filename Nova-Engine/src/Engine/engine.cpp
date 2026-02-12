@@ -277,6 +277,8 @@ void Engine::SystemsUnload() {
 	renderer.hdrExposure = 0.9f;
 	renderer.vignette = 0.f;
 	renderer.resetLoadedReflectionProbes();
+
+	scriptingAPIManager.cleanPreviousSceneScriptState();
 }
 
 void Engine::quit() {

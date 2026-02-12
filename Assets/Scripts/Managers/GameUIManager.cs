@@ -160,6 +160,12 @@ class GameUIManager : Script
     {
         if (deathUI.IsActive())
             return;
+
+        GameObject gameObject = GameObject.FindWithTag("Setting UI");
+
+        if (gameObject != null && gameObject.IsActive())
+            return;
+
         isPaused = !isPaused;
         Systems.Pause = isPaused;
         pauseUI?.SetActive(isPaused);

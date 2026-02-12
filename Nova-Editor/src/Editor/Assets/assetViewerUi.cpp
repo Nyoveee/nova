@@ -724,6 +724,12 @@ void AssetViewerUI::displayFontInfo(AssetInfo<Font>& descriptor) {
 void AssetViewerUI::displayScriptInfo(AssetInfo<ScriptAsset>& descriptor)
 {
 	ImGui::Checkbox("AdminScript", &descriptor.adminScript);
+
+	if (ImGui::IsItemDeactivatedAfterEdit())
+		recompileResourceWithUpdatedDescriptor<ScriptAsset>(descriptor);
+
+	ImGui::Checkbox("Execute Script Even When Game Is Paused?", &descriptor.toExecuteEvenWhenPaused);
+
 	if (ImGui::IsItemDeactivatedAfterEdit())
 		recompileResourceWithUpdatedDescriptor<ScriptAsset>(descriptor);
 }

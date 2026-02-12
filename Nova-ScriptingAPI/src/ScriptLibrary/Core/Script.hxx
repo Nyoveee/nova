@@ -83,6 +83,6 @@ internal:
 	System::Collections::Generic::List<std::size_t> mouseMoveObserverIds;
 	System::Collections::Generic::List<std::size_t> mouseScrollObserverIds;
 	
-	
 	bool b_Initialized{};
+	bool toExecuteEvenWhenPaused = false;
 };

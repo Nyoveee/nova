@@ -22,5 +22,14 @@ void RenderConfigUI::update() {
 		DisplayProperty<DataMemberType>(editor, dataMemberName, dataMember);
 	}, renderConfig);
 
+	reflection::visit([&](auto&& fieldData) {
+		auto& dataMember = fieldData.get();
+		const char* dataMemberName = fieldData.name();
+		using DataMemberType = std::decay_t<decltype(dataMember)>;
+
+		// Generalization
+		DisplayProperty<DataMemberType>(editor, dataMemberName, dataMember);
+	}, editor.engine.dataManager.audioConfig);
+
 	ImGui::End();
 }

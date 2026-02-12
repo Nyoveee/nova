@@ -41,13 +41,13 @@ class SettingsButtonScript : Script
     public void YesEnabled()
     {
         yesImage.colorTint = new ColorAlpha(1, 1, 1, 1);
-        noImage.colorTint = new ColorAlpha(1, 1, 1, 0.5f);
+        noImage.colorTint = new ColorAlpha(0.5f, 0.5f, 0.5f, 0.5f);
 
         SetConfigStatus(preference, true);
     }
     public void NoEnabled()
     {
-        yesImage.colorTint = new ColorAlpha(1, 1, 1, 0.5f);
+        yesImage.colorTint = new ColorAlpha(0.5f, 0.5f, 0.5f, 0.5f);
         noImage.colorTint = new ColorAlpha(1, 1, 1, 1);
 
         SetConfigStatus(preference, false);

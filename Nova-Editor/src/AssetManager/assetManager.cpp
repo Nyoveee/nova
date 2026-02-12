@@ -46,6 +46,10 @@ AssetManager::~AssetManager() {
 	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
 		assert(serialiseFunctorPtr && "Should never be nullptr");
 
+		if (!resourceManager.isResource<ScriptAsset>(id)) {
+			continue;
+		}
+
 		// serialise the descriptor file for this given asset id.
 		serialiseFunctorPtr->operator()(id, *this);
 	}

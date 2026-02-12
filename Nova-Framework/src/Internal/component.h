@@ -865,7 +865,7 @@ struct Button {
 		Hovered,
 		Pressed,
 		Disabled
-	} state;
+	} state = State::Normal;
 
 	float timeElapsed = 0.f;
 

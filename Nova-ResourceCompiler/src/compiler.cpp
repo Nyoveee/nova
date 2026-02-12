@@ -218,7 +218,7 @@ int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetInfo<M
 }
 
 
-int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, bool AdminScript) {
+int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, bool adminScript, bool toExecuteEvenWhenPaused) {
 	std::ofstream resourceFile{ resourceFilePath.string };
 
 	if (!resourceFile) {
@@ -227,7 +227,7 @@ int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, Asset
 	}
 
 	resourceFile << std::filesystem::path{ intermediaryAssetFilepath }.stem().string() << std::endl;
-	resourceFile << AdminScript;
+	resourceFile << adminScript << '\n' << toExecuteEvenWhenPaused;
 	return 0;
 }
 

@@ -20,6 +20,7 @@ public:
 
 private:
 	ENGINE_DLL_API void executeButtonCallback(Button const& button, std::string const& functionName);
+	ENGINE_DLL_API void onButtonCreation(entt::registry& registry, entt::entity entityId);
 
 private:
 	Engine& engine;

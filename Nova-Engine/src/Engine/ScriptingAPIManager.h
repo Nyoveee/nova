@@ -30,7 +30,7 @@ struct FieldData;
 using ClearRunTimeScriptsFunctionPtr		 = void (*)(void);
 using UpdateFunctionPtr				         = void (*)(void);
 using FixedUpdateFunctionPtr				 = void (*)(void);
-using AddScriptFunctionPtr			         = void (*)(unsigned int, std::size_t);
+using AddScriptFunctionPtr			         = void (*)(unsigned int, std::size_t, bool);
 using RemoveScriptFunctionPtr		         = void (*)(unsigned int, std::size_t);
 using OnActiveScriptFunctionPtr				 = void (*)(std::size_t);
 using RemoveEntityFunctionPtr                = void (*)(unsigned int);

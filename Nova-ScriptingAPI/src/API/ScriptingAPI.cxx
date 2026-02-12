@@ -186,12 +186,20 @@ void Interface::recursivelyInitialiseEntity(entt::entity entity) {
 		// Instantiate these scripts and call init..
 		for (auto&& scriptData : scripts->scriptDatas) {
 			Interface::ScriptID scriptId = static_cast<System::UInt64>(scriptData.scriptId);
-			Script^ script = Interface::delayedAddEntityScript(static_cast<System::UInt32>(entity), scriptId);
+
+			auto&& [asset, result] = Interface::engine->resourceManager.getResource<ScriptAsset>(scriptId);
+
+			if (!asset) {
+				Logger::error("Entity {} has invalid script of {}!", static_cast<unsigned>(entity), static_cast<std::size_t>(scriptId));
+				continue;
+			}
+
+			Script^ script = Interface::delayedAddEntityScript(static_cast<System::UInt32>(entity), scriptId, asset->toExecuteWhenPaused());
 
 			for (auto&& fieldData : scriptData.fields)
 				Interface::setFieldData(script, fieldData);
 			list->Add(script);
-		}
+	}
 		if (entityData.isActive)
 			for each (Script ^ script in list)
 				Interface::initializeScript(script);
@@ -361,7 +369,7 @@ bool Interface::getScriptFieldData(System::Object^ fieldValue, System::Type^ fie
 	return false;
 }
 
-void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
+void Interface::addEntityScript(EntityID entityID, ScriptID scriptId, bool toExecuteEvenWhenPaused)
 {
 	if (!availableScripts->ContainsKey(scriptId)) {
 		Logger::error("{}Failed to add invalid script {}!", GameObject(entityID).GetNameID(), scriptId);
@@ -374,13 +382,15 @@ void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(availableScripts[scriptId]->GetType()));
 
 	newScript->entityID = entityID;
+	newScript->toExecuteEvenWhenPaused = toExecuteEvenWhenPaused;
+
 	// Set GameObject Details
 	newScript->_gameObject = GameObject::GetReference(entityID);
 
 	gameObjectScripts[entityID][scriptId] = newScript;
 }
 
-Script^ Interface::delayedAddEntityScript(EntityID entityID, ScriptID scriptId) {
+Script^ Interface::delayedAddEntityScript(EntityID entityID, ScriptID scriptId, bool toExecuteEvenWhenPaused) {
 	if (!availableScripts->ContainsKey(scriptId)) {
 		Logger::error("{}Failed to add invalid script {}!",GameObject(entityID).GetNameID(), scriptId, entityID);
 		return nullptr;
@@ -391,6 +401,8 @@ Script^ Interface::delayedAddEntityScript(EntityID entityID, ScriptID scriptId) 
 
 	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(availableScripts[scriptId]->GetType()));
 	newScript->entityID = entityID;
+	newScript->toExecuteEvenWhenPaused = toExecuteEvenWhenPaused;
+
 	// Set GameObject Details
 	newScript->_gameObject = GameObject::GetReference(entityID);
 	createdGameObjectScripts[entityID][scriptId] = newScript;
@@ -594,20 +606,26 @@ std::vector<std::string> Interface::getEnumNames(System::String^ type)
 
 void Interface::update() {
 	try {
-		// only execute scripts and logic if engine is not paused.
-		if (!engine->isPaused) {
-			for each (System::UInt32 entityID in gameObjectScripts->Keys) {
-				for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
-					EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
-					if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Scripts).hash_code())) {
-						continue;
-					};
+		for each (System::UInt32 entityID in gameObjectScripts->Keys) {
+			for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+				EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
+				if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Scripts).hash_code())) {
+					continue;
+				};
 
-					Script^ script = gameObjectScripts[entityID][scriptID];
-					script->callUpdate();
+				Script^ script = gameObjectScripts[entityID][scriptID];
+
+				// only execute script if game is not paused or explicit override.
+				if (engine->isPaused && !script->toExecuteEvenWhenPaused) {
+					continue;
 				}
-			}
 
+				script->callUpdate();
+			}
+		}
+
+		// only execute logic if engine is not paused.
+		if (!engine->isPaused) {
 			// Handle timeout delegates..
 			// Check if timeout expires..
 			for each (TimeoutDelegate ^ delegate in timeoutDelegates) {

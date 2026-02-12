@@ -1,17 +1,21 @@
 #include "scriptAsset.h"
 #include <filesystem>
 
-ScriptAsset::ScriptAsset(ResourceID id, ResourceFilePath resourceFilePath, std::string className, bool AdminScript) :
-	Resource	{ id, std::move(resourceFilePath) },
-	className	{ std::move(className) },
-	adminScript {std::move(AdminScript)}
+ScriptAsset::ScriptAsset(ResourceID id, ResourceFilePath resourceFilePath, std::string className, bool adminScript, bool toExecuteEvenWhenPaused) :
+	Resource				{ id, std::move(resourceFilePath) },
+	className				{ std::move(className) },
+	adminScript				{ adminScript },
+	toExecuteEvenWhenPaused	{ toExecuteEvenWhenPaused }
 {}
 
 std::string const& ScriptAsset::getClassName() const {
 	return className;
 }
 
-bool const& ScriptAsset::isAdminScript() const
-{
+bool ScriptAsset::isAdminScript() const {
 	return adminScript;
+}
+
+bool ScriptAsset::toExecuteWhenPaused() const {
+	return toExecuteEvenWhenPaused;
 }

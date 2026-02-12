@@ -157,7 +157,7 @@
         {
             "EntityData": {
                 "name": "\"Settings\" Button",
-                "tag": "",
+                "tag": "ButtonToBeDisabledBySettings",
                 "parent": 39846050,
                 "attachedSocket": 65535,
                 "children": [
@@ -285,9 +285,9 @@
                     "a": 1.0
                 },
                 "pressedColor": {
-                    "r": 0.3803921639919281,
-                    "g": 0.3764705955982208,
-                    "b": 0.18431372940540314,
+                    "r": 0.23529411852359772,
+                    "g": 0.23529411852359772,
+                    "b": 0.11372549086809158,
                     "a": 1.0
                 },
                 "disabledColor": {
@@ -296,7 +296,7 @@
                     "b": 0.0,
                     "a": 1.0
                 },
-                "onClickReleasedFunction": "onReleased",
+                "onClickReleasedFunction": "EnableSettingsUI",
                 "onPressFunction": "onPressed",
                 "onHoverFunction": "onHover",
                 "fadeDuration": 0.10000000149011612,
@@ -317,7 +317,7 @@
         {
             "EntityData": {
                 "name": "\"Quit Game\" Button",
-                "tag": "",
+                "tag": "ButtonToBeDisabledBySettings",
                 "parent": 39846050,
                 "attachedSocket": 65535,
                 "children": [
@@ -445,9 +445,9 @@
                     "a": 1.0
                 },
                 "pressedColor": {
-                    "r": 0.37931036949157715,
-                    "g": 0.37624481320381165,
-                    "b": 0.18311536312103271,
+                    "r": 0.2344827651977539,
+                    "g": 0.2344827502965927,
+                    "b": 0.11562425643205643,
                     "a": 1.0
                 },
                 "disabledColor": {
@@ -491,7 +491,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 126.78964233398438,
+                    "x": 126.79501342773438,
                     "y": 505.7372131347656,
                     "z": 0.0
                 },
@@ -512,7 +512,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.43516087532043457,
+                    "x": -0.4351482391357422,
                     "y": -0.15143203735351563,
                     "z": 0.0
                 },
@@ -633,8 +633,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 123.78346252441406,
-                    "y": 177.07284545898438,
+                    "x": 123.78068542480469,
+                    "y": 177.07579040527344,
                     "z": 0.0
                 },
                 "scale": {
@@ -654,8 +654,8 @@
                     "z": 1.5707963705062866
                 },
                 "localPosition": {
-                    "x": -0.4306177794933319,
-                    "y": -0.176271453499794,
+                    "x": -0.4306243360042572,
+                    "y": -0.17623688280582428,
                     "z": 0.0
                 },
                 "localScale": {
@@ -690,7 +690,7 @@
         {
             "EntityData": {
                 "name": "\"Play Game\" Button",
-                "tag": "",
+                "tag": "ButtonToBeDisabledBySettings",
                 "parent": 39846050,
                 "attachedSocket": 65535,
                 "children": [
@@ -818,9 +818,9 @@
                     "a": 1.0
                 },
                 "pressedColor": {
-                    "r": 0.3803921639919281,
-                    "g": 0.3764705955982208,
-                    "b": 0.18431372940540314,
+                    "r": 0.23529411852359772,
+                    "g": 0.23529411852359772,
+                    "b": 0.11372549086809158,
                     "a": 1.0
                 },
                 "disabledColor": {
@@ -976,7 +976,8 @@
                     40894628,
                     41943205,
                     40894627,
-                    39846050
+                    39846050,
+                    2097158
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1104,7 +1105,7 @@
         {
             "EntityData": {
                 "name": "\"Controls\" Button",
-                "tag": "",
+                "tag": "ButtonToBeDisabledBySettings",
                 "parent": 39846050,
                 "attachedSocket": 65535,
                 "children": [
@@ -1232,9 +1233,9 @@
                     "a": 1.0
                 },
                 "pressedColor": {
-                    "r": 0.3803921639919281,
-                    "g": 0.3764705955982208,
-                    "b": 0.18431372940540314,
+                    "r": 0.23529411852359772,
+                    "g": 0.23529411852359772,
+                    "b": 0.11372549086809158,
                     "a": 1.0
                 },
                 "disabledColor": {
@@ -1331,6 +1332,3176 @@
                 }
             },
             "id": 3145739
+        },
+        {
+            "EntityData": {
+                "name": "Setting UI",
+                "tag": "Setting UI",
+                "parent": 39846046,
+                "attachedSocket": 65535,
+                "children": [
+                    1048583,
+                    1048589,
+                    1048590,
+                    1048593,
+                    1048596,
+                    3145737,
+                    3145738,
+                    42991797,
+                    24,
+                    28,
+                    30
+                ],
+                "layerId": 5,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 11355123335114178743,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -1.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 11957726090952261633,
+                        "fields": null
+                    }
+                ]
+            },
+            "Canvas": {
+                "placeholder": ""
+            },
+            "id": 2097158
+        },
+        {
+            "EntityData": {
+                "name": "Master Volume",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": [
+                    1048584,
+                    1048588
+                ],
+                "layerId": 5,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9049280325900484795,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1104.0489501953125,
+                    "y": 756.72900390625,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 680.0,
+                    "y": 6.0,
+                    "z": 0.9999999403953552
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 1104.0489501953125,
+                    "y": 756.72900390625,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 680.0,
+                    "y": 6.0,
+                    "z": 0.9999999403953552
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 8,
+                "colorTint": {
+                    "r": 0.8758620619773865,
+                    "g": 0.7308918237686157,
+                    "b": 0.7308918237686157,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 1048583
+        },
+        {
+            "EntityData": {
+                "name": "Slider fill",
+                "tag": "",
+                "parent": 1048583,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17696191610451837113,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 764.0489501953125,
+                    "y": 752.72900390625,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 683.9998779296875,
+                    "y": 5.999998092651367,
+                    "z": 0.9999881386756897
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.5,
+                    "y": -0.6666717529296875,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0058821439743042,
+                    "y": 0.9999996423721313,
+                    "z": 0.9999881386756897
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 8,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 0.7798811197280884,
+                    "b": 0.3862069249153137,
+                    "a": 1.0
+                },
+                "anchorMode": "BottomLeft",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 1048584
+        },
+        {
+            "EntityData": {
+                "name": "Settings Knob",
+                "tag": "",
+                "parent": 1048583,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6743437316686790837,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 762.97802734375,
+                    "y": 756.508056640625,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 64.99998474121094,
+                    "y": 65.0,
+                    "z": 0.999988317489624
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.5015748739242554,
+                    "y": -0.03682708740234375,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.09558820724487305,
+                    "y": 10.833333015441895,
+                    "z": 0.999988317489624
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 5333748966267764737,
+                        "fields": [
+                            {
+                                "name": "sliderFill",
+                                "data": {
+                                    "__variant_value": 1048584,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "audioGroup",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "AudioGroup",
+                                        "Value": "Master"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            },
+                            {
+                                "name": "minValue",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxValue",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "defaultValue",
+                                "data": {
+                                    "__variant_value": 0.5,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 6365548373076574215,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 1048588,
+                    "script": 5333748966267764737
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 1048588
+        },
+        {
+            "EntityData": {
+                "name": "Settings Background",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 6,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 8094930629989062583,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 535.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 1446.0,
+                    "y": 997.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 535.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1446.0,
+                    "y": 997.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 1177401602345746437,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 1048589
+        },
+        {
+            "EntityData": {
+                "name": "SFX Volume",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": [
+                    1048591,
+                    2097153
+                ],
+                "layerId": 1,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9049280325900484795,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1104.0489501953125,
+                    "y": 682.72900390625,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 680.0,
+                    "y": 6.0,
+                    "z": 0.9999999403953552
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 1104.0489501953125,
+                    "y": 682.72900390625,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 680.0,
+                    "y": 6.0,
+                    "z": 0.9999999403953552
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 8,
+                "colorTint": {
+                    "r": 0.8758620619773865,
+                    "g": 0.7308918237686157,
+                    "b": 0.7308918237686157,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 1048590
+        },
+        {
+            "EntityData": {
+                "name": "Slider fill",
+                "tag": "",
+                "parent": 1048590,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17696191610451837113,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 764.0489501953125,
+                    "y": 678.72900390625,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 683.9998779296875,
+                    "y": 5.999998092651367,
+                    "z": 0.9999881386756897
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.5,
+                    "y": -0.6666717529296875,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0058821439743042,
+                    "y": 0.9999996423721313,
+                    "z": 0.9999881386756897
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 8,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 0.7803921699523926,
+                    "b": 0.3843137323856354,
+                    "a": 1.0
+                },
+                "anchorMode": "BottomLeft",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 1048591
+        },
+        {
+            "EntityData": {
+                "name": "Settings Knob",
+                "tag": "",
+                "parent": 1048590,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6743437316686790837,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 762.97802734375,
+                    "y": 682.508056640625,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 64.99998474121094,
+                    "y": 65.0,
+                    "z": 0.999988317489624
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.5015748739242554,
+                    "y": -0.03682708740234375,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.09558820724487305,
+                    "y": 10.833333015441895,
+                    "z": 0.999988317489624
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 5333748966267764737,
+                        "fields": [
+                            {
+                                "name": "sliderFill",
+                                "data": {
+                                    "__variant_value": 1048591,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "audioGroup",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "AudioGroup",
+                                        "Value": "SFX"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            },
+                            {
+                                "name": "minValue",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxValue",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "defaultValue",
+                                "data": {
+                                    "__variant_value": 0.5,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 6365548373076574215,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 2097153,
+                    "script": 5333748966267764737
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 2097153
+        },
+        {
+            "EntityData": {
+                "name": "BGM Volume",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": [
+                    1048594,
+                    1048595
+                ],
+                "layerId": 1,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9049280325900484795,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1104.0489501953125,
+                    "y": 608.72900390625,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 680.0,
+                    "y": 6.0,
+                    "z": 0.9999999403953552
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 1104.0489501953125,
+                    "y": 608.72900390625,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 680.0,
+                    "y": 6.0,
+                    "z": 0.9999999403953552
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 8,
+                "colorTint": {
+                    "r": 0.8758620619773865,
+                    "g": 0.7308918237686157,
+                    "b": 0.7308918237686157,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 1048593
+        },
+        {
+            "EntityData": {
+                "name": "Slider fill",
+                "tag": "",
+                "parent": 1048593,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17696191610451837113,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 764.0489501953125,
+                    "y": 604.72900390625,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 683.9998779296875,
+                    "y": 5.999998092651367,
+                    "z": 0.9999881386756897
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.5,
+                    "y": -0.6666717529296875,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0058821439743042,
+                    "y": 0.9999996423721313,
+                    "z": 0.9999881386756897
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 8,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 0.7803921699523926,
+                    "b": 0.3843137323856354,
+                    "a": 1.0
+                },
+                "anchorMode": "BottomLeft",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 1048594
+        },
+        {
+            "EntityData": {
+                "name": "Settings Knob",
+                "tag": "",
+                "parent": 1048593,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6743437316686790837,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 762.97802734375,
+                    "y": 608.508056640625,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 64.99998474121094,
+                    "y": 65.0,
+                    "z": 0.999988317489624
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.5015748739242554,
+                    "y": -0.03682708740234375,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.09558820724487305,
+                    "y": 10.833333015441895,
+                    "z": 0.999988317489624
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 5333748966267764737,
+                        "fields": [
+                            {
+                                "name": "sliderFill",
+                                "data": {
+                                    "__variant_value": 1048594,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "audioGroup",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "AudioGroup",
+                                        "Value": "BGM"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            },
+                            {
+                                "name": "minValue",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxValue",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "defaultValue",
+                                "data": {
+                                    "__variant_value": 0.5,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 6365548373076574215,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 1048595,
+                    "script": 5333748966267764737
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 1048595
+        },
+        {
+            "EntityData": {
+                "name": "FullScreen Buttons",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": [
+                    1048597,
+                    1048598
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12690511002151141403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 882.0,
+                    "y": 476.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 882.0,
+                    "y": 476.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 3005660740967694369,
+                        "fields": [
+                            {
+                                "name": "yesImage",
+                                "data": {
+                                    "__variant_value": 1048597,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "noImage",
+                                "data": {
+                                    "__variant_value": 1048598,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "preference",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "RenderSettings",
+                                        "Value": "Fullscreen"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 1048596
+        },
+        {
+            "EntityData": {
+                "name": "Yes Button",
+                "tag": "",
+                "parent": 1048596,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10961128745241100317,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 837.0,
+                    "y": 476.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -45.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 1753862354649186313,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 1048596,
+                    "script": 3005660740967694369
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "YesEnabled",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 1048597
+        },
+        {
+            "EntityData": {
+                "name": "No Button",
+                "tag": "",
+                "parent": 1048596,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10961128745241100317,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 927.0,
+                    "y": 476.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 45.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 17318302666841604099,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 1048596,
+                    "script": 3005660740967694369
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "NoEnabled",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 1048598
+        },
+        {
+            "EntityData": {
+                "name": "Anti-Aliasing Buttons",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": [
+                    5242882,
+                    2097155
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12690511002151141403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 882.0,
+                    "y": 396.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 882.0,
+                    "y": 396.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 3005660740967694369,
+                        "fields": [
+                            {
+                                "name": "yesImage",
+                                "data": {
+                                    "__variant_value": 5242882,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "noImage",
+                                "data": {
+                                    "__variant_value": 2097155,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "preference",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "RenderSettings",
+                                        "Value": "AntiAliasing"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 3145737
+        },
+        {
+            "EntityData": {
+                "name": "Yes Button",
+                "tag": "",
+                "parent": 3145737,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10961128745241100317,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 837.0,
+                    "y": 396.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -45.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 1753862354649186313,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 3145737,
+                    "script": 3005660740967694369
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "YesEnabled",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 5242882
+        },
+        {
+            "EntityData": {
+                "name": "No Button",
+                "tag": "",
+                "parent": 3145737,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10961128745241100317,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 927.0,
+                    "y": 396.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 45.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 17318302666841604099,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 3145737,
+                    "script": 3005660740967694369
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "NoEnabled",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 2097155
+        },
+        {
+            "EntityData": {
+                "name": "Shadows Buttons",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": [
+                    1048599,
+                    3145754
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12690511002151141403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 882.0,
+                    "y": 318.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 882.0,
+                    "y": 318.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 3005660740967694369,
+                        "fields": [
+                            {
+                                "name": "yesImage",
+                                "data": {
+                                    "__variant_value": 1048599,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "noImage",
+                                "data": {
+                                    "__variant_value": 3145754,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "preference",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "RenderSettings",
+                                        "Value": "Shadows"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 3145738
+        },
+        {
+            "EntityData": {
+                "name": "Yes Button",
+                "tag": "",
+                "parent": 3145738,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10961128745241100317,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 837.0,
+                    "y": 318.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -45.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 1753862354649186313,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 3145738,
+                    "script": 3005660740967694369
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "YesEnabled",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 1048599
+        },
+        {
+            "EntityData": {
+                "name": "No Button",
+                "tag": "",
+                "parent": 3145738,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10961128745241100317,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 927.0,
+                    "y": 318.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 45.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 17318302666841604099,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 3145738,
+                    "script": 3005660740967694369
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "NoEnabled",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 3145754
+        },
+        {
+            "EntityData": {
+                "name": "SSAO Buttons",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": [
+                    2097157,
+                    2097156
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12690511002151141403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1382.0,
+                    "y": 474.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 1382.0,
+                    "y": 474.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 3005660740967694369,
+                        "fields": [
+                            {
+                                "name": "yesImage",
+                                "data": {
+                                    "__variant_value": 2097157,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "noImage",
+                                "data": {
+                                    "__variant_value": 2097156,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "preference",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "RenderSettings",
+                                        "Value": "SSAO"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 42991797
+        },
+        {
+            "EntityData": {
+                "name": "Yes Button",
+                "tag": "",
+                "parent": 42991797,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10961128745241100317,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1337.0,
+                    "y": 474.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -45.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 1753862354649186313,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 42991797,
+                    "script": 3005660740967694369
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "YesEnabled",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 2097157
+        },
+        {
+            "EntityData": {
+                "name": "No Button",
+                "tag": "",
+                "parent": 42991797,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10961128745241100317,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1427.0,
+                    "y": 474.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 45.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 17318302666841604099,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 42991797,
+                    "script": 3005660740967694369
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "NoEnabled",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 2097156
+        },
+        {
+            "EntityData": {
+                "name": "Fog Buttons",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": [
+                    25,
+                    27
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12690511002151141403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1382.0,
+                    "y": 397.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 1382.0,
+                    "y": 397.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 3005660740967694369,
+                        "fields": [
+                            {
+                                "name": "yesImage",
+                                "data": {
+                                    "__variant_value": 25,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "noImage",
+                                "data": {
+                                    "__variant_value": 27,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "preference",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "RenderSettings",
+                                        "Value": "Fog"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 24
+        },
+        {
+            "EntityData": {
+                "name": "Yes Button",
+                "tag": "",
+                "parent": 24,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10961128745241100317,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1337.0,
+                    "y": 397.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -45.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 1753862354649186313,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 24,
+                    "script": 3005660740967694369
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "YesEnabled",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 25
+        },
+        {
+            "EntityData": {
+                "name": "No Button",
+                "tag": "",
+                "parent": 24,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10961128745241100317,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1427.0,
+                    "y": 397.0,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 45.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 70.0,
+                    "y": 70.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 17318302666841604099,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 24,
+                    "script": 3005660740967694369
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "NoEnabled",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 27
+        },
+        {
+            "EntityData": {
+                "name": "Back Button",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": [
+                    29
+                ],
+                "layerId": 7,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12292426220259983941,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "394579324703252227": false,
+                    "7111564935354361005": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 190.814453125,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 141.0,
+                    "y": 85.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 190.814453125,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 141.0,
+                    "y": 85.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false,
+                "audioGroup": "SFX"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 1986501316973068289,
+                        "fields": [
+                            {
+                                "name": "nextScene",
+                                "data": {
+                                    "__variant_value": 12767626241908719617,
+                                    "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "onHoverSFX",
+                                "data": {
+                                    "__variant_value": 18282072967288242303,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "onClickSFX",
+                                "data": {
+                                    "__variant_value": 5023475664309502081,
+                                    "__variant_type": 15
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 8,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 28,
+                    "script": 1986501316973068289
+                },
+                "normalColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "highlightedColor": {
+                    "r": 0.5344827175140381,
+                    "g": 0.34494152665138245,
+                    "b": 0.10505350679159164,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 0.35517239570617676,
+                    "g": 0.23058678209781647,
+                    "b": 0.07225921750068665,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "DisableSettingsUI",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 28
+        },
+        {
+            "EntityData": {
+                "name": "Back Button Text",
+                "tag": "",
+                "parent": 28,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 8,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 14021808477171057223,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "9644886267844571682": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 903.5999755859375,
+                    "y": 165.31353759765625,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 1.2589287757873535,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.40000009536743164,
+                    "y": -0.30001068115234375,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.00892857275903225,
+                    "y": 0.0117647061124444,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Back",
+                "fontSize": 60,
+                "fontColor": {
+                    "r": 1.0,
+                    "g": 0.8840427994728088,
+                    "b": 0.634482741355896
+                }
+            },
+            "id": 29
+        },
+        {
+            "EntityData": {
+                "name": "Dark Overlay",
+                "tag": "",
+                "parent": 2097158,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 5,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1296782183029244171,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1920.0,
+                    "y": 1080.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 1.0
+                },
+                "localScale": {
+                    "x": 1920.0,
+                    "y": 1080.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 8,
+                "colorTint": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.7843137383460999
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 30
         }
     ],
     "layers": [
@@ -1348,6 +4519,18 @@
         },
         {
             "name": "Text"
+        },
+        {
+            "name": "Settings Overlay"
+        },
+        {
+            "name": "Settings BG"
+        },
+        {
+            "name": "Settings FG"
+        },
+        {
+            "name": "Settings Text"
         }
     ]
 }

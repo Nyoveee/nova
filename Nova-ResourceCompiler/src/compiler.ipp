@@ -22,7 +22,7 @@ int Compiler::compileAsset(AssetInfo<T> const& assetInfo, ResourceFilePath const
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
 		auto&& scriptAssetInfo = dynamic_cast<const AssetInfo<ScriptAsset>* const>(&assetInfo);
-		return compileScriptAsset(resourceFilePath, scriptAssetInfo->filepath, scriptAssetInfo->adminScript);
+		return compileScriptAsset(resourceFilePath, scriptAssetInfo->filepath, scriptAssetInfo->adminScript, scriptAssetInfo->toExecuteEvenWhenPaused);
 	}
 	else if constexpr (std::same_as<T, CustomShader>) {
 		return compileShaderAsset(resourceFilePath, assetInfo.filepath, assetInfo.pipeline);

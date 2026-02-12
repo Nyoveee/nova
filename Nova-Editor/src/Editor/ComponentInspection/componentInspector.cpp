@@ -35,6 +35,8 @@ void ComponentInspector::update() {
 	entt::entity selectedEntity = editor.getSelectedEntities()[0];
 	entt::registry& registry = ecs.registry;
 	
+	ImGui::PushID(static_cast<int>(static_cast<unsigned>(selectedEntity)));
+
 	// Display entity metadata.
 	EntityData& entityData = registry.get<EntityData>(selectedEntity);
 	if (ImGui::BeginTable("NameAndTagTable", 3, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
@@ -91,7 +93,6 @@ void ComponentInspector::update() {
 		}
 		ImGui::EndCombo();
 	}
-
 
 	if (ImGui::CollapsingHeader("Prefab")) {
 		if (ImGui::Button("Unpack Prefab")) {
@@ -248,7 +249,7 @@ void ComponentInspector::update() {
 	// Display add component button.
 	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity, ecs.registry);
 
-
+	ImGui::PopID();
 	ImGui::End();
 }
 

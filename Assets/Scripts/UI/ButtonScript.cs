@@ -52,4 +52,24 @@ class ButtonScript : Script
     {
         Systems.Restart();
     }
+
+    // used by settings
+    public void DisableSettingsUI()
+    {
+        MainSettingsScript setting = GameObject.FindWithTag("Setting UI")?.getScript<MainSettingsScript>();
+
+        if (setting != null) {
+            setting.toShowSettingsUI(false);
+        }
+    }
+
+    public void EnableSettingsUI()
+    {
+        MainSettingsScript setting = GameObject.FindWithTag("Setting UI")?.getScript<MainSettingsScript>();
+
+        if (setting != null)
+        {
+            setting.toShowSettingsUI(true);
+        }
+    }
 }

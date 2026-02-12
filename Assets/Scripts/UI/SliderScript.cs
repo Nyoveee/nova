@@ -39,15 +39,16 @@ class SliderScript : Script
         sliderCenterY = gameObject.transform.position.y;
         knobMinX = sliderFill.transform.position.x;
         knobMaxX = sliderFill.transform.position.x + sliderFill.transform.scale.x;
-        // load saved value
-        LoadSliderValue();
 
         // Update initial position based on loaded value
+        
+        // load saved value
+        LoadSliderValue();
         UpdateKnobPosition();
         UpdateFillBar();
 
-        Debug.Log("Initial position X: " + gameObject.transform.position.x);
-        Debug.Log("Loaded volume: " + defaultValue);
+        // Debug.Log("Game Object: " + gameObject);
+        // Debug.Log("Initial position X: " + gameObject.transform.position.x);
     }
     protected override void update()
     {
@@ -57,6 +58,7 @@ class SliderScript : Script
             Vector2 currentMousePos = Input.GetUIMousePosition();
 
             // check if mouse is too far away vertically
+#if false
             float verticalDistance = currentMousePos.y - sliderCenterY;
             if (verticalDistance < 0) verticalDistance = -verticalDistance;
 
@@ -68,7 +70,7 @@ class SliderScript : Script
                 Debug.Log("Stopped dragging mouse too far away");
                 return;
             }
-
+#endif
             float newX = currentMousePos.x - clickOffset;
 
             // clamp the x position
@@ -84,29 +86,26 @@ class SliderScript : Script
             float valuePercentage = (newX - knobMinX) / sliderWidth;
             defaultValue = minValue + (maxValue - minValue) * valuePercentage;
 
-            //update the fill bar
+            // update the fill bar
             UpdateFillBar();
+
+            // save the value as it drags (i wanna hear the volume change live)
+            SaveSliderValue();
         }
     }
 
     public void onPressed()
     {
         isDragging = true;
+
         mouseInitialPosition = Input.GetUIMousePosition();
         float currentHandleX = gameObject.transform.position.x;
         clickOffset = mouseInitialPosition.x - currentHandleX;
-        Debug.Log("Click offset: " + clickOffset);
     }
 
     public void onReleased()
     {
         isDragging = false;
-
-        // save the value when user releases the slider
-        SaveSliderValue();
-
-        Debug.Log("Final Value: " + defaultValue);
-        Debug.Log("Volume saved!");
     }
 
     // load the saved slider value

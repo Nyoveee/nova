@@ -388,7 +388,7 @@ void AssetManager::serializeDescriptor(ResourceID id) {
 		descriptorFile << '\n';
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
-		descriptorFile << assetInfo->adminScript << '\n';
+		descriptorFile << assetInfo->adminScript << '\n' << assetInfo->toExecuteEvenWhenPaused << '\n';
 	}
 
 	// ============================

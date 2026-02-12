@@ -474,6 +474,15 @@ void Editor::handleUIEntitySelection() {
 }
 
 void Editor::displayEntityScriptDropDownList(ResourceID id, const char* labelName, entt::entity entity, std::function<void(ResourceID)> const& onClickCallback) {
+	entt::registry& registry = [&]() -> entt::registry& {
+		if (displayingPrefabScripts) {
+			return engine.prefabManager.getPrefabRegistry();
+		}
+		else {
+			return engine.ecs.registry;
+		}
+	}();
+
 	char const* selectedAssetName = "";
 
 	ImGui::PushID(++imguiCounter);
@@ -487,7 +496,7 @@ void Editor::displayEntityScriptDropDownList(ResourceID id, const char* labelNam
 	std::transform(assetSearchQuery.begin(), assetSearchQuery.end(), std::back_inserter(uppercaseSearchQuery), [](char c) { return static_cast<char>(std::toupper(c)); });
 
 	// get all scripts of the entity..
-	Scripts* scripts = engine.ecs.registry.try_get<Scripts>(entity);
+	Scripts* scripts = registry.try_get<Scripts>(entity);
 
 	if (!scripts) {
 		ImGui::BeginDisabled();
@@ -561,7 +570,7 @@ void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity 
 		else {
 			return engine.ecs.registry;
 		}
-		}();
+	}();
 
 	ImGui::PushID(++imguiCounter);
 
