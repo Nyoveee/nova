@@ -21,7 +21,7 @@ int main() {
 #endif
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	GameConfig		gameConfig		= Serialiser::deserialiseGameConfig("gameConfig.json");
+	GameConfig		gameConfig		= Serialiser::deserialiseConfig<GameConfig>("gameConfig.json");
 
 	InputManager	inputManager	{};
 

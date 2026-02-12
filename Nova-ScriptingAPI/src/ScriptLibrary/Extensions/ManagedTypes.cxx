@@ -686,7 +686,7 @@ void Sequence_::play() {
 // Audio
 // ======================================
 void AudioComponent_::PlaySound(ScriptingAPI::Audio^ audio){
-	Interface::engine->audioSystem.playSFX(Convert(gameObject), Convert(this), audio->getId());
+	Interface::engine->audioSystem.playSFX(Convert(gameObject), *Convert(this), audio->getId());
 }
 void AudioComponent_::PlayRandomSound(System::Collections::Generic::List<ScriptingAPI::Audio^>^ audioList) {
 	if (!audioList || audioList->Count == 0) {
@@ -696,7 +696,7 @@ void AudioComponent_::PlayRandomSound(System::Collections::Generic::List<Scripti
 	PlaySound(audioList[Random::Range(0, audioList->Count)]);
 }
 void AudioComponent_::PlayBGM(ScriptingAPI::Audio^ audio) {
-	Interface::engine->audioSystem.playBGM(Convert(gameObject),Convert(this), audio->getId());
+	Interface::engine->audioSystem.playBGM(Convert(gameObject), *Convert(this), audio->getId());
 }
 void AudioComponent_::StopSound(ScriptingAPI::Audio^ audio) {
 	Interface::engine->audioSystem.stopSound(Convert(gameObject), audio->getId());

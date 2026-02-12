@@ -17,7 +17,7 @@ GameConfigUI::GameConfigUI(Editor& editor) :
 {}
 
 GameConfigUI::~GameConfigUI() {
-	Serialiser::serialiseGameConfig("gameConfig.json", gameConfig);
+	Serialiser::serialiseConfig<GameConfig>("gameConfig.json", gameConfig);
 }
 
 void GameConfigUI::update() {
@@ -68,7 +68,7 @@ void GameConfigUI::update() {
 
     // Action buttons
     if (ImGui::Button("Save")) {
-		Serialiser::serialiseGameConfig("gameConfig.json", gameConfig);
+		Serialiser::serialiseConfig<GameConfig>("gameConfig.json", gameConfig);
     }
 
     ImGui::End();

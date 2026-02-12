@@ -6,6 +6,7 @@
 
 constexpr const char * playerPreferenceFileName = "PlayerPref.json";
 constexpr const char * renderConfigFileName = "RenderConfig.json";
+constexpr const char * audioConfigFileName = "AudioConfig.json";
 
 template<typename T>
 std::optional<T> loadData(Json const& playerPreferenceData, std::string const& name) {
@@ -68,7 +69,22 @@ DataManager::DataManager(Engine& engine, GameConfig gameConfig) :
 		Logger::debug("Render config file location: {}", renderConfigFilePath.string());
 
 		// The data manager is responsible for loading a player preferences file.
-		renderConfig = Serialiser::deserialiseRenderConfig(renderConfigFilePath.string().c_str());
+		renderConfig = Serialiser::deserialiseConfig<RenderConfig>(renderConfigFilePath.string().c_str());
+	}
+	catch (std::exception const& ex) {
+		Logger::error("Failed to load render config data.. {}", ex.what());
+	}
+
+	// ----------
+	// Loading audio config file..
+	try {
+		// Get documents file directory
+		std::filesystem::path audioConfigFilePath = configDirectory / std::filesystem::path{ audioConfigFileName };
+
+		Logger::debug("Audio config file location: {}", audioConfigFilePath.string());
+
+		// The data manager is responsible for loading a player preferences file.
+		audioConfig = Serialiser::deserialiseConfig<AudioConfig>(audioConfigFilePath.string().c_str());
 	}
 	catch (std::exception const& ex) {
 		Logger::error("Failed to load render config data.. {}", ex.what());
@@ -77,15 +93,17 @@ DataManager::DataManager(Engine& engine, GameConfig gameConfig) :
 
 DataManager::~DataManager() {
 	savePlayerPreference();
+
+	std::filesystem::path renderConfigFilePath = configDirectory / std::filesystem::path{ renderConfigFileName };
+	std::filesystem::path audioConfigFilePath = configDirectory / std::filesystem::path{ audioConfigFileName };
+
+	Serialiser::serialiseConfig<RenderConfig>(renderConfigFilePath.string().c_str(), renderConfig);
+	Serialiser::serialiseConfig<AudioConfig>(audioConfigFilePath.string().c_str(), audioConfig);
 }
 
 void DataManager::savePlayerPreference() {
 	std::ofstream playerPreferenceFile{ configDirectory / playerPreferenceFileName };
 	playerPreferenceFile << std::setw(4) << playerPreferenceData << std::endl;
-
-	std::filesystem::path renderConfigFilePath = configDirectory / std::filesystem::path{ renderConfigFileName };
-
-	Serialiser::serialiseRenderConfig(renderConfigFilePath.string().	c_str(), renderConfig);
 }
 
 std::optional<int> DataManager::loadIntData(std::string const& name) {

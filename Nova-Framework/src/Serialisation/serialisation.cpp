@@ -76,50 +76,6 @@ namespace Serialiser {
 			Logger::error("Failed to deserialise scene. {}", ex.what());
 		}
 	}
-	
-	void serialiseGameConfig(const char* fileName, GameConfig const& gameConfig) {
-		std::ofstream outputFile{ fileName };
-		
-		if (!outputFile) {
-			return;
-		}
-		
-		serializeToJsonFile(gameConfig, outputFile);
-	}
-
-	void serialiseRenderConfig(const char* fileName, RenderConfig const& config) {
-		std::ofstream outputFile{ fileName };
-
-		if (!outputFile) {
-			return;
-		}
-
-		serializeToJsonFile(config, outputFile);
-	}
-
-	GameConfig deserialiseGameConfig(const char* fileName) {
-		GameConfig gameConfig;
-
-		std::ifstream jsonFile{ fileName };
-
-		if (jsonFile) {
-			deserializeFromJsonFile(gameConfig, jsonFile);
-		}
-
-		return gameConfig;
-	}
-
-	RenderConfig deserialiseRenderConfig(std::filesystem::path const& path) {
-		RenderConfig renderConfig;
-
-		std::ifstream jsonFile{ path };
-
-		if (jsonFile) {
-			deserializeFromJsonFile(renderConfig, jsonFile);
-		}
-
-		return renderConfig;
-	}
 
 	template <typename ...Windows>
 	void serialiseEditorConfig(const char* fileName, bool console, bool debugUi, bool hierarchy, bool componentInspector) {

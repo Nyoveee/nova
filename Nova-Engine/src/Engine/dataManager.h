@@ -29,6 +29,8 @@ public:
 
 public:
 	RenderConfig renderConfig;
+	AudioConfig  audioConfig;
+
 	std::filesystem::path configDirectory;
 
 private:
