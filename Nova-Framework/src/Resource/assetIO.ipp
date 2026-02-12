@@ -124,7 +124,11 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 			
 			assetInfo.materials = std::move(materials);
 		}
-
+		else if constexpr (std::same_as<T, ScriptAsset>) {
+			std::string adminScriptString;
+			std::getline(descriptorFile, adminScriptString);
+			assetInfo.adminScript = static_cast<bool>(std::stoul(adminScriptString));
+		}
 		// ============================
 		return assetInfo;
 	}
@@ -173,6 +177,9 @@ static AssetInfo<T> AssetIO::createDescriptorFile(ResourceID id, std::filesystem
 	else if constexpr (std::same_as<T, Model>) {
 		descriptorFile << 1.f << "\n"; // newline for empty sockets.
 		descriptorFile << DEFAULT_PBR_MATERIAL_ID << '\n';
+	}
+	else if constexpr (std::same_as <T, ScriptAsset>) {
+		descriptorFile << false << '\n';
 	}
 
 	// ============================

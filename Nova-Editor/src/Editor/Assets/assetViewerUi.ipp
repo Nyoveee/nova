@@ -23,6 +23,9 @@ void AssetViewerUI::displayAssetUI(BasicAssetInfo& descriptor) {
 	else if constexpr (std::same_as<T, Prefab>) {
 		displayPrefabInfo(typedDescriptor);
 	}
+	else if constexpr (std::same_as<T, ScriptAsset>) {
+		displayScriptInfo(typedDescriptor);
+	}
 }
 
 

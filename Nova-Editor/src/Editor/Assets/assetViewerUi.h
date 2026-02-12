@@ -31,6 +31,7 @@ private:
 	void displayTextureInfo(AssetInfo<Texture>& descriptor);
 	void displayModelInfo(AssetInfo<Model>& descriptor);
 	void displayFontInfo(AssetInfo<Font>& descriptor);
+	void displayScriptInfo(AssetInfo<ScriptAsset>& descriptor);
 	void displayPrefabInfo(AssetInfo<Prefab>& descriptor);
 
 	void displayAnimationInfo(Model const& animationResource);

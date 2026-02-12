@@ -1,8 +1,8 @@
 // For Nova-Engine, This header must be used instead of the usual <tracyprofiler/tracy/tracy.hpp> that nova-editor uses
 #pragma once
 
-// Important when building through nova-game, Set this to 0 to disable profiling, as you don't want
-// people to use the external tracy-profiler application to profile, that includes seeing the code exposed in the profiler
+// Important when building through nova-game, Set configuration to installer
+// Use the external tracy-profiler application to profile, that includes seeing the code exposed in the profiler
 #if !defined(NOVA_INSTALLER)
 
 	// Would be nice If there's a better way to define macro only when it's the editor running so don't have to manually set

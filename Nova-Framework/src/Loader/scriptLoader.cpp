@@ -11,9 +11,11 @@ std::optional<ResourceConstructor> ResourceLoader<ScriptAsset>::load(ResourceID 
 
 	std::string className;
 	resourceFile >> className;
+	bool AdminScript{};
+	resourceFile >> AdminScript;
 
-	return { {[id, resourceFilePath, className = std::move(className)] {
-			return std::make_unique<ScriptAsset>(id, resourceFilePath, std::move(className));
+	return { {[id, resourceFilePath, className = std::move(className), AdminScript = std::move(AdminScript)] {
+			return std::make_unique<ScriptAsset>(id, resourceFilePath, std::move(className), std::move(AdminScript));
 	}} };
 
 }

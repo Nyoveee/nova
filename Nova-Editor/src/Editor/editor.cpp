@@ -24,6 +24,7 @@
 #include "Navigation/navMeshGeneration.h"
 #include "Serialisation/serialisation.h"
 #include "Engine/prefabManager.h"
+#include "Profiling.h"
 
 #include "editor.h"
 #include "themes.h"
@@ -34,7 +35,6 @@
 #include <GLFW/glfw3.h>
 #include <ranges>
 #include <Windows.h>
-#include <tracyprofiler/tracy/Tracy.hpp>
 
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
@@ -210,9 +210,9 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 void Editor::update(float dt) {
 	imguiCounter = 0;
-
+#if !defined(NOVA_INSTALLER)
 	ZoneScopedC(tracy::Color::Orange);
-
+#endif
 	ImGui_ImplGlfw_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();

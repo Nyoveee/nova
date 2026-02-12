@@ -30,7 +30,6 @@
 #include "Configuration/gameConfigUI.h"
 #include "Configuration/renderConfigUI.h"
 
-#include <tracyprofiler/tracy/Tracy.hpp>
 
 using GLuint = unsigned int;
 

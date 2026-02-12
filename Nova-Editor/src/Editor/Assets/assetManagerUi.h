@@ -85,6 +85,7 @@ private:
 	std::unique_ptr<Texture> textureIcon;
 	std::unique_ptr<Texture> audioIcon;
 	std::unique_ptr<Texture> scriptIcon;
+	std::unique_ptr<Texture> adminScriptIcon;
 	std::unique_ptr<Texture> sceneIcon;
 	std::unique_ptr<Texture> modelIcon;
 	std::unique_ptr<Texture> cubeMapIcon;

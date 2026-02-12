@@ -721,6 +721,13 @@ void AssetViewerUI::displayFontInfo(AssetInfo<Font>& descriptor) {
 	}
 }
 
+void AssetViewerUI::displayScriptInfo(AssetInfo<ScriptAsset>& descriptor)
+{
+	ImGui::Checkbox("AdminScript", &descriptor.adminScript);
+	if (ImGui::IsItemDeactivatedAfterEdit())
+		recompileResourceWithUpdatedDescriptor<ScriptAsset>(descriptor);
+}
+
 void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descriptor) {
 	auto&& prefabRegistry = editor.engine.prefabManager.getPrefabRegistry();
 

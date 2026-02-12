@@ -37,6 +37,10 @@ AssetManagerUI::AssetManagerUI(Editor& editor, AssetViewerUI& assetViewerUi) :
 	auto scriptPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/script" }).value()();
 	scriptIcon.reset(static_cast<Texture*>(scriptPtr.release()));
 
+	auto adminScriptPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,			std::string{ "System/Image/adminScript" }).value()();
+	adminScriptIcon.reset(static_cast<Texture*>(adminScriptPtr.release()));
+
+
 	auto scenePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/scene" }).value()();
 	sceneIcon.reset(static_cast<Texture*>(scenePtr.release()));
 
@@ -621,7 +625,9 @@ ImTextureID AssetManagerUI::getAssetThumbnailImage(ResourceID resourceId) {
 		return audioIcon->getTextureId();
 	}
 	else if (resourceManager.isResource<ScriptAsset>(resourceId)) {
-		return scriptIcon->getTextureId();
+		auto&& scriptAssetInfo = dynamic_cast<AssetInfo<ScriptAsset> const*>(assetManager.getDescriptor(resourceId));
+		
+		return scriptAssetInfo->adminScript ? adminScriptIcon->getTextureId():  scriptIcon->getTextureId();
 	}
 	else if (resourceManager.isResource<Scene>(resourceId)) {
 		return sceneIcon->getTextureId();

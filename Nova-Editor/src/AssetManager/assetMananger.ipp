@@ -387,6 +387,9 @@ void AssetManager::serializeDescriptor(ResourceID id) {
 
 		descriptorFile << '\n';
 	}
+	else if constexpr (std::same_as<T, ScriptAsset>) {
+		descriptorFile << assetInfo->adminScript << '\n';
+	}
 
 	// ============================
 	Logger::debug("Successfully serialised descriptor file for {}", assetInfo->filepath.string);
