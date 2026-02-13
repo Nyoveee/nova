@@ -46,7 +46,7 @@ class PlayerWeaponController : Script
     // Runtime variables
     // ===========================================
     private GameUIManager gameUIManager;
-    private Gun currentlyHeldGun;
+    public Gun currentlyHeldGun;
     private float timeElapsed;
     private float armTimeElapsed = 0f;
     private bool isArmingDisabled = false; //required by animation controller disable animations while other animation are playing
