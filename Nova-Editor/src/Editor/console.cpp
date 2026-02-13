@@ -1,8 +1,17 @@
 #include "console.h"
-#include "Internal/Logger.h"
-#include "imgui.h"
+
+
 
 void Console::update() {
+    if (maxLogLevel == LogLevel::Warning || maxLogLevel == LogLevel::Error) {
+        ImGui::PushStyleColor(ImGuiCol_Tab, consoleTabColor);
+        ImGui::PushStyleColor(ImGuiCol_TabActive, consoleTabColor);
+        ImGui::PushStyleColor(ImGuiCol_TabHovered, consoleTabColor);
+        ImGui::PushStyleColor(ImGuiCol_TabDimmed, consoleTabColor);
+        ImGui::PushStyleColor(ImGuiCol_TabDimmedSelected, consoleTabColor);
+        ImGui::PushStyleColor(ImGuiCol_TabDimmedSelectedOverline, consoleTabColor);
+    }
+    
     ImGui::Begin("Console");
 
     // Filter checkboxes
@@ -28,7 +37,7 @@ void Console::update() {
     ImGui::BeginChild("LogArea", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
     const auto logEntries = Logger::getLogEntries();
-
+    maxLogLevel = LogLevel::Info;
     for (const auto& entry : logEntries) {
         bool shouldShow = false;
         ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // default white
@@ -38,19 +47,20 @@ void Console::update() {
             shouldShow = showInfo;
             color = ImVec4(0.8f, 0.8f, 0.8f, 1.0f); // Light gray
             break;
-        case LogLevel::Warning:
-            shouldShow = showWarnings;
-            color = ImVec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow
-            break;
         case LogLevel::Debug:
             shouldShow = showDebug;
             color = ImVec4(0.3f, 0.6f, 0.3f, 1.0f);  // Green
+            break;
+        case LogLevel::Warning:
+            shouldShow = showWarnings;
+            color = ImVec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow
             break;
         case LogLevel::Error:
             shouldShow = showErrors;
             color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); // Red
             break;
         }
+        maxLogLevel = entry.level > maxLogLevel ? entry.level : maxLogLevel;
 
         if (shouldShow) {
             ImGui::PushStyleColor(ImGuiCol_Text, color);
@@ -67,8 +77,17 @@ void Console::update() {
             ImGui::PopStyleColor();
         }
     }
-
-    // testAutoScroll();
+    // Sets the console color depending on what type of message is currently in the console
+    switch (maxLogLevel) {
+    case LogLevel::Warning:
+        consoleTabColor = ImVec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow
+        break;
+    case LogLevel::Error:
+        consoleTabColor = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); // Red
+        break;
+    default:
+        consoleTabColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // default white
+    }
 
     static bool previousAutoScroll = true; // remember previous frame state
     static int lastLogCount = 0;           // remember previous number of logs
@@ -91,6 +110,14 @@ void Console::update() {
 
     ImGui::EndChild();
     ImGui::End();
+    if (maxLogLevel == LogLevel::Warning || maxLogLevel == LogLevel::Error) {
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+    }
 }
 
 
