@@ -147,9 +147,8 @@ class GameUIManager : Script
         {
             return;
         }
-
         Vector2 textureCoordinates = ultimateBar.textureCoordinatesRange;
-        textureCoordinates.x = Mathf.Interpolate(0, 1f, currentSp / maxSp, 1);
+        textureCoordinates.x = Mathf.Interpolate(0, 1f, (float)currentSp / maxSp, 1);
         ultimateBar.textureCoordinatesRange = textureCoordinates;
     }
 
