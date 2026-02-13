@@ -501,13 +501,12 @@ class ThrowableRifle : Script
         //update player health
         if (playerGameobject.getScript<PlayerController_V2>() != null)
         {
-
             int heal = (int)( totalIchorGained /healthGainedPerIchor);
             int sp = (int)(totalIchorGained / spGainPerIchor);
 
             playerGameobject.getScript<PlayerController_V2>().GainHealth(heal);
 
-            mappedWeapon.CurrentSp +=  sp;
+            mappedWeapon.CurrentSp = mappedWeapon.CurrentSp + sp;
 
             mappedWeapon.CurrentSp = Math.Min(mappedWeapon.CurrentSp,mappedWeapon.MaxSp);
 
@@ -530,8 +529,8 @@ class ThrowableRifle : Script
         {
             currentIchorGained++;
             totalAmmoGained++;
-
-            //gain ammo and destroy object
+            totalIchorGained++;
+            // gain ammo
             if (currentIchorGained >= ichorPerAmmo)
             { 
                 totalAmmoGained++;
@@ -544,12 +543,7 @@ class ThrowableRifle : Script
             if (other.getScript<Ichor>() != null)
             {
                 other.getScript<Ichor>().PullTowardsGun(gameObject.transform.position);
-
-
-
             }
-
-          //  Destroy(other);
         
         }
 
