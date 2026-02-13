@@ -212,7 +212,8 @@ class Door : Script
         doorState = DoorState.Opening;
         currentDoorMovingTime = 0;
         audioComponent?.PlaySound(openSFX);
-        // AudioAPI.PlaySound(gameObject, "slidingDoor_open_01");
+
+        Debug.Log(openOffset);
     }
 
     public void CloseDoor()

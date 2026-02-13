@@ -406,6 +406,18 @@ void play();
 void pause();
 
 ManagedComponentEnd()
+
+// ======================================
+// Camera Component
+// ======================================
+ManagedComponentDeclaration(
+	CameraComponent,
+	bool, camStatus,
+	float, fov
+)
+
+ManagedComponentEnd()
+
 // ======================================
 // Light Component
 // ======================================

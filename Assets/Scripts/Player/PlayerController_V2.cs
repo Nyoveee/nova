@@ -97,6 +97,8 @@ class PlayerController_V2 : Script
     private float gravityLerpTimer = 0.0f;
     private float dashTimeElapsed = 0.0f;
 
+    public bool movementIsEnabled = true;
+
     // ==================================
     // Player Stats
     // ==================================
@@ -589,6 +591,7 @@ class PlayerController_V2 : Script
     // ============ INPUT CALLBACK ==========
     private void beginWalkingForward()
     {
+        if (!movementIsEnabled) return;
         isMovingForward = true;
     }
     private void endWalkingForward()
@@ -597,6 +600,7 @@ class PlayerController_V2 : Script
     }
     private void beginWalkingBackward()
     {
+        if (!movementIsEnabled) return;
         isMovingBackward = true;
     }
     private void endWalkingBackward()
@@ -605,6 +609,7 @@ class PlayerController_V2 : Script
     }
     private void beginWalkingLeft()
     {
+        if (!movementIsEnabled) return;
         isMovingLeft = true;
     }
     private void endWalkingLeft()
@@ -613,6 +618,7 @@ class PlayerController_V2 : Script
     }
     private void beginWalkingRight()
     {
+        if (!movementIsEnabled) return;
         isMovingRight = true;
     }
     private void endWalkingRight()
