@@ -586,11 +586,12 @@ void Renderer::renderMain(RenderMode renderMode) {
 	case RenderMode::Game:
 		// Main render function
 		render(gameMainFrameBuffer, gameCamera, gameHistoryTexture);
-		renderUI();
-		overlayUIToBuffer(gameMainFrameBuffer);
 
 		// Apply HDR tone mapping + gamma correction post-processing
 		renderHDRTonemapping(gameMainFrameBuffer);
+
+		renderUI();
+		overlayUIToBuffer(gameMainFrameBuffer);
 
 		// render to default FBO.
 		renderToDefaultFBO();
@@ -2115,8 +2116,6 @@ void Renderer::renderText(Transform const& transform, Text const& text) {
 	textShader.use();
 	textShader.setMatrix("projection", UIProjection);
 
-	glActiveTexture(GL_TEXTURE0);
-
 	// Retrieves font asset from asset manager.
 	auto [font, _] = resourceManager.getResource<Font>(text.font);
 
@@ -2140,10 +2139,15 @@ void Renderer::renderText(Transform const& transform, Text const& text) {
 	vertices.reserve(text.text.size() * 6); // 6 vertices per char, 4 floats per vertex
 
 	std::string::const_iterator c;
-	for (c = text.text.begin(); c != text.text.end(); c++)
-	{
-		const Font::Character& ch = font->getCharacters().at(*c);
+	
+	float totalTextWidth = 0;
 
+	// We start batching all text into one vertices..
+	for (int i = 0; i < text.text.size(); i++) {
+		char character = text.text[i];
+		const Font::Character& ch = font->getCharacters().at(character);
+
+		// Transform calculation..
 		float xpos = x + ch.bearing.x * fontScale;
 		float ypos = y - (ch.size.y - ch.bearing.y) * fontScale;
 
@@ -2157,6 +2161,7 @@ void Renderer::renderText(Transform const& transform, Text const& text) {
 		if (w == 0 || h == 0)
 			continue;
 
+		// Texture unit calculation..
 		float tx = ch.tx;                   // texture X offset in atlas
 		float ty = 0.f;                     // texture Y offset in atlas
 		float tw = static_cast<float>(ch.size.x) / atlas.width;
@@ -2170,9 +2175,31 @@ void Renderer::renderText(Transform const& transform, Text const& text) {
 		vertices.push_back({ xpos,     ypos + h, tx,       ty });
 		vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
 		vertices.push_back({ xpos + w, ypos + h, tx + tw,  ty });
+
+		// Calculate whole width of text..
+		if ((i + 1) == text.text.size()) {
+			// last character, dont add advance.. only width of the character
+			totalTextWidth += (ch.bearing.x + ch.size.x) * fontScale;
+		}
+		else {
+			totalTextWidth += ch.advance * fontScale;
+		}
 	}
 
+	// Calculate appropriate offset for alignment..
+	switch (text.alignment) {
+	case Text::Alignment::Center:
+		textShader.setFloat("offset", -totalTextWidth / 2.f);
+		break;
+	case Text::Alignment::RightAligned:
+		textShader.setFloat("offset", -totalTextWidth);
+		break;
+	case Text::Alignment::LeftAligned:
+	default:
+		textShader.setFloat("offset", 0.f);
+	}
 	// Bind font atlas texture once per string
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, atlas.textureId);
 
 	// Upload vertex data for all glyphs in this string

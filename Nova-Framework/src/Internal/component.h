@@ -790,18 +790,26 @@ struct alignas(16) ParticleLifespanData {
 	int sizeOverLifetime{};
 	int b_Active{};
 };
+
 struct Text {
 	TypedResourceID<Font> font;
 	int fontSize = 13;
 	std::string text;
 	Color fontColor = Color{ 1.f, 1.f, 1.f };
 
+	enum class Alignment {
+		LeftAligned,
+		Center,
+		RightAligned,
+	} alignment = Alignment::LeftAligned;
+
 	REFLECTABLE
 	(
 		font,
 		text,
 		fontSize,
-		fontColor
+		fontColor,
+		alignment
 	)
 };
 
