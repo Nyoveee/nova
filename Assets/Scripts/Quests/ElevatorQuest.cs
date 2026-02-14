@@ -20,17 +20,6 @@ class ElevatorQuest : Quest
     private Vector3 activeLightColor;
 
     [SerializableField]
-    private GameObject missionObjectiveContainer;
-    [SerializableField]
-    private GameObject questInformationContainer;
-
-    [SerializableField]
-    private Vector3 newMissionObjectiveUILocation;
-    [SerializableField]
-    private Vector3 newQuestInformationUILocation;
-    [SerializableField]
-    private Audio elevatorSpeechAudio;
-    [SerializableField]
     private string speaker;
     [SerializableField]
     private List<string> dialogues;
@@ -74,12 +63,8 @@ class ElevatorQuest : Quest
         Destroy(checkPointIndicator);
         elevator.CloseTutorialDoor();
 
-        missionObjectiveContainer.transform.position = newMissionObjectiveUILocation;
-        questInformationContainer.transform.position = newQuestInformationUILocation;
-
         Invoke(() =>
         {
-            audioComponent.PlaySound(elevatorSpeechAudio);
             gameUIManager.ActivateDialogue(speaker, dialogues, timings, finalDialogueTime);
         }, delayForDialogue);
     }

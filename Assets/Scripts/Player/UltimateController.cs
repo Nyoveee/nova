@@ -101,14 +101,23 @@ class UltimateController : Script
 
     private void BeginUltimateSequence()
     {
-        if (isCasting) {
+        if (isCasting) 
+        {
             return;
         }
+
+        if (playerWeaponController.currentlyHeldGun.CurrentSp != playerWeaponController.currentlyHeldGun.MaxSp)
+        {
+            return;
+        }
+
+        playerWeaponController.currentlyHeldGun.CurrentSp = 0;
 
         // AudioAPI.PlaySound(gameObject, "sniper_specialFire_01");
         playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.Busy;
 
         isCasting = true;
+
         //rigidbody.enable = false;
         playerController.GravityFreeze(true);
         playerController.PositionFreeze(true);

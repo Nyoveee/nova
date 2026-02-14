@@ -16,6 +16,9 @@ class GameUIManager : Script
 
     private bool isPaused = false;
     public event Action RestartFromCheckpointButton;
+
+    private DialogueScript dialogueScript = null;
+
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -31,8 +34,10 @@ class GameUIManager : Script
 
     [SerializableField]
     private Image_? damageBackground = null;
+
     [SerializableField]
     private Text_? questText = null;
+
     [SerializableField]
     private float damageFadeTime = 2.0f;
 
@@ -41,9 +46,6 @@ class GameUIManager : Script
 
     [SerializableField]
     private Text_? currentAmmoText = null;
-
-    [SerializableField]
-    private DialogueScript? dialogueScript = null;
 
     [SerializableField]
     private GameObject? deathUI = null;
@@ -61,6 +63,8 @@ class GameUIManager : Script
 
     protected override void init()
     {
+        dialogueScript = getScript<DialogueScript>();
+
         progressBars[ProgressBarType.DashBar] = dashBar;
         progressBars[ProgressBarType.HealthBar] = healthBar;
         progressBars[ProgressBarType.UltimateBar] = ultimateBar;
@@ -183,11 +187,9 @@ class GameUIManager : Script
     ***********************************************************/
     public void ActivateDialogue(string speaker, List<string> text, List<float> times, float finalDialogueTime)
     {
-        dialogueScript.gameObject.SetActive(true);
         dialogueScript.BeginDialogueSequence(speaker, text, times, finalDialogueTime);
-
-
     }
+
     /***********************************************************
        Death 
     ***********************************************************/
