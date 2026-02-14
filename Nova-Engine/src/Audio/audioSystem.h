@@ -95,9 +95,9 @@ public:
 
 public:
 	// These functions is called from the scripting API.
-	ENGINE_DLL_API void playSFX(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio);
-	ENGINE_DLL_API void playBGM(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio);
-	ENGINE_DLL_API void stopSound(entt::entity entity, TypedResourceID<Audio> audio);
+	ENGINE_DLL_API bool playSFX(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio);
+	ENGINE_DLL_API bool playBGM(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio);
+	ENGINE_DLL_API bool stopSound(entt::entity entity, TypedResourceID<Audio> audio);
 
 	ENGINE_DLL_API void setMasterVolume(NormalizedFloat volume);
 	ENGINE_DLL_API void setBGMVolume(NormalizedFloat volume);

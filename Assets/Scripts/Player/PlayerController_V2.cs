@@ -641,7 +641,7 @@ class PlayerController_V2 : Script
         //check if jumped airborne
         if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && !jumpEnabled && playerMoveStates == PlayerMoveStates.AirborneMovement)
         {
-            audioComponent.PlayRandomSound(landingSFX);
+            // audioComponent.PlayRandomSound(landingSFX);
             isLanded = true;
         }
 

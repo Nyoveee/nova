@@ -497,13 +497,11 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 /***********************************************************************************************************
 	Scripting Functions
 ***********************************************************************************************************/
-void AudioSystem::playBGM(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio)
+bool AudioSystem::playBGM(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio)
 {
 
-	if (audio == INVALID_RESOURCE_ID) {
-		Logger::error("Attempting to Play Audio that doesn't exist");
-		return;
-	}
+	if (audio == INVALID_RESOURCE_ID)
+		return false;
 
 	// Stop previous BGM.
 	if (currentBGM) {
@@ -516,19 +514,19 @@ void AudioSystem::playBGM(entt::entity entity, AudioComponent const& audioCompon
 	if (audioInstance) {
 		currentBGM = audioInstance;
 	}
+	return true;
 
 }
-void AudioSystem::playSFX(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio)
+bool AudioSystem::playSFX(entt::entity entity, AudioComponent const& audioComponent, TypedResourceID<Audio> audio)
 {
-	if (audio == INVALID_RESOURCE_ID) {
-		Logger::error("Attempting to Play Audio that doesn't exist");
-		return;
-	}
+	if (audio == INVALID_RESOURCE_ID)
+		return false;
 
 	Transform const& transform = engine.ecs.registry.get<Transform>(entity);
 
 	AudioInstance* audioInstance = createSoundInstance(audio, audioComponent, entity);
-	if (!audioInstance) return;
+	if (!audioInstance) 
+		return false;
 
 	FMOD_VECTOR pos = { transform.position.x, transform.position.y, transform.position.z };
 	FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
@@ -541,14 +539,14 @@ void AudioSystem::playSFX(entt::entity entity, AudioComponent const& audioCompon
 	}
 
 	audioInstance->channel->setPaused(false);
+	return true;
 }
-void AudioSystem::stopSound(entt::entity entity, TypedResourceID<Audio> audio)
+bool AudioSystem::stopSound(entt::entity entity, TypedResourceID<Audio> audio)
 {
-	if (audio == INVALID_RESOURCE_ID) {
-		Logger::error("Attempting to Stop Audio that doesn't exist");
-		return;
-	}
+	if (audio == INVALID_RESOURCE_ID)
+		return false;
 	StopAudio(entity, audio);
+	return true;
 }
 
 void AudioSystem::setMasterVolume(NormalizedFloat volume) {

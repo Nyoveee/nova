@@ -18,7 +18,7 @@ public class FixedSpawnWaveBehavior : WaveBehavior
         // populate our pod locations..
         foreach (GameObject spawnLocation in gameObject.GetChildren()) {
             ArenaSpawnLocation arenaSpawnLocationScript = spawnLocation.getScript<ArenaSpawnLocation>();
-            RegisterSpawn(GameObject.Instantiate(arenaSpawnLocationScript.enemy, spawnLocation.transform.position));
+            RegisterSpawn(Instantiate(arenaSpawnLocationScript.enemy, spawnLocation.transform.position));
         }
         
 

@@ -318,18 +318,3 @@ void Systems::Quit()
 {
 	Interface::engine->quit();
 }
-
-#if false
-// ======================================
-// Audio APIs..
-// ======================================
-void AudioAPI::PlaySound(GameObject^ gameObject, System::String^ string) {
-	//Interface::engine->audioSystem.playSFX(Convert(gameObject), Convert(string));
-}
-void AudioAPI::PlayBGM(GameObject^ gameObject, System::String^ string) {
-	//Interface::engine->audioSystem.playBGM(Convert(gameObject), Convert(string));
-}
-void AudioAPI::StopSound(GameObject^ gameObject, System::String^ string) {
-	//Interface::engine->audioSystem.stopSound(Convert(gameObject), Convert(string));
-}
-#endif

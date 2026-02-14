@@ -22,18 +22,24 @@ public:
 	T getScript();
 
 public:
-	static void Invoke(Callback^ callback, float duration);
+	void Invoke(Callback^ callback, float duration);
 
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quaternion^ localRotation, GameObject^ parent);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quaternion^ localRotation);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition);
+	GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab);
+	GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent);
+	GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent);
+	GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quaternion^ localRotation, GameObject^ parent);
+	GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quaternion^ localRotation);
+	GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition);
 
-	static void Destroy(GameObject^ gameObject);
-
+	void Destroy(GameObject^ gameObject);
 internal:
+	GameObject^ _gameObject;
 	System::UInt32 entityID;
+
+public:
+	property GameObject^ gameObject {
+		GameObject^ get() { return _gameObject; };
+	}
+
 };
 

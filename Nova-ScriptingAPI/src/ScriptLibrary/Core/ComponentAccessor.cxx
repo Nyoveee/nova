@@ -41,7 +41,7 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 	Transform* transform = Interface::engine->ecs.registry.try_get<Transform>(prefabInstanceId);
 
 	if (!entityData || !transform) {
-		Logger::warn("Failed to instantiate entity?");
+		Logger::warn("{}Failed to instantiate entity?",GameObject(entityID).GetNameID());
 		return nullptr;
 	}
 
@@ -70,7 +70,7 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 
 void ComponentAccessor::Destroy(GameObject^ gameObject) {
 	if (!gameObject || !Interface::engine->ecs.registry.valid(static_cast<entt::entity>(gameObject->entityID))) {
-		Logger::error("Attempting to delete GameObject that doesn't exist");
+		Logger::error("{}Attempting to delete GameObject that doesn't exist",gameObject->GetNameID());
 		return;
 	}
 	

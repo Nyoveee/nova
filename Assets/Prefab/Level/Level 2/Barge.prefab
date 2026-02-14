@@ -1,0 +1,806 @@
+{
+    "RootEntity": 0,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Barge",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    1,
+                    2,
+                    3,
+                    6,
+                    7
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 9151710846859837785,
+                "entityGUID": 1876620637838923831,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 3.8024635314941406,
+                    "z": 409.68682861328125
+                },
+                "scale": {
+                    "x": 165.0,
+                    "y": 10.0,
+                    "z": 77.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 3.8024635314941406,
+                    "z": 409.68682861328125
+                },
+                "localScale": {
+                    "x": 165.0,
+                    "y": 10.0,
+                    "z": 77.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    1004452720811704379
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Barge Platform",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 9151710846859837785,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 145.5988311767578,
+                    "y": 21.547771453857422,
+                    "z": 467.3289794921875
+                },
+                "scale": {
+                    "x": 20.0,
+                    "y": 7.4383955001831055,
+                    "z": 20.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.8824172019958496,
+                    "y": 1.7745308876037598,
+                    "z": 0.7485995292663574
+                },
+                "localScale": {
+                    "x": 0.12121212482452393,
+                    "y": 0.7438395619392395,
+                    "z": 0.25974026322364807
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "name": "Barge Platform",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 9151710846859837785,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -145.29054260253906,
+                    "y": 21.547771453857422,
+                    "z": 352.17138671875
+                },
+                "scale": {
+                    "x": 20.0,
+                    "y": 7.4383955001831055,
+                    "z": 20.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.8805487751960754,
+                    "y": 1.7745308876037598,
+                    "z": -0.7469539642333984
+                },
+                "localScale": {
+                    "x": 0.12121212482452393,
+                    "y": 0.7438395619392395,
+                    "z": 0.25974026322364807
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "name": "Large Barge Platform",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": [
+                    4,
+                    5
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 9151710846859837785,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -1.7586997747421265,
+                    "y": 28.582319259643555,
+                    "z": 408.70458984375
+                },
+                "scale": {
+                    "x": 25.732624053955078,
+                    "y": 1.739667534828186,
+                    "z": 54.634605407714844
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.01065878663212061,
+                    "y": 2.4779856204986572,
+                    "z": -0.01275634765625
+                },
+                "localScale": {
+                    "x": 0.15595529973506927,
+                    "y": 0.17396675050258636,
+                    "z": 0.7095403075218201
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "id": 3
+        },
+        {
+            "EntityData": {
+                "name": "Barge Pillar",
+                "tag": "",
+                "parent": 3,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 9151710846859837785,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -1.8699257373809814,
+                    "y": 20.95630645751953,
+                    "z": 450.36968994140625
+                },
+                "scale": {
+                    "x": 25.733003616333008,
+                    "y": 5.887876033782959,
+                    "z": 13.004607200622559
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.004322372376918793,
+                    "y": -4.383604049682617,
+                    "z": 0.7626137733459473
+                },
+                "localScale": {
+                    "x": 1.0000147819519043,
+                    "y": 3.384483575820923,
+                    "z": 0.23802876472473145
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Wall",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "name": "Barge Pillar",
+                "tag": "",
+                "parent": 3,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 9151710846859837785,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -1.8699257373809814,
+                    "y": 20.95630645751953,
+                    "z": 367.08868408203125
+                },
+                "scale": {
+                    "x": 25.733003616333008,
+                    "y": 5.887876033782959,
+                    "z": 13.004607200622559
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.004322372376918793,
+                    "y": -4.383604049682617,
+                    "z": -0.7617135047912598
+                },
+                "localScale": {
+                    "x": 1.0000147819519043,
+                    "y": 3.384483575820923,
+                    "z": 0.23802876472473145
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Wall",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "name": "Barge Platform",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 9151710846859837785,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 145.5988311767578,
+                    "y": 21.547771453857422,
+                    "z": 352.0989074707031
+                },
+                "scale": {
+                    "x": 20.0,
+                    "y": 7.4383955001831055,
+                    "z": 20.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.8824172019958496,
+                    "y": 1.7745308876037598,
+                    "z": -0.7478952407836914
+                },
+                "localScale": {
+                    "x": 0.12121212482452393,
+                    "y": 0.7438395619392395,
+                    "z": 0.25974026322364807
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "id": 6
+        },
+        {
+            "EntityData": {
+                "name": "Barge Platform",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 9151710846859837785,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -145.29054260253906,
+                    "y": 21.547771453857422,
+                    "z": 467.2548522949219
+                },
+                "scale": {
+                    "x": 20.0,
+                    "y": 7.4383955001831055,
+                    "z": 20.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.8805487751960754,
+                    "y": 1.7745308876037598,
+                    "z": 0.7476367950439453
+                },
+                "localScale": {
+                    "x": 0.12121212482452393,
+                    "y": 0.7438395619392395,
+                    "z": 0.25974026322364807
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "id": 7
+        }
+    ]
+}

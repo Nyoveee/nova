@@ -84,7 +84,7 @@ class SpwanAgentTest : Script
 
         isLeftClickDown = true;
 
-        var agent = GameObject.Instantiate(agentPrefab, selectObject.transform.position , Quaternion.Identity());
+        var agent = Instantiate(agentPrefab, selectObject.transform.position , Quaternion.Identity());
         agentsArr[slot] = agent;
     }
 
@@ -113,7 +113,7 @@ class SpwanAgentTest : Script
 
             agentsArr[slot].getComponent<NavMeshAgent_>().enable = false;
             //NavigationAPI.stopAgent(agentsArr[slot].getComponent<NavMeshAgent_>());
-            GameObject.Destroy(agentsArr[slot]);
+            Destroy(agentsArr[slot]);
             agentsArr[slot] = null;
         }
     

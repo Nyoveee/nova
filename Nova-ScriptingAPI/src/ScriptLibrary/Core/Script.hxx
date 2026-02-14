@@ -69,14 +69,6 @@ protected:
 	}
 
 internal:
-	GameObject^ _gameObject;
-
-public:
-	property GameObject^ gameObject {
-		GameObject^ get() { return _gameObject; };
-	}
-
-internal:
 	// Each script is aware of what functions it subscribes to with the Input Manager. 
 	// When the game object holding this instance of the script is destroyed, we need to unsubscribe.
 	System::Collections::Generic::List<std::size_t> scriptObserverIds;

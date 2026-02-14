@@ -1,0 +1,247 @@
+{
+    "RootEntity": 9,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Teleporter",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    10,
+                    11
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 5593075492862001155,
+                "entityGUID": 1361653356400443413,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 87.59642028808594,
+                    "y": -39.19683837890625,
+                    "z": -37.153228759765625
+                },
+                "scale": {
+                    "x": 1.0000001192092896,
+                    "y": 1.0000001192092896,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -33.10243225097656,
+                    "y": 44.98152160644531,
+                    "z": 22.59457778930664
+                },
+                "localScale": {
+                    "x": 0.23809534311294556,
+                    "y": 0.2380932718515396,
+                    "z": 0.23809529840946198
+                },
+                "localRotation": {
+                    "w": 0.9891139268875122,
+                    "x": 0.0,
+                    "y": -0.1471523940563202,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.2953774034976959,
+                    "z": 0.0
+                }
+            },
+            "id": 9
+        },
+        {
+            "EntityData": {
+                "name": "Teleporter Destination",
+                "tag": "",
+                "parent": 9,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 5593075492862001155,
+                "entityGUID": 6549800127131254807,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 216.7825164794922,
+                    "y": -151.19935607910156,
+                    "z": -111.16631317138672
+                },
+                "scale": {
+                    "x": 1.0000001192092896,
+                    "y": 1.0000001192092896,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 129.1860809326172,
+                    "y": -112.00250244140625,
+                    "z": -74.0130844116211
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    5
+                ],
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "id": 10
+        },
+        {
+            "EntityData": {
+                "name": "Teleporter Source",
+                "tag": "",
+                "parent": 9,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 5593075492862001155,
+                "entityGUID": 8855643136344965145,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 194.5561981201172,
+                    "y": -210.44969177246094,
+                    "z": -162.41036987304688
+                },
+                "scale": {
+                    "x": 77.70712280273438,
+                    "y": 10.000000953674316,
+                    "z": 53.541969299316406
+                },
+                "rotation": {
+                    "w": 0.8142467737197876,
+                    "x": 0.0,
+                    "y": -0.580518901348114,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -1.2387316226959229,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 106.95976257324219,
+                    "y": -171.25282287597656,
+                    "z": -125.25714111328125
+                },
+                "localScale": {
+                    "x": 77.70712280273438,
+                    "y": 10.0,
+                    "z": 53.54195785522461
+                },
+                "localRotation": {
+                    "w": 0.8142467737197876,
+                    "x": 0.0,
+                    "y": -0.580518901348114,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -1.2387316226959229,
+                    "z": 0.0
+                }
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "NonMoving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": true,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 8296862430560272387,
+                        "fields": [
+                            {
+                                "name": "destination",
+                                "data": {
+                                    "__variant_value": 10,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 11
+        }
+    ]
+}

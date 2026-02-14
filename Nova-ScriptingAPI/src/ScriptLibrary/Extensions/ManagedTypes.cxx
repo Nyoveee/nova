@@ -686,20 +686,24 @@ void Sequence_::play() {
 // Audio
 // ======================================
 void AudioComponent_::PlaySound(ScriptingAPI::Audio^ audio){
-	Interface::engine->audioSystem.playSFX(Convert(gameObject), *Convert(this), audio->getId());
+
+	if(!Interface::engine->audioSystem.playSFX(Convert(gameObject), *Convert(this), audio->getId()))
+		Logger::error("{}Attempting to Play Audio that doesn't exist", gameObject->GetNameID());
 }
 void AudioComponent_::PlayRandomSound(System::Collections::Generic::List<ScriptingAPI::Audio^>^ audioList) {
 	if (!audioList || audioList->Count == 0) {
-		Logger::error("Attempting to play random sound from non existent or empty list");
+		Logger::error("{}Attempting to play random sound from non existent or empty list", gameObject->GetNameID());
 		return;
 	}
 	PlaySound(audioList[Random::Range(0, audioList->Count)]);
 }
 void AudioComponent_::PlayBGM(ScriptingAPI::Audio^ audio) {
-	Interface::engine->audioSystem.playBGM(Convert(gameObject), *Convert(this), audio->getId());
+	if (!Interface::engine->audioSystem.playBGM(Convert(gameObject), *Convert(this), audio->getId()))
+		Logger::error("{}Attempting to Play Audio that doesn't exist",gameObject->GetNameID());
 }
 void AudioComponent_::StopSound(ScriptingAPI::Audio^ audio) {
-	Interface::engine->audioSystem.stopSound(Convert(gameObject), audio->getId());
+	if(!Interface::engine->audioSystem.stopSound(Convert(gameObject), audio->getId()))
+		Logger::error("{}Attempting to Stop Audio that doesn't exist",gameObject->GetNameID());
 }
 
 bool VideoPlayer_::IsVideoFinished()
