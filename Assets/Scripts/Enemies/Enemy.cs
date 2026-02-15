@@ -242,6 +242,8 @@ public abstract class Enemy : Script
         player = GameObject.FindWithTag("Player");
         playerHead = GameObject.FindWithTag("PlayerHead");
         navMeshAgent.setAutomateNavMeshOfflinksState(false);
+        physicsRigidbody.SetLinearDamping(0);
+        physicsRigidbody.SetAngularDamping(0);
     }
 
     // when invoked, this function puts the enemy into idle state without chasing capability for `seconds` duration.
