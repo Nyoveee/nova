@@ -101,9 +101,15 @@ void Input::ClearAllKeyMapping() {
 	mouseScrollObserverIds.Clear();
 }
 
+
 // ======================================
 // Physics APIs..
 // ======================================
+float PhysicsAPI::GetGravity()
+{
+	return Interface::engine->physicsManager.getGravity();
+}
+
 System::Nullable<RayCastResult> PhysicsAPI::Raycast(Vector3 origin, Vector3 directionVector, float maxDistance) {
 	return Raycast(Ray{ origin, directionVector }, maxDistance, {});
 }
@@ -213,6 +219,7 @@ float Mathf::Abs		(float value)								{ return std::abs(value); }
 float Mathf::SmoothLerp	(float a, float b, float t)					{ return Interpolation::Interpolation(a, b, Math::smoothstep(t), 1); }
 float Mathf::Sqrt		(float f)									{ return std::sqrt(f); }
 
+
 // ======================================
 // Random Related API
 // ======================================
@@ -224,6 +231,10 @@ float Random::Range(float minInclusive, float maxInclusive)
 int Random::Range(int minInclusive, int maxExclusive)
 {
 	return RandomRange::Int(minInclusive,maxExclusive);
+}
+Vector3 Random::Range(Vector3 minInclusive, Vector3 maxInclusive)
+{
+	return Vector3(RandomRange::Vec3(minInclusive.native(), maxInclusive.native()));
 }
 
 // ======================================

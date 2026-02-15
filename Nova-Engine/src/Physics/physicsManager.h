@@ -88,6 +88,7 @@ public:
 
 	ENGINE_DLL_API void setRotation(Rigidbody& rigidbody, glm::quat quaternion);
 
+	ENGINE_DLL_API float getGravity();
 	ENGINE_DLL_API void setGravity(float value);
 	ENGINE_DLL_API void setGravityFactor(Rigidbody& rigidbody, float value);
 

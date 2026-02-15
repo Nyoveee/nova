@@ -108,6 +108,16 @@ Vector3 Quaternion::operator*(Quaternion quaternion, Vector3 axis) {
 Vector3 Quaternion::operator*(Vector3 axis, Quaternion quaternion) {
 	return Vector3{ axis.native() * quaternion.native() };
 }
+bool Quaternion::operator==(Quaternion a, Quaternion b)
+{
+	return a.native() == b.native();
+}
+Quaternion Transform_::LookAt(Transform_^ target) {
+	Vector3 direction = position - target->position;
+	direction.Normalize();
+
+	return Quaternion{ glm::quatLookAt(direction.native(), glm::vec3{0,1,0}) };
+}
 
 Quaternion Quaternion::Identity() {
 	return Quaternion{ glm::identity<glm::quat>() };
@@ -148,12 +158,7 @@ void Transform_::rotate(Quaternion quartenion) {
 	nativeComponent()->rotation = quartenion.native() * nativeComponent()->rotation;
 }
 
-Quaternion Transform_::LookAt(Transform_^ target) {
-	Vector3 direction = position - target->position;
-	direction.Normalize();
 
-	return Quaternion{ glm::quatLookAt(direction.native(), glm::vec3{0,1,0}) };
-}
 
 void Transform_::setFront(Vector3 frontAxis) {
 	nativeComponent()->rotation = glm::quatLookAt(-frontAxis.native(), glm::vec3{ 0,1,0 });
@@ -183,7 +188,6 @@ void ParticleEmitter_::setParticleColor(ColorAlpha color)
 	ParticleEmitter* emitter = nativeComponent();
 	emitter->particleColorSelection.color = color.native();
 }
-
 
 // =================================================================
 // Rigidbody
@@ -711,4 +715,3 @@ bool VideoPlayer_::IsVideoFinished()
 	VideoPlayer* videoPlayer = nativeComponent();
 	return Interface::engine->videoSystem.IsVideoFinished(*videoPlayer);
 }
-

@@ -95,6 +95,7 @@ private:
 // ======================================
 public ref class PhysicsAPI {
 public:
+	static float GetGravity();
 	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance);
 	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance, array<System::String^>^ layermask);
 	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance, GameObject^ entityToIgnore);
@@ -155,6 +156,7 @@ public:
 // ======================================
 public ref class Random {
 public:
+	static Vector3 Range(Vector3 minInclusive, Vector3 maxInclusive);
 	static float Range(float minInclusive, float maxInclusive);
 	static int Range(int minInclusive, int maxExclusive);
 };

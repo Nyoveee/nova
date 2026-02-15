@@ -345,7 +345,8 @@ void NavigationSystem::InstantiateAgentsToSystem(entt::entity, Transform const* 
 
 	//Impt here, using index to access data
 	crowdManager[navMeshAgent->agentName].get()->addAgent(dtCrowdIndex, pos, &params);
-	//agent.agentIndex = crowdManager[agent.agentName].get()->addAgent(pos, &params);
+	if (crowdManager[navMeshAgent->agentName].get()->getEditableAgent(dtCrowdIndex)->state == DT_CROWDAGENT_STATE_INVALID)
+		crowdManager[navMeshAgent->agentName].get()->removeAgent(dtCrowdIndex);
 	if (navMeshAgent->agentIndex < 0)
 	{
 		Logger::warn("Failed to add NavMeshAgent to crowd");
@@ -366,6 +367,11 @@ void NavigationSystem::SetAgentActive(entt::entity entityID)
 		dtCrowdAgentParams params = ConfigureDTParams(*navMeshAsset, *navMeshAgent);
 		float pos[3] = { transform->position.x, transform->position.y, transform->position.z };
 		crowdManager[navMeshAgent->agentName].get()->addAgent(dtCrowdIndex, pos, &params);
+		if (dtAgent->state == DT_CROWDAGENT_STATE_INVALID) {
+			dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex));
+			crowdManager[navMeshAgent->agentName].get()->removeAgent(dtCrowdIndex);
+		}
+			
 	}
 	else
 	{
@@ -484,7 +490,8 @@ void NavigationSystem::initNavMeshSystems()
 
 		 //Impt here, using index to access data
 		 crowdManager[agent.agentName].get()->addAgent(dtCrowdIndex,pos, &params);
-		 //agent.agentIndex = crowdManager[agent.agentName].get()->addAgent(pos, &params);
+		 if (crowdManager[agent.agentName].get()->getEditableAgent(dtCrowdIndex)->state == DT_CROWDAGENT_STATE_INVALID)
+			 crowdManager[agent.agentName].get()->removeAgent(dtCrowdIndex);
 		 if (agent.agentIndex < 0)
 		 {
 			 Logger::warn("Failed to add NavMeshAgent to crowd");

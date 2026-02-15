@@ -136,6 +136,7 @@ ManagedStruct(
 
 static Vector3 operator*(Quaternion quaternion, Vector3 axis);
 static Vector3 operator*(Vector3 axis, Quaternion quaternion);
+static bool operator==(Quaternion a, Quaternion b);
 static Quaternion Identity();
 static Quaternion Slerp(Quaternion a, Quaternion b, float t);
 static Quaternion LookRotation(Vector3 directionToLook);

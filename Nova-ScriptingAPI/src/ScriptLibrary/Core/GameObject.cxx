@@ -98,10 +98,19 @@ bool GameObject::IsActive() {
 	return Interface::engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)).isActive;
 }
 
-std::string GameObject::GetNameID() { return Convert("(" + name + " " + entityID.ToString() + ")"); }
+std::string GameObject::GetNameID() { 
+	return Convert("(" + name + " " + entityID.ToString() + ")"); 
+}
 
 Transform_^ GameObject::transform::get() { return transformReference; };
-System::String^ GameObject::name::get() { return msclr::interop::marshal_as<System::String^>(Interface::getNativeComponent<EntityData>(entityID)->name); }
+System::String^ GameObject::name::get() { 
+	EntityData* entityData = Interface::getNativeComponent<EntityData>(entityID);
+	if (!entityData) {
+		Logger::error("Trying to get name from unknown Entity");
+		return "";
+	}
+	return msclr::interop::marshal_as<System::String^>(entityData->name); 
+}
 System::String^ GameObject::tag::get() { return msclr::interop::marshal_as<System::String^>(Interface::getNativeComponent<EntityData>(entityID)->tag); }
 
 bool GameObject::operator==(GameObject^ lhs, GameObject^ rhs) {

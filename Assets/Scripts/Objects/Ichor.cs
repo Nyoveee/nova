@@ -51,7 +51,8 @@ class Ichor : Script
         rigidbody.SetGravityFactor(Random.Range(minGravityFactor, maxGravityFactor));
         Invoke(() =>
         {
-            Destroy(gameObject);
+            if(gameObject!= null)
+                Destroy(gameObject);
         }, ichorLifeTime);
     }
     protected override void update()

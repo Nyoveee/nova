@@ -930,6 +930,11 @@ void PhysicsManager::setRotation(Rigidbody& rigidbody, glm::quat quaternion)
 	}
 }
 
+float PhysicsManager::getGravity()
+{
+	return gravityStrength;
+}
+
 void PhysicsManager::setGravity(float value) {
 	gravityStrength = value;
 	physicsSystem.SetGravity(JPH::Vec3{ 0.f, -gravityStrength, 0.f });
