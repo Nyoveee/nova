@@ -8,12 +8,12 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1048593,
-                    1048590,
-                    1048589,
-                    1048588,
-                    1048587,
-                    1048578,
+                    1,
+                    5,
+                    6,
+                    7,
+                    8,
+                    17,
                     18
                 ],
                 "layerId": 0,
@@ -119,7 +119,7 @@
                             {
                                 "name": "attackHitbox",
                                 "data": {
-                                    "__variant_value": 1048591,
+                                    "__variant_value": 4,
                                     "__variant_type": 4
                                 }
                             },
@@ -133,14 +133,14 @@
                             {
                                 "name": "stompHitBoxTransform",
                                 "data": {
-                                    "__variant_value": 1048589,
+                                    "__variant_value": 6,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "emitter",
                                 "data": {
-                                    "__variant_value": 1048588,
+                                    "__variant_value": 7,
                                     "__variant_type": 4
                                 }
                             },
@@ -326,21 +326,21 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 1048590,
+                                    "__variant_value": 5,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "animator",
                                 "data": {
-                                    "__variant_value": 1048593,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "renderer",
                                 "data": {
-                                    "__variant_value": 1048593,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
@@ -357,19 +357,19 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 1048584,
+                                                "__variant_value": 2,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 1048592,
+                                                "__variant_value": 3,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 1048591,
+                                                "__variant_value": 4,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 1048578,
+                                                "__variant_value": 17,
                                                 "__variant_type": 4
                                             },
                                             {
@@ -400,7 +400,7 @@
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 1048592,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             }
@@ -559,7 +559,7 @@
                             {
                                 "name": "groundDetectionRayCast",
                                 "data": {
-                                    "__variant_value": 5.0,
+                                    "__variant_value": 1.5,
                                     "__variant_type": 18
                                 }
                             }
@@ -595,9 +595,9 @@
                 "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    1048584,
-                    1048592,
-                    1048591
+                    2,
+                    3,
+                    4
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -763,13 +763,13 @@
             "Animator": {
                 "controllerId": 9182558606910275585
             },
-            "id": 1048593
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "Charger_WeakSpot",
                 "tag": "Enemy_WeakSpot",
-                "parent": 1048593,
+                "parent": 1,
                 "attachedSocket": 4,
                 "children": null,
                 "layerId": 0,
@@ -895,13 +895,13 @@
                     }
                 ]
             },
-            "id": 1048584
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "Charger_ArmouredBody",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 1048593,
+                "parent": 1,
                 "attachedSocket": 1,
                 "children": null,
                 "layerId": 0,
@@ -1002,13 +1002,13 @@
                     }
                 ]
             },
-            "id": 1048592
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Basic_AttackColldier",
                 "tag": "EnemyHitBox",
-                "parent": 1048593,
+                "parent": 1,
                 "attachedSocket": 21,
                 "children": null,
                 "layerId": 0,
@@ -1101,7 +1101,7 @@
                     }
                 ]
             },
-            "id": 1048591
+            "id": 4
         },
         {
             "EntityData": {
@@ -1192,7 +1192,7 @@
                     "z": 0.0
                 }
             },
-            "id": 1048590
+            "id": 5
         },
         {
             "EntityData": {
@@ -1283,7 +1283,7 @@
                     "z": 0.0
                 }
             },
-            "id": 1048589
+            "id": 6
         },
         {
             "EntityData": {
@@ -1482,7 +1482,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 1048588
+            "id": 7
         },
         {
             "EntityData": {
@@ -1491,14 +1491,14 @@
                 "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    1048586,
-                    1048585,
-                    1048583,
-                    1048582,
-                    1048581,
-                    1048580,
-                    1048579,
-                    1048577
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -1582,13 +1582,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048587
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "Charge Line 1",
                 "tag": "",
-                "parent": 1048587,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1781,13 +1781,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 1048586
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Charge Line 2",
                 "tag": "",
-                "parent": 1048587,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1980,13 +1980,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 1048585
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Charge Line 3",
                 "tag": "",
-                "parent": 1048587,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2179,13 +2179,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 1048583
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Charge Line 4",
                 "tag": "",
-                "parent": 1048587,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2378,13 +2378,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 1048582
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Charge Line 5",
                 "tag": "",
-                "parent": 1048587,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2577,13 +2577,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 1048581
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Charge Line 6",
                 "tag": "",
-                "parent": 1048587,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2776,13 +2776,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 1048580
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Charge Line 7",
                 "tag": "",
-                "parent": 1048587,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2975,13 +2975,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 1048579
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "Charge Line 8",
                 "tag": "",
-                "parent": 1048587,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3174,7 +3174,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 1048577
+            "id": 16
         },
         {
             "EntityData": {
@@ -3260,7 +3260,7 @@
                     "z": 0.0
                 }
             },
-            "id": 1048578
+            "id": 17
         },
         {
             "EntityData": {
