@@ -13,10 +13,11 @@
 
 using BoneIndex			= unsigned short;
 using ModelNodeIndex	= unsigned int;
+using MeshIndex			= int;
 
 constexpr BoneIndex		 NO_BONE			= std::numeric_limits<BoneIndex>::max();
 constexpr ModelNodeIndex NO_NODE			= std::numeric_limits<ModelNodeIndex>::max();
-
+constexpr MeshIndex		 NOT_A_MESH			= -1;
 constexpr int			 NO_BONE_INDEX		= -1;
 constexpr int			 MAX_BONE_INFLUENCE = 4;
 
@@ -54,8 +55,14 @@ struct ModelNode {
 	glm::mat4x4 transformationMatrix;
 
 	// indicate if this node is actually a bone.
-	bool isBone			= false;
-	BoneIndex boneIndex = NO_BONE;	// if this node is a bone, contains the index to retrieve it's corresponding bone data.
+	enum class Type {
+		Bone, 
+		Mesh,
+		None
+	} nodeType = Type::None;
+	
+	BoneIndex boneIndex = NO_BONE;		// if this node is a bone, contains the index to retrieve it's corresponding bone data.
+	MeshIndex meshIndex	= NOT_A_MESH;	// if this node is a mesh, contains the index to retrieve it's corresponding mesh data in the vector of meshes in model..
 
 	// containing data related to the node hirerarchy.
 	ModelNodeIndex parentNode = NO_NODE;
@@ -64,8 +71,9 @@ struct ModelNode {
 	REFLECTABLE(
 		name,
 		transformationMatrix,
-		isBone,
+		nodeType,
 		boneIndex,
+		meshIndex, 
 		parentNode,
 		nodeChildrens
 	)
@@ -77,46 +85,10 @@ struct VertexWeight {
 	std::array<int,		MAX_BONE_INFLUENCE>		boneIndices	{ NO_BONE_INDEX, NO_BONE_INDEX, NO_BONE_INDEX, NO_BONE_INDEX };
 	std::array<float,	MAX_BONE_INFLUENCE>		weights		{ 0.f, 0.f, 0.f, 0.f };
 
-	unsigned int numOfBones = 0;
-
 	REFLECTABLE(
 		boneIndices,
 		weights
 	)
-
-	// when we add vertex weight, we add to a temporary copy.
-	void addBone(BoneIndex boneIndex, float weight) {
-		temporaryBoneWeights.push_back({ boneIndex, weight });
-	}
-
-	// this will trim the bone weights in the temporary vector to 4 and normalize if needed.
-	void normalizeAndSetBoneWeight() {
-		if (temporaryBoneWeights.size() > 4) {
-			Logger::warn("Too many vertex weight, re-normalising..");
-			std::ranges::sort(temporaryBoneWeights, [&](auto&& lhs, auto&& rhs) {
-				return lhs.second > rhs.second;
-			});
-
-			temporaryBoneWeights.resize(4);
-
-			// get the new sum.. then normalise..
-			float totalSum = std::accumulate(temporaryBoneWeights.begin(), temporaryBoneWeights.end(), 0.f, [&](float sum, auto&& boneToVertexWeight) {
-				return sum += boneToVertexWeight.second;
-			});
-
-			std::for_each(temporaryBoneWeights.begin(), temporaryBoneWeights.end(), [&](auto&& boneToVertexWeight) {
-				boneToVertexWeight.second /= totalSum;
-			});
-		}
-
-		for (auto&& [index, weight] : temporaryBoneWeights) {
-			boneIndices[numOfBones] = index;
-			weights[numOfBones] = weight;
-			++numOfBones;
-		}
-	}
-
-	std::vector<std::pair<int, float>> temporaryBoneWeights;
 };
 
 /*

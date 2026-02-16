@@ -35,10 +35,7 @@ struct alignas(16) ParticleVertex {
 };
 
 struct Mesh {
-	MeshID meshID{}; // Assume 0 doesn't exist
 	std::string name;
-	
-	// std::vector<Vertex> vertices;
 
 	// each vertex attribute will be a stream.
 	std::vector<glm::vec3> positions;
@@ -65,6 +62,10 @@ struct Mesh {
 		numOfTriangles,
 		vertexWeights
 	)
+
+	// runtime variables..
+	MeshID meshID {}; // Assume 0 doesn't exist
+	glm::mat4x4 globalTransformationMatrix;
 };
 
 // this is the model data that will be de/serialised.

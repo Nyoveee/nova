@@ -8,6 +8,8 @@ using GLuint = unsigned int;
 using GLsizeiptr = signed long long int;
 using GLintptr = signed long long int;
 
+struct VertexWeight;
+
 // We use the copy-and-swap idiom (but really move and swap idiom since copy semantics are disabled) to implement move semantics.
 class BufferObject {
 public:

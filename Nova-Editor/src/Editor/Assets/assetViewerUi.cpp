@@ -838,7 +838,7 @@ void AssetViewerUI::displayBoneHierarchy(AssetInfo<Model>& descriptor, BoneIndex
 void AssetViewerUI::displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton) {
 	ModelNode const& node = skeleton.nodes[nodeIndex];
 
-	bool isOpen = ImGui::TreeNodeEx(std::string{ (node.isBone ? ICON_FA_BONE : "") + node.name }.c_str());
+	bool isOpen = ImGui::TreeNodeEx(std::string{ (node.nodeType == ModelNode::Type::Bone ? ICON_FA_BONE : "") + node.name }.c_str());
 
 	if (isOpen) {
 		for (auto& nodeChildrenIndex : node.nodeChildrens) {

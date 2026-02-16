@@ -11,6 +11,50 @@ struct aiMaterial;
 struct aiNode;
 struct aiAnimation;
 
+
+// a working vertex weight used by the model..
+struct IntermediaryVertexWeight {
+	std::array<int, MAX_BONE_INFLUENCE>		boneIndices{ NO_BONE_INDEX, NO_BONE_INDEX, NO_BONE_INDEX, NO_BONE_INDEX };
+	std::array<float, MAX_BONE_INFLUENCE>	weights{ 0.f, 0.f, 0.f, 0.f };
+
+	// when we add vertex weight, we add to a temporary copy.
+	void addBone(BoneIndex boneIndex, float weight) {
+		temporaryBoneWeights.push_back({ boneIndex, weight });
+	}
+
+	// this will trim the bone weights in the temporary vector to 4 and normalize if needed.
+	void normalizeAndSetBoneWeight() {
+		if (temporaryBoneWeights.size() > 4) {
+			Logger::warn("Too many vertex weight, re-normalising..");
+			std::ranges::sort(temporaryBoneWeights, [&](auto&& lhs, auto&& rhs) {
+				return lhs.second > rhs.second;
+			});
+
+			temporaryBoneWeights.resize(4);
+
+			// get the new sum.. then normalise..
+			float totalSum = std::accumulate(temporaryBoneWeights.begin(), temporaryBoneWeights.end(), 0.f, [&](float sum, auto&& boneToVertexWeight) {
+				return sum += boneToVertexWeight.second;
+			});
+
+			std::for_each(temporaryBoneWeights.begin(), temporaryBoneWeights.end(), [&](auto&& boneToVertexWeight) {
+				boneToVertexWeight.second /= totalSum;
+			});
+		}
+
+		unsigned int numOfBones = 0;
+
+		for (auto&& [index, weight] : temporaryBoneWeights) {
+			boneIndices[numOfBones] = index;
+			weights[numOfBones] = weight;
+			++numOfBones;
+		}
+	}
+
+	// temporarily store bone weights for normalization later.. a vector because of the possibility of more than one..
+	std::vector<std::pair<int, float>> temporaryBoneWeights;
+};
+
 class ModelLoader {
 public:
 	static std::optional<ModelData> loadModel(std::string const& filepath, float scale, std::vector<BoneIndex> sockets);
@@ -35,6 +79,8 @@ private:
 	inline static std::vector<MaterialName> materialNames;
 	inline static std::vector<Bone> bones {};
 
+	inline static bool hasBones = false;
+
 #if false
 	inline static std::vector<VertexWeight> vertexWeights {};
 	inline static std::unordered_map<std::string, int> meshVertexBaseOffset = {};
@@ -42,4 +88,5 @@ private:
 #endif
 
 	inline static std::unordered_map<std::string, BoneIndex> boneNameToIndex {};
+	inline static std::unordered_map<std::string, MeshIndex> meshNameToIndex {};
 };

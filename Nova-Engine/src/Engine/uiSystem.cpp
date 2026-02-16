@@ -120,7 +120,7 @@ void UISystem::executeButtonCallback(Button const& button, std::string const& fu
 	}
 }
 
-void UISystem::onButtonCreation(entt::registry& registry, entt::entity entityId) {
+void UISystem::onButtonCreation(entt::registry&, entt::entity entityId) {
 	Button& button = registry.get<Button>(entityId);
 	button.state = Button::State::Normal;
 	button.finalColor = button.normalColor;
