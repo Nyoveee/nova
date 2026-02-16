@@ -48,7 +48,8 @@ class EnviromentHit_Vfx : Script
 
         if(timeElapsed > totalDuration)
         {
-            Destroy(gameObject);
+            if (gameObject != null)
+                Destroy(gameObject);
         }
     }
 

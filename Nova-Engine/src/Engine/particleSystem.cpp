@@ -257,8 +257,7 @@ void ParticleSystem::determineParticleColor(
 	glm::vec3 colorOffsetMin, glm::vec3 colorOffsetMax)
 {
 	// Color
-	particleLifeSpanData.startColor = particleVertex.color = startcolor;
-	glm::vec4 color = emitter.particleColorSelection.color;
+	glm::vec4 color = startcolor;
 	ColorA startColor = color + glm::vec4(glm::vec3(RandomRange::Vec3(colorOffsetMin, colorOffsetMax)), 0);
 	startColor = glm::vec4(startColor.r(), startColor.g(), startColor.b(), 0) * emissiveMultiplier + glm::vec4(0, 0, 0, startColor.a());
 	particleLifeSpanData.colorInterpolation = interpolationType[emitter.colorOverLifetime.interpolationType];

@@ -23,6 +23,7 @@ public class RandomSpawnPod : SpawnPod
     protected override void OnAnimationFinished()
     {
         // Temporary, destroyed upon completion
-        Destroy(gameObject);
+        if (gameObject != null)
+            Destroy(gameObject);
     }
 }

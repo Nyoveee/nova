@@ -8,7 +8,8 @@ class DestroyVFXOnLifetime : Script
     {
         
         Invoke(() =>{
-            Destroy(gameObject);
+            if (gameObject != null)
+                Destroy(gameObject);
         }, getComponent<ParticleEmitter_>().lifeTime);
     }
 }

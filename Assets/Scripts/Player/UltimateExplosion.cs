@@ -106,7 +106,8 @@ class UltimateExplosion : Script
         else
         {
             // RendererAPI.toneMapping = false;
-            Destroy(gameObject);
+            if (gameObject != null)
+                Destroy(gameObject);
             return;
         }
 

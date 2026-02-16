@@ -1,0 +1,108 @@
+{
+    "selectedShader": 4502465490868191233,
+    "uniformDatas": [
+        {
+            "glslType": "bool",
+            "identifier": "isActive",
+            "value": {
+                "__variant_value": false,
+                "__variant_type": 0
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "emissiveColor",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 0.8078431487083435,
+                    "b": 0.0
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "emissiveColorTwo",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 0.0313725508749485,
+                    "b": 0.0313725508749485
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "emissiveMultiplier",
+            "value": {
+                "__variant_value": 10.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "speedMultiplier",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "fresnelPower",
+            "value": {
+                "__variant_value": 2.5,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "vec3",
+            "identifier": "pulsatingDirection",
+            "value": {
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 1.0
+                },
+                "__variant_type": 5
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "lineWidth",
+            "value": {
+                "__variant_value": 50.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "lineSpacing",
+            "value": {
+                "__variant_value": 0.05000000074505806,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "colorLerpPower",
+            "value": {
+                "__variant_value": 0.20999999344348907,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalMap",
+            "identifier": "normalMap",
+            "value": {
+                "__variant_value": 18446744073709551615,
+                "__variant_type": 13
+            }
+        }
+    ],
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "NoDepthWrite",
+    "cullingConfig": "Enable"
+}

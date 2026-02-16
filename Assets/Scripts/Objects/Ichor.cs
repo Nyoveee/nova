@@ -82,9 +82,9 @@ class Ichor : Script
             gameObject.transform.position = Vector3.Lerp(startDistance, endDistance,t );
 
             if (t > 1)
-            { 
-                Destroy(gameObject);
-            
+            {
+                if (gameObject != null)
+                    Destroy(gameObject);
             }
         
         }

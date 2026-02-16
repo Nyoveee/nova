@@ -150,7 +150,8 @@ class Charger : Enemy
                 Explode();
 
                 chargerState = ChargerState.Death;
-                Destroy(gameObject);
+                if (gameObject != null)
+                    Destroy(gameObject);
             }
             else
             {

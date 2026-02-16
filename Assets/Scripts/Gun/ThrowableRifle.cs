@@ -512,7 +512,8 @@ class ThrowableRifle : Script
 
         }
 
-        Destroy(gameObject);
+        if (gameObject != null)
+            Destroy(gameObject);
 
     }
 

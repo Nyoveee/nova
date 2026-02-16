@@ -56,7 +56,8 @@ class ammoTrails: Script
 
     void Kill()
     {
-        Destroy(gameObject);
+        if(gameObject!= null)
+            Destroy(gameObject);
     }
 
 

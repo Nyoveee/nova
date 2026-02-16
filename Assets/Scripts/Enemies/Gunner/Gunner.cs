@@ -146,7 +146,8 @@ class Gunner : Enemy
                 Explode();
 
                 gunnerState = GunnerState.Death;
-                Destroy(gameObject);
+                if (gameObject != null)
+                    Destroy(gameObject);
             }
             else 
             {

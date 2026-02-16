@@ -151,7 +151,8 @@ class Grunt : Enemy
                 //NavigationAPI.stopAgent(gameObject);
                 //rigidbody.enable = false;
                 gruntState = GruntState.Death;
-                Destroy(gameObject);
+                if (gameObject != null)
+                    Destroy(gameObject);
 
             }
             else

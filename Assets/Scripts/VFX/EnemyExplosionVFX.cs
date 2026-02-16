@@ -14,11 +14,13 @@ class EnemyExplosionVFX : Script
     {
         Invoke(() =>
         {
-            Destroy(lightGameobject);
+            if(lightGameobject!= null)
+                Destroy(lightGameobject);
         }, lightTime);
         Invoke(() =>
         {
-            Destroy(gameObject);
+            if (gameObject != null)
+                Destroy(gameObject);
         },explosionTime);
     }
 }
