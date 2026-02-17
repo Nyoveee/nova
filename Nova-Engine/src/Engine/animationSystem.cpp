@@ -121,7 +121,7 @@ void AnimationSystem::playAnimation(Animator& animator, std::string name) {
 	});
 
 	if (iterator == controller->data.nodes.end()) {
-		Logger::warn("Invalid animation name.");
+		Logger::warn("Invalid animation {}", name);
 		return;
 	}
 

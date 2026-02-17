@@ -50,7 +50,6 @@ class Charger : Enemy
     private float currentChargeTime = 0f;
     private float currentChargeCooldown = 0f;
     private float currentFootStepTime = 0f;
-    private int footStepIndex = 0;
     Vector3 chargeDirection;
     // Stomp
     private float currentStompCooldown = 0f;
@@ -113,7 +112,7 @@ class Charger : Enemy
 
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
-            audioComponent.PlayRandomSound(impactSFX);
+            // audioComponent.PlayRandomSound(impactSFX);
             if (colliderTag == "Enemy_ArmouredSpot" || colliderTag == "Enemy")
             {
                 damage *= chargerstats.enemyArmouredMultiplier;
@@ -352,8 +351,7 @@ class Charger : Enemy
         if(currentFootStepTime <= 0)
         {
             currentFootStepTime = chargerstats.timeBetweenChargeSteps;
-            footStepIndex = (footStepIndex + 1) % 2;
-            audioComponent.PlayRandomSound(footstepSFX);
+            // audioComponent.PlayRandomSound(footstepSFX);
             HandleFootStep();
         }
         physicsRigidbody.SetVelocity(chargeDirection * chargerstats.movementSpeed * chargerstats.chargeSpeedMultiplier + new Vector3(0, physicsRigidbody.GetVelocity().y, 0));
