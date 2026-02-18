@@ -2300,11 +2300,11 @@ static const int PLM_START_USER_DATA = 0xB2;
 	(c >= PLM_START_SLICE_FIRST && c <= PLM_START_SLICE_LAST)
 
 static const float PLM_VIDEO_PIXEL_ASPECT_RATIO[] = {
-	1.0000, /* square pixels */
-	0.6735, /* 3:4? */
-	0.7031, /* MPEG-1 / MPEG-2 video encoding divergence? */
-	0.7615, 0.8055, 0.8437, 0.8935, 0.9157, 0.9815,
-	1.0255, 1.0695, 1.0950, 1.1575, 1.2051,
+	1.0000f, /* square pixels */
+	0.6735f, /* 3:4? */
+	0.7031f, /* MPEG-1 / MPEG-2 video encoding divergence? */
+	0.7615f, 0.8055f, 0.8437f, 0.8935f, 0.9157f, 0.9815f,
+	1.0255f, 1.0695f, 1.0950f, 1.1575f, 1.2051f,
 };
 
 static const double PLM_VIDEO_PICTURE_RATE[] = {

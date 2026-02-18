@@ -68,6 +68,18 @@ struct Mesh {
 	glm::mat4x4 globalTransformationMatrix;
 };
 
+// we want to combine all vertex atrribute into	one during model compilation.. because meshoptimizer requires comparing of all vertex attributes
+// to determine if its a duplicate vertex..
+// this struct is only used as an intermediary data structure to support meshoptimizer..
+struct CombinedVertexAttribute {
+	glm::vec3 position;
+	glm::vec2 textureCoordinate;
+	glm::vec3 normal;
+	glm::vec3 tangent;
+
+	VertexWeight vertexWeight;
+};
+
 // this is the model data that will be de/serialised.
 struct ModelData {
 	std::vector<Mesh> meshes;

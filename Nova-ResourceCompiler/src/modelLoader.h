@@ -11,6 +11,15 @@ struct aiMaterial;
 struct aiNode;
 struct aiAnimation;
 
+// intermediary mesh data..
+struct MeshData {
+	std::string name;
+	std::vector<unsigned int> indices;
+	unsigned int materialIndex;			// holds an index to the std::vector of material names in the model class.
+	int numOfTriangles;
+
+	std::vector<CombinedVertexAttribute> combinedVertexAttributes;
+};
 
 // a working vertex weight used by the model..
 struct IntermediaryVertexWeight {
@@ -60,9 +69,9 @@ public:
 	static std::optional<ModelData> loadModel(std::string const& filepath, float scale, std::vector<BoneIndex> sockets);
 
 private:
-	static Mesh processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat4x4 const& globalTransformationMatrix);
+	static MeshData processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat4x4 const& globalTransformationMatrix);
 	static void processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* node, ModelNodeIndex parentNodeIndex);
-	static void processNodeHierarchy(aiScene const* scene, std::vector<Mesh>& meshes, aiNode const* node, glm::mat4x4 const& globalTransformationMatrix);
+	static void processNodeHierarchy(aiScene const* scene, std::vector<MeshData>& meshesData, aiNode const* node, glm::mat4x4 const& globalTransformationMatrix);
 
 	static void printBone(BoneIndex boneIndex, unsigned int padding);
 	static void printMatrix(glm::mat4x4 const matrix);
@@ -70,6 +79,11 @@ private:
 	static Animation processAnimation(aiAnimation const* assimpAnimation);
 
 	static BoneIndex findParentBone(aiNode const* parentNode);
+
+	// we use meshoptimizer to optimize mesh data..
+	static void optimizeMesh(MeshData& mesh);
+
+	static void remapMeshIndex(std::unordered_map<MeshIndex, MeshIndex> const& meshIndexRemap, Skeleton& skeleton, ModelNode& modelNode);
 
 private:
 	inline static float maxDimension;
