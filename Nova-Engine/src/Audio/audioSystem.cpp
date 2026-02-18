@@ -427,12 +427,7 @@ void AudioSystem::loadSound(ResourceID audioId) {
 	}
 
 	FMOD::Sound* sound = nullptr;
-
-	// Load all audio as 3D for spatial capability
-	// Positional Audio Component determines if spatial audio is applied
-	FMOD_MODE mode = FMOD_3D;
-
-	FMOD_RESULT result = fmodSystem->createSound(audio->getFilePath().string.c_str(), mode, nullptr, &sound);
+	FMOD_RESULT result = fmodSystem->createSound(audio->getFilePath().string.c_str(), FMOD_DEFAULT, nullptr, &sound);
 
 	if (result != FMOD_OK) {
 		Logger::warn("Failed to load audio file with asset id of: {}, filepath of {}.", static_cast<std::size_t>(audioId), audio->getFilePath().string);
@@ -440,10 +435,6 @@ void AudioSystem::loadSound(ResourceID audioId) {
 	}
 
 	sounds[audioId] = sound;
-
-	// If Object does not have PositionalAudio Component, this will be the default MinMax Distance
-	// If Object has PositionalAudio Component, the MinMax distance will be based on the values inputted inside the innerRadius and maxRadius
-	sound->set3DMinMaxDistance(40.0f, 100.0f); // Default Distance
 }
 
 AudioInstanceID AudioSystem::getNewAudioInstanceId() {
@@ -466,12 +457,13 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 	if (channel) {
 		AudioInstanceID	audioInstanceId = getNewAudioInstanceId();
 		AudioInstance& audioInstance = audioInstances[audioInstanceId];
+		PositionalAudio * positionalAudio = engine.ecs.registry.try_get<PositionalAudio>(entity);
 
 		audioInstance = { audioInstanceId, audioId, channel, entity , audioComponent.volume };
 		audioInstance.channel->setVolume(audioInstance.volume);
 		audioInstance.channel->setCallback(channelCallback);
 
-		audioInstance.channel->setMode(FMOD_3D | (audioComponent.loop? FMOD_LOOP_NORMAL : FMOD_DEFAULT));
+		audioInstance.channel->setMode((positionalAudio ? FMOD_3D : FMOD_2D) | (audioComponent.loop? FMOD_LOOP_NORMAL : FMOD_DEFAULT));
 
 		// assign to proper sound group..
 		switch (audioComponent.audioGroup) {
