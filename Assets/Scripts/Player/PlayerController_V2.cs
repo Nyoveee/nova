@@ -277,7 +277,7 @@ class PlayerController_V2 : Script
         }
 
         if (gameUIManager != null)
-            gameUIManager.SetProgress(GameUIManager.ProgressBarType.DashBar, dashCooldownTimer, dashCooldown);
+            gameUIManager.SetProgress(GameUIManager.ProgressBarType.DashBar, currentStamina, maxStamina);
 
     }
     void CheckMovementTypeState()
@@ -510,10 +510,10 @@ class PlayerController_V2 : Script
 
         SetIframes(true); //set iframes for dashing
         dashTimeElapsed = 0;
+        dashCooldownTimer = 0 ;
         rigidbody.SetLinearDamping(0);
         rigidbody.SetVelocityLimits(100000f);
         onDashTrigger = false;
-
 
         if (directionVector == Vector3.Zero())
         {
@@ -650,7 +650,11 @@ class PlayerController_V2 : Script
     //dash callback
     void triggerDash()
     {
-        if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false && currentStamina >= dashStaminaConsumption)
+        if (playerMoveStates != PlayerMoveStates.Disabled 
+            && playerMoveStates != PlayerMoveStates.Death 
+            && dashCooldownTimer >= dashCooldown 
+            && isDashKeyHeld == false 
+            && currentStamina >= dashStaminaConsumption)
         {
             audioComponent.PlayRandomSound(dashSFX);
             currentStamina -= dashStaminaConsumption;
@@ -662,9 +666,8 @@ class PlayerController_V2 : Script
     }
 
     void dashkeyUpHandler()
-    {
+    {        
         isDashKeyHeld = false;
-        dashCooldownTimer = 0;
     }
 
 
