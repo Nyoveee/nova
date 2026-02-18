@@ -256,7 +256,10 @@ private:
 	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, std::optional<GLuint> depthTextureId);
 
 	// this sets the uniforms of model specific data..
-	void setupModelUniforms(entt::entity entity, Shader const& shader, float scale, glm::vec3 boundingBoxMin, glm::vec3 boundingBoxMax, MeshType meshType);
+	void setupModelUniforms(entt::entity entity, Shader const& shader, Model const& model, MeshType meshType);
+
+	// this sets the uniforms of mesh specific data..
+	void setupMeshUniforms(Shader const& shader, Mesh const& mesh, MeshType meshType);
 
 	// sets up the custom shader to output the mesh into the normal buffer instead.
 	void setupMaterialNormalPass(Material const& material, CustomShader const& customShader, Shader const& shader);

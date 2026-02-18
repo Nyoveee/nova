@@ -297,7 +297,7 @@ void AnimationSystem::calculateBoneMatrixes() {
 
 		// we find the root node first, and recursively calculate the final transformation matrix down...
 		ModelNodeIndex rootNode = skeleton.rootNode;
-		calculateFinalMatrix(rootNode, skeleton.nodes[rootNode].transformationMatrix, skeleton, skinnedMeshRenderer, currentAnimation, timeInTicks);
+		calculateFinalMatrix(*model, rootNode, skeleton.nodes[rootNode].transformationMatrix, skeleton, skinnedMeshRenderer, currentAnimation, timeInTicks);
 	}
 }
 
@@ -306,7 +306,7 @@ void AnimationSystem::calculateBoneMatrixes() {
 // -> transformation		: maps from local bone space to parent bone space. (chained w/ all parent node that is not a bone)
 // -> globalTransformation	: maps from local bone space to model space. (if bind pose, the exact inverse of offset matrix. with animation, it will change.)
 // -> finalTransformation	: globalTransformation * offset matrix. we essientially map from local, to bone, back to local.
-void AnimationSystem::calculateFinalMatrix(ModelNodeIndex nodeIndex, glm::mat4x4 const& parentGlobalTransformation, Skeleton const& skeleton, SkinnedMeshRenderer& skinnedMeshRenderer, Animation const* animation, float timeInTicks) {
+void AnimationSystem::calculateFinalMatrix(Model& model, ModelNodeIndex nodeIndex, glm::mat4x4 const& parentGlobalTransformation, Skeleton const& skeleton, SkinnedMeshRenderer& skinnedMeshRenderer, Animation const* animation, float timeInTicks) {
 	ModelNode const& node = skeleton.nodes[nodeIndex];
 
 	// calculate this node's global transformation -> which is parent's global transformation * this node's transformation.
@@ -322,14 +322,26 @@ void AnimationSystem::calculateFinalMatrix(ModelNodeIndex nodeIndex, glm::mat4x4
 	}();
 
 	// calculate final transformation, if it is a bone.
-	if (node.isBone) {
+	switch (node.nodeType) {
+		using enum ModelNode::Type;
+
+	case Bone:
 		glm::mat4x4 finalTransformation = globalTransformation * skeleton.bones[node.boneIndex].offsetMatrix;
 		skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex][node.boneIndex] = finalTransformation;
+		break;
+	case Mesh:
+		if (node.meshIndex >= 0 && node.meshIndex < model.meshes.size()) {
+			model.meshes[node.meshIndex].globalTransformationMatrix = globalTransformation;
+		}
+		else {
+			Logger::warn("Invalid model node mesh index? Model node says that it is a mesh node, however it has a invalid mesh index of {}, which is outside of the vector mesh range..", node.meshIndex);
+		}
+		break;
 	}
 		
 	// recurse downwards..
 	for (ModelNodeIndex childNodeIndex : node.nodeChildrens) {
-		calculateFinalMatrix(childNodeIndex, globalTransformation, skeleton, skinnedMeshRenderer, animation, timeInTicks);
+		calculateFinalMatrix(model, childNodeIndex, globalTransformation, skeleton, skinnedMeshRenderer, animation, timeInTicks);
 	}
 }
 

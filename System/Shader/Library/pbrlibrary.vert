@@ -84,6 +84,9 @@ layout (location = 16) uniform uint isSkinnedMesh;
 layout (location = 17) uniform vec3 boundingBoxMin;
 layout (location = 18) uniform vec3 boundingBoxMax;
 
+layout (location = 21) uniform uint hasNoBones; // the model is a skinned mesh, but this particular model has no bones..
+layout (location = 22) uniform mat4 globalTransformationMatrix; // since the mesh has no bones, we still need to chain the transformation matrix..
+
 // location will be cached and query in runtime.. 
 uniform bool toUseNormalMap;
 
@@ -157,6 +160,14 @@ WorldSpace calculateWorldSpace() {
         worldSpace.normal               = normalize(normalMatrix * normal);
         worldSpace.tangent              = normalize(normalMatrix * tangent);
         worldSpace.previousPosition     = previousModel * localScale * vec4(position, 1.0);
+    }
+    // this is a skinned mesh, but doesnt have any bones..
+    else if (hasNoBones == 1) {
+        mat3 normalBoneTransform        = inverse(transpose(mat3(globalTransformationMatrix)));
+        worldSpace.position             = model * localScale * globalTransformationMatrix * vec4(position, 1.0);
+        worldSpace.normal               = normalize(normalMatrix * normalBoneTransform * normal);
+        worldSpace.tangent              = normalize(normalMatrix * normalBoneTransform * tangent);
+        worldSpace.previousPosition     = worldSpace.position; // screw it.. atp i cba..
     }
     // this is a skinned mesh.
     else {

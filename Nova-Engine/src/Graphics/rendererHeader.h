@@ -44,13 +44,11 @@ struct MeshBOs {
 // --------------------------------------------- 
 // These are responsible for building a render queue..
 
-// Stores model specific information..
-struct ModelBatch {
+// Stores entity specific information..
+struct EntityBatch {
 	entt::entity entity;
+	std::reference_wrapper<const Model> model;
 	MeshType meshType;
-	float modelScale;
-	glm::vec3 boundingBoxMin;
-	glm::vec3 boundingBoxMax;
 	std::vector<std::reference_wrapper<const Mesh>> meshes;
 };
 
@@ -60,7 +58,7 @@ struct MaterialBatch {
 	std::reference_wrapper<const CustomShader> customShader;
 	std::reference_wrapper<const Shader> shader;
 
-	std::vector<ModelBatch> models;
+	std::vector<EntityBatch> entities;
 	int layerIndex;		// we want to differentiate render passes of different layer, even if material is the same.
 };
 
@@ -77,9 +75,7 @@ struct TransparentMaterial {
 struct TransparentEntry {
 	entt::entity entity;
 	MeshType meshType;
-	float modelScale;
-	glm::vec3 boundingBoxMin;
-	glm::vec3 boundingBoxMax;
+	std::reference_wrapper<const Model> model;
 
 	// Material information..
 	std::vector<TransparentMaterial> materials;
