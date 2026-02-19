@@ -1770,7 +1770,6 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 			// We perform additional render passes..
 			for (auto i = model->materialNames.size(); i < materialIds.size(); ++i) {
 				auto materialId = materialIds[i];
-				auto const& instanced = skinnedMeshRenderer ? skinnedMeshRenderer->isMaterialInstanced : meshRenderer->isMaterialInstanced;
 				
 				for (auto& mesh : model->meshes) {
 					createMaterialBatchEntry(camera, *model, materialId, mesh, entity, meshType, layerIndex, renderQueueConfig);
@@ -3553,6 +3552,9 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
 
 	bool isNormalMapUsed = false;
+	bool isEmissiveMapUsed = false;
+	bool isAlphaMapUsed = false;
+	bool isORMMapUsed = false;
 
 	for (int i = 0; i < material.materialData.uniformDatas.size() && i < customShader.uniformLocations.size(); ++i) {
 		// retrieve material value..
@@ -3596,17 +3598,52 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 				assert(type == "mat3" || type == "mat4");
 				shader.setMatrix(uniformLocation, value);
 			}
-			else if constexpr (std::same_as<Type, TypedResourceID<Texture>> || std::same_as<Type, NormalMap>) {
+			else if constexpr (
+					std::same_as<Type, TypedResourceID<Texture>> 
+				||	std::same_as<Type, NormalMap>
+				||	std::same_as<Type, EmissiveMap>
+				||	std::same_as<Type, AlphaMap>
+				||	std::same_as<Type, ORMMap>
+			) {
+				// normal map setup..
 				if constexpr (std::same_as<Type, NormalMap>) {
 					// no normal map set.
-					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID) {
+					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID || static_cast<std::size_t>(value) == INVALID_RESOURCE_ID) {
 						return;
 					}
 
 					isNormalMapUsed = true;
 				}
 
-				assert(type == "sampler2D" || type == "NormalMap");
+				// emissive map setup..
+				if constexpr (std::same_as<Type, EmissiveMap>) {
+					// no normal map set.
+					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID || static_cast<std::size_t>(value) == INVALID_RESOURCE_ID) {
+						return;
+					}
+
+					isEmissiveMapUsed = true;
+				}
+
+				// alpha map setup..
+				if constexpr (std::same_as<Type, AlphaMap>) {
+					// no normal map set.
+					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID || static_cast<std::size_t>(value) == INVALID_RESOURCE_ID) {
+						return;
+					}
+
+					isAlphaMapUsed = true;
+				}
+
+				// packed map..
+				if constexpr (std::same_as<Type, ORMMap>) {
+					// no normal map set.
+					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID || static_cast<std::size_t>(value) == INVALID_RESOURCE_ID) {
+						return;
+					}
+
+					isORMMapUsed = true;
+				}
 
 				// Setting texture is a way more complicated step.
 				// We first retrieve the texture from resource manager..
@@ -3634,6 +3671,9 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 	}
 
 	glProgramUniform1i(shader.id(), 20, isNormalMapUsed);
+	glProgramUniform1i(shader.id(), 30, isEmissiveMapUsed);
+	glProgramUniform1i(shader.id(), 31, isAlphaMapUsed);
+	glProgramUniform1i(shader.id(), 32, isORMMapUsed);
 }
 
 void Renderer::renderMesh(Mesh const& mesh) {

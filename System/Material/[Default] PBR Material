@@ -10,7 +10,7 @@
             }
         },
         {
-            "glslType": "sampler2D",
+            "glslType": "ORMMap",
             "identifier": "packedMap",
             "value": {
                 "__variant_value": 8,
@@ -26,7 +26,7 @@
             }
         },
         {
-            "glslType": "sampler2D",
+            "glslType": "EmissiveMap",
             "identifier": "emissiveMap",
             "value": {
                 "__variant_value": 8,
@@ -34,19 +34,11 @@
             }
         },
         {
-            "glslType": "bool",
-            "identifier": "toUsePackedMap",
+            "glslType": "AlphaMap",
+            "identifier": "alphaMap",
             "value": {
-                "__variant_value": false,
-                "__variant_type": 0
-            }
-        },
-        {
-            "glslType": "bool",
-            "identifier": "toUseEmissiveMap",
-            "value": {
-                "__variant_value": false,
-                "__variant_type": 0
+                "__variant_value": 8,
+                "__variant_type": 9
             }
         },
         {
@@ -76,6 +68,18 @@
         {
             "glslType": "Color",
             "identifier": "colorTint",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "emissiveColorMultiplier",
             "value": {
                 "__variant_value": {
                     "r": 1.0,

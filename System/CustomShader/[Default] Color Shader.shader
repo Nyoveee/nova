@@ -12,7 +12,8 @@ Properties{
     float intensity;
 
     NormalizedFloat transparency;
-
+    AlphaMap alphaMap;
+    
     vec2 UVTiling; 
     vec2 UVOffset; 
 }
@@ -31,5 +32,12 @@ Frag{
 
     vec4 sampledColor = texture(albedo, uv);
     vec3 finalColor = sampledColor.rgb * color * intensity;
-    return vec4(finalColor.rgb, transparency * sampledColor.a); // ok
+
+    float resultingAlpha = transparency * sampledColor.a;
+    
+    if(toUseAlphaMap) {
+        resultingAlpha *= texture(alphaMap, uv).r;
+    }
+
+    return vec4(finalColor.rgb, resultingAlpha); // ok
 }

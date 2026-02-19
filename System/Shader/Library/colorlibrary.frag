@@ -46,6 +46,11 @@ layout(std140, binding = 2) uniform PBRUBO {
 
 layout (binding = 3) uniform sampler2D depthTexture;
 
+// explicit location.
+layout (location = 20) uniform bool toUseNormalMap;
+layout (location = 30) uniform bool toUseEmissiveMap;
+layout (location = 31) uniform bool toUseAlphaMap;
+
 vec2 UVTileAndOffset(vec2 textureCoordinates, vec2 UVTiling, vec2 UVOffset) {
     return textureCoordinates * UVTiling + UVOffset;
 }

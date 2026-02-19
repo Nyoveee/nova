@@ -8,12 +8,10 @@ Tags{
 // Properties for material instances to configure..
 Properties{
     sampler2D albedoMap;
-    sampler2D packedMap;
+    ORMMap packedMap;
     NormalMap normalMap;
-    sampler2D emissiveMap;
-
-    bool toUsePackedMap;
-    bool toUseEmissiveMap;
+    EmissiveMap emissiveMap;
+    AlphaMap alphaMap;
 
     NormalizedFloat roughness;
     NormalizedFloat metallic;
@@ -71,9 +69,15 @@ Frag{
     if(toUseEmissiveMap) {
         emissiveColor = emissiveStrength * emissiveColorMultiplier * vec3(texture(emissiveMap, uv));
     }
-
+    
     vec4 albedo = texture(albedoMap, uv);
+    float resultingAlpha = albedo.a;
+    
+    if(toUseAlphaMap) {
+        resultingAlpha *= texture(alphaMap, uv).r;
+    }
+
     vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, _normal, _roughness, _metallic, _occulusion);
 
-    return vec4(emissiveColor + pbrColor, albedo.a);
+    return vec4(emissiveColor + pbrColor, resultingAlpha);
 }

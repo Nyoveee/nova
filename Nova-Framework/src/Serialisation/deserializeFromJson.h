@@ -280,6 +280,20 @@ inline void deserializeFromJson<NormalMap>(NormalMap& dataMember, Json const& js
 }
 
 template<>
+inline void deserializeFromJson<EmissiveMap>(EmissiveMap& dataMember, Json const& json) {
+	dataMember = static_cast<EmissiveMap>(TypedResourceID<Texture>{ static_cast<std::size_t>(json) });
+}
+
+template<>
+inline void deserializeFromJson<AlphaMap>(AlphaMap& dataMember, Json const& json) {
+	dataMember = static_cast<AlphaMap>(TypedResourceID<Texture>{ static_cast<std::size_t>(json) });
+}
+
+template<>
+inline void deserializeFromJson<ORMMap>(ORMMap& dataMember, Json const& json) {
+	dataMember = static_cast<ORMMap>(TypedResourceID<Texture>{ static_cast<std::size_t>(json) });
+}
+template<>
 inline void deserializeFromJson<EntityGUID>(EntityGUID& dataMember, Json const& json) {
 	dataMember = static_cast<EntityGUID>(static_cast<std::size_t>(json));
 }

@@ -40,6 +40,14 @@
             }
         },
         {
+            "glslType": "AlphaMap",
+            "identifier": "alphaMap",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 15
+            }
+        },
+        {
             "glslType": "vec2",
             "identifier": "UVTiling",
             "value": {
@@ -63,6 +71,6 @@
         }
     ],
     "vShaderCode": "    \n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace();\n    gl_Position = calculateClipPosition(worldSpace.position);\n    passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. \n",
-    "fShaderCode": "\n    vec2 uv = UVTileAndOffset(fsIn.textureUnit, UVTiling, UVOffset);\n\n    vec4 sampledColor = texture(albedo, uv);\n    vec3 finalColor = sampledColor.rgb * color * intensity;\n    return vec4(finalColor.rgb, transparency * sampledColor.a); // ok\n",
+    "fShaderCode": "\n    vec2 uv = UVTileAndOffset(fsIn.textureUnit, UVTiling, UVOffset);\n\n    vec4 sampledColor = texture(albedo, uv);\n    vec3 finalColor = sampledColor.rgb * color * intensity;\n\n    float resultingAlpha = transparency * sampledColor.a;\n    \n    if(toUseAlphaMap) {\n        resultingAlpha *= texture(alphaMap, uv).r;\n    }\n\n    return vec4(finalColor.rgb, resultingAlpha); // ok\n",
     "pipeline": "Color"
 }

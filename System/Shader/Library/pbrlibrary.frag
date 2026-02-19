@@ -183,7 +183,9 @@ in VS_OUT {
 
 // explicit location.
 layout (location = 20) uniform bool toUseNormalMap;
-
+layout (location = 30) uniform bool toUseEmissiveMap;
+layout (location = 31) uniform bool toUseAlphaMap;
+layout (location = 32) uniform bool toUsePackedMap;
 // ====================================
 // End of pipeline setup. 
 // ==================================== 
@@ -227,11 +229,6 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
 
     // Locating which cluster this fragment is part of
     Cluster cluster = getCluster();
-
-    // for(uint i = 0; i < cluster.reflectionProbesCount; ++i) {
-    //     ReflectionProbe reflectionProbe = reflectionProbes[cluster.reflectionProbesIndices[i]];
-    //     return vec3(getBlendFactor(fsIn.fragWorldPos, reflectionProbe));
-    // }
 
     // --------------------------------------------------------------------
     // Calculate direct diffuse and specular light for each light.
