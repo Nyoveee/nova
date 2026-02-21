@@ -164,7 +164,7 @@ void Engine::stopSimulation() {
 		scriptingAPIManager.stopSimulation();
 
 		gameLockMouse(false);
-		isPaused = false;
+		pauseSystems(false);
 
 		if (engineState == State::Game) {
 			window.quit();
@@ -254,12 +254,11 @@ void Engine::SystemsOnLoad() {
 	}
 
 	// unpause all systems when loaded.. and clear accumulated dt
-	isPaused = false;
+	pauseSystems(false);
 	window.clearAccumulatedTime();
 
 	deltaTimeMultiplier = 1.f;
 }
-
 
 void Engine::SystemsUnload() {
 	// Remove all created resource instances..
@@ -279,6 +278,21 @@ void Engine::SystemsUnload() {
 	renderer.resetLoadedReflectionProbes();
 
 	scriptingAPIManager.cleanPreviousSceneScriptState();
+}
+
+void Engine::pauseSystems(bool toPause) {
+	if (toPause == isPaused) {
+		return;
+	}
+
+	isPaused = toPause;
+
+	if (toPause) {
+		// handle system pause request here..
+	}
+	else {
+		// handle system resume request here..
+	}
 }
 
 void Engine::quit() {
