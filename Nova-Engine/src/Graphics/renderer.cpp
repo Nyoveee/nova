@@ -200,6 +200,10 @@ struct alignas(16) ReflectionProbeUBO {
 	ReflectionProbeUBOData reflectionProbes[MAX_REFLECTION_PROBES];
 };
 
+static constexpr int RenderOutputNormal = 0;
+static constexpr int RenderOutputColor = 1;
+static constexpr int RenderOutputTransparency = 2;
+
 #pragma warning( pop )
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
@@ -238,6 +242,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
 	gammaCorrectionShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/gammaCorrection.frag" },
 	videoShader						{ "System/Shader/video.vert",						"System/Shader/video.frag" },
+	weightedBlendingCompositeShader	{ "System/Shader/squareOverlay.vert",				"System/Shader/weightedBlendingComposite.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
 	rayMarchingVolumetricFogCompute	{ "System/Shader/rayMarchingVolumetricFog.compute" },
@@ -284,10 +289,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	haltonFrameIndex				{},
 	ssaoNoiseTextureId				{ INVALID_ID },
 	videoVAO						{},
-	hdrExposure						{ 0.9f },
-															 // main		normal			velocity
-	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F } },
-	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F } },
+	hdrExposure						{ 0.9f },				 // color..     gbuffer stuff..				transparency..
+															 // main		normal			velocity	accumulation	revealage
+	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8 } },
+	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8 } },
 	uiMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA8 } },
 	physicsDebugFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer				{ gameWidth, gameHeight, { GL_R32UI } },
@@ -764,7 +769,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	depthPrePass(frameBuffers.getActiveFrameBuffer());
 
 	// We generate SSAO texture for forward rendering later..
-	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers, camera);
+	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers.getActiveFrameBuffer(), camera);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
@@ -782,7 +787,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	// Transparent depth test...
 	glDepthFunc(GL_LEQUAL);
 
-	renderTranslucentModels(frameBuffers.getActiveFrameBuffer().depthStencilId());
+	renderTranslucentModels(frameBuffers.getActiveFrameBuffer());
 
 	// Original depth test..
 	glDepthFunc(GL_LESS);
@@ -1084,15 +1089,15 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 }
 
 void Renderer::depthPrePass(FrameBuffer const& frameBuffer) {
+	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_NONE, GL_NONE };
+
 	glEnable(GL_DEPTH_TEST);
 
 	// Disable the color attachment, enable the normal attachment.
-	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glNamedFramebufferDrawBuffers(frameBuffer.fboId(), 3, buffers);
 
 	// Set PBR UBO to output normals only..
-	int toOutputNormalOnly = true;
-	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &toOutputNormalOnly);
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputNormal);
 
 	// Render pass..
 	renderModels(RenderPass::DepthPrePass, std::nullopt);
@@ -1101,11 +1106,10 @@ void Renderer::depthPrePass(FrameBuffer const& frameBuffer) {
 	frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
 
 	// Reset PBR UBO uniform..
-	toOutputNormalOnly = false;
-	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &toOutputNormalOnly);
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
 }
 
-void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, [[maybe_unused]] Camera const& camera) {
+void Renderer::generateSSAO(FrameBuffer const& frameBuffer, [[maybe_unused]] Camera const& camera) {
 	// ========================================================================================
 	// 1. We first generate the SSAO texture using the random kernels, depth and normal map.
 	// ========================================================================================
@@ -1120,10 +1124,10 @@ void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, [[maybe_unused]] Came
 	ssaoShader.use();
 
 	// Bind depth, normal and noise texture..
-	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().depthStencilId());
+	glBindTextureUnit(0, frameBuffer.depthStencilId());
 	ssaoShader.setImageUniform("depthMap", 0);
 
-	glBindTextureUnit(1, frameBuffers.getActiveFrameBuffer().textureIds()[1]);
+	glBindTextureUnit(1, frameBuffer.textureIds()[1]);
 	ssaoShader.setImageUniform("normalMap", 1);
 
 	glBindTextureUnit(2, ssaoNoiseTextureId);
@@ -1780,12 +1784,14 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 		layerIndex++;
 	}
 
+#if false
 	if (renderQueueConfig == RenderQueueConfig::Normal) {
 		// Sort transparent objects by the z value, from camera..
 		std::sort(renderQueue.transparentMaterials.begin(), renderQueue.transparentMaterials.end(), [&](auto&& lhs, auto&& rhs) {
 			return lhs.distanceToCamera > rhs.distanceToCamera;
 		});
 	}
+#endif
 }
 
 void Renderer::frustumCullAndSetupShadowRenderQueue(glm::mat4 const& viewProjectionMatrix) {
@@ -2059,7 +2065,7 @@ void Renderer::renderModels(RenderPass renderPass, std::optional<GLuint> depthTe
 			setupMaterialNormalPass(materialBatch.material, materialBatch.customShader, materialBatch.shader);
 		}
 		else {
-			setupMaterial(materialBatch.material, materialBatch.customShader, materialBatch.shader, DepthConfig::Ignore, depthTextureId);
+			setupMaterial(materialBatch.material, materialBatch.customShader, materialBatch.shader, DepthConfig::Ignore, BlendConfig::UseMaterial, depthTextureId);
 		}
 
 		// for each entity batch..
@@ -2076,16 +2082,42 @@ void Renderer::renderModels(RenderPass renderPass, std::optional<GLuint> depthTe
 	}
 }
 
-void Renderer::renderTranslucentModels(GLuint frameBufferDepthTexture) {
+void Renderer::renderTranslucentModels(FrameBuffer const& frameBuffer) {
+	static constexpr glm::vec4 zeroClearColor = glm::vec4{ 0.0f };
+	static constexpr glm::vec4 oneClearColor  = glm::vec4{ 1.0f };
+	static constexpr int ACCUMULATION_COLOR_ATTACHMENT_INDEX = 3;
+	static constexpr int REVEALAGE_COLOR_ATTACHMENT_INDEX = 4;
+	static constexpr GLenum buffers[] = { GL_NONE, GL_NONE, GL_NONE, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
+
+	// https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended
+	// We will be using weighted blending OIT to render transculent models..
+
+	// Disable the color attachment, enable the transparency attachments.
+	glNamedFramebufferDrawBuffers(frameBuffer.fboId(), 5, buffers);
+
+	// we setup the appropriate blending equations..
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunci(ACCUMULATION_COLOR_ATTACHMENT_INDEX, GL_ONE, GL_ONE); // accumulation blend target
+	glBlendFunci(REVEALAGE_COLOR_ATTACHMENT_INDEX, GL_ZERO, GL_ONE_MINUS_SRC_COLOR); // revealge blend target
+	glBlendEquation(GL_FUNC_ADD);
+
+	// we clear these color attachments..
+	glClearBufferfv(GL_COLOR, ACCUMULATION_COLOR_ATTACHMENT_INDEX, glm::value_ptr(zeroClearColor));
+	glClearBufferfv(GL_COLOR, REVEALAGE_COLOR_ATTACHMENT_INDEX, glm::value_ptr(oneClearColor));
+
+	// Set PBR UBO to output transparency details only..
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputTransparency);
+
+	// We cache the previous material and entity..
 	auto previousMaterialId = INVALID_RESOURCE_ID;
 	auto previousEntity = entt::null;
 
 	for (auto const& transparentEntry : renderQueue.transparentMaterials) {
 		for (auto const& material : transparentEntry.materials) {
-
 			// set the uniforms of the material.. if it's different..
 			if (previousMaterialId != material.material.get().id()) {
-				setupMaterial(material.material, material.customShader, material.shader, DepthConfig::NoWrite, frameBufferDepthTexture);
+				setupMaterial(material.material, material.customShader, material.shader, DepthConfig::Ignore, BlendConfig::Ignore, frameBuffer.depthStencilId());
 				previousMaterialId = material.material.get().id();
 			}
 
@@ -2100,6 +2132,33 @@ void Renderer::renderTranslucentModels(GLuint frameBufferDepthTexture) {
 			}
 		}
 	}
+
+	// Reset color attachment active back to original..
+	frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
+
+	// Reset PBR UBO uniforms..
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
+
+	// we now composite the transparent object over..
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	setBlendMode(BlendingConfig::AlphaBlending);
+
+	weightedBlendingCompositeShader.use();
+
+	// Bind the respective textures..
+	glBindTextureUnit(0, frameBuffer.textureIds()[ACCUMULATION_COLOR_ATTACHMENT_INDEX]);
+	glBindTextureUnit(1, frameBuffer.textureIds()[REVEALAGE_COLOR_ATTACHMENT_INDEX]);
+
+	weightedBlendingCompositeShader.setImageUniform("accum", 0);
+	weightedBlendingCompositeShader.setImageUniform("reveal", 1);
+
+	// Render fullscreen quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// reset render states
+	glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::renderText(Transform const& transform, Text const& text) {
@@ -3411,23 +3470,22 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fo
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Renderer::setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, std::optional<GLuint> depthTextureId) {
+void Renderer::setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, BlendConfig blendConfig, std::optional<GLuint> depthTextureId) {
 	auto const& shaderData = customShader.customShaderData;
 
 	// ===========================================================================
 	// Set rendering fixed pipeline configuration.
 	// ===========================================================================
 
-	setBlendMode(material.materialData.blendingConfig);
+	if (blendConfig == BlendConfig::UseMaterial) {
+		setBlendMode(material.materialData.blendingConfig);
+	}
 
-	//if (depthConfig != DepthConfig::Ignore) {
+	if (depthConfig != DepthConfig::Ignore) {
 		if (!(depthConfig == DepthConfig::NoWrite && material.materialData.depthTestingMethod == DepthTestingMethod::DepthTest)) {
 			setDepthMode(material.materialData.depthTestingMethod);
 		}
-	//}
-	//else {
-
-	//}
+	}
 
 	setCullMode(material.materialData.cullingConfig);
 

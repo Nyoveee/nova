@@ -102,5 +102,5 @@ private:
 #endif
 
 	inline static std::unordered_map<std::string, BoneIndex> boneNameToIndex {};
-	inline static std::unordered_map<std::string, MeshIndex> meshNameToIndex {};
+	inline static std::unordered_map<std::string, std::vector<MeshIndex>> meshNameToIndices {};
 };

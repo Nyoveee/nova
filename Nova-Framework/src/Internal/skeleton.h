@@ -62,7 +62,8 @@ struct ModelNode {
 	} nodeType = Type::None;
 	
 	BoneIndex boneIndex = NO_BONE;		// if this node is a bone, contains the index to retrieve it's corresponding bone data.
-	MeshIndex meshIndex	= NOT_A_MESH;	// if this node is a mesh, contains the index to retrieve it's corresponding mesh data in the vector of meshes in model..
+	std::vector<MeshIndex> meshIndices;	// if this node is a mesh, contains the index to retrieve it's corresponding mesh data in the vector of meshes in model..
+										// also, apparently in assimp, a single node can point to multiple meshes.. (primarily happens when the same mesh use different material)
 
 	// containing data related to the node hirerarchy.
 	ModelNodeIndex parentNode = NO_NODE;
@@ -73,7 +74,7 @@ struct ModelNode {
 		transformationMatrix,
 		nodeType,
 		boneIndex,
-		meshIndex, 
+		meshIndices,
 		parentNode,
 		nodeChildrens
 	)

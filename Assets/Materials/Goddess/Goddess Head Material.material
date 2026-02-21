@@ -1,5 +1,5 @@
 {
-    "selectedShader": 1,
+    "selectedShader": 230563778812100609,
     "uniformDatas": [
         {
             "glslType": "sampler2D",
@@ -93,7 +93,7 @@
             "glslType": "float",
             "identifier": "emissiveStrength",
             "value": {
-                "__variant_value": 10.0,
+                "__variant_value": 1.0,
                 "__variant_type": 3
             }
         },
@@ -117,6 +117,14 @@
                     "y": 0.0
                 },
                 "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "bool",
+            "identifier": "invertORMMap",
+            "value": {
+                "__variant_value": true,
+                "__variant_type": 0
             }
         }
     ],

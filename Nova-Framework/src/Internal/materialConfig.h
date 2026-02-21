@@ -5,7 +5,8 @@ enum class BlendingConfig {
 	AdditiveBlending,
 	PureAdditiveBlending,
 	PremultipliedAlpha,
-	Disabled
+	Disabled,
+	MaskedAlpha
 };
 
 enum class DepthTestingMethod {

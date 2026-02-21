@@ -1,5 +1,5 @@
 {
-    "selectedShader": 1,
+    "selectedShader": 230563778812100609,
     "uniformDatas": [
         {
             "glslType": "sampler2D",
@@ -37,7 +37,7 @@
             "glslType": "AlphaMap",
             "identifier": "alphaMap",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 18446744073709551615,
                 "__variant_type": 15
             }
         },
@@ -118,9 +118,17 @@
                 },
                 "__variant_type": 4
             }
+        },
+        {
+            "glslType": "bool",
+            "identifier": "invertORMMap",
+            "value": {
+                "__variant_value": true,
+                "__variant_type": 0
+            }
         }
     ],
-    "blendingConfig": "Disabled",
-    "depthTestingMethod": "DepthTest",
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "NoDepthWrite",
     "cullingConfig": "Disable"
 }

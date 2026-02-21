@@ -82,7 +82,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 
 	bones.clear();
 	boneNameToIndex.clear();
-	meshNameToIndex.clear();
+	meshNameToIndices.clear();
 	materialNames.clear();
 	maxDimension = 0.f;
 	maxBound = glm::vec3{ std::numeric_limits<float>::min(), std::numeric_limits<float>::min(), std::numeric_limits<float>::min() };
@@ -427,10 +427,10 @@ void ModelLoader::processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* nod
 
 	ModelNode::Type modelNodeType = ModelNode::Type::None;
 	BoneIndex nodeBoneIndex = NO_BONE;
-	MeshIndex meshIndex = NOT_A_MESH;
+	std::vector<MeshIndex> meshIndices;
 
 	auto boneIterator = boneNameToIndex.find(node->mName.C_Str());
-	auto meshIterator = meshNameToIndex.find(node->mName.C_Str());
+	auto meshIterator = meshNameToIndices.find(node->mName.C_Str());
 
 	// ------------------------------------------------
 	// we verify if the current node is a bone...
@@ -457,9 +457,9 @@ void ModelLoader::processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* nod
 	}
 	// ------------------------------------------------
 	// we verify if the current node is a mesh...
-	else if (meshIterator != meshNameToIndex.end()) {
+	else if (meshIterator != meshNameToIndices.end()) {
 		modelNodeType = ModelNode::Type::Mesh;
-		meshIndex = meshIterator->second;
+		meshIndices = meshIterator->second;
 	}
 	
 	// we handle node hierarchy here..
@@ -470,7 +470,7 @@ void ModelLoader::processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* nod
 		toGlmMat4(node->mTransformation),
 		modelNodeType,
 		nodeBoneIndex,
-		meshIndex
+		std::move(meshIndices)
 	};
 
 	// no root node yet..
@@ -499,7 +499,7 @@ void ModelLoader::processNodeHierarchy(aiScene const* scene, std::vector<MeshDat
 	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
-		meshNameToIndex.insert({ mesh->mName.C_Str(), meshesData.size() });
+		meshNameToIndices[mesh->mName.C_Str()].push_back(meshesData.size());
 		meshesData.push_back(processMesh(mesh, scene, globalTransformationMatrix));
 	}
 
@@ -675,16 +675,18 @@ void ModelLoader::optimizeMesh(MeshData& mesh) {
 
 void ModelLoader::remapMeshIndex(std::unordered_map<MeshIndex, MeshIndex> const& meshIndexRemap, Skeleton& skeleton, ModelNode& modelNode) {
 	if (modelNode.nodeType == ModelNode::Type::Mesh) {
-		// this node is a mesh.. let's remap it..
-		auto iterator = meshIndexRemap.find(modelNode.meshIndex);
+		for (MeshIndex& meshIndex : modelNode.meshIndices) {
+			// this node is a mesh.. let's remap it..
+			auto iterator = meshIndexRemap.find(meshIndex);
 
-		// The mesh this node is pointing to is removed.
-		if (iterator == meshIndexRemap.end()) {
-			modelNode.nodeType = ModelNode::Type::None;
-			modelNode.meshIndex = NOT_A_MESH;
-		}
-		else {
-			modelNode.meshIndex = iterator->second;
+			// The mesh this node is pointing to is removed.
+			if (iterator == meshIndexRemap.end()) {
+				modelNode.nodeType = ModelNode::Type::None;
+				meshIndex = NOT_A_MESH;
+			}
+			else {
+				meshIndex = iterator->second;
+			}
 		}
 	}
 

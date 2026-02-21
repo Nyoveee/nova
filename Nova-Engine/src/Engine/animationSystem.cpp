@@ -330,12 +330,15 @@ void AnimationSystem::calculateFinalMatrix(Model& model, ModelNodeIndex nodeInde
 		skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex][node.boneIndex] = finalTransformation;
 		break;
 	case Mesh:
-		if (node.meshIndex >= 0 && node.meshIndex < model.meshes.size()) {
-			model.meshes[node.meshIndex].globalTransformationMatrix = globalTransformation;
+		for (MeshIndex meshIndex : node.meshIndices) {
+			if (meshIndex >= 0 && meshIndex < model.meshes.size()) {
+				model.meshes[meshIndex].globalTransformationMatrix = globalTransformation;
+			}
+			else {
+				Logger::warn("Invalid model node mesh index? Model node says that it is a mesh node, however it has a invalid mesh index of {}, which is outside of the vector mesh range..", meshIndex);
+			}
 		}
-		else {
-			Logger::warn("Invalid model node mesh index? Model node says that it is a mesh node, however it has a invalid mesh index of {}, which is outside of the vector mesh range..", node.meshIndex);
-		}
+
 		break;
 	}
 		

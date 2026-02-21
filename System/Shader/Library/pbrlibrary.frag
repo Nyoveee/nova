@@ -116,10 +116,14 @@ layout(std140, binding = 2) uniform PBRUBO {
 	bool toEnableSSAO;
 	bool hasDirectionalLightShadowCaster;
 	bool toEnableIBL;
-	bool toOutputNormal;
+	int renderOutputMode;
     float iblDiffuseStrength;
     float iblSpecularStrength;
 };
+
+const int renderNormals = 0;
+const int renderColors = 1;
+const int renderTransparency = 2;
 
 layout(std140, binding = 3) uniform ReflectionProbes {
     uint reflectionProbesCount;
@@ -164,10 +168,6 @@ layout (binding = 4) uniform sampler2DArray spotlightShadowMaps;
 layout (binding = 5) uniform samplerCube diffuseIrradianceMap;
 layout (binding = 6) uniform samplerCube prefilterMap;
 layout (binding = 7) uniform samplerCubeArray reflectionProbesPrefilterMap;
-
-layout (location = 0) out vec4 FragColor; 
-layout (location = 1) out vec3 gNormal; // for depth pre pass..
-layout (location = 2) out vec2 velocityUV;
 
 in VS_OUT {
     vec2 textureUnit;
@@ -709,14 +709,36 @@ float linearizeDepth(float depth) {
 // User shader entry point.
 vec4 __internal__main__();
 
+layout (location = 0) out vec4 FragColor;
+
+// gbuffer details.. for SSAO and TAA..
+layout (location = 1) out vec3 gNormal;
+layout (location = 2) out vec2 velocityUV;
+
+// transparency.. for OIT..
+layout (location = 3) out vec4 accumulation;
+layout (location = 4) out float revealage;
+
 // Wrapper around user entry point.
 void main() { 
-    if(toOutputNormal) {
+    if(renderOutputMode == renderNormals) {
         gNormal = fsIn.normal;
         velocityUV = calculateVelocityUV(fsIn.fragCurrentClipPos, fsIn.fragOldClipPos);
     }
+    else if(renderOutputMode == renderTransparency) {
+        vec4 color = __internal__main__();
+
+        // weight function.. (:O tbh.)
+        float weight = clamp(pow(min(1.0, color.a * 10.0) + 0.01, 3.0) * 1e8 * 
+                            pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
+
+        // store pixel color accumulation
+        accumulation = vec4(color.rgb * color.a, color.a) * weight;
+
+        // store pixel revealage thresholda
+        revealage = color.a;
+    }
     else {
-        FragColor = __internal__main__();
-        // FragColor = vec4(calculateVelocityUV(fsIn.fragCurrentClipPos, fsIn.fragOldClipPos) * 10, 0, 1);
+        FragColor = __internal__main__();   
     }
 }

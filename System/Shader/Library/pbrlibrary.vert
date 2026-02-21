@@ -54,7 +54,7 @@ layout(std140, binding = 2) uniform PBRUBO {
 	bool toEnableSSAO;
 	bool hasDirectionalLightShadowCaster;
 	bool toEnableIBL;
-	bool toOutputNormal;
+	int renderOutputMode;
     float iblDiffuseStrength;
     float iblSpecularStrength;
 };

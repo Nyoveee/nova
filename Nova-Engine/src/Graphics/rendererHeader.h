@@ -24,6 +24,11 @@ enum class DepthConfig {
 	Ignore
 };
 
+enum class BlendConfig {
+	UseMaterial,
+	Ignore
+};
+
 enum class RenderPass {
 	DepthPrePass,
 	ColorPass
