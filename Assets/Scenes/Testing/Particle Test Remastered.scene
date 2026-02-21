@@ -66,6 +66,7 @@
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 20.0,
                 "initialRotation": 0.0,
+                "velocityBasedRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -236,6 +237,7 @@
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 80.0,
                 "initialRotation": 0.0,
+                "velocityBasedRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -562,7 +564,7 @@
         },
         {
             "EntityData": {
-                "name": "Initial Rotation",
+                "name": "Particle Emitter",
                 "tag": "",
                 "parent": 4294967295,
                 "attachedSocket": 65535,
@@ -577,8 +579,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": -107.5523452758789,
-                    "y": 0.0,
+                    "x": -107.57592010498047,
+                    "y": 2.4249579906463623,
                     "z": 0.0
                 },
                 "scale": {
@@ -598,8 +600,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -107.5523452758789,
-                    "y": 0.0,
+                    "x": -107.57592010498047,
+                    "y": 2.4249579906463623,
                     "z": 0.0
                 },
                 "localScale": {
@@ -620,22 +622,23 @@
                 }
             },
             "ParticleEmitter": {
-                "texture": 9,
+                "texture": 16344311177990783005,
                 "startSize": 1.0,
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
                 "initialRotation": 0.0,
+                "velocityBasedRotation": true,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 1.0,
                     "z": 0.0
                 },
-                "lifeTime": 1.0,
-                "particleRate": 100.0,
+                "lifeTime": 5.0,
+                "particleRate": 20.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
                 "lightIntensity": 0.0,
@@ -687,7 +690,7 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "emissiveMultiplier": 1.0
+                    "emissiveMultiplier": 5.0
                 },
                 "sizeOverLifetime": {
                     "selected": false,

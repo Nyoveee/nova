@@ -26,6 +26,26 @@ using GlobalVertexIndex = unsigned int;		// global vertex index are like indices
 
 using MaterialName		= std::string;
 using MeshID			= size_t;
+struct alignas(16) ParticleLifespanData {
+	glm::vec4 startColor{};
+	glm::vec4 endColor{};
+	alignas(16) glm::vec3 velocity{};
+	alignas(16) glm::vec3 force{};
+	alignas(16) glm::vec3 lightattenuation{};
+	float colorInterpolation{};
+	float sizeInterpolation{};
+	float lightIntensity{};
+	float lightRadius{};
+	float angularVelocity{};
+	float startSize{};
+	float endSize{};
+	float currentLifeTime{};
+	float lifeTime{};
+	int colorOverLifetime{};
+	int sizeOverLifetime{};
+	int velocityBasedRotation{};
+	int b_Active{};
+};
 
 struct alignas(16) ParticleVertex {
 	glm::vec4 color;
