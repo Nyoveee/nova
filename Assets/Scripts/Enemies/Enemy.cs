@@ -45,7 +45,9 @@ public abstract class Enemy : Script
     [SerializableField]
     private float deathFlickerSpeed;
     [SerializableField]
-    private float finalDeathEmissivetime;
+    private float deathFlickerMinSpeedOffset;
+    [SerializableField]
+    private float deathFlickerMaxSpeedOffset;
     
 
     /***********************************************************
@@ -62,8 +64,9 @@ public abstract class Enemy : Script
     private NavMeshOfflinkData offlinkData;
     private float verticalMaxJumpHeight;
     // Death
-    private float currentFlickerTime;
     private float currentDeathEmissiveTime;
+    private float currentFlickerTime;
+    private float currentFlickerVariance;
     /***********************************************************
         Enemy Types must inherited from this
     ***********************************************************/
@@ -250,28 +253,18 @@ public abstract class Enemy : Script
     private void DeathFlicker()
     {
         currentDeathEmissiveTime += Time.V_DeltaTime();
+        float currentDeathFlickerSpeed = deathFlickerSpeed + currentFlickerVariance;
         if(currentDeathEmissiveTime > deathFlickerSpeed){
+            currentFlickerVariance = Random.Range(deathFlickerMinSpeedOffset, deathFlickerMaxSpeedOffset);
             currentDeathEmissiveTime = 0;
             --deathFlickerAmount;
         }
-        else if (currentDeathEmissiveTime > deathFlickerSpeed / 2f) {
-            float t = (currentDeathEmissiveTime - deathFlickerSpeed / 2f) / (deathFlickerSpeed / 2f);
-            float currentEmissiveStrength = Mathf.Interpolate(maxEmissiveValue, 0, t, 1);
-            renderer.setMaterialFloat(0, "emissiveStrength", currentEmissiveStrength);
+        else if (currentDeathEmissiveTime > currentDeathFlickerSpeed / 2f) {
+            renderer.setMaterialFloat(0, "emissiveStrength", maxEmissiveValue);
         }
         else {
-            float t = (currentDeathEmissiveTime)/ (deathFlickerSpeed / 2f);
-            float currentEmissiveStrength = Mathf.Interpolate(0, maxEmissiveValue, t, 1);
-            renderer.setMaterialFloat(0, "emissiveStrength", currentEmissiveStrength);
+            renderer.setMaterialFloat(0, "emissiveStrength", 0);
         }
-    }
-    private void FinalDeathEmission()
-    {
-        currentDeathEmissiveTime += Time.V_DeltaTime();
-        currentDeathEmissiveTime = Mathf.Min(currentDeathEmissiveTime, finalDeathEmissivetime);
-        float t = currentDeathEmissiveTime / finalDeathEmissivetime;
-        float currentEmissiveStrength = Mathf.Interpolate(maxEmissiveValue, 0, t, 1);
-        renderer.setMaterialFloat(0, "emissiveStrength", currentEmissiveStrength);
     }
     /***********************************************************
        Script Functions
@@ -283,6 +276,7 @@ public abstract class Enemy : Script
         playerHead = GameObject.FindWithTag("PlayerHead");
         navMeshAgent.setAutomateNavMeshOfflinksState(false);
         renderer.setMaterialFloat(0, "emissiveStrength", maxEmissiveValue);
+        currentFlickerVariance = Random.Range(deathFlickerMinSpeedOffset, deathFlickerMaxSpeedOffset);
     }
     protected override void update()
     {
@@ -290,8 +284,8 @@ public abstract class Enemy : Script
         {
             if (deathFlickerAmount > 0)
                 DeathFlicker();
-            else 
-                FinalDeathEmission();
+            else
+                renderer.setMaterialFloat(0, "emissiveStrength", 0);
         }
     }
     protected override void fixedUpdate()

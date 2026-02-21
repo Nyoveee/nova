@@ -246,6 +246,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 	particleLifeSpanData.lightIntensity = emitter.lightIntensity;
 	particleLifeSpanData.lightattenuation = emitter.lightattenuation;
 	particleLifeSpanData.lightRadius = emitter.lightRadius;
+	particleVertex.rotation = emitter.initialRotation;
 }
 
 void ParticleSystem::determineParticleColor(
@@ -277,6 +278,11 @@ void ParticleSystem::determineParticleSize(
 	particleLifeSpanData.sizeInterpolation = interpolationType[emitter.sizeOverLifetime.interpolationType];
 	particleLifeSpanData.startSize = particleVertex.currentSize = startSize + RandomRange::Float(minStartSizeOffset, maxStartSizeOffset);
 	particleLifeSpanData.endSize = endSize;
+}
+
+void ParticleSystem::determineParticleRotation(ParticleVertex& particleVertex, ParticleEmitter& emitter)
+{
+	particleVertex.rotation = emitter.initialRotation;
 }
 
 void ParticleSystem::rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform)
@@ -378,6 +384,7 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		particleVertex.position += particleLifeSpanData.lifeTime * particleLifeSpanData.velocity;
 		particleLifeSpanData.velocity = -particleLifeSpanData.velocity;
 	}
+	determineParticleRotation(particleVertex, emitter);
 	addParticleToList(particleLifeSpanData, particleVertex,emitter.texture);
 }
 

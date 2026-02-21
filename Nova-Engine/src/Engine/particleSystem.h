@@ -43,6 +43,7 @@ private:
 	void determineParticleSpawnDetails(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex,glm::vec3 position, ParticleEmitter& emitter ,ParticleEmissionTypeSelection::EmissionShape emissionShape);
 	void determineParticleColor(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, ParticleEmitter& emitter, float emissiveMultiplier, ColorA startcolor, ColorA endColor, glm::vec3 colorOffsetMin, glm::vec3 colorOffsetMax);
 	void determineParticleSize(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, ParticleEmitter& emitter, float startSize, float endSize, float minStartSizeOffset, float maxStartSizeOffset);
+	void determineParticleRotation(ParticleVertex& particleVertex, ParticleEmitter& emitter);
 	// Rotate Particle's position, velocity and force values based on transform
 	void rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform);
 	// Add to compute Shader
