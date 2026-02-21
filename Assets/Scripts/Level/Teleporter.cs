@@ -23,6 +23,7 @@ class Teleporter : Script
 
         if(other == player)
         {
+            player.getScript<PlayerController_V2>().OnTeleport();
             player.transform.position = destination.position;
         }
     }
