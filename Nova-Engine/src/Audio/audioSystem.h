@@ -103,6 +103,9 @@ public:
 	ENGINE_DLL_API void setBGMVolume(NormalizedFloat volume);
 	ENGINE_DLL_API void setSFXVolume(NormalizedFloat volume);
 
+	ENGINE_DLL_API void onEnginePaused();
+	ENGINE_DLL_API void onEngineResumed();
+
 private:
 	FMOD::Sound* getSound(ResourceID audioId) const;
 	void loadSound(ResourceID audioId);
