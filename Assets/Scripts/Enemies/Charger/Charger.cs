@@ -98,6 +98,7 @@ class Charger : Enemy
 
     protected override void update()
     {
+        base.update();
         updateState[chargerState]();
         FlushDamageEnemy();
     }

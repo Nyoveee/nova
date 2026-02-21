@@ -38,6 +38,15 @@ public abstract class Enemy : Script
     protected Rigidbody_ physicsRigidbody;
     [SerializableField]
     protected Rigidbody_ navMeshRigidBody; //LEGACY CODE, navmesh rigidbody should be turned into a normal hurt box collider in the future we should not need a navmesh rigidbody
+    [SerializableField]
+    private float maxEmissiveValue;
+    [SerializableField]
+    private int deathFlickerAmount;
+    [SerializableField]
+    private float deathFlickerSpeed;
+    [SerializableField]
+    private float finalDeathEmissivetime;
+    
 
     /***********************************************************
         Local Variables
@@ -52,11 +61,16 @@ public abstract class Enemy : Script
     private float currentJumpDuration = 0f;
     private NavMeshOfflinkData offlinkData;
     private float verticalMaxJumpHeight;
+    // Death
+    private float currentFlickerTime;
+    private float currentDeathEmissiveTime;
     /***********************************************************
         Enemy Types must inherited from this
     ***********************************************************/
     public abstract void TakeDamage(float damage, EnemydamageType type, string colliderTag);
     public abstract bool IsEngagedInBattle();
+    // when invoked, this function puts the enemy into idle state without chasing capability for `seconds` duration.
+    public abstract void SetSpawningDuration(float seconds);
     /***********************************************************
        Public Functions
     ***********************************************************/
@@ -233,6 +247,32 @@ public abstract class Enemy : Script
         
         return offlinkData.valid;
     }
+    private void DeathFlicker()
+    {
+        currentDeathEmissiveTime += Time.V_DeltaTime();
+        if(currentDeathEmissiveTime > deathFlickerSpeed){
+            currentDeathEmissiveTime = 0;
+            --deathFlickerAmount;
+        }
+        else if (currentDeathEmissiveTime > deathFlickerSpeed / 2f) {
+            float t = (currentDeathEmissiveTime - deathFlickerSpeed / 2f) / (deathFlickerSpeed / 2f);
+            float currentEmissiveStrength = Mathf.Interpolate(maxEmissiveValue, 0, t, 1);
+            renderer.setMaterialFloat(0, "emissiveStrength", currentEmissiveStrength);
+        }
+        else {
+            float t = (currentDeathEmissiveTime)/ (deathFlickerSpeed / 2f);
+            float currentEmissiveStrength = Mathf.Interpolate(0, maxEmissiveValue, t, 1);
+            renderer.setMaterialFloat(0, "emissiveStrength", currentEmissiveStrength);
+        }
+    }
+    private void FinalDeathEmission()
+    {
+        currentDeathEmissiveTime += Time.V_DeltaTime();
+        currentDeathEmissiveTime = Mathf.Min(currentDeathEmissiveTime, finalDeathEmissivetime);
+        float t = currentDeathEmissiveTime / finalDeathEmissivetime;
+        float currentEmissiveStrength = Mathf.Interpolate(maxEmissiveValue, 0, t, 1);
+        renderer.setMaterialFloat(0, "emissiveStrength", currentEmissiveStrength);
+    }
     /***********************************************************
        Script Functions
     ***********************************************************/
@@ -242,12 +282,23 @@ public abstract class Enemy : Script
         player = GameObject.FindWithTag("Player");
         playerHead = GameObject.FindWithTag("PlayerHead");
         navMeshAgent.setAutomateNavMeshOfflinksState(false);
+        renderer.setMaterialFloat(0, "emissiveStrength", maxEmissiveValue);
+    }
+    protected override void update()
+    {
+        if (IsDead())
+        {
+            if (deathFlickerAmount > 0)
+                DeathFlicker();
+            else 
+                FinalDeathEmission();
+        }
     }
     protected override void fixedUpdate()
     {
         physicsRigidbody.SetLinearDamping(0);
         physicsRigidbody.SetAngularDamping(0);
     }
-    // when invoked, this function puts the enemy into idle state without chasing capability for `seconds` duration.
-    public abstract void SetSpawningDuration(float seconds);
+
+
 }
