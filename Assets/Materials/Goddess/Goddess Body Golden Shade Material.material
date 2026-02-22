@@ -1,0 +1,72 @@
+{
+    "selectedShader": 3396919773648666693,
+    "uniformDatas": [
+        {
+            "glslType": "bool",
+            "identifier": "isActive",
+            "value": {
+                "__variant_value": true,
+                "__variant_type": 0
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "baseColor",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 0.9959992170333862,
+                    "b": 0.27586209774017334
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "emissiveColor",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 0.9529411792755127,
+                    "b": 0.0
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "emissiveMultiplier",
+            "value": {
+                "__variant_value": 10.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "fresnelPower",
+            "value": {
+                "__variant_value": 2.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "resultingAlpha",
+            "value": {
+                "__variant_value": 0.6190000176429749,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalMap",
+            "identifier": "normalMap",
+            "value": {
+                "__variant_value": 13288073597451239431,
+                "__variant_type": 13
+            }
+        }
+    ],
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Enable"
+}

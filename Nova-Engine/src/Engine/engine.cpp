@@ -280,7 +280,7 @@ void Engine::SystemsUnload() {
 	scriptingAPIManager.cleanPreviousSceneScriptState();
 }
 
-void Engine::pauseSystems(bool toPause) {
+void Engine::pauseSystems (bool toPause) {
 	if (toPause == isPaused) {
 		return;
 	}
