@@ -75,17 +75,17 @@ AudioSystem::AudioSystem(Engine& engine) :
 
 	loadAllSounds();
 
-	fmodSystem->createChannelGroup("Master", &masterSoundGroup);
-	fmodSystem->createChannelGroup("BGM", &bgmSoundGroup);
-	fmodSystem->createChannelGroup("SFX", &sfxSoundGroup);
+	fmodSystem->createChannelGroup("Master", &masterChannelGroup);
+	fmodSystem->createChannelGroup("BGM", &bgmChannelGroup);
+	fmodSystem->createChannelGroup("SFX", &sfxChannelGroup);
 
-	masterSoundGroup->addGroup(bgmSoundGroup);
-	masterSoundGroup->addGroup(sfxSoundGroup);
+	masterChannelGroup->addGroup(bgmChannelGroup);
+	masterChannelGroup->addGroup(sfxChannelGroup);
 
 	// Set initial audio group..
-	masterSoundGroup->setVolume(engine.dataManager.audioConfig.masterVolume);
-	bgmSoundGroup->setVolume(engine.dataManager.audioConfig.bgmVolume);
-	sfxSoundGroup->setVolume(engine.dataManager.audioConfig.sfxVolume);
+	masterChannelGroup->setVolume(engine.dataManager.audioConfig.masterVolume);
+	bgmChannelGroup->setVolume(engine.dataManager.audioConfig.bgmVolume);
+	sfxChannelGroup->setVolume(engine.dataManager.audioConfig.sfxVolume);
 }
 
 AudioSystem::~AudioSystem() {
@@ -468,13 +468,22 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 		// assign to proper sound group..
 		switch (audioComponent.audioGroup) {
 		case AudioComponent::AudioGroup::BGM:
-			channel->setChannelGroup(bgmSoundGroup);
+			channel->setChannelGroup(bgmChannelGroup);
 			break;
 		case AudioComponent::AudioGroup::SFX:
-			channel->setChannelGroup(sfxSoundGroup);
+		{
+			channel->setChannelGroup(sfxChannelGroup);
+			if (sfxSoundGroups.find(audioInstance.audioId) == std::end(sfxSoundGroups)) {
+				fmodSystem->createSoundGroup(std::to_string(static_cast<size_t>(audioInstanceId)).c_str(), &(sfxSoundGroups[audioInstance.audioId]));
+				sfxSoundGroups[audioInstance.audioId]->setMaxAudibleBehavior(FMOD_SOUNDGROUP_BEHAVIOR_MUTE);
+				sfxSoundGroups[audioInstance.audioId]->setMaxAudible(3);
+				sfxSoundGroups[audioInstance.audioId]->setMuteFadeSpeed(0.2f);
+			}
+			audio->setSoundGroup(sfxSoundGroups[audioInstance.audioId]);
 			break;
+		}
 		default:
-			channel->setChannelGroup(masterSoundGroup);
+			channel->setChannelGroup(masterChannelGroup);
 			break;
 		}
 
@@ -542,13 +551,13 @@ bool AudioSystem::stopSound(entt::entity entity, TypedResourceID<Audio> audio)
 }
 
 void AudioSystem::setMasterVolume(NormalizedFloat volume) {
-	masterSoundGroup->setVolume(volume);
+	masterChannelGroup->setVolume(volume);
 }
 
 void AudioSystem::setBGMVolume(NormalizedFloat volume) {
-	bgmSoundGroup->setVolume(volume);
+	bgmChannelGroup->setVolume(volume);
 }
 
 void AudioSystem::setSFXVolume(NormalizedFloat volume) {
-	sfxSoundGroup->setVolume(volume);
+	sfxChannelGroup->setVolume(volume);
 }

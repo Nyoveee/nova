@@ -115,10 +115,11 @@ private:
 	Engine& engine;
 	ResourceManager& resourceManager;
 
-	FMOD::ChannelGroup* masterSoundGroup;
-	FMOD::ChannelGroup* bgmSoundGroup;
-	FMOD::ChannelGroup* sfxSoundGroup;
+	FMOD::ChannelGroup* masterChannelGroup;
+	FMOD::ChannelGroup* bgmChannelGroup;
+	FMOD::ChannelGroup* sfxChannelGroup;
 
+	std::unordered_map<ResourceID, FMOD::SoundGroup*> sfxSoundGroups;
 private:
 	AudioInstance* currentBGM;
 	std::unordered_map<ResourceID, FMOD::Sound*> sounds;
