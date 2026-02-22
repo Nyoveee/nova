@@ -213,8 +213,6 @@ ManagedStructEnd(NavMeshOfflinkData, navMeshOfflinkData)
 // ======================================
 ManagedComponentDeclaration(
 	Transform,						// Creates a new managed component Transform_ that is associated with the Transform component
-	Vector3,	position,			// Transform_ now has data member position, of type Vector3 which is associated with glm::vec3 (type of original data member).
-	Vector3,	scale,
 	Vector3,	front,
 	Vector3,	right,
 	Vector3,	up,
@@ -222,9 +220,45 @@ ManagedComponentDeclaration(
 	Vector3,	localEulerAngles,
 	Vector3,	localPosition,
 	Vector3,	localScale,
-	Quaternion, rotation,
 	Quaternion, localRotation
 )
+
+// WORLD TRANSFORM -> POSITION, SCALE AND ROTATION needs special handling..
+property Vector3 position {
+	Vector3 get() {
+		return Vector3(static_cast<ManagedToNative<Vector3>::Native>(nativeComponent()->position));
+	}
+
+	void set(Vector3 value) {
+		nativeComponent()->position = native<ManagedToNative<Vector3>::Native>(value);
+		nativeComponent()->worldModifiedByScripting = true;
+		nativeComponent()->worldHasChanged = true;
+	}
+}
+
+property Vector3 scale {
+	Vector3 get() {
+		return Vector3(static_cast<ManagedToNative<Vector3>::Native>(nativeComponent()->scale));
+	}
+
+	void set(Vector3 value) {
+		nativeComponent()->scale = native<ManagedToNative<Vector3>::Native>(value);
+		nativeComponent()->worldModifiedByScripting = true;
+		nativeComponent()->worldHasChanged = true;
+	}
+}
+
+property Quaternion rotation {
+	Quaternion get() {
+		return Quaternion(static_cast<ManagedToNative<Quaternion>::Native>(nativeComponent()->rotation));
+	}
+
+	void set(Quaternion value) {
+		nativeComponent()->rotation = native<ManagedToNative<Quaternion>::Native>(value);
+		nativeComponent()->worldModifiedByScripting = true;
+		nativeComponent()->worldHasChanged = true;
+	}
+}
 
 void rotate(Vector3 axis, float angle);
 void rotate(Quaternion quartenion);

@@ -149,6 +149,12 @@ struct Transform {
 	bool worldHasChanged = true;
 	bool needsRecalculating = true;
 
+	bool worldModifiedByScripting = false;
+
+	glm::vec3 deltaPosition	{};
+	glm::vec3 deltaScale	{};
+	glm::quat deltaRotation {};
+
 	bool inCameraFrustum = true;
 
 	// not every transform will have bounding box.

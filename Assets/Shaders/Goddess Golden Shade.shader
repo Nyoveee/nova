@@ -14,6 +14,7 @@ Properties{
     Color emissiveColor;
     float emissiveMultiplier;
     float fresnelPower;
+    float speedMultiplier;
 
     NormalizedFloat resultingAlpha;
 
@@ -51,11 +52,17 @@ Frag{
     else {
         _normal = normalize(fsIn.normal);
     }
+
+    float time = timeElapsed * speedMultiplier;
+    time = sin(time);
+
+    float brightness = emissiveMultiplier + (emissiveMultiplier * 0.7 * time);
+
     // We calculate fresnel factor..
     vec3 viewDir = normalize(cameraPosition - fsIn.fragWorldPos);
     float NdotV = max(dot(_normal, viewDir), 0.0);
     float fresnelFactor = pow(1.0 - NdotV, fresnelPower);
 
-    vec3 color = baseColor + emissiveColor * emissiveMultiplier * fresnelFactor;
+    vec3 color = baseColor + emissiveColor * brightness * fresnelFactor;
 	return vec4(color, resultingAlpha);
 }

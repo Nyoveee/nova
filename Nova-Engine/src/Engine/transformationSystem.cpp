@@ -10,6 +10,9 @@
 
 #include "Engine/engine.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/io.hpp>
+
 constexpr glm::vec3 defaultFront = { 0.f, 0.f, 1.f };
 constexpr glm::vec3 defaultUp = { 0, 1.f, 0 };
 glm::vec3 defaultRight = { glm::normalize(glm::cross(defaultFront, defaultUp)) };
@@ -48,14 +51,19 @@ void TransformationSystem::update() {
 				transform.rotation = glm::normalize(transform.rotation);
 			}
 
-			//Update events, try to save old data for more tweking
+			// Update events, try to save old data for more tweking
 			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity, transform.lastPosition, transform.lastScale, transform.lastRotation });
+
+			if (transform.worldModifiedByScripting) {
+				transform.deltaPosition = transform.position - transform.lastPosition;
+				transform.deltaScale = transform.scale - transform.lastScale;
+				transform.deltaRotation = transform.rotation - transform.lastRotation;
+			}
 
 			updateWorldMatrix(transform);
 
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
-			// setSocketDirtyFlag(entity);
 		}
 
 		// Figure out if the entity requires updating it's local matrix.
@@ -70,7 +78,6 @@ void TransformationSystem::update() {
 
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
-			//setSocketDirtyFlag(entity);
 
 			// Quartenions changed, let's update our euler angles.
 			if (!glm::all(glm::epsilonEqual(transform.localRotation, transform.lastLocalRotation, 1e-4f))) {
@@ -109,7 +116,8 @@ void TransformationSystem::update() {
 			// We recursively check its parent's model matrix, until we know its updated or we reach a root entity.
 			recalculateModelMatrix(entity);
 		}
-		else if (transform.worldHasChanged) {
+		
+		if (transform.worldHasChanged) {
 			// Update events, try to save old data for more tweking
 			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity, transform.lastLocalPosition, transform.lastLocalScale, transform.lastLocalRotation });
 
@@ -208,9 +216,19 @@ glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity enti
 
 		// Let's set the appropriate new world transforms via matrix decomposition.
 		auto [position, rotation, scale] = Math::decomposeMatrix(transform.modelMatrix);
+
 		transform.position = position;
 		transform.scale = scale;
 		transform.rotation = glm::normalize(rotation);
+
+		if (transform.worldModifiedByScripting) {
+			transform.worldModifiedByScripting = false;
+
+			transform.position += transform.deltaPosition;
+			transform.scale += transform.deltaScale;
+			transform.rotation += transform.deltaRotation;
+			transform.rotation = glm::normalize(transform.rotation);
+		}
 
 		updateWorldMatrix(transform);
 	}

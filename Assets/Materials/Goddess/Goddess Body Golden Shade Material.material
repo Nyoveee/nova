@@ -37,7 +37,7 @@
             "glslType": "float",
             "identifier": "emissiveMultiplier",
             "value": {
-                "__variant_value": 10.0,
+                "__variant_value": 20.0,
                 "__variant_type": 3
             }
         },
@@ -50,10 +50,18 @@
             }
         },
         {
+            "glslType": "float",
+            "identifier": "speedMultiplier",
+            "value": {
+                "__variant_value": 3.0,
+                "__variant_type": 3
+            }
+        },
+        {
             "glslType": "NormalizedFloat",
             "identifier": "resultingAlpha",
             "value": {
-                "__variant_value": 0.6190000176429749,
+                "__variant_value": 0.2329999953508377,
                 "__variant_type": 12
             }
         },
