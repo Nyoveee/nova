@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 3,
     "Entities": [
         {
             "EntityData": {
@@ -8,10 +8,10 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    2,
-                    3,
-                    5
+                    4,
+                    5,
+                    6,
+                    8
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -25,9 +25,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 159.4071502685547,
+                    "x": 164.45730590820313,
                     "y": -144.72042846679688,
-                    "z": -144.75987243652344
+                    "z": -140.98297119140625
                 },
                 "scale": {
                     "x": 1.5,
@@ -46,9 +46,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 159.4071502685547,
+                    "x": 164.45730590820313,
                     "y": -144.72042846679688,
-                    "z": -144.75987243652344
+                    "z": -140.98297119140625
                 },
                 "localScale": {
                     "x": 1.5,
@@ -213,14 +213,14 @@
                             {
                                 "name": "projectileSpawnPoint",
                                 "data": {
-                                    "__variant_value": 5,
+                                    "__variant_value": 8,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rigidBody",
                                 "data": {
-                                    "__variant_value": 2,
+                                    "__variant_value": 5,
                                     "__variant_type": 4
                                 }
                             },
@@ -330,28 +330,28 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 4,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "animator",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 6,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "renderer",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 6,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshAgent",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             },
@@ -361,15 +361,15 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 2,
+                                                "__variant_value": 5,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 4,
+                                                "__variant_value": 7,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 0,
+                                                "__variant_value": 3,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -389,15 +389,50 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 2,
+                                    "__variant_value": 5,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "maxEmissiveValue",
+                                "data": {
+                                    "__variant_value": 10.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "deathFlickerAmount",
+                                "data": {
+                                    "__variant_value": 4,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "deathFlickerSpeed",
+                                "data": {
+                                    "__variant_value": 0.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "deathFlickerMinSpeedOffset",
+                                "data": {
+                                    "__variant_value": -0.10000000149011612,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "deathFlickerMaxSpeedOffset",
+                                "data": {
+                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_type": 18
                                 }
                             }
                         ]
@@ -411,13 +446,13 @@
                 "agentRotationSpeed": 1.0,
                 "separationWeight": 1.0
             },
-            "id": 0
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Ichor Spawn Point",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -458,9 +493,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 159.40716552734375,
+                    "x": 164.45736694335938,
                     "y": -140.74179077148438,
-                    "z": -144.75987243652344
+                    "z": -140.9835662841797
                 },
                 "scale": {
                     "x": 1.5,
@@ -479,9 +514,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 1.52587890625e-05,
+                    "x": 4.57763671875e-05,
                     "y": 2.6524200439453125,
-                    "z": 0.0
+                    "z": -0.00040435791015625
                 },
                 "localScale": {
                     "x": 1.0,
@@ -500,13 +535,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Navmesh Collider",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -547,9 +582,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 159.40716552734375,
+                    "x": 164.45736694335938,
                     "y": -141.5938720703125,
-                    "z": -144.75987243652344
+                    "z": -140.9835662841797
                 },
                 "scale": {
                     "x": 1.5,
@@ -568,9 +603,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 1.52587890625e-05,
+                    "x": 4.57763671875e-05,
                     "y": 2.0843658447265625,
-                    "z": 0.0
+                    "z": -0.00040435791015625
                 },
                 "localScale": {
                     "x": 1.0,
@@ -627,7 +662,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             }
@@ -635,16 +670,16 @@
                     }
                 ]
             },
-            "id": 2
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Gunner Model",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    4
+                    7
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -684,9 +719,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 159.40716552734375,
+                    "x": 164.45736694335938,
                     "y": -144.72042846679688,
-                    "z": -144.75987243652344
+                    "z": -140.9835662841797
                 },
                 "scale": {
                     "x": 1.5,
@@ -705,9 +740,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 1.52587890625e-05,
+                    "x": 4.57763671875e-05,
                     "y": 0.0,
-                    "z": 0.0
+                    "z": -0.00040435791015625
                 },
                 "localScale": {
                     "x": 1.0,
@@ -806,13 +841,13 @@
             "Animator": {
                 "controllerId": 14235729342422597637
             },
-            "id": 3
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "Gunner_ColliderWeak",
                 "tag": "Enemy_WeakSpot",
-                "parent": 3,
+                "parent": 6,
                 "attachedSocket": 5,
                 "children": null,
                 "layerId": 0,
@@ -853,46 +888,46 @@
             },
             "Transform": {
                 "position": {
-                    "x": 159.16224670410156,
+                    "x": 164.2124481201172,
                     "y": -138.7128143310547,
-                    "z": -144.35653686523438
+                    "z": -140.5802764892578
                 },
                 "scale": {
                     "x": 1.307240605354309,
-                    "y": 1.307267189025879,
-                    "z": 1.3072744607925415
+                    "y": 1.3072677850723267,
+                    "z": 1.307274580001831
                 },
                 "rotation": {
-                    "w": 0.9898741245269775,
-                    "x": -0.13725042343139648,
-                    "y": -0.004339086357504129,
-                    "z": 0.03595457971096039
+                    "w": 0.9898740649223328,
+                    "x": -0.13725079596042633,
+                    "y": -0.004339088685810566,
+                    "z": 0.03595464676618576
                 },
                 "eulerAngles": {
-                    "x": -0.2755056321620941,
-                    "y": 0.001279262243770063,
-                    "z": 0.07243547588586807
+                    "x": -0.2755064070224762,
+                    "y": 0.0012793060159310699,
+                    "z": 0.07243562489748001
                 },
                 "localPosition": {
                     "x": -0.16327667236328125,
                     "y": 4.005073547363281,
-                    "z": 0.268890380859375
+                    "z": 0.26885986328125
                 },
                 "localScale": {
                     "x": 0.8714937567710876,
-                    "y": 0.8715115189552307,
-                    "z": 0.8715162873268127
+                    "y": 0.8715118169784546,
+                    "z": 0.8715164661407471
                 },
                 "localRotation": {
-                    "w": 0.9898741245269775,
-                    "x": -0.1372504085302353,
-                    "y": -0.004339086823165417,
-                    "z": 0.03595457971096039
+                    "w": 0.9898740649223328,
+                    "x": -0.13725081086158752,
+                    "y": -0.004339089151471853,
+                    "z": 0.03595464676618576
                 },
                 "localEulerAngles": {
-                    "x": -0.27550560235977173,
-                    "y": 0.0012792603811249137,
-                    "z": 0.07243547588586807
+                    "x": -0.2755064368247986,
+                    "y": 0.0012793060159310699,
+                    "z": 0.07243562489748001
                 }
             },
             "Rigidbody": {
@@ -928,7 +963,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             }
@@ -936,13 +971,13 @@
                     }
                 ]
             },
-            "id": 4
+            "id": 7
         },
         {
             "EntityData": {
                 "name": "Projectile Spawn Point",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -983,9 +1018,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 159.213134765625,
+                    "x": 164.26336669921875,
                     "y": -139.34719848632813,
-                    "z": -139.33389282226563
+                    "z": -135.55758666992188
                 },
                 "scale": {
                     "x": 1.5,
@@ -1004,9 +1039,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.12934112548828125,
+                    "x": -0.1292877197265625,
                     "y": 3.5821533203125,
-                    "z": 3.6173171997070313
+                    "z": 3.616912841796875
                 },
                 "localScale": {
                     "x": 1.0,
@@ -1025,7 +1060,7 @@
                     "z": 0.0
                 }
             },
-            "id": 5
+            "id": 8
         }
     ]
 }

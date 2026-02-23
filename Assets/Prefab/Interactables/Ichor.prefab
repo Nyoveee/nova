@@ -1,5 +1,5 @@
 {
-    "RootEntity": 40,
+    "RootEntity": 10,
     "Entities": [
         {
             "EntityData": {
@@ -18,55 +18,47 @@
             },
             "Transform": {
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -0.448708176612854,
+                    "y": -8.479623794555664,
+                    "z": 12.418126106262207
                 },
                 "scale": {
-                    "x": 0.20000000298023224,
+                    "x": 0.2000015825033188,
                     "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "z": 0.2000015825033188
                 },
                 "rotation": {
-                    "w": 1.0,
+                    "w": 0.809880793094635,
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -0.5865945219993591,
                     "z": 0.0
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.0,
+                    "y": -1.253695011138916,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -0.448708176612854,
+                    "y": -8.479623794555664,
+                    "z": 12.418126106262207
                 },
                 "localScale": {
-                    "x": 0.20000000298023224,
+                    "x": 0.2000015825033188,
                     "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "z": 0.2000015825033188
                 },
                 "localRotation": {
-                    "w": 1.0,
+                    "w": 0.809880793094635,
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -0.5865945219993591,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.0,
+                    "y": -1.253695011138916,
                     "z": 0.0
                 }
-            },
-            "MeshRenderer": {
-                "modelId": 4,
-                "materialIds": [
-                    16833312378621526017
-                ],
-                "castShadow": true,
-                "shadowCullFrontFace": true
             },
             "Rigidbody": {
                 "motionType": "Dynamic",
@@ -122,7 +114,7 @@
                             {
                                 "name": "pullTime",
                                 "data": {
-                                    "__variant_value": 0.20000000298023224,
+                                    "__variant_value": 0.7699999809265137,
                                     "__variant_type": 18
                                 }
                             },
@@ -167,29 +159,48 @@
                                     "__variant_value": 10.0,
                                     "__variant_type": 18
                                 }
+                            },
+                            {
+                                "name": "pullingForce",
+                                "data": {
+                                    "__variant_value": 20.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "color",
+                                "data": {
+                                    "__variant_value": {
+                                        "x": 102.0,
+                                        "y": 69.0,
+                                        "z": 20.0,
+                                        "w": 1.0
+                                    },
+                                    "__variant_type": 2
+                                }
                             }
                         ]
                     }
                 ]
             },
             "ParticleEmitter": {
-                "texture": 0,
-                "startSize": 1.0,
+                "texture": 8,
+                "startSize": 0.10000000149011612,
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
-                "startSpeed": 1.0,
-                "initialRotation": 0.0,
-                "velocityBasedRotation": false,
-                "initialAngularVelocity": 0.0,
+                "startSpeed": 0.0010000000474974513,
+                "initialRotation": 90.0,
+                "velocityBasedRotation": true,
+                "initialAngularVelocity": 9.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "lifeTime": 1.0,
-                "particleRate": 100.0,
+                "particleRate": 500.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
                 "lightIntensity": 0.0,
@@ -205,7 +216,7 @@
                 "particleEmissionTypeSelection": {
                     "emissionShape": "Point",
                     "radiusEmitter": {
-                        "radius": 5.0
+                        "radius": 1.0
                     },
                     "cubeEmitter": {
                         "min": {
@@ -226,9 +237,9 @@
                 },
                 "particleColorSelection": {
                     "color": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
+                        "r": 0.9965517520904541,
+                        "g": 0.9116138219833374,
+                        "b": 0.22680144011974335,
                         "a": 1.0
                     },
                     "colorOffsetMin": {
@@ -241,15 +252,15 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "emissiveMultiplier": 1.0
+                    "emissiveMultiplier": 24.0
                 },
                 "sizeOverLifetime": {
-                    "selected": false,
+                    "selected": true,
                     "interpolationType": "Linear",
                     "endSize": 0.0
                 },
                 "colorOverLifetime": {
-                    "selected": false,
+                    "selected": true,
                     "interpolationType": "Linear",
                     "endColor": {
                         "r": 0.0,
@@ -282,7 +293,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 40
+            "id": 10
         }
     ]
 }

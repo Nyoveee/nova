@@ -5,6 +5,8 @@ using Windows.UI.Composition;
 
 class Ichor : Script
 {
+    private delegate void CurrentState();
+
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -28,18 +30,45 @@ class Ichor : Script
     private float maxGravityFactor = 1f;
     [SerializableField]
     private float damping = 1f;
+
+    private Vector3 idlePositionVariance = new Vector3(1f, 1f, 1f);
+
+    [SerializableField]
+    private float pullingForce = 20f;
+
+    [SerializableField]
+    private ColorAlpha color;
+
     /***********************************************************
         Local Variables
     ***********************************************************/
+
     private bool waitNextFrame = true;
     private Rigidbody_ rigidbody;
+    private ParticleEmitter_ particleEmitter;
+    
+    private GameObject thrownGunGameObject;
+    private GameObject heldGunGameObject;
+    
     private Vector3 startSize;
-    private bool gunPull = false;
-    private Vector3 startDistance;
-    private Vector3 endDistance;
+    private Vector3 startPosition;
 
     private float elapsedTime = 0;
     private float pullElapsedTime = 0;
+
+    private Vector3 idlePosition;
+
+    // State handling..
+    enum State
+    {
+        Spawning,
+        Idle,
+        GettingPulled
+    }
+
+    State currentState = State.Spawning;
+    Dictionary<State, CurrentState> updateState = new Dictionary<State, CurrentState>();
+
     protected override void init()
     {
         rigidbody = getComponent<Rigidbody_>();
@@ -49,55 +78,125 @@ class Ichor : Script
         Vector3 force =  direction * Random.Range(minForce, maxForce);
         rigidbody.AddForce(force);
         rigidbody.SetGravityFactor(Random.Range(minGravityFactor, maxGravityFactor));
+
+        // Lifespan..
         Invoke(() =>
         {
             if(gameObject!= null)
                 Destroy(gameObject);
         }, ichorLifeTime);
+
+        // State machine function delegate setup
+        updateState.Add(State.Spawning, UpdateSpawning);
+        updateState.Add(State.Idle, UpdateIdle);
+        updateState.Add(State.GettingPulled, UpdateAbsorbing);
+
+        particleEmitter = getComponent<ParticleEmitter_>();
+
+        if(particleEmitter != null)
+        {
+            ColorAlpha colorAlpha = new ColorAlpha(color.r / 255f, color.g / 255f, color.b / 255f, color.a / 255f);
+            particleEmitter.setParticleColor(colorAlpha);
+        }
     }
-    protected override void update()
+
+    protected void UpdateSpawning()
     {
-        // Make sure collision is only affectted by the newly set postiion
-        //expandTime = Mathf.Max(0, expandTime - Time.V_DeltaTime());
-        //gameObject.transform.scale = Vector3.Lerp(startSize, startSize * expandedSizeMultiplier, expandTime);
+        const float epilson = 0.1f;
+
+        // During spawning, we are responsible for
+        // 1. Expanding the game object's scale
+        // 2. After a set amount of time, set linear damping to slow it down..
         elapsedTime += Time.V_DeltaTime();
 
-        if(elapsedTime < expandTime)
+        if (elapsedTime < expandTime)
         {
             gameObject.transform.scale = Vector3.Lerp(startSize, startSize * expandedSizeMultiplier, elapsedTime / expandTime);
         }
 
         if (elapsedTime > rapidSlowTime)
-        { 
+        {
+            rigidbody.SetLinearDamping(damping);
+        }
+
+        // Ichor has stopped, transitioning to idle state.
+        // (can't compare to zero, because of the way we dampen velocity, so let's compare to some threshold..)
+        Vector3 velocity = rigidbody.GetVelocity();
+
+        if (velocity.x < epilson && velocity.y < epilson && velocity.z < epilson)
+        {
+            currentState = State.Idle;
+
+            rigidbody.SetVelocity(Vector3.Zero());
             rigidbody.SetLinearDamping(damping);
 
+            idlePosition = gameObject.transform.position;
         }
-       
-
-        if (gunPull == true)
-        {
-            pullElapsedTime += Time.V_DeltaTime();
-
-            float t = pullElapsedTime / pullTime;
-            gameObject.transform.position = Vector3.Lerp(startDistance, endDistance,t );
-
-            if (t > 1)
-            {
-                if (gameObject != null)
-                    Destroy(gameObject);
-            }
-        
-        }
-
-
     }
 
-
-    public void PullTowardsGun(Vector3 position)
+    protected void UpdateIdle()
     {
-        gunPull = true;
-        startDistance = gameObject.transform.position;
-        endDistance = position;
+        // We want the ichor to wiggle around it's idle position..
+
+        // We calculate the next random position..
+        Vector3 randomPosition = idlePosition + Random.Range(-idlePositionVariance, idlePositionVariance);
+        Vector3 forceVector = randomPosition - gameObject.transform.position;
+        rigidbody.AddVelocity(forceVector);
+    }
+
+    protected void UpdateAbsorbing()
+    {
+        // If the thrown gun game object is valid, take it's position.. else, take the held gun's position.
+        Vector3 endPosition = thrownGunGameObject != null ? thrownGunGameObject.transform.position : heldGunGameObject.transform.position;
+
+#if true
+        pullElapsedTime += Time.V_DeltaTime();
+
+        float t = pullElapsedTime / pullTime;
+        
+        // Difference in lerping power to "create" an parabola instead of a straight line..
+        gameObject.transform.position = new Vector3(
+            Mathf.Interpolate(startPosition.x, endPosition.x, t, 2.5f),
+            Mathf.Interpolate(startPosition.y, endPosition.y, t, 0.2f),
+            Mathf.Interpolate(startPosition.z, endPosition.z, t, 1f)  
+        );
+
+        if (t > 1)
+        {
+            if (gameObject != null)
+                Destroy(gameObject);
+        }
+#else
+        // Instead of linear interpolation, let's try force based movement..
+
+
+        // We don't normalize the direction, because we want the force to scale proportionally based on distancer as well..
+        Vector3 pullingDirection = endPosition - gameObject.transform.position;
+        pullingDirection *= pullingForce;
+
+        rigidbody.AddForce(pullingDirection);
+#endif
+    }
+
+    protected override void update()
+    {
+        // runs the update function of the current state.
+        updateState[currentState]();
+    }
+
+    public void PullTowardsGun(GameObject p_thrownGunGameObject, GameObject p_heldGunGameObject)
+    {
+        startPosition = gameObject.transform.position;
+        currentState = State.GettingPulled;
+        thrownGunGameObject = p_thrownGunGameObject;
+        heldGunGameObject = p_heldGunGameObject;
+
+        if (particleEmitter != null)
+        {
+            particleEmitter.enable = true;
+        }
+
+        particleEmitter.setParticleColor(new ColorAlpha(1f, 1f, 0.3f, 1f));
     }
 
     protected override void onCollisionEnter(GameObject other)

@@ -63,7 +63,7 @@ static Vector2 One();
 static Vector2 Zero(); 
 static float Dot(Vector2 a, Vector2 b); 
 static Vector2 Lerp(Vector2 a, Vector2 b, float interval);
-
+static Vector2 Abs(Vector2 vec);
 
 ManagedStructEnd(Vector2, glm::vec2)
 // ======================================
@@ -100,7 +100,7 @@ static float Dot(Vector3 a, Vector3 b);
 static Vector3 Lerp(Vector3 a, Vector3 b, float interval);
 static Vector3 Proj(Vector3 vector, Vector3 onNormal);
 static Vector3 Cross(Vector3 lhs, Vector3 rhs);
-
+static Vector3 Abs(Vector3 vec);
 
 
 ManagedStructEnd(Vector3, glm::vec3)
