@@ -562,7 +562,7 @@ void AudioSystem::setSFXVolume(NormalizedFloat volume) {
 	sfxChannelGroup->setVolume(volume);
 }
 void AudioSystem::onEnginePaused() {
-	sfxSoundGroup->setPaused(true);
+	sfxChannelGroup->setPaused(true);
 	//for (auto& [instanceId, audioInstance] : audioInstances) {
 	//	if (!audioInstance.channel) continue;
 	//
@@ -581,7 +581,7 @@ void AudioSystem::onEnginePaused() {
 }
 
 void AudioSystem::onEngineResumed() {
-	sfxSoundGroup->setPaused(false);
+	sfxChannelGroup->setPaused(false);
 	//for (auto& [instanceId, audioInstance] : audioInstances) {
 	//	if (!audioInstance.channel) continue;
 	//
