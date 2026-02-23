@@ -469,6 +469,7 @@ struct AudioComponent
 {
 	float volume{ 1.f };
 	bool loop{};
+	//bool playWhenPaused = false;
 	enum class AudioGroup {
 		SFX,
 		BGM

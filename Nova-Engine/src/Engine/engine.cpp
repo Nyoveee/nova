@@ -289,9 +289,11 @@ void Engine::pauseSystems (bool toPause) {
 
 	if (toPause) {
 		// handle system pause request here..
+		audioSystem.onEnginePaused();
 	}
 	else {
 		// handle system resume request here..
+		audioSystem.onEngineResumed();
 	}
 }
 

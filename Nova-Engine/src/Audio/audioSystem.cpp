@@ -561,3 +561,40 @@ void AudioSystem::setBGMVolume(NormalizedFloat volume) {
 void AudioSystem::setSFXVolume(NormalizedFloat volume) {
 	sfxChannelGroup->setVolume(volume);
 }
+void AudioSystem::onEnginePaused() {
+	sfxSoundGroup->setPaused(true);
+	//for (auto& [instanceId, audioInstance] : audioInstances) {
+	//	if (!audioInstance.channel) continue;
+	//
+	//	// Check if the entity has an AudioComponent with playWhenPaused set
+	//	bool shouldKeepPlaying = false;
+	//	if (audioInstance.entity != entt::null) {
+	//		if (auto* comp = engine.ecs.registry.try_get<AudioComponent>(audioInstance.entity)) {
+	//			shouldKeepPlaying = comp->playWhenPaused;
+	//		}
+	//	}
+	//
+	//	if (!shouldKeepPlaying) {
+	//		audioInstance.channel->setPaused(true);
+	//	}
+	//}
+}
+
+void AudioSystem::onEngineResumed() {
+	sfxSoundGroup->setPaused(false);
+	//for (auto& [instanceId, audioInstance] : audioInstances) {
+	//	if (!audioInstance.channel) continue;
+	//
+	//	bool shouldKeepPlaying = false;
+	//	if (audioInstance.entity != entt::null) {
+	//		if (auto* comp = engine.ecs.registry.try_get<AudioComponent>(audioInstance.entity)) {
+	//			shouldKeepPlaying = comp->playWhenPaused;
+	//		}
+	//	}
+	//
+	//	// Only resume sounds that were paused by the engine pause (not manually paused)
+	//	if (!shouldKeepPlaying) {
+	//		audioInstance.channel->setPaused(false);
+	//	}
+	//}
+}
