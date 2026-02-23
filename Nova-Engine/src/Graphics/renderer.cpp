@@ -811,7 +811,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 				continue;
 			}
 
-			computeFog(frameBuffers, fog, camera);
+			//computeFog(frameBuffers, fog, camera);
 			renderPostProcessing(frameBuffers, fog);
 			break;
 		}
@@ -3457,14 +3457,15 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fo
 
 	// Bind the HDR texture from main framebuffer
 	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
+	glBindTextureUnit(1, frameBuffers.getDepthTextureId());
+
 	postprocessingShader.setImageUniform("scene", 0);
+	postprocessingShader.setImageUniform("depthTexture", 1);
 
 	postprocessingShader.setVec3("fogColor", fog.fogInscatteringColor);
-
-	//float vignetteDistance = (1 - vignette) * 2.f;
-	//postprocessingShader.setFloat("vignette", vignetteDistance);
-
-	postprocessingShader.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
+	postprocessingShader.setFloat("fogNear", fog.startDistance);
+	postprocessingShader.setFloat("fogFar", fog.endDistance);
+	postprocessingShader.setFloat("fogDensity", fog.inscatteringDensity);
 
 	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);

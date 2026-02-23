@@ -27,6 +27,8 @@ public:
 	FrameBuffer const& getActiveFrameBuffer() const;
 	FrameBuffer const& getReadFrameBuffer() const;
 
+	GLuint getDepthTextureId() const;
+
 	// THIS IS A HARDCODED FUNCTION MEANT FOR DEBUGGING ONLY.
 	ENGINE_DLL_API GLuint getMotionTexture() const;
 
