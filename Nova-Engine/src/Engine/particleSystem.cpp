@@ -279,6 +279,12 @@ void ParticleSystem::determineParticleSize(
 	particleLifeSpanData.endSize = endSize;
 }
 
+void ParticleSystem::determineParticleRotation(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, ParticleEmitter& emitter)
+{
+	particleVertex.rotation = emitter.initialRotation;
+	particleLifeSpanData.velocityBasedRotation = emitter.velocityBasedRotation;
+}
+
 void ParticleSystem::rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform)
 {
 	// Position
@@ -378,6 +384,7 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		particleVertex.position += particleLifeSpanData.lifeTime * particleLifeSpanData.velocity;
 		particleLifeSpanData.velocity = -particleLifeSpanData.velocity;
 	}
+	determineParticleRotation(particleLifeSpanData, particleVertex, emitter);
 	addParticleToList(particleLifeSpanData, particleVertex,emitter.texture);
 }
 

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 46,
+    "RootEntity": 9,
     "Entities": [
         {
             "EntityData": {
@@ -8,12 +8,12 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    47,
-                    51
+                    10,
+                    14
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 12448935114624401603,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -71,28 +71,28 @@
                             {
                                 "name": "landing",
                                 "data": {
-                                    "__variant_value": 47,
+                                    "__variant_value": 10,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "air",
                                 "data": {
-                                    "__variant_value": 51,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "light",
                                 "data": {
-                                    "__variant_value": 48,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "landingFireEmitter",
                                 "data": {
-                                    "__variant_value": 48,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             }
@@ -100,22 +100,22 @@
                     }
                 ]
             },
-            "id": 46
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Landing",
                 "tag": "",
-                "parent": 46,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": [
-                    48,
-                    49,
-                    50
+                    11,
+                    12,
+                    13
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 15331238876150874315,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -165,18 +165,18 @@
                     "z": 0.0
                 }
             },
-            "id": 47
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Landing Fire",
                 "tag": "",
-                "parent": 47,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 17637081885364355273,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -255,6 +255,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 10.0,
+                "initialRotation": 0.0,
+                "velocityBasedRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -357,18 +359,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 48
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Landing Smoke Ring",
                 "tag": "",
-                "parent": 47,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 15331238876147548359,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -424,6 +426,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 0.20000000298023224,
+                "initialRotation": 0.0,
+                "velocityBasedRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -526,18 +530,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 49
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Landing Smoke",
                 "tag": "",
-                "parent": 47,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 14178317371536031941,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -593,6 +597,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 20.0,
+                "initialRotation": 0.0,
+                "velocityBasedRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": -3.140000104904175,
                 "maxAngularVelocityOffset": 3.140000104904175,
@@ -695,22 +701,22 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 50
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Air",
                 "tag": "",
-                "parent": 46,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": [
-                    52,
-                    53,
-                    54
+                    15,
+                    16,
+                    17
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 15331238876157411537,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -760,18 +766,18 @@
                     "z": 0.0
                 }
             },
-            "id": 51
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Smoke Trail",
                 "tag": "",
-                "parent": 51,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 4378484582393790675,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -827,6 +833,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "initialRotation": 0.0,
+                "velocityBasedRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -929,18 +937,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 52
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "Fire Trail",
                 "tag": "",
-                "parent": 51,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 4378484582393790675,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -996,6 +1004,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "initialRotation": 0.0,
+                "velocityBasedRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -1098,18 +1108,18 @@
                     "trailEmissiveMultiplier": 5.0
                 }
             },
-            "id": 53
+            "id": 16
         },
         {
             "EntityData": {
                 "name": "Spark",
                 "tag": "",
-                "parent": 51,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 1051054533505335507,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1165,6 +1175,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 20.0,
+                "initialRotation": 0.0,
+                "velocityBasedRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -1267,7 +1279,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 54
+            "id": 17
         }
     ]
 }

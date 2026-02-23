@@ -91,9 +91,10 @@ class Grunt : Enemy
 
     // This function is invoked every fixed update.
     protected override void update()
-    {   
-         updateState[gruntState]();
-         FlushDamageEnemy();
+    {
+        base.update();
+        updateState[gruntState]();
+        FlushDamageEnemy();
     }
     /**********************************************************************
         Inheritted Functions

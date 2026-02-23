@@ -735,7 +735,10 @@ struct ParticleEmitter
 	float maxStartSizeOffset = 0.f;
 	float startSpeed = 1;
 	glm::vec3 force{};
-	// Velocity
+	// Rotation
+	float initialRotation{};
+	bool velocityBasedRotation{};
+	// Angular Velocity
 	float initialAngularVelocity{};
 	float minAngularVelocityOffset{};
 	float maxAngularVelocityOffset{};
@@ -756,6 +759,8 @@ struct ParticleEmitter
 		minStartSizeOffset,
 		maxStartSizeOffset,
 		startSpeed,
+		initialRotation,
+		velocityBasedRotation,
 		initialAngularVelocity,
 		minAngularVelocityOffset,
 		maxAngularVelocityOffset,
@@ -776,25 +781,6 @@ struct ParticleEmitter
 		colorOverLifetime,
 		trails
 	)
-};
-struct alignas(16) ParticleLifespanData {
-	glm::vec4 startColor{};
-	glm::vec4 endColor{};
-	alignas(16) glm::vec3 velocity{};
-	alignas(16) glm::vec3 force{};
-	alignas(16) glm::vec3 lightattenuation{};
-	float colorInterpolation{};
-	float sizeInterpolation{};
-	float lightIntensity{};
-	float lightRadius{};
-	float angularVelocity{};
-	float startSize{};
-	float endSize{};
-	float currentLifeTime{};
-	float lifeTime{};
-	int colorOverLifetime{};
-	int sizeOverLifetime{};
-	int b_Active{};
 };
 
 struct Text {

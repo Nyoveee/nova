@@ -5,14 +5,12 @@
                 "name": "Particle Emitter",
                 "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
+                "entityGUID": 1594292449500528817,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -67,6 +65,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 20.0,
+                "initialRotation": 0.0,
+                "velocityBasedRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -176,14 +176,12 @@
                 "name": "Particle Emitter",
                 "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
+                "entityGUID": 13699968247872422067,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -238,6 +236,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 80.0,
+                "initialRotation": 0.0,
+                "velocityBasedRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -347,14 +347,12 @@
                 "name": "Directional Light",
                 "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
+                "entityGUID": 13123507495568998581,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -431,14 +429,81 @@
                 "name": "Floor Made of Floor",
                 "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
+                "entityGUID": 5053056963321069751,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -107.20539855957031,
+                    "y": -4.085877418518066,
+                    "z": 0.0
                 },
+                "scale": {
+                    "x": 20.0,
+                    "y": 1.0,
+                    "z": 20.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -107.20539855957031,
+                    "y": -4.085877418518066,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 20.0,
+                    "y": 1.0,
+                    "z": 20.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048932
+        },
+        {
+            "EntityData": {
+                "name": "Floor Made of Floor",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 5053056963321069751,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -495,7 +560,178 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 1048932
+            "id": 5242898
+        },
+        {
+            "EntityData": {
+                "name": "Particle Emitter",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17158732761693307065,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -107.57592010498047,
+                    "y": 2.4249579906463623,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -107.57592010498047,
+                    "y": 2.4249579906463623,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "ParticleEmitter": {
+                "texture": 16344311177990783005,
+                "startSize": 1.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 1.0,
+                "initialRotation": 0.0,
+                "velocityBasedRotation": true,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "lifeTime": 5.0,
+                "particleRate": 20.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "invertMovement": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 5.0
+                },
+                "sizeOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": false,
+                    "trailTexture": 0,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 1048640
         }
     ],
     "layers": [

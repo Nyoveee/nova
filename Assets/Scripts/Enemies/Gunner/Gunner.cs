@@ -79,6 +79,7 @@ class Gunner : Enemy
     // This function is invoked every fixed update.
     protected override void update()
     {
+        base.update();
         updateState[gunnerState]();
         FlushDamageEnemy();
     }

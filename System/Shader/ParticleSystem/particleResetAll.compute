@@ -18,8 +18,10 @@ struct Particle{
     float lifeTime;
     bool colorOverLifetime;
     bool sizeOverLifetime;
+    bool velocityBasedRotation;
     bool b_Active;
 };
+
 layout(std430, binding = 5) buffer ParticleList {
     int particleCount;
     Particle particles[];
