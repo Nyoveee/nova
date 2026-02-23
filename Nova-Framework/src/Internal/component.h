@@ -731,7 +731,7 @@ struct ParticleEmitter
 	glm::vec3 force{};
 	// Rotation
 	float initialRotation{};
-	bool velocityBasedRotation{};
+	bool velocityBasedInitialRotation{};
 	// Angular Velocity
 	float initialAngularVelocity{};
 	float minAngularVelocityOffset{};
@@ -754,7 +754,7 @@ struct ParticleEmitter
 		maxStartSizeOffset,
 		startSpeed,
 		initialRotation,
-		velocityBasedRotation,
+		velocityBasedInitialRotation,
 		initialAngularVelocity,
 		minAngularVelocityOffset,
 		maxAngularVelocityOffset,

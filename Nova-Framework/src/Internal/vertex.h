@@ -43,7 +43,6 @@ struct alignas(16) ParticleLifespanData {
 	float lifeTime{};
 	int colorOverLifetime{};
 	int sizeOverLifetime{};
-	int velocityBasedRotation{};
 	int b_Active{};
 };
 

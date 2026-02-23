@@ -24,7 +24,6 @@ struct Particle{
     float lifeTime;
     bool colorOverLifetime;
     bool sizeOverLifetime;
-    bool velocityBasedRotation;
     bool b_Active;
 };
 
@@ -35,23 +34,6 @@ layout(std430, binding = 4) buffer ParticleVertexList {
 layout(std430, binding = 5) buffer ParticleList {
     int particleCount;
     Particle particles[];
-};
-
-layout(std140, binding = 0) uniform Camera {
-    mat4 view;
-    mat4 projection;
-    mat4 cameraProjectionView;
-    mat4 inverseView;
-    mat4 inverseProjection;
-    mat4 inverseProjectionView;
-    mat4 previousViewProjection;    // for TAA
-
-    vec3 cameraPosition;
-   
-    uvec3 gridSize;
-    uvec2 screenDimensions;
-    float zNear;
-    float zFar;
 };
 
 uniform float dt;  
@@ -80,19 +62,8 @@ void main() {
     }
     // Movement
     particleVertices[particleIndex].position += particles[particleIndex].velocity * dt;
-    particles[particleIndex].velocity += particles[particleIndex].force * dt;
-
-    if(particles[particleIndex].velocityBasedRotation){
-        vec2 screenSpaceVelocity = normalize((cameraProjectionView * vec4( particles[particleIndex].velocity,0.0)).xy);
-        vec2 up = vec2(0,1.0);
-        vec2 right = vec2(1.0,0);
-        float velocityRotation = -sign(dot(right,screenSpaceVelocity)) * acos(dot(up, screenSpaceVelocity));
-        particleVertices[particleIndex].rotation = velocityRotation;
-    }
-    else{
-        particleVertices[particleIndex].rotation += particles[particleIndex].angularVelocity * dt;
-    }
-       
+    particleVertices[particleIndex].rotation += particles[particleIndex].angularVelocity * dt;
+    particles[particleIndex].velocity += particles[particleIndex].force * dt;   
     // Color
     if (particles[particleIndex].colorOverLifetime) {
 	    float interpolationValue = 1 - particles[particleIndex].currentLifeTime / particles[particleIndex].lifeTime;

@@ -24,7 +24,6 @@ struct Particle{
     float lifeTime;
     bool colorOverLifetime;
     bool sizeOverLifetime;
-    bool velocityBasedRotation;
     bool b_Active;
 };
 
