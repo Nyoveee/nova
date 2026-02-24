@@ -1,5 +1,5 @@
 {
-    "RootEntity": 1,
+    "RootEntity": 50,
     "Entities": [
         {
             "EntityData": {
@@ -111,6 +111,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
                 "initialAngularVelocity": 30.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -213,7 +215,7 @@
                     "trailEmissiveMultiplier": 5.0
                 }
             },
-            "id": 1
+            "id": 50
         }
     ]
 }

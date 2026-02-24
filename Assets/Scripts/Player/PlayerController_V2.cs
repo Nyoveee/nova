@@ -3,6 +3,18 @@
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
 
+public enum PlayerMoveStates
+{
+    Disabled,
+    InitState,
+    GroundedMovement,
+    AirborneMovement,
+    Teleported,
+    StartJump,
+    Jumping,
+    Dashing,
+    Death
+}
 class PlayerController_V2 : Script
 {
     // ==================================
@@ -247,7 +259,6 @@ class PlayerController_V2 : Script
             case PlayerMoveStates.AirborneMovement:
                 {
                     UpdateAirborneMovement();
-
                 }
                 break;
             case PlayerMoveStates.Dashing:
@@ -277,7 +288,7 @@ class PlayerController_V2 : Script
         }
 
         if (gameUIManager != null)
-            gameUIManager.SetProgress(GameUIManager.ProgressBarType.DashBar, dashCooldownTimer, dashCooldown);
+            gameUIManager.SetProgress(GameUIManager.ProgressBarType.DashBar, currentStamina, maxStamina);
 
     }
     void CheckMovementTypeState()
@@ -510,10 +521,10 @@ class PlayerController_V2 : Script
 
         SetIframes(true); //set iframes for dashing
         dashTimeElapsed = 0;
+        dashCooldownTimer = 0 ;
         rigidbody.SetLinearDamping(0);
         rigidbody.SetVelocityLimits(100000f);
         onDashTrigger = false;
-
 
         if (directionVector == Vector3.Zero())
         {
@@ -650,7 +661,11 @@ class PlayerController_V2 : Script
     //dash callback
     void triggerDash()
     {
-        if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false && currentStamina >= dashStaminaConsumption)
+        if (playerMoveStates != PlayerMoveStates.Disabled 
+            && playerMoveStates != PlayerMoveStates.Death 
+            && dashCooldownTimer >= dashCooldown 
+            && isDashKeyHeld == false 
+            && currentStamina >= dashStaminaConsumption)
         {
             audioComponent.PlayRandomSound(dashSFX);
             currentStamina -= dashStaminaConsumption;
@@ -662,9 +677,8 @@ class PlayerController_V2 : Script
     }
 
     void dashkeyUpHandler()
-    {
+    {        
         isDashKeyHeld = false;
-        dashCooldownTimer = 0;
     }
 
 
@@ -856,23 +870,16 @@ class PlayerController_V2 : Script
     public void Reset()
     {
         isMovingBackward = isMovingForward = isMovingLeft = isMovingRight = false;
-        rigidbody.SetVelocity(Vector3.Zero());
+        OnTeleport();
         currentHealth = maxHealth;
         gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
     }
 
-}
-
-
-public enum PlayerMoveStates 
-{
-    Disabled,
-    InitState,
-    GroundedMovement,
-    AirborneMovement,
-    StartJump,
-    Jumping,
-    Dashing,
-    Death,
-
+    // Disable movement until touching the floor
+    public void OnTeleport()
+    {
+        playerMoveStates = PlayerMoveStates.InitState;
+        rigidbody.SetVelocity(Vector3.Zero());
+        currentStamina = 0;
+    }
 }

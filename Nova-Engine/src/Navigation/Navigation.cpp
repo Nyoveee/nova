@@ -507,6 +507,7 @@ ENGINE_DLL_API void NavigationSystem::unloadNavMeshSystems()
 	crowdManager.clear();
 	queryManager.clear();
 	agentToIndexMap.clear();
+	indexToAgentMap.clear();
 	agentList.clear();
 
 	hasSystemInit = false;

@@ -249,7 +249,7 @@
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)Library\Installer\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(OutDir)Nova-ScriptingAPI.dll" /Y /Q "$(SolutionDir)Nova-Scripts\"</Command>

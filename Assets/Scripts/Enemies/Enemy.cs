@@ -38,6 +38,17 @@ public abstract class Enemy : Script
     protected Rigidbody_ physicsRigidbody;
     [SerializableField]
     protected Rigidbody_ navMeshRigidBody; //LEGACY CODE, navmesh rigidbody should be turned into a normal hurt box collider in the future we should not need a navmesh rigidbody
+    [SerializableField]
+    private float maxEmissiveValue;
+    [SerializableField]
+    private int deathFlickerAmount;
+    [SerializableField]
+    private float deathFlickerSpeed;
+    [SerializableField]
+    private float deathFlickerMinSpeedOffset;
+    [SerializableField]
+    private float deathFlickerMaxSpeedOffset;
+    
 
     /***********************************************************
         Local Variables
@@ -52,11 +63,17 @@ public abstract class Enemy : Script
     private float currentJumpDuration = 0f;
     private NavMeshOfflinkData offlinkData;
     private float verticalMaxJumpHeight;
+    // Death
+    private float currentDeathEmissiveTime;
+    private float currentFlickerTime;
+    private float currentFlickerVariance;
     /***********************************************************
         Enemy Types must inherited from this
     ***********************************************************/
     public abstract void TakeDamage(float damage, EnemydamageType type, string colliderTag);
     public abstract bool IsEngagedInBattle();
+    // when invoked, this function puts the enemy into idle state without chasing capability for `seconds` duration.
+    public abstract void SetSpawningDuration(float seconds);
     /***********************************************************
        Public Functions
     ***********************************************************/
@@ -233,6 +250,22 @@ public abstract class Enemy : Script
         
         return offlinkData.valid;
     }
+    private void DeathFlicker()
+    {
+        currentDeathEmissiveTime += Time.V_DeltaTime();
+        float currentDeathFlickerSpeed = deathFlickerSpeed + currentFlickerVariance;
+        if(currentDeathEmissiveTime > deathFlickerSpeed){
+            currentFlickerVariance = Random.Range(deathFlickerMinSpeedOffset, deathFlickerMaxSpeedOffset);
+            currentDeathEmissiveTime = 0;
+            --deathFlickerAmount;
+        }
+        else if (currentDeathEmissiveTime > currentDeathFlickerSpeed / 2f) {
+            renderer.setMaterialFloat(0, "emissiveStrength", maxEmissiveValue);
+        }
+        else {
+            renderer.setMaterialFloat(0, "emissiveStrength", 0);
+        }
+    }
     /***********************************************************
        Script Functions
     ***********************************************************/
@@ -242,12 +275,24 @@ public abstract class Enemy : Script
         player = GameObject.FindWithTag("Player");
         playerHead = GameObject.FindWithTag("PlayerHead");
         navMeshAgent.setAutomateNavMeshOfflinksState(false);
+        renderer.setMaterialFloat(0, "emissiveStrength", maxEmissiveValue);
+        currentFlickerVariance = Random.Range(deathFlickerMinSpeedOffset, deathFlickerMaxSpeedOffset);
+    }
+    protected override void update()
+    {
+        if (IsDead())
+        {
+            if (deathFlickerAmount > 0)
+                DeathFlicker();
+            else
+                renderer.setMaterialFloat(0, "emissiveStrength", 0);
+        }
     }
     protected override void fixedUpdate()
     {
         physicsRigidbody.SetLinearDamping(0);
         physicsRigidbody.SetAngularDamping(0);
     }
-    // when invoked, this function puts the enemy into idle state without chasing capability for `seconds` duration.
-    public abstract void SetSpawningDuration(float seconds);
+
+
 }

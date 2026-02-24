@@ -79,6 +79,7 @@ class Gunner : Enemy
     // This function is invoked every fixed update.
     protected override void update()
     {
+        base.update();
         updateState[gunnerState]();
         FlushDamageEnemy();
     }
@@ -341,9 +342,8 @@ class Gunner : Enemy
     **********************************************************************/
     public void Shoot()
     {
-        audioComponent.PlayRandomSound(attackSFX);
+        //audioComponent.PlayRandomSound(attackSFX);
         gunShootIndex = (gunShootIndex + 1) % 2;
-        // AudioAPI.PlaySound(gameObject, gunShootIndex == 0 ? "LaserRifle_SmallRocket_Shot1" : "LaserRifle_SmallRocket_Shot2");
         // Shoot Projectile
         GameObject projectile = Instantiate(projectilePrefab);
         projectile.transform.position = projectileSpawnPoint.transform.position;

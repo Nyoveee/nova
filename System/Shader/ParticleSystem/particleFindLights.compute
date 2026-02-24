@@ -20,6 +20,7 @@ struct Particle{
     bool sizeOverLifetime;
     bool b_Active;
 };
+
 struct PointLightData{
     vec3 lightPos;		
     vec3 color;		

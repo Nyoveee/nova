@@ -36,7 +36,6 @@ layout(std430, binding = 5) buffer ParticleList {
     Particle particles[];
 };
 
-
 uniform float dt;  
 
 float InterpolationFloat(float start, float end, float t, float degree){
@@ -63,8 +62,8 @@ void main() {
     }
     // Movement
     particleVertices[particleIndex].position += particles[particleIndex].velocity * dt;
-    particles[particleIndex].velocity += particles[particleIndex].force * dt;
     particleVertices[particleIndex].rotation += particles[particleIndex].angularVelocity * dt;
+    particles[particleIndex].velocity += particles[particleIndex].force * dt;   
     // Color
     if (particles[particleIndex].colorOverLifetime) {
 	    float interpolationValue = 1 - particles[particleIndex].currentLifeTime / particles[particleIndex].lifeTime;

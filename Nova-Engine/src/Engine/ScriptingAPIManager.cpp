@@ -285,7 +285,12 @@ bool ScriptingAPIManager::compileScriptAssembly()
 		+ L"\" -c Debug --no-self-contained -o "
 		+ L"\"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\" -r \"win-x64\""
 		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\"";
-#else
+#elif defined(NOVA_INSTALLER)
+	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
+		+ L"\" -c Installer --no-self-contained -o "
+		+ L"\"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\" -r \"win-x64\""
+		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\"";
+#else 
 	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
 		+ L"\" -c Release --no-self-contained -o "
 		+ L"\"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\" -r \"win-x64\""
@@ -441,6 +446,10 @@ bool ScriptingAPIManager::startSimulation() {
 		for (auto&& script : scripts.scriptDatas) {
 #if defined(NOVA_INSTALLER)
 			auto&& [asset, result] = engine.resourceManager.getResource<ScriptAsset>(script.scriptId);
+			if (!asset) {
+				Logger::error("Entity {} has invalid script of {}!", static_cast<unsigned>(entity), static_cast<std::size_t>(script.scriptId));
+				continue;
+			}
 			if (asset->isAdminScript())
 				continue;
 #endif

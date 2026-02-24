@@ -91,9 +91,10 @@ class Grunt : Enemy
 
     // This function is invoked every fixed update.
     protected override void update()
-    {   
-         updateState[gruntState]();
-         FlushDamageEnemy();
+    {
+        base.update();
+        updateState[gruntState]();
+        FlushDamageEnemy();
     }
     /**********************************************************************
         Inheritted Functions
@@ -337,7 +338,7 @@ class Grunt : Enemy
         if (IsJumpFinished())
         {
             gruntState = GruntState.Idle;
-            animator.PlayAnimation("Gunner_Idle");
+            animator.PlayAnimation("Grunt Idle (Base)");
             navMeshAgent.CompleteOffMeshLink();
             navMeshAgent.enable = true;
         }

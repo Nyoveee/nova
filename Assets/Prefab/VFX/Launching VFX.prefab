@@ -1,5 +1,5 @@
 {
-    "RootEntity": 15,
+    "RootEntity": 34,
     "Entities": [
         {
             "EntityData": {
@@ -8,8 +8,8 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    16,
-                    20
+                    35,
+                    39
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -71,28 +71,28 @@
                             {
                                 "name": "landing",
                                 "data": {
-                                    "__variant_value": 16,
+                                    "__variant_value": 35,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "air",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 39,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "light",
                                 "data": {
-                                    "__variant_value": 17,
+                                    "__variant_value": 36,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "landingFireEmitter",
                                 "data": {
-                                    "__variant_value": 17,
+                                    "__variant_value": 36,
                                     "__variant_type": 4
                                 }
                             }
@@ -100,18 +100,18 @@
                     }
                 ]
             },
-            "id": 15
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "Landing",
                 "tag": "",
-                "parent": 15,
+                "parent": 34,
                 "attachedSocket": 65535,
                 "children": [
-                    17,
-                    18,
-                    19
+                    36,
+                    37,
+                    38
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -165,13 +165,13 @@
                     "z": 0.0
                 }
             },
-            "id": 16
+            "id": 35
         },
         {
             "EntityData": {
                 "name": "Landing Fire",
                 "tag": "",
-                "parent": 16,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -255,6 +255,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 10.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -357,13 +359,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 17
+            "id": 36
         },
         {
             "EntityData": {
                 "name": "Landing Smoke Ring",
                 "tag": "",
-                "parent": 16,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -424,6 +426,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 0.20000000298023224,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -526,13 +530,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 18
+            "id": 37
         },
         {
             "EntityData": {
                 "name": "Landing Smoke",
                 "tag": "",
-                "parent": 16,
+                "parent": 35,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -593,6 +597,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 20.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": -3.140000104904175,
                 "maxAngularVelocityOffset": 3.140000104904175,
@@ -695,18 +701,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 19
+            "id": 38
         },
         {
             "EntityData": {
                 "name": "Air",
                 "tag": "",
-                "parent": 15,
+                "parent": 34,
                 "attachedSocket": 65535,
                 "children": [
-                    21,
-                    22,
-                    23
+                    40,
+                    41,
+                    42
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -760,13 +766,13 @@
                     "z": 0.0
                 }
             },
-            "id": 20
+            "id": 39
         },
         {
             "EntityData": {
                 "name": "Smoke Trail",
                 "tag": "",
-                "parent": 20,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -827,6 +833,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -929,13 +937,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 21
+            "id": 40
         },
         {
             "EntityData": {
                 "name": "Fire Trail",
                 "tag": "",
-                "parent": 20,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -996,6 +1004,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -1098,13 +1108,13 @@
                     "trailEmissiveMultiplier": 5.0
                 }
             },
-            "id": 22
+            "id": 41
         },
         {
             "EntityData": {
                 "name": "Spark",
                 "tag": "",
-                "parent": 20,
+                "parent": 39,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1165,6 +1175,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 20.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -1267,7 +1279,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 23
+            "id": 42
         }
     ]
 }

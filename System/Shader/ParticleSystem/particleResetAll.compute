@@ -20,6 +20,7 @@ struct Particle{
     bool sizeOverLifetime;
     bool b_Active;
 };
+
 layout(std430, binding = 5) buffer ParticleList {
     int particleCount;
     Particle particles[];
