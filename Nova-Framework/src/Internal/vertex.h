@@ -21,6 +21,9 @@
 
 #undef max
 
+#pragma warning( push )
+#pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
+
 // We use index to represent vertices and bones..
 using GlobalVertexIndex = unsigned int;		// global vertex index are like indices per mesh, but we offset by the size of the previous mesh.
 
@@ -137,9 +140,6 @@ struct ModelData {
 // our SSBO follows the std430 alignment rule,
 // this caveat means that we have to be mightful of alignments of 
 // our native types, especially for vec3s like color for an example.
-
-#pragma warning( push )
-#pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
 
 struct alignas(16) PointLightData {
 	alignas(16) glm::vec3 lightPos;		// this will represent world position for point light

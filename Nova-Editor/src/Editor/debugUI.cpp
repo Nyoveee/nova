@@ -108,6 +108,8 @@ void DebugUI::renderPhysicsSection() {
 void DebugUI::renderHDRSection() {
 	ImGui::SeparatorText("Rendering..");
 
+	ImGui::SliderFloat("Gamma", &engine.dataManager.renderConfig.gamma, 1.f, 3.0f, "%.2f");
+
 	ImGui::Checkbox("Post Processing", &renderer.toPostProcess);
 	
 	if (ImGui::Button("Randomize Offset")) {
@@ -120,6 +122,8 @@ void DebugUI::renderHDRSection() {
 	}
 
 	ImGui::SliderFloat("Vignette", &renderer.vignette, 0.f, 1.0f, "%.2f");
+
+
 
 #if 0
 	// Tone mapping method selection

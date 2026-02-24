@@ -231,8 +231,7 @@ GLFWwindow* Window::getGLFWwindow() const {
 
 void Window::toggleFullScreen()
 {
-	int windowedXPos = 0, windowedYPos = 0;
-	if (!isFullScreen) glfwGetWindowPos(glfwWindow, &windowedXPos, &windowedYPos);
+	static int windowedXPos = 0, windowedYPos = 0;
 
 	GLFWmonitor* monitor = isFullScreen ? nullptr : glfwGetPrimaryMonitor();
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -243,6 +242,8 @@ void Window::toggleFullScreen()
 		glfwSetWindowMonitor(glfwWindow, nullptr, windowedXPos, windowedYPos, windowWidth, windowHeight, 0);
 	}
 	else {
+		if (!isFullScreen) glfwGetWindowPos(glfwWindow, &windowedXPos, &windowedYPos);
+
 		// Switch to fullscreen mode and hide title bar
 		glfwSetWindowAttrib(glfwWindow, GLFW_DECORATED, GLFW_FALSE);
 		glfwSetWindowMonitor(glfwWindow, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);

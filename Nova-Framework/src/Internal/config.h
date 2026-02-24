@@ -48,6 +48,7 @@ struct RenderConfig {
 	bool				toEnableShadows			= true;
 	bool				toEnableIBL				= true;
 	bool				fullScreen				= true;
+	float				gamma					= 2.2f;
 
 	REFLECTABLE(
 		toEnableSSAO,
@@ -56,7 +57,8 @@ struct RenderConfig {
 		toEnableAntiAliasing,
 		toEnableShadows,
 		toEnableIBL,
-		fullScreen
+		fullScreen,
+		gamma
 	)
 };
 

@@ -56,7 +56,7 @@ void PrefabManager::updateComponents(entt::registry& toRegistry, entt::registry&
 	([&]() {
 		if constexpr ((!(std::same_as<EntityData, Components>))) {
 			auto* component = fromRegistry.try_get<Components>(fromEntity);
-			EntityData* fromEntityData = fromRegistry.try_get<EntityData>(fromEntity);
+			[[maybe_unused]] EntityData* fromEntityData = fromRegistry.try_get<EntityData>(fromEntity);
 			bool overrideCheck{ false };
 
 			//check for override check box

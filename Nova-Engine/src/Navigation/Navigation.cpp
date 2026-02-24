@@ -368,7 +368,10 @@ void NavigationSystem::SetAgentActive(entt::entity entityID)
 		float pos[3] = { transform->position.x, transform->position.y, transform->position.z };
 		crowdManager[navMeshAgent->agentName].get()->addAgent(dtCrowdIndex, pos, &params);
 		if (dtAgent->state == DT_CROWDAGENT_STATE_INVALID) {
-			dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex));
+
+			iterator->second->getEditableAgent(GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex));
+			// dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex));
+
 			crowdManager[navMeshAgent->agentName].get()->removeAgent(dtCrowdIndex);
 		}
 			

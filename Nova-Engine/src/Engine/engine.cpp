@@ -221,6 +221,15 @@ glm::vec2 Engine::getUIMousePosition() const {
 	return window.getUISpacePos();
 }
 
+void Engine::setFullscreen(bool value) {
+	if (value == dataManager.renderConfig.fullScreen) {
+		return;
+	}
+
+	dataManager.renderConfig.fullScreen = value;
+	window.toggleFullScreen();
+}
+
 void Engine::SystemsOnLoad() {
 	// Make sure the next scene gets the latest script field properties in inspector to edit
 	if (engineState == State::Editor)

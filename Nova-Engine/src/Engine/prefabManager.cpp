@@ -305,8 +305,8 @@ void PrefabManager::prefabOverride(entt::entity prefabInstance) {
 	updatePrefab(prefabInstance);
 }
 
-void PrefabManager::guidRemap(ResourceID  prefabId) {
 #if 0
+void PrefabManager::guidRemap(ResourceID prefabId) {
 	// prefab not loaded..
 	if (prefabMap.find(prefabId) == prefabMap.end()) {
 		loadPrefab(prefabId);
@@ -339,8 +339,8 @@ void PrefabManager::guidRemap(ResourceID  prefabId) {
 			}
 		}
 	}
-#endif
 }
+#endif
 
 void PrefabManager::deletePrefab(PrefabEntityID prefabId) {
 	EntityData const& prefabEntityData = prefabRegistry.get<EntityData>(prefabId);

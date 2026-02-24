@@ -1,12 +1,11 @@
-#include "assetSerializer.h"
-#include "resource.h"
-#include "assetIO.h"
-
-#include "stb_image_write.h"
-
+#include <DirectXTex/DirectXTex.h>
 #include <glad/glad.h>
 
-#include <DirectXTex/DirectXTex.h>
+#include "stb_image_write.h"
+#include "resource.h"
+#include "assetIO.h"
+#include "assetSerializer.h"
+
 
 namespace AssetSerializer {
 #if 1

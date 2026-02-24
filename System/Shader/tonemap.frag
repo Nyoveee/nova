@@ -8,8 +8,7 @@ uniform float exposure;
 
 uniform int toneMappingMethod; // 0 = Exposure, 1 = Reinhard, 2 = ACES, 3 = None
 uniform bool toGammaCorrect;
-
-const float gamma = 2.2;
+uniform float gamma;
 
 void main()
 {

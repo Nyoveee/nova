@@ -77,6 +77,8 @@ public:
 	ENGINE_DLL_API void editorControlMouse(bool value);
 	ENGINE_DLL_API void gameLockMouse(bool value);
 
+	ENGINE_DLL_API void setFullscreen(bool value);
+
 	ENGINE_DLL_API glm::vec2 getUIMousePosition() const;
 
 public:

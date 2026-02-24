@@ -179,7 +179,7 @@ public:
 		void set(bool value) { Interface::engine->pauseSystems(value); };
 	};
 	static property Vector2 ScreenResolution {
-		Vector2 get() { return Vector2(Interface::engine->getGameWidth(), Interface::engine->getGameHeight()); };
+		Vector2 get() { return Vector2(static_cast<float>(Interface::engine->getGameWidth()), static_cast<float>(Interface::engine->getGameHeight())); };
 	}
 
 	static void Restart();
@@ -251,7 +251,7 @@ public:
 	}
 	static property bool fullScreen {
 		bool get() { return Interface::engine->dataManager.renderConfig.fullScreen; };
-		void set(bool value) { Interface::engine->dataManager.renderConfig.fullScreen = value; };
+		void set(bool value) { Interface::engine->setFullscreen(value); };
 	}
 };
 

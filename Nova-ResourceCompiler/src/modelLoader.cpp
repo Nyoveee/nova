@@ -499,7 +499,7 @@ void ModelLoader::processNodeHierarchy(aiScene const* scene, std::vector<MeshDat
 	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
-		meshNameToIndices[mesh->mName.C_Str()].push_back(meshesData.size());
+		meshNameToIndices[mesh->mName.C_Str()].push_back(static_cast<int>(meshesData.size()));
 		meshesData.push_back(processMesh(mesh, scene, globalTransformationMatrix));
 	}
 
@@ -633,14 +633,14 @@ void ModelLoader::optimizeMesh(MeshData& mesh) {
 	std::vector<unsigned int> remap(mesh.combinedVertexAttributes.size());
 
 	// if we have a valid index buffer, use that size. else use vertex buffer size.
-	int indexCount = mesh.indices.data() ? mesh.indices.size() : mesh.combinedVertexAttributes.size();
+	std::size_t indexCount = mesh.indices.data() ? mesh.indices.size() : mesh.combinedVertexAttributes.size();
 
 	// We utilize the library to perform index remapping, and removing redundant vertices..
 	// This also preps our data for the upcoming optimization.. so its just safer to do this first.
 	size_t vertexCount = meshopt_generateVertexRemap(
 		remap.data(), 
 		mesh.indices.data(), 
-		indexCount,
+		static_cast<int>(indexCount),
 		mesh.combinedVertexAttributes.data(),
 		mesh.combinedVertexAttributes.size(),
 		sizeof(CombinedVertexAttribute)

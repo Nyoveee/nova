@@ -3407,6 +3407,7 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	toneMappingShader.setFloat("exposure", hdrExposure);
 	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(engine.gameConfig.toneMappingMethod));
 	toneMappingShader.setBool("toGammaCorrect", toGammaCorrect);
+	toneMappingShader.setFloat("gamma", renderConfig.gamma);
 
 	// Bind the HDR texture from main framebuffer
 	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
