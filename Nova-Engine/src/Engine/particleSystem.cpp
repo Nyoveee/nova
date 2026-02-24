@@ -281,8 +281,22 @@ void ParticleSystem::determineParticleSize(
 
 void ParticleSystem::determineParticleRotation(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, ParticleEmitter& emitter)
 {
-	particleVertex.rotation = emitter.initialRotation;
-	particleLifeSpanData.velocityBasedRotation = emitter.velocityBasedRotation;
+	if (emitter.velocityBasedInitialRotation) {
+		glm::mat4 cameraProjectionView{};
+		// Will not work for both screens showing at the same time
+		if (engine.renderer.isEditorScreenShown) 
+			cameraProjectionView = engine.renderer.getEditorCamera().viewProjection();
+		if (engine.renderer.isGameScreenShown)
+			cameraProjectionView = engine.renderer.getGameCamera().viewProjection();
+		glm::vec2 screenSpaceVelocity = glm::normalize(cameraProjectionView * glm::vec4(particleLifeSpanData.velocity, 0.0));
+		glm::vec2 up = glm::vec2(0, 1.0);
+		glm::vec2 right = glm::vec2(1.0, 0);
+		float velocityRotation = -glm::sign(dot(right, screenSpaceVelocity)) * acos(dot(up, screenSpaceVelocity));
+		particleVertex.rotation = velocityRotation;
+	}
+	else{
+		particleVertex.rotation = emitter.initialRotation;
+	}
 }
 
 void ParticleSystem::rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform)
