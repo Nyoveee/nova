@@ -37,10 +37,14 @@ class EnemyCannon : Script
     private MeshRenderer_ cannonMeshRenderer;
     [SerializableField]
     private MeshRenderer_ cannonBarrelMeshRenderer;
+    [SerializableField]
+    private GameObject boat;
+    [SerializableField]
+    private GameObject waveManager;
 
     // Shooting Update
     private float arcTime;
-    private float currentShootCooldown;
+    //private float currentShootCooldown;
     private GameObject enemyObject;
 
     // Shooting Arc Parameters
@@ -56,18 +60,40 @@ class EnemyCannon : Script
     private float currentChargeTime;
     private float currentLightTime;
     private bool b_IsCharging;
+
+    // For Wave Manager
+    private float yOffset;
+    private int shotsQueued = 0;
+
+    protected override void init() 
+    {
+        yOffset = gameObject.transform.position.y - boat.transform.position.y;
+    }
+
     protected override void update() {
+        Vector3 pos = gameObject.transform.position;
+        pos.y = boat.transform.position.y + yOffset;
+        gameObject.transform.position = pos;
         // Cooldown
-        if(enemyObject == null)
+        //if(enemyObject == null)
+        //{
+        //    currentShootCooldown -= Time.V_DeltaTime();
+        //    if(currentShootCooldown <= 0)
+        //    {
+        //        GetTargetingLocation();
+        //        PrepareEnemyCannon();
+        //        return;
+        //    }
+        //}
+
+        // For Wave Manager
+        if (shotsQueued > 0 && enemyObject == null && !b_IsCharging)
         {
-            currentShootCooldown -= Time.V_DeltaTime();
-            if(currentShootCooldown <= 0)
-            {
-                GetTargetingLocation();
-                PrepareEnemyCannon();
-                return;
-            }
+            shotsQueued--;
+            GetTargetingLocation();
+            PrepareEnemyCannon();
         }
+
         // Cannon Firing
         if (b_IsCharging)
         {
@@ -88,8 +114,8 @@ class EnemyCannon : Script
         currentLightTime -= Time.V_DeltaTime();
         if (currentLightTime <= 0)
             light.enable = false;
-
     }
+
     private void GetTargetingLocation() {
         Vector3 min = shootingArea.transform.position - shootingArea.transform.scale;
         Vector3 max = shootingArea.transform.position + shootingArea.transform.scale;
@@ -110,7 +136,8 @@ class EnemyCannon : Script
     }
     private void Fire() {
         enemyObject.SetActive(true);
-        currentShootCooldown = Random.Range(minTimeShootCooldown, maxTimeShootCooldown);
+        waveManager.getScript<CannonWaveManager>().RegisterEnemy(enemyObject);
+        //currentShootCooldown = Random.Range(minTimeShootCooldown, maxTimeShootCooldown);
 
         // Set the velocity
         Rigidbody_ enemyRigidbody = enemyObject.getComponent<Rigidbody_>();
@@ -157,7 +184,7 @@ class EnemyCannon : Script
         targetDirection.Normalize();
         startRotation = gameObject.transform.localRotation;
         targetRotation = Quaternion.LookRotation(targetDirection);
-       
+        
         // Set the timers
         currentTurningTime = 0;
     }
@@ -168,5 +195,10 @@ class EnemyCannon : Script
         currentChargeTime = cannonChargeTime;
         charge.enable = true;
         b_IsCharging = true;
+    }
+
+    public void FireNextShot()
+    {
+        shotsQueued++;
     }
 }
