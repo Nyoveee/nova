@@ -137,7 +137,7 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 				assetInfo.toExecuteEvenWhenPaused = static_cast<bool>(std::stoul(toExecuteEvenWhenPausedString));
 			}
 			catch (std::exception const& ex) {
-				Logger::error("Failed to parse additional properties for script asset.. default constructing..");
+				Logger::error("Failed to parse additional properties for script asset.. {} default constructing..", ex.what());
 			}
 		}
 		// ============================

@@ -200,6 +200,10 @@ struct alignas(16) ReflectionProbeUBO {
 	ReflectionProbeUBOData reflectionProbes[MAX_REFLECTION_PROBES];
 };
 
+static constexpr int RenderOutputNormal = 0;
+static constexpr int RenderOutputColor = 1;
+static constexpr int RenderOutputTransparency = 2;
+
 #pragma warning( pop )
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
@@ -238,6 +242,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
 	gammaCorrectionShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/gammaCorrection.frag" },
 	videoShader						{ "System/Shader/video.vert",						"System/Shader/video.frag" },
+	weightedBlendingCompositeShader	{ "System/Shader/squareOverlay.vert",				"System/Shader/weightedBlendingComposite.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
 	rayMarchingVolumetricFogCompute	{ "System/Shader/rayMarchingVolumetricFog.compute" },
@@ -284,10 +289,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	haltonFrameIndex				{},
 	ssaoNoiseTextureId				{ INVALID_ID },
 	videoVAO						{},
-	hdrExposure						{ 0.9f },
-															 // main		normal			velocity
-	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F } },
-	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F } },
+	hdrExposure						{ 0.9f },				 // color..     gbuffer stuff..				transparency..
+															 // main		normal			velocity	accumulation	revealage
+	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8 } },
+	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8 } },
 	uiMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA8 } },
 	physicsDebugFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer				{ gameWidth, gameHeight, { GL_R32UI } },
@@ -764,7 +769,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	depthPrePass(frameBuffers.getActiveFrameBuffer());
 
 	// We generate SSAO texture for forward rendering later..
-	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers, camera);
+	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers.getActiveFrameBuffer(), camera);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
@@ -782,7 +787,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	// Transparent depth test...
 	glDepthFunc(GL_LEQUAL);
 
-	renderTranslucentModels(frameBuffers.getActiveFrameBuffer().depthStencilId());
+	renderTranslucentModels(frameBuffers.getActiveFrameBuffer());
 
 	// Original depth test..
 	glDepthFunc(GL_LESS);
@@ -806,7 +811,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 				continue;
 			}
 
-			computeFog(frameBuffers, fog, camera);
+			//computeFog(frameBuffers, fog, camera);
 			renderPostProcessing(frameBuffers, fog);
 			break;
 		}
@@ -1084,15 +1089,15 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 }
 
 void Renderer::depthPrePass(FrameBuffer const& frameBuffer) {
+	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_NONE, GL_NONE };
+
 	glEnable(GL_DEPTH_TEST);
 
 	// Disable the color attachment, enable the normal attachment.
-	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glNamedFramebufferDrawBuffers(frameBuffer.fboId(), 3, buffers);
 
 	// Set PBR UBO to output normals only..
-	int toOutputNormalOnly = true;
-	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &toOutputNormalOnly);
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputNormal);
 
 	// Render pass..
 	renderModels(RenderPass::DepthPrePass, std::nullopt);
@@ -1101,11 +1106,10 @@ void Renderer::depthPrePass(FrameBuffer const& frameBuffer) {
 	frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
 
 	// Reset PBR UBO uniform..
-	toOutputNormalOnly = false;
-	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &toOutputNormalOnly);
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
 }
 
-void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, [[maybe_unused]] Camera const& camera) {
+void Renderer::generateSSAO(FrameBuffer const& frameBuffer, [[maybe_unused]] Camera const& camera) {
 	// ========================================================================================
 	// 1. We first generate the SSAO texture using the random kernels, depth and normal map.
 	// ========================================================================================
@@ -1120,10 +1124,10 @@ void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, [[maybe_unused]] Came
 	ssaoShader.use();
 
 	// Bind depth, normal and noise texture..
-	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().depthStencilId());
+	glBindTextureUnit(0, frameBuffer.depthStencilId());
 	ssaoShader.setImageUniform("depthMap", 0);
 
-	glBindTextureUnit(1, frameBuffers.getActiveFrameBuffer().textureIds()[1]);
+	glBindTextureUnit(1, frameBuffer.textureIds()[1]);
 	ssaoShader.setImageUniform("normalMap", 1);
 
 	glBindTextureUnit(2, ssaoNoiseTextureId);
@@ -1770,7 +1774,6 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 			// We perform additional render passes..
 			for (auto i = model->materialNames.size(); i < materialIds.size(); ++i) {
 				auto materialId = materialIds[i];
-				auto const& instanced = skinnedMeshRenderer ? skinnedMeshRenderer->isMaterialInstanced : meshRenderer->isMaterialInstanced;
 				
 				for (auto& mesh : model->meshes) {
 					createMaterialBatchEntry(camera, *model, materialId, mesh, entity, meshType, layerIndex, renderQueueConfig);
@@ -1781,12 +1784,14 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 		layerIndex++;
 	}
 
+#if false
 	if (renderQueueConfig == RenderQueueConfig::Normal) {
 		// Sort transparent objects by the z value, from camera..
 		std::sort(renderQueue.transparentMaterials.begin(), renderQueue.transparentMaterials.end(), [&](auto&& lhs, auto&& rhs) {
 			return lhs.distanceToCamera > rhs.distanceToCamera;
 		});
 	}
+#endif
 }
 
 void Renderer::frustumCullAndSetupShadowRenderQueue(glm::mat4 const& viewProjectionMatrix) {
@@ -1919,8 +1924,8 @@ void Renderer::createOpaqueMaterialBatchEntry(Model const& model, Material const
 
 	// let's find if this model already has an entry.. (and is in the same layer..)
 	auto modelIterator = std::find_if(
-		materialBatch.models.begin(),
-		materialBatch.models.end(),
+		materialBatch.entities.begin(),
+		materialBatch.entities.end(),
 		[&](auto&& modelBatch) {
 			return modelBatch.entity == entity;
 		}
@@ -1929,24 +1934,22 @@ void Renderer::createOpaqueMaterialBatchEntry(Model const& model, Material const
 	int modelIndex;
 
 	// this model has not been recorded in this particular material batch
-	if (modelIterator == materialBatch.models.end()) {
+	if (modelIterator == materialBatch.entities.end()) {
 		// lets add a new entry..
-		modelIndex = static_cast<int>(materialBatch.models.size());
-		materialBatch.models.push_back(ModelBatch{
+		modelIndex = static_cast<int>(materialBatch.entities.size());
+		materialBatch.entities.push_back(EntityBatch{
 			.entity			= entity,
+			.model			= model,
 			.meshType		= meshType,
-			.modelScale		= model.scale,
-			.boundingBoxMin = model.minBound,
-			.boundingBoxMax = model.maxBound,
 			.meshes			= {}, // empty vector..
 		});
 	}
 	else {
-		modelIndex = static_cast<int>(std::distance(materialBatch.models.begin(), modelIterator));
+		modelIndex = static_cast<int>(std::distance(materialBatch.entities.begin(), modelIterator));
 	}
 
 	// add a new mesh entry..
-	materialBatch.models[modelIndex].meshes.push_back(mesh);
+	materialBatch.entities[modelIndex].meshes.push_back(mesh);
 }
 
 void Renderer::createTransparentMaterialEntry(Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType) {
@@ -1971,9 +1974,7 @@ void Renderer::createTransparentMaterialEntry(Camera const& camera, Model const&
 		TransparentEntry transparentEntry{
 			.entity				= entity,
 			.meshType			= meshType,
-			.modelScale			= model.scale,
-			.boundingBoxMin		= model.minBound,
-			.boundingBoxMax		= model.maxBound,
+			.model				= model,
 			.materials			= {}, // empty vector..
 			.distanceToCamera	= distance
 		};
@@ -2064,38 +2065,65 @@ void Renderer::renderModels(RenderPass renderPass, std::optional<GLuint> depthTe
 			setupMaterialNormalPass(materialBatch.material, materialBatch.customShader, materialBatch.shader);
 		}
 		else {
-			setupMaterial(materialBatch.material, materialBatch.customShader, materialBatch.shader, DepthConfig::Ignore, depthTextureId);
+			setupMaterial(materialBatch.material, materialBatch.customShader, materialBatch.shader, DepthConfig::Ignore, BlendConfig::UseMaterial, depthTextureId);
 		}
 
-		// for each model batch..
-		for (auto const& modelBatch : materialBatch.models) {
+		// for each entity batch..
+		for (auto const& entityBatch : materialBatch.entities) {
 			// set the uniforms of the model..
-			setupModelUniforms(modelBatch.entity, materialBatch.shader, modelBatch.modelScale, modelBatch.boundingBoxMin, modelBatch.boundingBoxMax, modelBatch.meshType);
+			setupModelUniforms(entityBatch.entity, materialBatch.shader, entityBatch.model, entityBatch.meshType);
 
 			// for each mesh..
-			for (auto const& mesh : modelBatch.meshes) {
+			for (auto const& mesh : entityBatch.meshes) {
+				setupMeshUniforms(materialBatch.shader, mesh, entityBatch.meshType);
 				renderMesh(mesh);
 			}
 		}
 	}
 }
 
-void Renderer::renderTranslucentModels(GLuint frameBufferDepthTexture) {
+void Renderer::renderTranslucentModels(FrameBuffer const& frameBuffer) {
+	static constexpr glm::vec4 zeroClearColor = glm::vec4{ 0.0f };
+	static constexpr glm::vec4 oneClearColor  = glm::vec4{ 1.0f };
+	static constexpr int ACCUMULATION_COLOR_ATTACHMENT_INDEX = 3;
+	static constexpr int REVEALAGE_COLOR_ATTACHMENT_INDEX = 4;
+	static constexpr GLenum buffers[] = { GL_NONE, GL_NONE, GL_NONE, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
+
+	// https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended
+	// We will be using weighted blending OIT to render transculent models..
+
+	// Disable the color attachment, enable the transparency attachments.
+	glNamedFramebufferDrawBuffers(frameBuffer.fboId(), 5, buffers);
+
+	// we setup the appropriate blending equations..
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunci(ACCUMULATION_COLOR_ATTACHMENT_INDEX, GL_ONE, GL_ONE); // accumulation blend target
+	glBlendFunci(REVEALAGE_COLOR_ATTACHMENT_INDEX, GL_ZERO, GL_ONE_MINUS_SRC_COLOR); // revealge blend target
+	glBlendEquation(GL_FUNC_ADD);
+
+	// we clear these color attachments..
+	glClearBufferfv(GL_COLOR, ACCUMULATION_COLOR_ATTACHMENT_INDEX, glm::value_ptr(zeroClearColor));
+	glClearBufferfv(GL_COLOR, REVEALAGE_COLOR_ATTACHMENT_INDEX, glm::value_ptr(oneClearColor));
+
+	// Set PBR UBO to output transparency details only..
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputTransparency);
+
+	// We cache the previous material and entity..
 	auto previousMaterialId = INVALID_RESOURCE_ID;
 	auto previousEntity = entt::null;
 
 	for (auto const& transparentEntry : renderQueue.transparentMaterials) {
 		for (auto const& material : transparentEntry.materials) {
-
 			// set the uniforms of the material.. if it's different..
 			if (previousMaterialId != material.material.get().id()) {
-				setupMaterial(material.material, material.customShader, material.shader, DepthConfig::NoWrite, frameBufferDepthTexture);
+				setupMaterial(material.material, material.customShader, material.shader, DepthConfig::Ignore, BlendConfig::Ignore, frameBuffer.depthStencilId());
 				previousMaterialId = material.material.get().id();
 			}
 
 			// set the uniforms of the model.. if it's different..
 			if (previousEntity != transparentEntry.entity) {
-				setupModelUniforms(transparentEntry.entity, material.shader, transparentEntry.modelScale, transparentEntry.boundingBoxMin, transparentEntry.boundingBoxMax, transparentEntry.meshType);
+				setupModelUniforms(transparentEntry.entity, material.shader, transparentEntry.model, transparentEntry.meshType);
 			}
 
 			// for each mesh..
@@ -2104,6 +2132,33 @@ void Renderer::renderTranslucentModels(GLuint frameBufferDepthTexture) {
 			}
 		}
 	}
+
+	// Reset color attachment active back to original..
+	frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
+
+	// Reset PBR UBO uniforms..
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
+
+	// we now composite the transparent object over..
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	setBlendMode(BlendingConfig::AlphaBlending);
+
+	weightedBlendingCompositeShader.use();
+
+	// Bind the respective textures..
+	glBindTextureUnit(0, frameBuffer.textureIds()[ACCUMULATION_COLOR_ATTACHMENT_INDEX]);
+	glBindTextureUnit(1, frameBuffer.textureIds()[REVEALAGE_COLOR_ATTACHMENT_INDEX]);
+
+	weightedBlendingCompositeShader.setImageUniform("accum", 0);
+	weightedBlendingCompositeShader.setImageUniform("reveal", 1);
+
+	// Render fullscreen quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// reset render states
+	glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::renderText(Transform const& transform, Text const& text) {
@@ -3115,16 +3170,16 @@ void Renderer::renderObjectIds() {
 		setCullMode(materialBatch.material.get().materialData.cullingConfig);
 
 		// for each model batch..
-		for (auto const& modelBatch : materialBatch.models) {
-			Transform const& transform = registry.get<Transform>(modelBatch.entity);
+		for (auto const& entityBatch : materialBatch.entities) {
+			Transform const& transform = registry.get<Transform>(entityBatch.entity);
 
 			objectIdShader.setMatrix("model", transform.modelMatrix);
-			objectIdShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { modelBatch.modelScale, modelBatch.modelScale, modelBatch.modelScale }));
-			objectIdShader.setUInt("objectId", static_cast<GLuint>(modelBatch.entity));
+			objectIdShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { entityBatch.model.get().scale, entityBatch.model.get().scale, entityBatch.model.get().scale }));
+			objectIdShader.setUInt("objectId", static_cast<GLuint>(entityBatch.entity));
 
 			// upload bone final matrices as well..
-			if (modelBatch.meshType == MeshType::Skinned) {
-				SkinnedMeshRenderer const& skinnedMeshRenderer = registry.get<SkinnedMeshRenderer>(modelBatch.entity);
+			if (entityBatch.meshType == MeshType::Skinned) {
+				SkinnedMeshRenderer const& skinnedMeshRenderer = registry.get<SkinnedMeshRenderer>(entityBatch.entity);
 
 				// upload all bone matrices..
 				glNamedBufferSubData(
@@ -3136,7 +3191,8 @@ void Renderer::renderObjectIds() {
 			}
 
 			// for each mesh..
-			for (auto const& mesh : modelBatch.meshes) {
+			for (auto const& mesh : entityBatch.meshes) {
+				setupMeshUniforms(materialBatch.shader, mesh, entityBatch.meshType);
 				renderMesh(mesh);
 			}
 		}
@@ -3351,6 +3407,7 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	toneMappingShader.setFloat("exposure", hdrExposure);
 	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(engine.gameConfig.toneMappingMethod));
 	toneMappingShader.setBool("toGammaCorrect", toGammaCorrect);
+	toneMappingShader.setFloat("gamma", renderConfig.gamma);
 
 	// Bind the HDR texture from main framebuffer
 	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
@@ -3401,36 +3458,36 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fo
 
 	// Bind the HDR texture from main framebuffer
 	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
+	glBindTextureUnit(1, frameBuffers.getDepthTextureId());
+
 	postprocessingShader.setImageUniform("scene", 0);
+	postprocessingShader.setImageUniform("depthTexture", 1);
 
 	postprocessingShader.setVec3("fogColor", fog.fogInscatteringColor);
-
-	//float vignetteDistance = (1 - vignette) * 2.f;
-	//postprocessingShader.setFloat("vignette", vignetteDistance);
-
-	postprocessingShader.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
+	postprocessingShader.setFloat("fogNear", fog.startDistance);
+	postprocessingShader.setFloat("fogFar", fog.endDistance);
+	postprocessingShader.setFloat("fogDensity", fog.inscatteringDensity);
 
 	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Renderer::setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, std::optional<GLuint> depthTextureId) {
+void Renderer::setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, BlendConfig blendConfig, std::optional<GLuint> depthTextureId) {
 	auto const& shaderData = customShader.customShaderData;
 
 	// ===========================================================================
 	// Set rendering fixed pipeline configuration.
 	// ===========================================================================
 
-	setBlendMode(material.materialData.blendingConfig);
+	if (blendConfig == BlendConfig::UseMaterial) {
+		setBlendMode(material.materialData.blendingConfig);
+	}
 
-	//if (depthConfig != DepthConfig::Ignore) {
+	if (depthConfig != DepthConfig::Ignore) {
 		if (!(depthConfig == DepthConfig::NoWrite && material.materialData.depthTestingMethod == DepthTestingMethod::DepthTest)) {
 			setDepthMode(material.materialData.depthTestingMethod);
 		}
-	//}
-	//else {
-
-	//}
+	}
 
 	setCullMode(material.materialData.cullingConfig);
 
@@ -3472,11 +3529,11 @@ void Renderer::setupMaterial(Material const& material, CustomShader const& custo
 	shader.use();
 }
 
-void Renderer::setupModelUniforms(entt::entity entity, Shader const& shader, float modelScale, glm::vec3 boundingBoxMin, glm::vec3 boundingBoxMax, MeshType meshType) {
+void Renderer::setupModelUniforms(entt::entity entity, Shader const& shader, Model const& model, MeshType meshType) {
 	Transform const& transform = registry.get<Transform>(entity);
 
 	unsigned int isSkinnedMesh = meshType == MeshType::Skinned ? 1U : 0U;
-	glm::mat4 localModelScale  = glm::scale(glm::mat4{ 1.f }, { modelScale, modelScale, modelScale });
+	glm::mat4 localModelScale  = glm::scale(glm::mat4{ 1.f }, { model.scale, model.scale, model.scale });
 	
 	// we set uniforms with fixed locations..
 											// location
@@ -3485,8 +3542,8 @@ void Renderer::setupModelUniforms(entt::entity entity, Shader const& shader, flo
 	glProgramUniformMatrix4fv(shader.id(),	8,				1, GL_FALSE, glm::value_ptr(transform.lastModelMatrix));	// Setting the lastModelMatrix matrix
 	glProgramUniformMatrix3fv(shader.id(),	12,				1, GL_FALSE, glm::value_ptr(transform.normalMatrix));		// Setting the normal matrix
 	glProgramUniform1ui	     (shader.id(),	16,							 isSkinnedMesh);								// Setting the boolean indicating whether model is skinned..
-	glProgramUniform3f	     (shader.id(),	17,				boundingBoxMin[0], boundingBoxMin[1], boundingBoxMin[2]);	// Setting the models boundary..
-	glProgramUniform3f	     (shader.id(),	18,				boundingBoxMax[0], boundingBoxMax[1], boundingBoxMax[2]);	// Setting the models boundary..
+	glProgramUniform3f	     (shader.id(),	17,				model.minBound[0], model.minBound[1], model.minBound[2]);	// Setting the models boundary..
+	glProgramUniform3f	     (shader.id(),	18,				model.maxBound[0], model.maxBound[1], model.maxBound[2]);	// Setting the models boundary..
 
 	// upload bone final matrices as wel..
 	if (meshType == MeshType::Skinned) {
@@ -3514,6 +3571,23 @@ void Renderer::setupModelUniforms(entt::entity entity, Shader const& shader, flo
 	}
 }
 
+void Renderer::setupMeshUniforms(Shader const& shader, Mesh const& mesh, MeshType meshType) {
+	if (meshType != MeshType::Skinned) {
+		return;
+	}
+
+	if (mesh.vertexWeights.empty()) {
+		static constexpr unsigned int hasNoMesh = 1; // true..	
+
+		glProgramUniform1ui(shader.id(), 21, hasNoMesh); // Setting the boolean indicating whether model is skinned..
+		glProgramUniformMatrix4fv(shader.id(), 22, 1, GL_FALSE, glm::value_ptr(mesh.globalTransformationMatrix));	// Setting the global transformation matrix..
+	}
+	else {
+		static constexpr unsigned int hasNoMesh = 0; // false..	
+		glProgramUniform1ui(shader.id(), 21, hasNoMesh); // Setting the boolean indicating whether model is skinned..
+	}
+}
+
 void Renderer::setupMaterialNormalPass(Material const& material, CustomShader const& customShader, Shader const& shader) {
 	// ===========================================================================
 	// Set rendering fixed pipeline configuration.
@@ -3538,6 +3612,9 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
 
 	bool isNormalMapUsed = false;
+	bool isEmissiveMapUsed = false;
+	bool isAlphaMapUsed = false;
+	bool isORMMapUsed = false;
 
 	for (int i = 0; i < material.materialData.uniformDatas.size() && i < customShader.uniformLocations.size(); ++i) {
 		// retrieve material value..
@@ -3581,17 +3658,52 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 				assert(type == "mat3" || type == "mat4");
 				shader.setMatrix(uniformLocation, value);
 			}
-			else if constexpr (std::same_as<Type, TypedResourceID<Texture>> || std::same_as<Type, NormalMap>) {
+			else if constexpr (
+					std::same_as<Type, TypedResourceID<Texture>> 
+				||	std::same_as<Type, NormalMap>
+				||	std::same_as<Type, EmissiveMap>
+				||	std::same_as<Type, AlphaMap>
+				||	std::same_as<Type, ORMMap>
+			) {
+				// normal map setup..
 				if constexpr (std::same_as<Type, NormalMap>) {
 					// no normal map set.
-					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID) {
+					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID || static_cast<std::size_t>(value) == INVALID_RESOURCE_ID) {
 						return;
 					}
 
 					isNormalMapUsed = true;
 				}
 
-				assert(type == "sampler2D" || type == "NormalMap");
+				// emissive map setup..
+				if constexpr (std::same_as<Type, EmissiveMap>) {
+					// no normal map set.
+					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID || static_cast<std::size_t>(value) == INVALID_RESOURCE_ID) {
+						return;
+					}
+
+					isEmissiveMapUsed = true;
+				}
+
+				// alpha map setup..
+				if constexpr (std::same_as<Type, AlphaMap>) {
+					// no normal map set.
+					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID || static_cast<std::size_t>(value) == INVALID_RESOURCE_ID) {
+						return;
+					}
+
+					isAlphaMapUsed = true;
+				}
+
+				// packed map..
+				if constexpr (std::same_as<Type, ORMMap>) {
+					// no normal map set.
+					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID || static_cast<std::size_t>(value) == INVALID_RESOURCE_ID) {
+						return;
+					}
+
+					isORMMapUsed = true;
+				}
 
 				// Setting texture is a way more complicated step.
 				// We first retrieve the texture from resource manager..
@@ -3619,6 +3731,9 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 	}
 
 	glProgramUniform1i(shader.id(), 20, isNormalMapUsed);
+	glProgramUniform1i(shader.id(), 30, isEmissiveMapUsed);
+	glProgramUniform1i(shader.id(), 31, isAlphaMapUsed);
+	glProgramUniform1i(shader.id(), 32, isORMMapUsed);
 }
 
 void Renderer::renderMesh(Mesh const& mesh) {

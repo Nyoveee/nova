@@ -5,7 +5,8 @@ enum class BlendingConfig {
 	AdditiveBlending,
 	PureAdditiveBlending,
 	PremultipliedAlpha,
-	Disabled
+	Disabled,
+	MaskedAlpha
 };
 
 enum class DepthTestingMethod {
@@ -34,9 +35,13 @@ enum class CullingConfig {
 class Texture;
 
 struct NormalMap : TypedResourceID<Texture> {};
+struct EmissiveMap : TypedResourceID<Texture> {};
+struct AlphaMap : TypedResourceID<Texture> {};
+struct ORMMap : TypedResourceID<Texture> {};
 
 #define AllUniformTypes \
-	bool, int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4, TypedResourceID<Texture>, Color, ColorA, NormalizedFloat, NormalMap
+	bool, int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4, TypedResourceID<Texture>, \
+	Color, ColorA, NormalizedFloat, NormalMap, EmissiveMap, AlphaMap, ORMMap
 
 using UniformValue = std::variant<AllUniformTypes>;
 
@@ -52,25 +57,18 @@ struct UniformData {
 	)
 };
 
-#if 0
-static inline const std::unordered_set<std::string> validGlslPrimitive{
-	"bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D"
-};
-
-static inline const std::unordered_set<std::string> validCustomTypes{
-	"Color", "ColorA", "NormalizedFloat"
-};
-#endif
-
 // maps custom glsl type to native glsl type.
 static inline const std::unordered_map<std::string, std::string> customTypeToGlslPrimitive{
 	{ "Color",				"vec3"		},
 	{ "ColorA",				"vec4"		},
 	{ "NormalizedFloat",	"float"		},
 	{ "NormalMap",			"sampler2D"	},
+	{ "EmissiveMap",		"sampler2D"	},
+	{ "AlphaMap",			"sampler2D"	},
+	{ "ORMMap",				"sampler2D"	},
 };
 
-// maps all glsl type to the correct corresponding uniform value/
+// maps all glsl type to the correct corresponding uniform value
 static inline const std::unordered_map<std::string, UniformValue> allValidShaderTypes = {
 	{ "bool",				bool{}										},
 	{ "int",				int{}										},
@@ -84,8 +82,11 @@ static inline const std::unordered_map<std::string, UniformValue> allValidShader
 	{ "sampler2D",			TypedResourceID<Texture>{ NONE_TEXTURE_ID } },
 
 	// custom glsl type..
-	{ "Color",				Color{ 1.f, 1.f, 1.f }						},
-	{ "ColorA",				ColorA{ 1.f, 1.f, 1.f, 1.f }				},
-	{ "NormalizedFloat",	NormalizedFloat{}							},
-	{ "NormalMap",			NormalMap{ NONE_TEXTURE_ID }				}
+	{ "Color",				Color			{ 1.f, 1.f, 1.f }			},
+	{ "ColorA",				ColorA			{ 1.f, 1.f, 1.f, 1.f }		},
+	{ "NormalizedFloat",	NormalizedFloat	{}							},
+	{ "NormalMap",			NormalMap		{ NONE_TEXTURE_ID }			},
+	{ "EmissiveMap",		EmissiveMap		{ NONE_TEXTURE_ID }			},
+	{ "AlphaMap",			AlphaMap		{ NONE_TEXTURE_ID }			},
+	{ "ORMMap",				ORMMap			{ NONE_TEXTURE_ID }			},
 };

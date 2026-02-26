@@ -21,6 +21,9 @@
 
 #undef max
 
+#pragma warning( push )
+#pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
+
 // We use index to represent vertices and bones..
 using GlobalVertexIndex = unsigned int;		// global vertex index are like indices per mesh, but we offset by the size of the previous mesh.
 
@@ -54,10 +57,7 @@ struct alignas(16) ParticleVertex {
 };
 
 struct Mesh {
-	MeshID meshID{}; // Assume 0 doesn't exist
 	std::string name;
-	
-	// std::vector<Vertex> vertices;
 
 	// each vertex attribute will be a stream.
 	std::vector<glm::vec3> positions;
@@ -84,6 +84,22 @@ struct Mesh {
 		numOfTriangles,
 		vertexWeights
 	)
+
+	// runtime variables..
+	MeshID meshID {}; // Assume 0 doesn't exist
+	glm::mat4x4 globalTransformationMatrix;
+};
+
+// we want to combine all vertex atrribute into	one during model compilation.. because meshoptimizer requires comparing of all vertex attributes
+// to determine if its a duplicate vertex..
+// this struct is only used as an intermediary data structure to support meshoptimizer..
+struct CombinedVertexAttribute {
+	glm::vec3 position;
+	glm::vec2 textureCoordinate;
+	glm::vec3 normal;
+	glm::vec3 tangent;
+
+	VertexWeight vertexWeight;
 };
 
 // this is the model data that will be de/serialised.
@@ -123,9 +139,6 @@ struct ModelData {
 // our SSBO follows the std430 alignment rule,
 // this caveat means that we have to be mightful of alignments of 
 // our native types, especially for vec3s like color for an example.
-
-#pragma warning( push )
-#pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
 
 struct alignas(16) PointLightData {
 	alignas(16) glm::vec3 lightPos;		// this will represent world position for point light

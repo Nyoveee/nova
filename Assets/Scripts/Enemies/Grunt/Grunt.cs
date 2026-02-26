@@ -278,7 +278,7 @@ class Grunt : Enemy
     {
         if (player == null || gruntStats == null || animator == null)
         {
-            Debug.LogWarning("Missing Reference Found");
+            Debug.LogWarning("Missing Reference Found : " + gameObject);
             return;
         }
         if(GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSightToPlayer(headPosition))

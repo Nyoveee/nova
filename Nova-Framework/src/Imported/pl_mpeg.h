@@ -143,6 +143,10 @@ See below for detailed the API documentation.
 #ifndef PL_MPEG_H
 #define PL_MPEG_H
 
+#pragma warning( push )
+#pragma warning( disable: 4244 )
+#pragma warning( disable: 4267 )
+
 #include <stdint.h>
 
 
@@ -2102,7 +2106,7 @@ plm_packet_t *plm_demux_seek(plm_demux_t *self, double seek_time, int type, int 
 			// iteration can be a bit more precise.
 			if (packet->pts > seek_time || packet->pts < seek_time - scan_span) {
 				found_packet_with_pts = TRUE;
-				byterate = (seek_pos - cur_pos) / (packet->pts - cur_time);
+				byterate = static_cast<long>((seek_pos - cur_pos) / (packet->pts - cur_time));
 				cur_time = packet->pts;
 				break;
 			}
@@ -2164,7 +2168,7 @@ plm_packet_t *plm_demux_seek(plm_demux_t *self, double seek_time, int type, int 
 		// If we didn't find any packet with a PTS, it probably means we reached
 		// the end of the file. Estimate byterate and cur_time accordingly.
 		else if (!found_packet_with_pts) {
-			byterate = (seek_pos - cur_pos) / (duration - cur_time);
+			byterate = static_cast<long>((seek_pos - cur_pos) / (duration - cur_time));
 			cur_time = duration;
 		}
 	}
@@ -2300,11 +2304,11 @@ static const int PLM_START_USER_DATA = 0xB2;
 	(c >= PLM_START_SLICE_FIRST && c <= PLM_START_SLICE_LAST)
 
 static const float PLM_VIDEO_PIXEL_ASPECT_RATIO[] = {
-	1.0000, /* square pixels */
-	0.6735, /* 3:4? */
-	0.7031, /* MPEG-1 / MPEG-2 video encoding divergence? */
-	0.7615, 0.8055, 0.8437, 0.8935, 0.9157, 0.9815,
-	1.0255, 1.0695, 1.0950, 1.1575, 1.2051,
+	1.0000f, /* square pixels */
+	0.6735f, /* 3:4? */
+	0.7031f, /* MPEG-1 / MPEG-2 video encoding divergence? */
+	0.7615f, 0.8055f, 0.8437f, 0.8935f, 0.9157f, 0.9815f,
+	1.0255f, 1.0695f, 1.0950f, 1.1575f, 1.2051f,
 };
 
 static const double PLM_VIDEO_PICTURE_RATE[] = {
@@ -2836,7 +2840,7 @@ double plm_video_get_time(plm_video_t *self) {
 }
 
 void plm_video_set_time(plm_video_t *self, double time) {
-	self->frames_decoded = self->framerate * time;
+	self->frames_decoded = static_cast<int>(self->framerate * time);
 	self->time = time;
 }
 
@@ -2975,7 +2979,7 @@ int plm_video_decode_sequence_header(plm_video_t *self) {
 	if (plm_buffer_read(self->buffer, 1)) { 
 		for (int i = 0; i < 64; i++) {
 			int idx = PLM_VIDEO_ZIG_ZAG[i];
-			self->intra_quant_matrix[idx] = plm_buffer_read(self->buffer, 8);
+			self->intra_quant_matrix[idx] = static_cast<uint8_t>(plm_buffer_read(self->buffer, 8));
 		}
 	}
 	else {
@@ -2986,7 +2990,7 @@ int plm_video_decode_sequence_header(plm_video_t *self) {
 	if (plm_buffer_read(self->buffer, 1)) { 
 		for (int i = 0; i < 64; i++) {
 			int idx = PLM_VIDEO_ZIG_ZAG[i];
-			self->non_intra_quant_matrix[idx] = plm_buffer_read(self->buffer, 8);
+			self->non_intra_quant_matrix[idx] = static_cast<uint8_t>(plm_buffer_read(self->buffer, 8));
 		}
 	}
 	else {
@@ -3935,8 +3939,7 @@ double plm_audio_get_time(plm_audio_t *self) {
 }
 
 void plm_audio_set_time(plm_audio_t *self, double time) {
-	self->samples_decoded = time * 
-		(double)PLM_AUDIO_SAMPLE_RATE[self->samplerate_index];
+	self->samples_decoded = static_cast<int>(time * (double)PLM_AUDIO_SAMPLE_RATE[self->samplerate_index]);
 	self->time = time;
 }
 
@@ -4435,5 +4438,5 @@ void plm_audio_idct36(int s[32][3], int ss, float *d, int dp) {
 	d[dp + 15] = t02; d[dp + 16] = 0.0;
 }
 
-
+#pragma warning( pop )
 #endif // PL_MPEG_IMPLEMENTATION

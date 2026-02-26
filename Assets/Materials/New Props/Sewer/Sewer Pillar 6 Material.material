@@ -10,11 +10,11 @@
             }
         },
         {
-            "glslType": "sampler2D",
+            "glslType": "ORMMap",
             "identifier": "packedMap",
             "value": {
                 "__variant_value": 8717808358000066779,
-                "__variant_type": 9
+                "__variant_type": 16
             }
         },
         {
@@ -26,27 +26,19 @@
             }
         },
         {
-            "glslType": "sampler2D",
+            "glslType": "EmissiveMap",
             "identifier": "emissiveMap",
             "value": {
                 "__variant_value": 8,
-                "__variant_type": 9
+                "__variant_type": 14
             }
         },
         {
-            "glslType": "bool",
-            "identifier": "toUsePackedMap",
+            "glslType": "AlphaMap",
+            "identifier": "alphaMap",
             "value": {
-                "__variant_value": true,
-                "__variant_type": 0
-            }
-        },
-        {
-            "glslType": "bool",
-            "identifier": "toUseEmissiveMap",
-            "value": {
-                "__variant_value": false,
-                "__variant_type": 0
+                "__variant_value": 8,
+                "__variant_type": 15
             }
         },
         {

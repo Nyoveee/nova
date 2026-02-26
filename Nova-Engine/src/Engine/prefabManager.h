@@ -59,7 +59,7 @@ public:
 
 	ENGINE_DLL_API void updatePrefab(entt::entity prefabInstance);
 	ENGINE_DLL_API void prefabOverride(entt::entity prefabInstance);
-	ENGINE_DLL_API void guidRemap(ResourceID prefabId);
+	// ENGINE_DLL_API void guidRemap(ResourceID prefabId);
 
 private:
 	// Maps the serialized field of an entity and his children to other value in a specified registry.

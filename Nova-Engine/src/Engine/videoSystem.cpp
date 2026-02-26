@@ -3,7 +3,6 @@
 #include "ECS/ECS.h"
 #define PL_MPEG_IMPLEMENTATION
 #include "Imported/pl_mpeg.h"
-#pragma warning(pop)
 VideoSystem::VideoSystem(Engine& engine)
 	: engine{engine}
 	, registry{engine.ecs.registry}{}

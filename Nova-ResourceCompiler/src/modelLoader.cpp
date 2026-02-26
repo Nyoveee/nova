@@ -13,6 +13,7 @@
 
 #include "modelLoader.h"
 #include "Logger.h"
+#include "Library/meshoptimizer.h"
 
 #undef max
 
@@ -45,9 +46,23 @@ namespace {
 	glm::vec2 toGlmVec2(aiVector2D vec2) {
 		return { vec2.x, vec2.y };
 	}
+
+	bool doesModelHaveBones(const aiScene* scene) {
+		for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
+			aiMesh* mesh = scene->mMeshes[i];
+			if (mesh->mNumBones > 0) {
+				return true; // Found at least one mesh with bones
+			}
+		}
+
+		return false; // No bones found in any mesh
+	}
 }
 
 std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, float scale, std::vector<BoneIndex> sockets) {
+	// --------------------------------------------------------------------
+	// 1. We prepare assimp to load the model..
+	// --------------------------------------------------------------------
 	constexpr unsigned int PostProcessingFlags {
 		aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
 	};
@@ -61,19 +76,36 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 		return std::nullopt;
 	}
 
+	// --------------------------------------------------------------------
+	// 2. Initialisation and preparation.. We utilize class data members to share data across functions..
+	// --------------------------------------------------------------------
+
 	bones.clear();
 	boneNameToIndex.clear();
+	meshNameToIndices.clear();
 	materialNames.clear();
 	maxDimension = 0.f;
 	maxBound = glm::vec3{ std::numeric_limits<float>::min(), std::numeric_limits<float>::min(), std::numeric_limits<float>::min() };
 	minBound = glm::vec3{ std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
+	hasBones = doesModelHaveBones(scene);
 
-	std::vector<Mesh> meshes;
-	meshes.reserve(scene->mNumMeshes);
+	// --------------------------------------------------------------------
+	// 3. We process the node hierarchy recursively, and populate mesh data with vertex attributes..
+	// This also handles vertex weights if the mesh has bgones..
+	// --------------------------------------------------------------------
+	std::vector<MeshData> meshesData;
+	meshesData.reserve(scene->mNumMeshes);
 	
 	// We process the node hierarchy, and load meshes accordingly..
-	processNodeHierarchy(scene, meshes, scene->mRootNode, glm::mat4{ 1.f });
+	processNodeHierarchy(scene, meshesData, scene->mRootNode, glm::mat4{ 1.f });
 
+	// --------------------------------------------------------------------
+	// 4. We now process bones, skeletons and animation data..
+	// Processing animation requires converting from assimp format to our own Animation data structure..
+	// Processing skeleton requires traversing the node hierarchy and store both the bone hierarchy and node hierarchy,
+	// in our own data structures..
+	// --------------------------------------------------------------------
+	
 	// Process animation data..
 	std::vector<Animation> animations;
 	std::optional<Skeleton> skeletonOpt;
@@ -93,30 +125,116 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 		skeletonOpt = std::move(skeleton);
 	}
 
-#if 0
-	for (auto& mesh : meshes) {
-		for (auto& bone : mesh.bones) {
-			Logger::info("Bone: {}", bone.name);
-
-			for (auto& vertexWeight : bone.vertexWeights) {
-				auto&& [index, weight] = vertexWeight;
-
-				Logger::info("    vertex: {}, weight: {}", index, weight);
-			}
-
-			Logger::info("");
-		}
-	}
-#endif
-
+	// --------------------------------------------------------------------
+	// 5. Calculate additional meta data..
+	// --------------------------------------------------------------------
+	
 	// Calculate center point and extents..
 	glm::vec3 centerPoint = (maxBound + minBound) / 2.f;
 	glm::vec3 extent = centerPoint - minBound;
 
-	return { { std::move(meshes), std::move(materialNames), std::move(skeletonOpt), std::move(animations), maxDimension * scale, scale, maxBound * scale, minBound * scale, centerPoint * scale, extent * scale  } };
+	// --------------------------------------------------------------------
+	// 6. We perform mesh optimization, full details can be found in the library of mesh optimzer..
+	// --------------------------------------------------------------------
+	
+	for (MeshData& mesh : meshesData) {
+		optimizeMesh(mesh);
+	}
+
+	// --------------------------------------------------------------------
+	// 7. Because mesh optimizer requires the vertex attributes to be combined into one structure, we now convert
+	// our MeshData struct to Mesh struct, by flattening combined vertex attribute from an array of structures to a structure of arrays..
+	// 
+	// When processing our MeshData struct, we may also encounter situations where the indices is zero (probably cause non triangle primitives are skipped).
+	// Therefore, we remove the mesh to save draw call.
+	// Consequently, we need to remap the mesh index of every model node in the skeleton to reflect the new corrected mesh index, due to the change in size of the mesh vector.
+	// --------------------------------------------------------------------
+	std::vector<Mesh> meshes;
+	meshes.reserve(meshesData.size());
+
+	std::unordered_map<MeshIndex, MeshIndex> meshIndexRemap;
+
+	int validMeshIndex = 0;
+
+	for (int i = 0; i < meshesData.size(); ++i) {
+		MeshData& meshData = meshesData[i];
+
+		// we dont even wanna draw these meshes if they have no indices..
+		if (meshData.indices.empty()) {
+			Logger::warn("Empty mesh found?");
+			continue;
+		}
+
+		// we update mesh index mapping.. (invalid mesh have their entry removed)
+		meshIndexRemap[i] = validMeshIndex;
+		validMeshIndex++;
+
+		std::vector<glm::vec3> positions;
+		positions.reserve(meshData.combinedVertexAttributes.size());
+
+		std::vector<glm::vec2> textureCoordinates;
+		textureCoordinates.reserve(meshData.combinedVertexAttributes.size());
+
+		std::vector<glm::vec3> normals;
+		normals.reserve(meshData.combinedVertexAttributes.size());
+
+		std::vector<glm::vec3> tangents;
+		tangents.reserve(meshData.combinedVertexAttributes.size());
+
+		std::vector<VertexWeight> vertexWeights;
+		vertexWeights.reserve(meshData.combinedVertexAttributes.size());
+
+		for (CombinedVertexAttribute const& vertexAttribute : meshData.combinedVertexAttributes) {
+			positions.push_back(vertexAttribute.position);
+			textureCoordinates.push_back(vertexAttribute.textureCoordinate);
+			normals.push_back(vertexAttribute.normal);
+			tangents.push_back(vertexAttribute.tangent);
+
+			// vertex attribute is not all no bones..
+			if (vertexAttribute.vertexWeight.boneIndices[0] != NO_BONE_INDEX) {
+				vertexWeights.push_back(vertexAttribute.vertexWeight);
+			}
+		}
+
+		meshes.push_back(
+			Mesh{
+				.name				= std::move(meshData.name),
+				.positions			= std::move(positions),
+				.textureCoordinates = std::move(textureCoordinates),
+				.normals			= std::move(normals),
+				.tangents			= std::move(tangents),
+				.indices			= std::move(meshData.indices),
+				.materialIndex		= meshData.materialIndex,
+				.numOfTriangles		= meshData.numOfTriangles,
+				.vertexWeights		= std::move(vertexWeights)
+			}
+		);
+	}
+
+	// We then remap the mesh index in the model nodes..
+	if (skeletonOpt) {
+		remapMeshIndex(meshIndexRemap, skeletonOpt.value(), skeletonOpt.value().nodes[skeletonOpt.value().rootNode]);
+	}
+
+	// We are done :)
+	ModelData modelData{ 
+		.meshes			= std::move(meshes),
+		.materialNames	= std::move(materialNames), 
+		.skeleton		= std::move(skeletonOpt), 
+		.animations		= std::move(animations), 
+		.maxDimension	= maxDimension * scale, 
+		.scale			= scale, 
+		.maxBound		= maxBound * scale, 
+		.minBound		= minBound * scale, 
+		.center			= centerPoint * scale, 
+		.extents		= extent * scale
+	};
+
+	return modelData;
 }
 
-Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat4x4 const& globalTransformationMatrix) {
+
+MeshData ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat4x4 const& globalTransformationMatrix) {
 	// ==================================== 
 	// Getting vertex attributes..
 	// 1. position
@@ -124,17 +242,8 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 	// 3. normal
 	// 4. tangent
 	// ==================================== 
-	std::vector<glm::vec3> positions;
-	positions.reserve(mesh->mNumVertices);
-	
-	std::vector<glm::vec2> textureCoordinates;
-	textureCoordinates.reserve(mesh->mNumVertices);
-
-	std::vector<glm::vec3> normals;
-	normals.reserve(mesh->mNumVertices);
-
-	std::vector<glm::vec3> tangents;
-	tangents.reserve(mesh->mNumVertices);
+	std::vector<CombinedVertexAttribute> vertexAttributes;
+	vertexAttributes.reserve(mesh->mNumVertices);
 
 	glm::mat3x3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(globalTransformationMatrix)));
 
@@ -143,7 +252,7 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 		glm::vec3 position;
 
 		// 1. Position
-		if (mesh->mNumBones) {
+		if (hasBones) {
 			position = glm::vec3{ glm::vec4{ toGlmVec3(mesh->mVertices[i]), 1.f } };
 		}
 		else {
@@ -159,8 +268,6 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 		maxBound = glm::max(position, maxBound);
 		minBound = glm::min(position, minBound);
 
-		positions.push_back(position);
-
 		// 2. Texture Coordinates
 		glm::vec2 textureCoords;
 
@@ -170,8 +277,6 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 		else {
 			textureCoords = glm::vec2(0.0f, 0.0f);
 		}
-
-		textureCoordinates.push_back(textureCoords);
 
 		// 3. Normal
 		glm::vec3 normal;
@@ -188,8 +293,6 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 			normal = glm::vec3{ 0.0f, 0.0f, 0.f };
 		}
 
-		normals.push_back(normal);
-
 		// 4. Tangents
 		glm::vec3 tangent;
 
@@ -205,7 +308,12 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 			tangent = glm::vec3{ 0.0f, 0.0f, 0.f };
 		}
 
-		tangents.push_back(tangent);
+		vertexAttributes.push_back(CombinedVertexAttribute{
+			.position			= position,
+			.textureCoordinate	= textureCoords,
+			.normal				= normal,
+			.tangent			= tangent
+		});
 	}
 
 	// ==================================== 
@@ -219,7 +327,12 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 		aiFace face = mesh->mFaces[i];
 	
 		for (unsigned int j = 0; j < face.mNumIndices; j++) {
-			indices.push_back(face.mIndices[j]);
+			if (face.mNumIndices != 3) {
+				Logger::warn("Number of indices not multiple to 3?");
+			}
+			else {
+				indices.push_back(face.mIndices[j]);
+			}
 		}
 	}
 
@@ -253,11 +366,11 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 	// 
 	// Bones are not unique to each mesh. We need to find the corresponding bone index, or generate a new one if it doesn't exist.
 	// ==================================== 
-	std::vector<VertexWeight> vertexWeights;
+	std::vector<IntermediaryVertexWeight> intermediaryVertexWeights;
 
 	// it is a skinned mesh.
 	if (mesh->mNumBones) {
-		vertexWeights.resize(mesh->mNumVertices);
+		intermediaryVertexWeights.resize(mesh->mNumVertices);
 		bones.reserve(bones.size() + mesh->mNumBones);
 
 		BoneIndex boneIndex;
@@ -282,43 +395,49 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 
 			for (unsigned int j = 0; j < bone->mNumWeights; ++j) {
 				auto aiVertexWeight = bone->mWeights[j];
-				vertexWeights[aiVertexWeight.mVertexId].addBone(boneIndex, aiVertexWeight.mWeight);
+				intermediaryVertexWeights[aiVertexWeight.mVertexId].addBone(boneIndex, aiVertexWeight.mWeight);
 			}
+		}
+
+		// Re-normalize bone weights if need be.
+		for (auto&& intermediaryVertexWeight : intermediaryVertexWeights) {
+			intermediaryVertexWeight.normalizeAndSetBoneWeight();
+		}
+
+		// both resized to mesh->mNumVertices..
+		assert(intermediaryVertexWeights.size() == vertexAttributes.size() && "Vertex attribute having a different size with vertex weights?");
+
+		// Copy vertex weight data to combined vertex attribute data..
+		for (int i = 0; i < vertexAttributes.size(); ++i) {
+			vertexAttributes[i].vertexWeight = VertexWeight{ intermediaryVertexWeights[i].boneIndices, intermediaryVertexWeights[i].weights };
 		}
 	}
 
-	// Re-normalize bone weights if need be.
-	for (auto&& vertexWeight : vertexWeights) {
-		vertexWeight.normalizeAndSetBoneWeight();
-	}
-
-	return { 
-		0,
-		mesh->mName.C_Str(),
-		std::move(positions),
-		std::move(textureCoordinates),
-		std::move(normals),
-		std::move(tangents),
-		std::move(indices), 
-		materialIndex,
-		static_cast<int>(mesh->mNumFaces), 
-		std::move(vertexWeights),
+	return MeshData { 
+		.name						= mesh->mName.C_Str(),
+		.indices					= std::move(indices), 
+		.materialIndex				= materialIndex,
+		.numOfTriangles				= static_cast<int>(mesh->mNumFaces), 
+		.combinedVertexAttributes	= std::move(vertexAttributes)
 	};
 }
 
 void ModelLoader::processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* node, ModelNodeIndex parentNodeIndex) {
 	// process node hierarchy..
 
-	// we verify if the current node is a bone...
-	auto boneIterator = boneNameToIndex.find(node->mName.C_Str());
-
-	bool isBone = false;
+	ModelNode::Type modelNodeType = ModelNode::Type::None;
 	BoneIndex nodeBoneIndex = NO_BONE;
+	std::vector<MeshIndex> meshIndices;
 
-	// we perform bone specific data handling..
+	auto boneIterator = boneNameToIndex.find(node->mName.C_Str());
+	auto meshIterator = meshNameToIndices.find(node->mName.C_Str());
+
+	// ------------------------------------------------
+	// we verify if the current node is a bone...
 	if (boneIterator != boneNameToIndex.end()) {
+		// we perform bone specific data handling..
 		auto&& [_, boneIndex] = *boneIterator;
-		isBone = true;
+		modelNodeType = ModelNode::Type::Bone;
 		nodeBoneIndex = boneIndex;
 
 		if (skeleton.rootBone == NO_BONE) {
@@ -336,6 +455,12 @@ void ModelLoader::processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* nod
 			}
 		}
 	}
+	// ------------------------------------------------
+	// we verify if the current node is a mesh...
+	else if (meshIterator != meshNameToIndices.end()) {
+		modelNodeType = ModelNode::Type::Mesh;
+		meshIndices = meshIterator->second;
+	}
 	
 	// we handle node hierarchy here..
 	ModelNodeIndex modelNodeIndex = static_cast<ModelNodeIndex>(skeleton.nodes.size());	// get an appropriate index for node.
@@ -343,8 +468,9 @@ void ModelLoader::processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* nod
 	ModelNode modelNode {
 		node->mName.C_Str(),
 		toGlmMat4(node->mTransformation),
-		isBone,
-		nodeBoneIndex
+		modelNodeType,
+		nodeBoneIndex,
+		std::move(meshIndices)
 	};
 
 	// no root node yet..
@@ -368,17 +494,19 @@ void ModelLoader::processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* nod
 	}
 }
 
-void ModelLoader::processNodeHierarchy(aiScene const* scene, std::vector<Mesh>& meshes, aiNode const* node, glm::mat4x4 const& globalTransformationMatrix) {
+void ModelLoader::processNodeHierarchy(aiScene const* scene, std::vector<MeshData>& meshesData, aiNode const* node, glm::mat4x4 const& globalTransformationMatrix) {
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(processMesh(mesh, scene, globalTransformationMatrix));
+
+		meshNameToIndices[mesh->mName.C_Str()].push_back(static_cast<int>(meshesData.size()));
+		meshesData.push_back(processMesh(mesh, scene, globalTransformationMatrix));
 	}
 
 	// recurse downwards.
 	for (unsigned int i = 0; i < node->mNumChildren; ++i) {
 		aiNode const* childNode = node->mChildren[i];
-		processNodeHierarchy(scene, meshes, childNode, toGlmMat4(childNode->mTransformation) * globalTransformationMatrix);
+		processNodeHierarchy(scene, meshesData, childNode, toGlmMat4(childNode->mTransformation) * globalTransformationMatrix);
 	}
 }
 
@@ -497,4 +625,74 @@ BoneIndex ModelLoader::findParentBone(aiNode const* parentNode) {
 	}
 
 	return NO_BONE;
+}
+
+void ModelLoader::optimizeMesh(MeshData& mesh) {
+	// https://github.com/zeux/meshoptimizer
+	// We create a temporary remap table, remapping our original vertices to a new set of vertices..
+	std::vector<unsigned int> remap(mesh.combinedVertexAttributes.size());
+
+	// if we have a valid index buffer, use that size. else use vertex buffer size.
+	std::size_t indexCount = mesh.indices.data() ? mesh.indices.size() : mesh.combinedVertexAttributes.size();
+
+	// We utilize the library to perform index remapping, and removing redundant vertices..
+	// This also preps our data for the upcoming optimization.. so its just safer to do this first.
+	size_t vertexCount = meshopt_generateVertexRemap(
+		remap.data(), 
+		mesh.indices.data(), 
+		static_cast<int>(indexCount),
+		mesh.combinedVertexAttributes.data(),
+		mesh.combinedVertexAttributes.size(),
+		sizeof(CombinedVertexAttribute)
+	);
+
+	if (vertexCount != mesh.combinedVertexAttributes.size()) {
+		Logger::debug("Mesh optimizer reduced unique vertex count from {} to {}.", mesh.combinedVertexAttributes.size(), vertexCount);
+	}
+
+	// We now perform the remapping..
+	// remapping index buffer..
+	std::vector<unsigned int> indices(mesh.indices.size());
+	meshopt_remapIndexBuffer(indices.data(), mesh.indices.data(), mesh.indices.size(), remap.data());
+		
+	// remapping all vertex attributes..
+	std::vector<CombinedVertexAttribute> remappedVertexAttribute(vertexCount);
+	meshopt_remapVertexBuffer(remappedVertexAttribute.data(), mesh.combinedVertexAttributes.data(), mesh.combinedVertexAttributes.size(), sizeof(CombinedVertexAttribute), remap.data());
+
+	// We perform vertex cache optimization, reordering the indices such that it maximises locality..
+	meshopt_optimizeVertexCache(indices.data(), indices.data(), indices.size(), vertexCount);
+
+	// We optimize for overdraw.. this will degrade cache locality, so we use the recommended constant of 1.05f indicating we allow degrading of cache locality up to 5%..
+	meshopt_optimizeOverdraw(indices.data(), indices.data(), indices.size(), &remappedVertexAttribute[0].position.x, vertexCount, sizeof(CombinedVertexAttribute), 1.05f);
+
+	// We optimize for vertex fetch locality now, reordering the vertex.. (consequently the indices have to be reordered as well)..
+	meshopt_optimizeVertexFetch(remappedVertexAttribute.data(), indices.data(), indices.size(), remappedVertexAttribute.data(), vertexCount, sizeof(CombinedVertexAttribute));
+
+	// update our vertex attributes and indices..
+	mesh.combinedVertexAttributes = std::move(remappedVertexAttribute);
+	mesh.indices = std::move(indices);
+}
+
+void ModelLoader::remapMeshIndex(std::unordered_map<MeshIndex, MeshIndex> const& meshIndexRemap, Skeleton& skeleton, ModelNode& modelNode) {
+	if (modelNode.nodeType == ModelNode::Type::Mesh) {
+		for (MeshIndex& meshIndex : modelNode.meshIndices) {
+			// this node is a mesh.. let's remap it..
+			auto iterator = meshIndexRemap.find(meshIndex);
+
+			// The mesh this node is pointing to is removed.
+			if (iterator == meshIndexRemap.end()) {
+				modelNode.nodeType = ModelNode::Type::None;
+				meshIndex = NOT_A_MESH;
+			}
+			else {
+				meshIndex = iterator->second;
+			}
+		}
+	}
+
+	// recurse downwards.
+	for (unsigned int i = 0; i < modelNode.nodeChildrens.size(); ++i) {
+		ModelNode& childNode = skeleton.nodes[modelNode.nodeChildrens[i]];
+		remapMeshIndex(meshIndexRemap, skeleton, childNode);
+	}
 }

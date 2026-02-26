@@ -164,7 +164,7 @@ void Engine::stopSimulation() {
 		scriptingAPIManager.stopSimulation();
 
 		gameLockMouse(false);
-		isPaused = false;
+		pauseSystems(false);
 
 		if (engineState == State::Game) {
 			window.quit();
@@ -221,6 +221,15 @@ glm::vec2 Engine::getUIMousePosition() const {
 	return window.getUISpacePos();
 }
 
+void Engine::setFullscreen(bool value) {
+	if (value == dataManager.renderConfig.fullScreen) {
+		return;
+	}
+
+	dataManager.renderConfig.fullScreen = value;
+	window.toggleFullScreen();
+}
+
 void Engine::SystemsOnLoad() {
 	// Make sure the next scene gets the latest script field properties in inspector to edit
 	if (engineState == State::Editor)
@@ -254,12 +263,11 @@ void Engine::SystemsOnLoad() {
 	}
 
 	// unpause all systems when loaded.. and clear accumulated dt
-	isPaused = false;
+	pauseSystems(false);
 	window.clearAccumulatedTime();
 
 	deltaTimeMultiplier = 1.f;
 }
-
 
 void Engine::SystemsUnload() {
 	// Remove all created resource instances..
@@ -279,6 +287,23 @@ void Engine::SystemsUnload() {
 	renderer.resetLoadedReflectionProbes();
 
 	scriptingAPIManager.cleanPreviousSceneScriptState();
+}
+
+void Engine::pauseSystems (bool toPause) {
+	if (toPause == isPaused) {
+		return;
+	}
+
+	isPaused = toPause;
+
+	if (toPause) {
+		// handle system pause request here..
+		audioSystem.onEnginePaused();
+	}
+	else {
+		// handle system resume request here..
+		audioSystem.onEngineResumed();
+	}
 }
 
 void Engine::quit() {

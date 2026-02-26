@@ -235,8 +235,25 @@ xcopy "$(SolutionDir)DLL\$(Configuration)\freetype.dll" /Y /Q "$(SolutionDir)Ext
   <ItemGroup>
     <ClCompile Include="src\Internal\ShaderParser.cpp" />
     <ClCompile Include="src\compiler.cpp" />
+    <ClCompile Include="src\Library\allocator.cpp" />
+    <ClCompile Include="src\Library\clusterizer.cpp" />
+    <ClCompile Include="src\Library\indexanalyzer.cpp" />
+    <ClCompile Include="src\Library\indexcodec.cpp" />
+    <ClCompile Include="src\Library\indexgenerator.cpp" />
+    <ClCompile Include="src\Library\meshletcodec.cpp" />
     <ClCompile Include="src\Library\miniz.c" />
+    <ClCompile Include="src\Library\overdrawoptimizer.cpp" />
+    <ClCompile Include="src\Library\partition.cpp" />
+    <ClCompile Include="src\Library\quantization.cpp" />
+    <ClCompile Include="src\Library\rasterizer.cpp" />
+    <ClCompile Include="src\Library\simplifier.cpp" />
+    <ClCompile Include="src\Library\spatialorder.cpp" />
     <ClCompile Include="src\Library\stb_image.cpp" />
+    <ClCompile Include="src\Library\stripifier.cpp" />
+    <ClCompile Include="src\Library\vcacheoptimizer.cpp" />
+    <ClCompile Include="src\Library\vertexcodec.cpp" />
+    <ClCompile Include="src\Library\vertexfilter.cpp" />
+    <ClCompile Include="src\Library\vfetchoptimizer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\modelLoader.cpp" />
     <ClCompile Include="src\systemCompiler.cpp" />
@@ -245,6 +262,7 @@ xcopy "$(SolutionDir)DLL\$(Configuration)\freetype.dll" /Y /Q "$(SolutionDir)Ext
     <ClInclude Include="src\Internal\ShaderParser.h" />
     <ClInclude Include="src\compiler.h" />
     <ClInclude Include="src\compiler.ipp" />
+    <ClInclude Include="src\Library\meshoptimizer.h" />
     <ClInclude Include="src\Library\miniz.h" />
     <ClInclude Include="src\Library\stb_image.hpp" />
     <ClInclude Include="src\modelLoader.h" />

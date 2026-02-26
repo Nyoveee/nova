@@ -66,7 +66,7 @@ public:
 	void depthPrePass(FrameBuffer const& frameBuffer);
 
 	// generates the SSAO texture.
-	void generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera);
+	void generateSSAO(FrameBuffer const& frameBuffer, Camera const& camera);
 
 	// initialise the sample kernel and noise texture used in SSAO
 	void initialiseSSAO();
@@ -211,7 +211,7 @@ private:
 	void renderModels(RenderPass renderPass, std::optional<GLuint> depthTextureId);
 
 	// render all TranslucentMeshRenderers.
-	void renderTranslucentModels(GLuint frameBufferDepthTexture);
+	void renderTranslucentModels(FrameBuffer const& frameBuffer);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text);
@@ -253,10 +253,13 @@ private:
 	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
 
 	// set up the material's chosen shader and supply the proper uniforms..
-	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, std::optional<GLuint> depthTextureId);
+	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, BlendConfig blendConfig, std::optional<GLuint> depthTextureId);
 
 	// this sets the uniforms of model specific data..
-	void setupModelUniforms(entt::entity entity, Shader const& shader, float scale, glm::vec3 boundingBoxMin, glm::vec3 boundingBoxMax, MeshType meshType);
+	void setupModelUniforms(entt::entity entity, Shader const& shader, Model const& model, MeshType meshType);
+
+	// this sets the uniforms of mesh specific data..
+	void setupMeshUniforms(Shader const& shader, Mesh const& mesh, MeshType meshType);
 
 	// sets up the custom shader to output the mesh into the normal buffer instead.
 	void setupMaterialNormalPass(Material const& material, CustomShader const& customShader, Shader const& shader);
@@ -489,6 +492,8 @@ public:
 	Shader videoShader;
 
 	Shader gammaCorrectionShader;
+
+	Shader weightedBlendingCompositeShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;

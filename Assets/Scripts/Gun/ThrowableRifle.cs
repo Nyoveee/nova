@@ -543,14 +543,9 @@ class ThrowableRifle : Script
 
             if (other.getScript<Ichor>() != null)
             {
-                other.getScript<Ichor>().PullTowardsGun(gameObject.transform.position);
+                other.getScript<Ichor>().PullTowardsGun(gameObject, mappedWeapon.gameObject);
             }
-        
         }
-
-
-
-
     }
     
     

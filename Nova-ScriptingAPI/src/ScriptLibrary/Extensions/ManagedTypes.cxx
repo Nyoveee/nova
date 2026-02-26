@@ -41,6 +41,9 @@ Vector2 Vector2::Lerp(Vector2 a, Vector2 b, float interval) {
 	return Vector2{ std::lerp(a.x, b.x, interval), std::lerp(a.y, b.y, interval) };
 }
 
+Vector2 Vector2::Abs(Vector2 vec) {
+	return Vector2{ std::abs(vec.x), std::abs(vec.y) };
+}
 // =================================================================
 // VECTOR 3
 // =================================================================
@@ -93,8 +96,10 @@ Vector3 Vector3::Proj(Vector3 vector, Vector3 onNormal)
 Vector3 Vector3::Cross(Vector3 lhs, Vector3 rhs)
 {
 	return Vector3{glm::cross(lhs.native(), rhs.native())};
+}
 
-
+Vector3 Vector3::Abs(Vector3 vec) {
+	return Vector3{ std::abs(vec.x), std::abs(vec.y), std::abs(vec.z) };
 }
 
 // =================================================================

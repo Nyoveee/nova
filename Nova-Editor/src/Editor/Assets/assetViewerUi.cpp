@@ -46,14 +46,51 @@ namespace {
 					return uniformData.identifier == identifier;
 				}
 			);
+#if false
+			// TEMPORARY HARDCODE.
+			auto isTextureMap = [&](UniformValue const& uniformValue) {
+				return uniformValue.index() > 13;
+			};
+			
+			bool isTexture = iterator->value.index() == 9 && isTextureMap(value);
 
 			// This entry did not change (same identifier and type).. so let's use the old value..
-			if (iterator != oldMaterialUniforms.end() && iterator->glslType == type && iterator->value.index() == value.index()) {
-				// Re-use the old value..
+			if (iterator != oldMaterialUniforms.end() && ((iterator->value.index() == value.index()) || isTexture)) {
+				if (isTexture) {
+					UniformValue newValue = value;
+					TypedResourceID<Texture> id = std::get<TypedResourceID<Texture>>(iterator->value);
+
+					// use the new type..
+					std::visit([&](auto&& materialValue) {
+						using Type = std::decay_t<decltype(materialValue)>;
+
+						if constexpr (
+							std::same_as<Type, EmissiveMap>
+							|| std::same_as<Type, AlphaMap>
+							|| std::same_as<Type, ORMMap>
+						) {
+							materialValue = Type{ id };
+						}
+					}, newValue);
+
+					// Re-use the old value.. 
+					newShaderUniforms.push_back(UniformData{ type, identifier, newValue });
+				}
+				else {
+					// Re-use the old value.. 
+					newShaderUniforms.push_back(*iterator);
+				}
+				
+				continue;
+			}
+#else
+			// This entry did not change (same identifier and type).. so let's use the old value..
+			if (iterator != oldMaterialUniforms.end() && iterator->value.index() == value.index()) {
+				// Re-use the old value.. 
 				newShaderUniforms.push_back(*iterator);
 				continue;
 			}
-
+#endif
 			// Entry has changed, let's add some default constructed value to it..
 			auto valueIterator = allValidShaderTypes.find(type);
 
@@ -838,7 +875,7 @@ void AssetViewerUI::displayBoneHierarchy(AssetInfo<Model>& descriptor, BoneIndex
 void AssetViewerUI::displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton) {
 	ModelNode const& node = skeleton.nodes[nodeIndex];
 
-	bool isOpen = ImGui::TreeNodeEx(std::string{ (node.isBone ? ICON_FA_BONE : "") + node.name }.c_str());
+	bool isOpen = ImGui::TreeNodeEx(std::string{ (node.nodeType == ModelNode::Type::Bone ? ICON_FA_BONE : "") + node.name }.c_str());
 
 	if (isOpen) {
 		for (auto& nodeChildrenIndex : node.nodeChildrens) {

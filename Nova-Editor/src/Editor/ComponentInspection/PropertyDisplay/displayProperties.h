@@ -239,6 +239,47 @@ inline void DisplayProperty<NormalMap>(Editor& editor, const char* dataMemberNam
 	editor.displayAssetDropDownList<Texture>(id, dataMemberName, [&](ResourceID resourceId) {
 		dataMember = { TypedResourceID<Texture>{ resourceId } };
 	});
+
+	ImGui::SameLine();
+	ImGui::Text("normal");
+}
+
+template<>
+inline void DisplayProperty<EmissiveMap>(Editor& editor, const char* dataMemberName, EmissiveMap& dataMember) {
+	ResourceID& id = dataMember;
+
+	editor.displayAssetDropDownList<Texture>(id, dataMemberName, [&](ResourceID resourceId) {
+		dataMember = { TypedResourceID<Texture>{ resourceId } };
+	});
+
+	ImGui::SameLine();
+	ImGui::Text("emissive");
+}
+
+
+template<>
+inline void DisplayProperty<AlphaMap>(Editor& editor, const char* dataMemberName, AlphaMap& dataMember) {
+	ResourceID& id = dataMember;
+
+	editor.displayAssetDropDownList<Texture>(id, dataMemberName, [&](ResourceID resourceId) {
+		dataMember = { TypedResourceID<Texture>{ resourceId } };
+	});
+
+	ImGui::SameLine();
+	ImGui::Text("alpha");
+}
+
+
+template<>
+inline void DisplayProperty<ORMMap>(Editor& editor, const char* dataMemberName, ORMMap& dataMember) {
+	ResourceID& id = dataMember;
+
+	editor.displayAssetDropDownList<Texture>(id, dataMemberName, [&](ResourceID resourceId) {
+		dataMember = { TypedResourceID<Texture>{ resourceId } };
+	});
+
+	ImGui::SameLine();
+	ImGui::Text("orm");
 }
 
 template<>

@@ -41,6 +41,10 @@ FrameBuffer const& PairFrameBuffer::getReadFrameBuffer() const {
 	return frameBuffers[readFrameBufferIndex];
 }
 
+GLuint PairFrameBuffer::getDepthTextureId() const {
+	return frameBuffers[1].depthStencilId();
+}
+
 GLuint PairFrameBuffer::getMotionTexture() const {
 	// THIS IS A HARDCODED FUNCTION MEANT FOR DEBUGGING ONLY.
 	if (getActiveFrameBuffer().textureIds().size() >= 3) {
