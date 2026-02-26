@@ -7,6 +7,8 @@
 #include "Navigation/navMeshGeneration.h"
 
 #include "misc/cpp/imgui_stdlib.h"
+#include "Engine/engine.h"
+
 
 NavigationWindow::NavigationWindow(Editor& editor, NavigationSystem& navigationSystem, NavMeshGeneration& navMeshGenerator) :
 	editor				{ editor },
@@ -89,14 +91,22 @@ void NavigationWindow::update() {
 	ImGui::SetCursorPosX(windowWidth - 220.0f);
 	if (ImGui::Button("Reset", ImVec2(100, 40))) { navMeshGenerator.ResetBuildSetting(); };
 	ImGui::SameLine();
-	if (ImGui::Button("Bake", ImVec2(100, 40))) { navMeshGenerator.BuildNavMesh(filename); onFileCreate = true; step = 0; };
+	if (ImGui::Button("Bake", ImVec2(100, 40))) 
+	{
+		//update filename to include current scene resource as idenifier
+		std::string buildFile = filename + std::to_string(static_cast<std::size_t>(editor.engine.ecs.sceneManager.getCurrentScene()));
+		navMeshGenerator.BuildNavMesh(buildFile);
+		onFileCreate = true; 
+		step = 0; 
+	};
 
 	//need wait a few frame ahhhh for the file descriptor to regenerate and if not cannot find resourceID
 	if (onFileCreate)
 	{
 		if (step >= 60)
 		{
-			navMeshGenerator.AddNavMeshSurface(filename);
+			std::string buildFile = filename + std::to_string(static_cast<std::size_t>(editor.engine.ecs.sceneManager.getCurrentScene()));
+			navMeshGenerator.AddNavMeshSurface(buildFile);
 			step = 0;
 			onFileCreate = false;
 		}
