@@ -60,6 +60,7 @@ class Charger : Enemy
         Spawning,
         Idle,
         Walk,
+        Patrol,
         Charging,
         Attack,
         Stagger,
@@ -79,6 +80,7 @@ class Charger : Enemy
         audioComponent = getComponent<AudioComponent_>();
         updateState.Add(ChargerState.Spawning, Update_Spawning);
         updateState.Add(ChargerState.Idle, Update_Idle);
+        updateState.Add(ChargerState.Patrol, Update_Patrol);
         updateState.Add(ChargerState.Walk, Update_Walk);
         updateState.Add(ChargerState.Charging, Update_Charging);
         updateState.Add(ChargerState.Attack, Update_Attack);
@@ -283,12 +285,31 @@ class Charger : Enemy
             return;
         }
     }
-    private void Update_Walk() {
-        if(GetDistanceFromPlayer() > chargerstats.chasingRange || !HasLineOfSightToPlayer(gameObject))
+    private void Update_Patrol()
+    {
+        if (GetDistanceFromPlayer() <= chargerstats.chasingRange && HasLineOfSightToPlayer(gameObject))
+        {
+            //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
+            if (Random.Range(0, 1) <= this.spotCallSFXChance)
+            {
+                audioComponent.PlayRandomSound(spotSFX);
+            }
+            animator.PlayAnimation("ChargerWalk");
+            chargerState = ChargerState.Walk;
+            return;
+        }
+        if (IsTargetNavigationPositionReached() && !HasLineOfSightToPlayer(gameObject))
         {
             chargerState = ChargerState.Idle;
             animator.PlayAnimation("ChargerIdle");
             NavigationAPI.stopAgent(gameObject);
+        }
+    }
+    private void Update_Walk() {
+        if(GetDistanceFromPlayer() > chargerstats.chasingRange || !HasLineOfSightToPlayer(gameObject))
+        {
+            chargerState = ChargerState.Patrol;
+            MoveToNavMeshPosition(player.transform.position);
             return;
         }
         LookAt(player);
