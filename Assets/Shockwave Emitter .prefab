@@ -1,0 +1,179 @@
+{
+    "RootEntity": 1,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "South Particle Emitter",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 8073072364769002743,
+                "entityGUID": 4638074894235484501,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": false,
+                    "3548010661223935717": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -28.223793029785156,
+                    "y": -2.3816730976104736,
+                    "z": -1.3242881298065186
+                },
+                "scale": {
+                    "x": 7.901668548583984,
+                    "y": 7.899122714996338,
+                    "z": 7.901668548583984
+                },
+                "rotation": {
+                    "w": 0.7088868021965027,
+                    "x": 0.0,
+                    "y": -0.7053223252296448,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -1.565768837928772,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -1.8085801601409912,
+                    "y": 0.0,
+                    "z": -0.08486036211252213
+                },
+                "localScale": {
+                    "x": 0.5063388347625732,
+                    "y": 0.5061756372451782,
+                    "z": 0.5063388347625732
+                },
+                "localRotation": {
+                    "w": 0.7088867425918579,
+                    "x": 0.0,
+                    "y": -0.7053223252296448,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -1.5657563209533691,
+                    "z": 0.0
+                }
+            },
+            "ParticleEmitter": {
+                "texture": 7697399893439414283,
+                "startSize": 3.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 10.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": true,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 0.5,
+                "particleRate": 30.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": true,
+                "invertMovement": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Edge",
+                    "radiusEmitter": {
+                        "radius": 40.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 0.3564090132713318,
+                        "b": 0.03793102502822876,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.10000000149011612,
+                        "y": 0.10000000149011612,
+                        "z": 0.10000000149011612
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 5.0
+                },
+                "sizeOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": false,
+                    "trailTexture": 0,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 1
+        }
+    ]
+}

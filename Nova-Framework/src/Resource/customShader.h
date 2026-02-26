@@ -36,6 +36,7 @@ public:
 		// Code
 		std::string vShaderCode;
 		std::string fShaderCode;
+		std::string functionsCode;
 
 		Pipeline pipeline;
 
@@ -46,6 +47,7 @@ public:
 			uniformDatas,
 			vShaderCode,
 			fShaderCode,
+			functionsCode,
 			pipeline
 		)
 
