@@ -52,6 +52,7 @@ class Grunt : Enemy
     {
         Spawning,
         Idle,
+        Patrol,
         Chasing,
         Attacking,
         PreJump,
@@ -61,7 +62,7 @@ class Grunt : Enemy
     // State machine
     private GruntState gruntState = GruntState.Spawning;
     private Dictionary<GruntState, CurrentState> updateState = new Dictionary<GruntState, CurrentState>();
-
+    Vector3 lastKnownPlayerPosition;
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -73,6 +74,7 @@ class Grunt : Enemy
         // Populate state machine dispatcher..
         updateState.Add(GruntState.Spawning, Update_Spawning);
         updateState.Add(GruntState.Idle, Update_IdleState);
+        updateState.Add(GruntState.Patrol, Update_PatrolState);
         updateState.Add(GruntState.Chasing, Update_ChasingState);
         updateState.Add(GruntState.Attacking, Update_AttackState);
         updateState.Add(GruntState.Death, Update_Death);
@@ -290,6 +292,26 @@ class Grunt : Enemy
             gruntState = GruntState.Chasing;
         }
     }
+    private void Update_PatrolState()
+    {
+        if (GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSightToPlayer(headPosition))
+        {
+            //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
+            if (Random.Range(0, 1) <= this.spotCallSFXChance)
+            {
+                audioComponent.PlayRandomSound(spotSFX);
+            }
+            animator.PlayAnimation("Grunt Running");
+            gruntState = GruntState.Chasing;
+            return;
+        }
+        if(IsTargetNavigationPositionReached() && !HasLineOfSightToPlayer(headPosition))
+        {
+            animator.PlayAnimation("Grunt Idle (Base)");
+            gruntState = GruntState.Idle;
+            NavigationAPI.stopAgent(gameObject);
+        }
+    }
     private void Update_ChasingState()
     {
         animator.SetFloat("Range", GetDistanceFromPlayer());
@@ -304,9 +326,8 @@ class Grunt : Enemy
         }
         if (GetDistanceFromPlayer() > gruntStats.chasingRadius || !HasLineOfSightToPlayer(headPosition))
         {
-            animator.PlayAnimation("Grunt Idle (Base)");
-            gruntState = GruntState.Idle;
-            NavigationAPI.stopAgent(gameObject);
+            gruntState = GruntState.Patrol;
+            MoveToNavMeshPosition(player.transform.position);
             return;
         }
         // Change State
@@ -395,7 +416,6 @@ class Grunt : Enemy
     {
     
     }
-
 
     public void BeginJump()
     {
