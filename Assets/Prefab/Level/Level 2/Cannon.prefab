@@ -1,0 +1,805 @@
+{
+    "RootEntity": 0,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Enemy Cannon",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    1
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 11629174435362882117,
+                "entityGUID": 11393914123064476135,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "17237801994024849853": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -59.89683151245117,
+                    "y": 33.386009216308594,
+                    "z": -225.1492156982422
+                },
+                "scale": {
+                    "x": 15.0,
+                    "y": 15.0,
+                    "z": 15.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -59.89683151245117,
+                    "y": 33.386009216308594,
+                    "z": -225.1492156982422
+                },
+                "localScale": {
+                    "x": 15.0,
+                    "y": 15.0,
+                    "z": 15.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    6,
+                    7911136277579300865
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 13123296379971174761,
+                        "fields": [
+                            {
+                                "name": "light",
+                                "data": {
+                                    "__variant_value": 4,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "fireSmoke",
+                                "data": {
+                                    "__variant_value": 2,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "fire",
+                                "data": {
+                                    "__variant_value": 4,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "charge",
+                                "data": {
+                                    "__variant_value": 3,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "minTimeShootCooldown",
+                                "data": {
+                                    "__variant_value": 7.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxTimeShootCooldown",
+                                "data": {
+                                    "__variant_value": 12.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "shootingArea",
+                                "data": {
+                                    "__variant_value": 1048639,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "enemyPrefab",
+                                "data": {
+                                    "__variant_value": 3247368569598771203,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "launchingVFXPrefab",
+                                "data": {
+                                    "__variant_value": 5662740551944257769,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "cannonTurningTime",
+                                "data": {
+                                    "__variant_value": 5.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "minArcTime",
+                                "data": {
+                                    "__variant_value": 1.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxArcTime",
+                                "data": {
+                                    "__variant_value": 2.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "cannonChargeTime",
+                                "data": {
+                                    "__variant_value": 1.2999999523162842,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "cannonMeshRenderer",
+                                "data": {
+                                    "__variant_value": 0,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "cannonBarrelMeshRenderer",
+                                "data": {
+                                    "__variant_value": 1,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Cannon Barrel",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": [
+                    2,
+                    3,
+                    4
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 11629174435362882117,
+                "entityGUID": 2170542086211535345,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -59.89680480957031,
+                    "y": 33.38597869873047,
+                    "z": -246.09011840820313
+                },
+                "scale": {
+                    "x": 3.000030994415283,
+                    "y": 3.000030994415283,
+                    "z": 8.722335815429688
+                },
+                "rotation": {
+                    "w": -1.1920916165308881e-07,
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -2.3841832330617763e-07,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 1.9073486328125e-06,
+                    "y": -2.1457672119140625e-06,
+                    "z": -1.3960599899291992
+                },
+                "localScale": {
+                    "x": 0.200002059340477,
+                    "y": 0.200002059340477,
+                    "z": 0.5814890265464783
+                },
+                "localRotation": {
+                    "w": -1.1920915454766146e-07,
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -2.384183090953229e-07,
+                    "z": 3.1415927410125732
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6,
+                    7911136277579300865
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "name": "Fire Smoke",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 11629174435362882117,
+                "entityGUID": 5362274810297712811,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -59.896148681640625,
+                    "y": 33.385986328125,
+                    "z": -254.9345703125
+                },
+                "scale": {
+                    "x": 0.9999992847442627,
+                    "y": 0.4361295998096466,
+                    "z": 1.0000340938568115
+                },
+                "rotation": {
+                    "w": 0.7071066498756409,
+                    "x": -0.70710688829422,
+                    "y": 4.753134774659884e-08,
+                    "z": 4.753183091565916e-08
+                },
+                "eulerAngles": {
+                    "x": -1.5707967281341553,
+                    "y": 1.3443965940496128e-07,
+                    "z": 6.608047442568932e-13
+                },
+                "localPosition": {
+                    "x": -0.0002231597900390625,
+                    "y": 2.86102294921875e-06,
+                    "z": 1.0139999389648438
+                },
+                "localScale": {
+                    "x": 0.3333296477794647,
+                    "y": 0.050001464784145355,
+                    "z": 0.33334121108055115
+                },
+                "localRotation": {
+                    "w": 1.2644457036969925e-08,
+                    "x": -1.2644000513262199e-08,
+                    "y": 0.707106351852417,
+                    "z": 0.7071071863174438
+                },
+                "localEulerAngles": {
+                    "x": 1.5707951784133911,
+                    "y": 3.5763264349952806e-08,
+                    "z": 3.1415927410125732
+                }
+            },
+            "ParticleEmitter": {
+                "texture": 11156164407260069997,
+                "startSize": 5.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 50.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 0.4000000059604645,
+                "particleRate": 0.0,
+                "burstRate": 0.0,
+                "burstAmount": 200,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "invertMovement": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Hemisphere",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
+                },
+                "sizeOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": false,
+                    "trailTexture": 0,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "name": "Charge",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 11629174435362882117,
+                "entityGUID": 15162107599457419437,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": [
+                    3548010661223935717
+                ]
+            },
+            "Transform": {
+                "position": {
+                    "x": -59.896148681640625,
+                    "y": 33.385986328125,
+                    "z": -254.9494171142578
+                },
+                "scale": {
+                    "x": 0.9999992847442627,
+                    "y": 0.43613824248313904,
+                    "z": 1.0000534057617188
+                },
+                "rotation": {
+                    "w": 0.7071066498756409,
+                    "x": -0.70710688829422,
+                    "y": 4.75314045900177e-08,
+                    "z": 4.7531894864505375e-08
+                },
+                "eulerAngles": {
+                    "x": -1.5707967281341553,
+                    "y": 1.3443982993521786e-07,
+                    "z": 6.608047442568932e-13
+                },
+                "localPosition": {
+                    "x": -0.0002231597900390625,
+                    "y": 2.86102294921875e-06,
+                    "z": 1.0157032012939453
+                },
+                "localScale": {
+                    "x": 0.3333296477794647,
+                    "y": 0.050002455711364746,
+                    "z": 0.3333476483821869
+                },
+                "localRotation": {
+                    "w": 1.2644435720687852e-08,
+                    "x": -1.2643977420623287e-08,
+                    "y": 0.707106351852417,
+                    "z": 0.7071071863174438
+                },
+                "localEulerAngles": {
+                    "x": 1.5707951784133911,
+                    "y": 3.5763207506533945e-08,
+                    "z": 3.1415927410125732
+                }
+            },
+            "ParticleEmitter": {
+                "texture": 8273860645742985365,
+                "startSize": 5.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 50.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "particleRate": 100.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "invertMovement": true,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Cone",
+                    "radiusEmitter": {
+                        "radius": 0.009999999776482582
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 50.0,
+                        "distance": 14.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 5.0
+                },
+                "sizeOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": false,
+                    "trailTexture": 0,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 3
+        },
+        {
+            "EntityData": {
+                "name": "Fire",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 11629174435362882117,
+                "entityGUID": 8821039324122218671,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": [
+                    16652763906952685383
+                ]
+            },
+            "Transform": {
+                "position": {
+                    "x": -59.896148681640625,
+                    "y": 33.385986328125,
+                    "z": -254.95962524414063
+                },
+                "scale": {
+                    "x": 0.9999992847442627,
+                    "y": 0.43610766530036926,
+                    "z": 0.9999873638153076
+                },
+                "rotation": {
+                    "w": 0.7071066498756409,
+                    "x": -0.70710688829422,
+                    "y": 4.753144011715449e-08,
+                    "z": 4.75319410497832e-08
+                },
+                "eulerAngles": {
+                    "x": -1.5707967281341553,
+                    "y": 1.3443992941120086e-07,
+                    "z": 6.750155989720952e-13
+                },
+                "localPosition": {
+                    "x": -0.0002231597900390625,
+                    "y": 2.86102294921875e-06,
+                    "z": 1.0168724060058594
+                },
+                "localScale": {
+                    "x": 0.3333296477794647,
+                    "y": 0.04999895021319389,
+                    "z": 0.33332565426826477
+                },
+                "localRotation": {
+                    "w": 1.2644430391617334e-08,
+                    "x": -1.2643954327984375e-08,
+                    "y": 0.707106351852417,
+                    "z": 0.7071071863174438
+                },
+                "localEulerAngles": {
+                    "x": 1.5707951784133911,
+                    "y": 3.576317197939716e-08,
+                    "z": 3.1415927410125732
+                }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.6470588445663452,
+                    "b": 0.0
+                },
+                "intensity": 100.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 50.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "ParticleEmitter": {
+                "texture": 11156164407260069997,
+                "startSize": 5.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 50.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 0.4000000059604645,
+                "particleRate": 0.0,
+                "burstRate": 0.0,
+                "burstAmount": 50,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "invertMovement": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Cone",
+                    "radiusEmitter": {
+                        "radius": 0.10000000149011612
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 0.6470588445663452,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 5.0
+                },
+                "sizeOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": false,
+                    "trailTexture": 0,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 4
+        }
+    ]
+}

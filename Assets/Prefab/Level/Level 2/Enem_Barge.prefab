@@ -1,0 +1,607 @@
+{
+    "RootEntity": 5,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Enemy Barge",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    6,
+                    7,
+                    8,
+                    11,
+                    12
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 4711645407722062417,
+                "entityGUID": 1876620637838923831,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "16533173024327387273": true,
+                    "11935986701403193153": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -56.57235336303711,
+                    "y": 6.400842666625977,
+                    "z": -269.3945007324219
+                },
+                "scale": {
+                    "x": 165.0,
+                    "y": 10.0,
+                    "z": 94.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -56.57235336303711,
+                    "y": 6.400842666625977,
+                    "z": -269.3945007324219
+                },
+                "localScale": {
+                    "x": 165.0,
+                    "y": 10.0,
+                    "z": 94.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    1004452720811704379
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "name": "Barge Platform",
+                "tag": "",
+                "parent": 5,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 4711645407722062417,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "16533173024327387273": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 89.02647399902344,
+                    "y": 24.146127700805664,
+                    "z": -199.02618408203125
+                },
+                "scale": {
+                    "x": 20.0,
+                    "y": 7.4383955001831055,
+                    "z": 24.415584564208984
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.8824172019958496,
+                    "y": 1.7745285034179688,
+                    "z": 0.7485990524291992
+                },
+                "localScale": {
+                    "x": 0.12121212482452393,
+                    "y": 0.7438395619392395,
+                    "z": 0.25974026322364807
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "id": 6
+        },
+        {
+            "EntityData": {
+                "name": "Barge Platform",
+                "tag": "",
+                "parent": 5,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 4711645407722062417,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "16533173024327387273": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -201.86314392089844,
+                    "y": 24.146127700805664,
+                    "z": -339.6082763671875
+                },
+                "scale": {
+                    "x": 20.0,
+                    "y": 7.4383955001831055,
+                    "z": 24.415584564208984
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.8805502653121948,
+                    "y": 1.7745285034179688,
+                    "z": -0.746955156326294
+                },
+                "localScale": {
+                    "x": 0.12121212482452393,
+                    "y": 0.7438395619392395,
+                    "z": 0.25974026322364807
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "id": 7
+        },
+        {
+            "EntityData": {
+                "name": "Large Barge Platform",
+                "tag": "",
+                "parent": 5,
+                "attachedSocket": 65535,
+                "children": [
+                    9,
+                    10
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 4711645407722062417,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "16533173024327387273": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -58.3310546875,
+                    "y": 31.18067741394043,
+                    "z": -270.5936584472656
+                },
+                "scale": {
+                    "x": 25.732624053955078,
+                    "y": 1.739667534828186,
+                    "z": 66.69679260253906
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.010658800601959229,
+                    "y": 2.4779834747314453,
+                    "z": -0.012757062911987305
+                },
+                "localScale": {
+                    "x": 0.15595529973506927,
+                    "y": 0.17396675050258636,
+                    "z": 0.7095403671264648
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "id": 8
+        },
+        {
+            "EntityData": {
+                "name": "Barge Pillar",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 4711645407722062417,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "16533173024327387273": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -58.44333267211914,
+                    "y": 23.55487632751465,
+                    "z": -219.7299041748047
+                },
+                "scale": {
+                    "x": 25.733003616333008,
+                    "y": 5.887876033782959,
+                    "z": 15.875760078430176
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.004363298416137695,
+                    "y": -4.383481025695801,
+                    "z": 0.7626116275787354
+                },
+                "localScale": {
+                    "x": 1.0000147819519043,
+                    "y": 3.384483575820923,
+                    "z": 0.23802883923053741
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "id": 9
+        },
+        {
+            "EntityData": {
+                "name": "Barge Pillar",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 4711645407722062417,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "16533173024327387273": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -58.44333267211914,
+                    "y": 23.55487632751465,
+                    "z": -321.3976135253906
+                },
+                "scale": {
+                    "x": 25.733003616333008,
+                    "y": 5.887876033782959,
+                    "z": 15.875760078430176
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.004363298416137695,
+                    "y": -4.383481025695801,
+                    "z": -0.7617149353027344
+                },
+                "localScale": {
+                    "x": 1.0000147819519043,
+                    "y": 3.384483575820923,
+                    "z": 0.23802883923053741
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "id": 10
+        },
+        {
+            "EntityData": {
+                "name": "Barge Platform",
+                "tag": "",
+                "parent": 5,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 4711645407722062417,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "16533173024327387273": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 89.02647399902344,
+                    "y": 24.146127700805664,
+                    "z": -339.6967468261719
+                },
+                "scale": {
+                    "x": 20.0,
+                    "y": 7.4383955001831055,
+                    "z": 24.415584564208984
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.8824172019958496,
+                    "y": 1.7745285034179688,
+                    "z": -0.7478961944580078
+                },
+                "localScale": {
+                    "x": 0.12121212482452393,
+                    "y": 0.7438395619392395,
+                    "z": 0.25974026322364807
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "id": 11
+        },
+        {
+            "EntityData": {
+                "name": "Barge Platform",
+                "tag": "",
+                "parent": 5,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 4711645407722062417,
+                "entityGUID": 5982856762938213115,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "16533173024327387273": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -201.86314392089844,
+                    "y": 24.146127700805664,
+                    "z": -199.11663818359375
+                },
+                "scale": {
+                    "x": 20.0,
+                    "y": 7.4383955001831055,
+                    "z": 24.415584564208984
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.8805502653121948,
+                    "y": 1.7745285034179688,
+                    "z": 0.7476367950439453
+                },
+                "localScale": {
+                    "x": 0.12121212482452393,
+                    "y": 0.7438395619392395,
+                    "z": 0.25974026322364807
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "id": 12
+        }
+    ]
+}
