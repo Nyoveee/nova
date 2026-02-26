@@ -228,11 +228,18 @@ void Editor::update(float dt) {
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	if (engine.toDebugRenderNavMesh) {
-		ResourceID navMeshId = engine.navigationSystem.getNavMeshId();
-		auto&& [navMesh, _] = resourceManager.getResource<NavMesh>(navMeshId);
+		for (auto&& [entity, entityData, navMeshSurface] : engine.ecs.registry.view<EntityData, NavMeshSurface>().each())
+		{
+			if (!entityData.isActive || !engine.ecs.isComponentActive<NavMeshSurface>(entity)) {
+				continue;
+			}
 
-		if (navMesh && navMesh->navMesh) {
-			engine.renderer.renderNavMesh(*navMesh->navMesh);
+			auto&& [navMesh, _] = resourceManager.getResource<NavMesh>(navMeshSurface.navMeshId);
+
+			if (navMesh && navMesh->navMesh) {
+				engine.renderer.renderNavMesh(*navMesh->navMesh);
+				break;
+			}
 		}
 	}
 }
