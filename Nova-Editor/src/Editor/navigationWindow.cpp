@@ -82,8 +82,8 @@ void NavigationWindow::update() {
 	if (ImGui::Button("Bake", ImVec2(100, 40))) 
 	{
 		//update filename to include current scene resource as idenifier
-		std::string buildFile = filename + std::to_string(static_cast<std::size_t>(editor.engine.ecs.sceneManager.getCurrentScene()));
-		navMeshGenerator.BuildNavMesh(buildFile);
+		//std::string buildFile = filename + std::to_string(static_cast<std::size_t>(editor.engine.ecs.sceneManager.getCurrentScene()));
+		navMeshGenerator.BuildNavMesh(filename);
 		onFileCreate = true; 
 		step = 0; 
 	};
@@ -93,8 +93,8 @@ void NavigationWindow::update() {
 	{
 		if (step >= 60)
 		{
-			std::string buildFile = filename + std::to_string(static_cast<std::size_t>(editor.engine.ecs.sceneManager.getCurrentScene()));
-			navMeshGenerator.AddNavMeshSurface(buildFile);
+			//std::string buildFile = filename + std::to_string(static_cast<std::size_t>(editor.engine.ecs.sceneManager.getCurrentScene()));
+			navMeshGenerator.AddNavMeshSurface(filename);
 			step = 0;
 			onFileCreate = false;
 		}

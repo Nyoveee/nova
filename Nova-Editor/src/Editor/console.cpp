@@ -3,7 +3,9 @@
 
 
 void Console::update() {
-    if (maxLogLevel == LogLevel::Warning || maxLogLevel == LogLevel::Error) {
+    bool isAnError = maxLogLevel == LogLevel::Warning || maxLogLevel == LogLevel::Error;
+
+    if (isAnError) {
         ImGui::PushStyleColor(ImGuiCol_Tab, consoleTabColor);
         ImGui::PushStyleColor(ImGuiCol_TabActive, consoleTabColor);
         ImGui::PushStyleColor(ImGuiCol_TabHovered, consoleTabColor);
@@ -110,7 +112,8 @@ void Console::update() {
 
     ImGui::EndChild();
     ImGui::End();
-    if (maxLogLevel == LogLevel::Warning || maxLogLevel == LogLevel::Error) {
+
+    if (isAnError) {
         ImGui::PopStyleColor();
         ImGui::PopStyleColor();
         ImGui::PopStyleColor();
