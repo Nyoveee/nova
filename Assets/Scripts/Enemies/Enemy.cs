@@ -59,6 +59,7 @@ public abstract class Enemy : Script
     private bool wasRecentlyDamaged = false;
     private float ichorSpawnPositionVariance = 1.5f;
     protected float accumulatedDamageInstance = 0f;
+    private Vector3 navigationTargetPosition;
     // Jump
     private float currentJumpDuration = 0f;
     private NavMeshOfflinkData offlinkData;
@@ -116,7 +117,15 @@ public abstract class Enemy : Script
         }
         return false;
     }
-
+    public bool IsTargetNavigationPositionReached()
+    {
+        string[] mask = { "Floor" };
+        var result = PhysicsAPI.Raycast(gameObject.transform.position, Vector3.Down(), 1000, mask);
+        if (result == null)
+            return false;
+        Vector3 positionOnGround = result.Value.point;
+        return (navigationTargetPosition - positionOnGround).Length() <= 1f;
+    }
     //Yo btw .enable/disable does not actually work???, so just set object inactive better
 
     public void ActivateRigidbody()
@@ -222,9 +231,15 @@ public abstract class Enemy : Script
 
     protected void MoveToNavMeshPosition(Vector3 position)
     {
-        RayCastResult? result = PhysicsAPI.Raycast(position, -Vector3.Up(), 1000f);
+        string[] layerMask = { "Floor" };
+        RayCastResult? result = PhysicsAPI.Raycast(position, Vector3.Down(), 1000f,layerMask);
         if (result != null)
+        {
+            navigationTargetPosition = result.Value.point;
             NavigationAPI.setDestination(gameObject, result.Value.point);
+        }
+
+            
     }
     protected bool WasRecentlyDamaged()
     {

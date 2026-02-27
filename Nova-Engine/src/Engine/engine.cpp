@@ -238,7 +238,7 @@ void Engine::SystemsOnLoad() {
 	if (!inSimulationMode) {
 		return;
 	}
-
+	
 	// Force update all entities via the transformation system.. since they are freshly created..
 	transformationSystem.update();
 
@@ -265,11 +265,14 @@ void Engine::SystemsOnLoad() {
 	// unpause all systems when loaded.. and clear accumulated dt
 	pauseSystems(false);
 	window.clearAccumulatedTime();
-
+	
 	deltaTimeMultiplier = 1.f;
 }
 
 void Engine::SystemsUnload() {
+	// Reset camera shake.
+	renderer.getGameCamera().setCameraShake(0.f, 0.f);
+
 	// Remove all created resource instances..
 	resourceManager.removeAllResourceInstance();
 

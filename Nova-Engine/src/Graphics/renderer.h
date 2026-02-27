@@ -214,7 +214,7 @@ private:
 	void renderTranslucentModels(FrameBuffer const& frameBuffer);
 
 	// render all Texts.
-	void renderText(Transform const& transform, Text const& text);
+	void renderText(Transform const& transform, Text const& text, ColorA const& colorMultiplier);
 
 	// render ui images.
 	void renderImage(Transform const& transform, Image const& image, ColorA const& colorMultiplier);

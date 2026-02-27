@@ -194,6 +194,18 @@ void ParticleEmitter_::setParticleColor(ColorAlpha color)
 	emitter->particleColorSelection.color = color.native();
 }
 
+void ParticleEmitter_::setRadius(float radius)
+{
+	ParticleEmitter* emitter = nativeComponent();
+	emitter->particleEmissionTypeSelection.radiusEmitter.radius = radius;
+}
+
+float ParticleEmitter_::getRadius()
+{
+	ParticleEmitter* emitter = nativeComponent();
+	return emitter->particleEmissionTypeSelection.radiusEmitter.radius;
+}
+
 // =================================================================
 // Rigidbody
 // =================================================================

@@ -272,11 +272,15 @@ ManagedComponentEnd()
 // ======================================
 ManagedComponentDeclaration(
 	ParticleEmitter,
-	float, lifeTime
+	float, lifeTime,
+	float, particleRate
 )
+
 void emit(int count);
 void emit();
 void setParticleColor(ColorAlpha color);
+void setRadius(float radius);
+float getRadius();
 
 ManagedComponentEnd()
 // ======================================

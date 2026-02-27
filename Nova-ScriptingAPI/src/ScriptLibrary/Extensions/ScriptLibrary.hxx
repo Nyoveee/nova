@@ -116,6 +116,8 @@ public:
 
 	static void LockMouse();
 	static void UnlockMouse();
+
+	static void shakeCamera(float duration, float amplication);
 };
 
 

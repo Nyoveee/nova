@@ -22,6 +22,10 @@ public:
 
 	ENGINE_DLL_API glm::vec3 clipToWorldSpace(glm::vec3 const& clipPos);
 
+	// camera shake..
+	ENGINE_DLL_API void	updateCameraShake(float deltaTime);
+	ENGINE_DLL_API void	setCameraShake(float duration, float amplification);
+
 public:
 	// position related
 	glm::vec3 const&	getPos() const;
@@ -75,4 +79,18 @@ private:
 
 	glm::mat4x4 viewProjectionMatrix;
 	glm::mat4x4 previousViewProjectionMatrix;
+
+	struct CameraShakeEffect {
+		// setting..
+		bool  active = false;
+		float amplification = 1.f;
+		float duration = 1.f;
+
+		// runtime..
+		float currentDuration = duration;
+		float currentAmplification = amplification;
+		glm::vec3 positionOffset;
+	};
+	
+	CameraShakeEffect cameraShake;
 };

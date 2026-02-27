@@ -70,19 +70,7 @@ void NavigationWindow::update() {
 	ImGui::SameLine();
 	ImGui::SliderFloat("##Agent Max Slope:", &buildSettings.agentMaxSlope, 0.0f, 89.9f, "%.2f");
 
-	// Specify filename when baking (TEMP)
-	ImGui::BeginDisabled();
 	ImGui::InputText("Filename:", &filename);
-	ImGui::EndDisabled();
-
-	// TEMPORARY..
-	editor.displayAssetDropDownList<NavMesh>(navigationSystem.getNavMeshId(), "Select nav mesh..", [&](ResourceID newNavMeshId) {
-		navigationSystem.setNewNavMesh(newNavMeshId);
-	});
-
-	if (ImGui::Button("Unselect")) {
-		navigationSystem.setNewNavMesh(INVALID_RESOURCE_ID);
-	}
 
 	//-- imgui buttons Reset and Set for now
 	ImGui::Dummy(ImVec2(00.0f, 20.0f));
