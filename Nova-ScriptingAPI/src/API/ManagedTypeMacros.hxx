@@ -122,8 +122,8 @@ public:																															\
 				Logger::warn("{} does not support enabling/disabling", #ComponentType);											\
 				return;																											\
 			}																													\
-			Interface::engine->ecs.setComponentActive<ComponentType>(static_cast<entt::entity>(entityID), b_Enable);			\
-			return;																												\
+			else { Interface::engine->ecs.setComponentActive<ComponentType>(static_cast<entt::entity>(entityID), b_Enable);		\
+			return; }																											\
 		};																														\
 	}																															\
 private:																														\

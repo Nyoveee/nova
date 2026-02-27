@@ -47,6 +47,29 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 
 	editor.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
 		dataMember = DataMemberType{ resourceId };
+
+		if constexpr (std::same_as<OriginalAssetType, Texture>) {
+			// replace the selected entity's transform to match the image..
+			auto&& [texture, _] = editor.resourceManager.getResource<Texture>(resourceId);
+
+			if (!texture) {
+				return;
+			}
+
+			auto&& selectedEntities = editor.getSelectedEntities();
+			
+			if (selectedEntities.empty()) {
+				return;
+			}
+
+			Transform* transform = editor.engine.ecs.registry.try_get<Transform>(selectedEntities[0]);
+
+			if (!transform) {
+				return;
+			}
+
+			transform->scale = glm::vec3{ static_cast<float>(texture->getWidth()), static_cast<float>(texture->getHeight()), 1.f };
+		}
 	});
 }
 

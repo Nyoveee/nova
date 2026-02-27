@@ -677,7 +677,7 @@ void Renderer::renderUI()
 			}
 
 			if (text && engine.ecs.isComponentActive<Text>(entity)) {
-				renderText(transform, *text);
+				renderText(transform, *text, button ? button->finalColor : whiteColor);
 			}
 
 			if (engine.isInSimulationMode() && videoPlayer && engine.ecs.isComponentActive<VideoPlayer>(entity)) {
@@ -2161,7 +2161,7 @@ void Renderer::renderTranslucentModels(FrameBuffer const& frameBuffer) {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Renderer::renderText(Transform const& transform, Text const& text) {
+void Renderer::renderText(Transform const& transform, Text const& text, ColorA const& colorMultiplier) {
 	struct Vertex {
 		GLfloat x, y;   // screen position
 		GLfloat s, t;   // texture coordinates
@@ -2182,7 +2182,7 @@ void Renderer::renderText(Transform const& transform, Text const& text) {
 		return;
 	}
 
-	textShader.setVec3("textColor", text.fontColor);
+	textShader.setVec3("textColor", text.fontColor* glm::vec3{ colorMultiplier });
 
 	Font::Atlas const& atlas = font->getAtlas();
 	float fontScale = static_cast<float>(text.fontSize) / font->getFontSize();
