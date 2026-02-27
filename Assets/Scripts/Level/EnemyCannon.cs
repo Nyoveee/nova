@@ -20,7 +20,7 @@ class EnemyCannon : Script
     [SerializableField]
     private float maxTimeShootCooldown;
     [SerializableField]
-    private GameObject shootingArea;
+    private List<GameObject> shootingAreas;
     [SerializableField]
     private Prefab enemyPrefab;
     [SerializableField]
@@ -37,6 +37,8 @@ class EnemyCannon : Script
     private MeshRenderer_ cannonMeshRenderer;
     [SerializableField]
     private MeshRenderer_ cannonBarrelMeshRenderer;
+    [SerializableField]
+    private Transform_ playerbody;
     [SerializableField]
     private GameObject boat;
     [SerializableField]
@@ -117,6 +119,14 @@ class EnemyCannon : Script
     }
 
     private void GetTargetingLocation() {
+        List<GameObject> validTargetAreas = GetValidTargetingAreas();
+        if (validTargetAreas.Count == 0)
+        {
+            Debug.LogError("No Valid Targeting Areas found");
+            targetPosition = Vector3.Zero();
+            return;
+        }
+        GameObject shootingArea = validTargetAreas[Random.Range(0, validTargetAreas.Count)];
         Vector3 min = shootingArea.transform.position - shootingArea.transform.scale;
         Vector3 max = shootingArea.transform.position + shootingArea.transform.scale;
         Vector3 randomPoint = Random.Range(min, max);
@@ -125,7 +135,21 @@ class EnemyCannon : Script
         if(result!= null)
             targetPosition = result.Value.point;
     }
- 
+    private List<GameObject> GetValidTargetingAreas()
+    {
+        List<GameObject> validTargetAreas = new List<GameObject>();
+        foreach (GameObject targetingArea in shootingAreas)
+        {
+            Vector3 min = targetingArea.transform.position - targetingArea.transform.scale;
+            Vector3 max = targetingArea.transform.position + targetingArea.transform.scale;
+            min.y = max.y = 0;
+            if (playerbody.position.x >= min.x && playerbody.position.x <= max.x
+                && playerbody.position.z >= min.z && playerbody.position.z <= max.z)
+                continue;
+            validTargetAreas.Add(targetingArea);
+        }
+        return validTargetAreas;
+    }
     private void RotateCannon() {
         currentTurningTime += Time.V_DeltaTime();
         currentTurningTime = Mathf.Min(currentTurningTime, cannonTurningTime);
