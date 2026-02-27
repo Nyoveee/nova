@@ -642,6 +642,8 @@ class PlayerController_V2 : Script
         //check jump conditions
         if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && jumpEnabled && (jumpTimer > jumpCD))
         {
+            rigidbody.SetVelocityLimits(100000); //player movespeed is uncapped in air
+            rigidbody.SetLinearDamping(0f);
             playerMoveStates = PlayerMoveStates.StartJump;
         }
 
