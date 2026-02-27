@@ -6,6 +6,11 @@
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
 #include "Serialisation/serialisation.h"
+extern "C"
+{
+	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
 
 constexpr int			windowWidth		= 1200;
 constexpr int			windowHeight	= 900;
@@ -17,6 +22,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	(void)lpCmdLine;
 	(void)nShowCmd;
 #else
+
 int main() {
 #endif
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);

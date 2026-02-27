@@ -190,6 +190,13 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		editorViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
 	}
 
+	entt::registry& ecsRegistry = engine.ecs.registry;
+	for (entt::entity entity : ecsRegistry.view<entt::entity>()) {
+		EntityData* entityData = ecsRegistry.try_get<EntityData>(entity);
+		if (entityData->prefabID != INVALID_RESOURCE_ID) {
+			engine.prefabManager.prefabBroadcast(entityData->prefabID);
+		}
+	}
 #if false
 	//check if there is a prefab in the scene, if there is, update the prefabManager
 	// entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();

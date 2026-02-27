@@ -37,8 +37,8 @@ namespace Serialiser {
 			return;
 		}
 
-		//file << std::setw(4) << js << std::endl;
 		file << js.dump(4) << std::endl;
+		//file << std::fixed<<std::setprecision(4)<< js.dump(4) << std::endl;
 	}
 
 	void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, const char* fileName) {
