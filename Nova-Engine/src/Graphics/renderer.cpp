@@ -707,17 +707,17 @@ void Renderer::renderUI()
 		}
 	}
 
-	uiMainFrameBuffer.swapFrameBuffer();
+	//uiMainFrameBuffer.swapFrameBuffer();
 
-	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.getActiveFrameBuffer().fboId());
+	//glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.getActiveFrameBuffer().fboId());
 
-	gammaCorrectionShader.use();
+	//gammaCorrectionShader.use();
 
-	glBindTextureUnit(0, uiMainFrameBuffer.getReadFrameBuffer().textureIds()[0]);
-	gammaCorrectionShader.setImageUniform("overlay", 0);
+	//glBindTextureUnit(0, uiMainFrameBuffer.getReadFrameBuffer().textureIds()[0]);
+	//gammaCorrectionShader.setImageUniform("overlay", 0);
 
-	// Render fullscreen quad
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	//// Render fullscreen quad
+	//glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glBindVertexArray(mainVAO);
 }

@@ -1,0 +1,1363 @@
+{
+    "entities": [
+        {
+            "EntityData": {
+                "name": "Control Canvas",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    0,
+                    46137515
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 8937314893164036281,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Canvas": {
+                "placeholder": ""
+            },
+            "id": 42991779
+        },
+        {
+            "EntityData": {
+                "name": "Background",
+                "tag": "",
+                "parent": 42991779,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 3749168122433388731,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1932.47998046875,
+                    "y": 1075.1400146484375,
+                    "z": 0.9900000095367432
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1932.47998046875,
+                    "y": 1075.1400146484375,
+                    "z": 0.9900000095367432
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 6055011131641823249,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Instruction",
+                "tag": "",
+                "parent": 46137515,
+                "attachedSocket": 65535,
+                "children": [
+                    4194320,
+                    44040357,
+                    41943198,
+                    3145734,
+                    2097160,
+                    46137523
+                ],
+                "layerId": 2,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 3749168122433388731,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 959.9999389648438,
+                    "y": 634.4815063476563,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1013.0009765625,
+                    "y": 406.0,
+                    "z": 0.9900015592575073
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -5.960464477539063e-08,
+                    "y": 0.10061925649642944,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.7926455736160278,
+                    "y": 0.43237486481666565,
+                    "z": 1.0000016689300537
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 7784393388552077315,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 46137514
+        },
+        {
+            "EntityData": {
+                "name": "Control Panel",
+                "tag": "",
+                "parent": 42991779,
+                "attachedSocket": 65535,
+                "children": [
+                    46137514,
+                    46137524
+                ],
+                "layerId": 1,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 3749168122433388731,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1278.0,
+                    "y": 939.0,
+                    "z": 0.9900000095367432
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1278.0,
+                    "y": 939.0,
+                    "z": 0.9900000095367432
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 11243157902372618247,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 46137515
+        },
+        {
+            "EntityData": {
+                "name": "Back Button",
+                "tag": "",
+                "parent": 46137515,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 2,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17951656575460851913,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 959.9999389648438,
+                    "y": 249.7020263671875,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 354.00006103515625,
+                    "y": 105.0,
+                    "z": 1.0000015497207642
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -5.960464477539063e-08,
+                    "y": -0.30915650725364685,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.27699536085128784,
+                    "y": 0.11182108521461487,
+                    "z": 1.01010262966156
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false,
+                "audioGroup": "SFX"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 1986501316973068289,
+                        "fields": [
+                            {
+                                "name": "nextScene",
+                                "data": {
+                                    "__variant_value": 12767626241908719617,
+                                    "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "onHoverSFX",
+                                "data": {
+                                    "__variant_value": 18282072967288242303,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "onClickSFX",
+                                "data": {
+                                    "__variant_value": 5023475664309502081,
+                                    "__variant_type": 15
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 15278383168496582657,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 46137524,
+                    "script": 1986501316973068289
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 0.5689655542373657,
+                    "g": 0.5689655542373657,
+                    "b": 0.5689655542373657,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 0.6000000238418579,
+                    "g": 0.6000000238418579,
+                    "b": 0.6000000238418579,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.399999976158142,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 46137524
+        },
+        {
+            "EntityData": {
+                "name": "Press WASD Text",
+                "tag": "",
+                "parent": 2097160,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 632.6900634765625,
+                    "y": 583.7626953125,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -1.68695068359375,
+                    "y": -35.430419921875,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Press WASD",
+                "fontSize": 25,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 2097164
+        },
+        {
+            "EntityData": {
+                "name": "Move Text",
+                "tag": "",
+                "parent": 46137514,
+                "attachedSocket": 65535,
+                "children": [
+                    2097164
+                ],
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 634.3770751953125,
+                    "y": 619.193115234375,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.32144373655319214,
+                    "y": -0.037656188011169434,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.000987167120911181,
+                    "y": 0.002463054610416293,
+                    "z": 1.0101014375686646
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Move",
+                "fontSize": 40,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 2097160
+        },
+        {
+            "EntityData": {
+                "name": "Jump Text",
+                "tag": "",
+                "parent": 46137514,
+                "attachedSocket": 65535,
+                "children": [
+                    41943204
+                ],
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 619.1920776367188,
+                    "y": 382.9892272949219,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.3364338278770447,
+                    "y": -0.6194391846656799,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.000987167120911181,
+                    "y": 0.002463054610416293,
+                    "z": 1.0101014375686646
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Jump",
+                "fontSize": 40,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 4194320
+        },
+        {
+            "EntityData": {
+                "name": "Press Space bar Text",
+                "tag": "",
+                "parent": 4194320,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 617.505126953125,
+                    "y": 347.5588684082031,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -1.68695068359375,
+                    "y": -35.430328369140625,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Press Space bar",
+                "fontSize": 25,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 41943204
+        },
+        {
+            "EntityData": {
+                "name": "Throwing Aim Text",
+                "tag": "",
+                "parent": 46137514,
+                "attachedSocket": 65535,
+                "children": [
+                    4194315
+                ],
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1366.610107421875,
+                    "y": 382.9892272949219,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.401391863822937,
+                    "y": -0.6194391846656799,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.000987167120911181,
+                    "y": 0.002463054610416293,
+                    "z": 1.0101014375686646
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Throwing Aim",
+                "fontSize": 40,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 44040357
+        },
+        {
+            "EntityData": {
+                "name": "Left Click Text",
+                "tag": "",
+                "parent": 44040357,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1364.92333984375,
+                    "y": 347.5588684082031,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -1.686767578125,
+                    "y": -35.430328369140625,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Hold Right Click",
+                "fontSize": 25,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 4194315
+        },
+        {
+            "EntityData": {
+                "name": "Cast Ultimate Skill Text",
+                "tag": "",
+                "parent": 46137514,
+                "attachedSocket": 65535,
+                "children": [
+                    41943202
+                ],
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 993.7431640625,
+                    "y": 619.193115234375,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.03331023454666138,
+                    "y": -0.037656188011169434,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.000987167120911181,
+                    "y": 0.002463054610416293,
+                    "z": 1.0101014375686646
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Cast Ultimate Skill",
+                "fontSize": 40,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 41943198
+        },
+        {
+            "EntityData": {
+                "name": "Press F Text",
+                "tag": "",
+                "parent": 41943198,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 992.055908203125,
+                    "y": 583.7626953125,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -1.687255859375,
+                    "y": -35.430419921875,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Press F",
+                "fontSize": 25,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 41943202
+        },
+        {
+            "EntityData": {
+                "name": "Shoot Text",
+                "tag": "",
+                "parent": 46137514,
+                "attachedSocket": 65535,
+                "children": [
+                    2097159
+                ],
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1366.610107421875,
+                    "y": 619.193115234375,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.401391863822937,
+                    "y": -0.037656188011169434,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.000987167120911181,
+                    "y": 0.002463054610416293,
+                    "z": 1.0101014375686646
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Shoot",
+                "fontSize": 40,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 3145734
+        },
+        {
+            "EntityData": {
+                "name": "Left Click Text",
+                "tag": "",
+                "parent": 3145734,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1364.92333984375,
+                    "y": 583.7626953125,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -1.686767578125,
+                    "y": -35.430419921875,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Left Click",
+                "fontSize": 25,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 2097159
+        },
+        {
+            "EntityData": {
+                "name": "Dash (uses energy) Text",
+                "tag": "",
+                "parent": 46137514,
+                "attachedSocket": 65535,
+                "children": [
+                    46137522
+                ],
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 986.9949340820313,
+                    "y": 382.9892272949219,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.026648640632629395,
+                    "y": -0.6194391846656799,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.000987167120911181,
+                    "y": 0.002463054610416293,
+                    "z": 1.0101014375686646
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Dash (uses energy)",
+                "fontSize": 40,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 46137523
+        },
+        {
+            "EntityData": {
+                "name": "Press Shift Text",
+                "tag": "",
+                "parent": 46137523,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 3,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17375195823160115403,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 985.3079223632813,
+                    "y": 347.5588684082031,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000011920928955,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000020265579224
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -1.68701171875,
+                    "y": -35.430328369140625,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Press Shift",
+                "fontSize": 25,
+                "fontColor": {
+                    "r": 0.9490196108818054,
+                    "g": 0.9333333373069763,
+                    "b": 0.8666666746139526
+                },
+                "alignment": "Center"
+            },
+            "id": 46137522
+        }
+    ],
+    "layers": [
+        {
+            "name": "Default"
+        },
+        {
+            "name": "Panel"
+        },
+        {
+            "name": "Button"
+        },
+        {
+            "name": "Text"
+        },
+        {
+            "name": "Layer 4"
+        }
+    ]
+}
