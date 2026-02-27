@@ -77,31 +77,31 @@
                 "entityGUID": 10857361260116115467,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "16652763906952685383": false,
                     "15908289914940614865": false,
+                    "11935986701403193153": false,
                     "452538415452204233": false,
                     "9059764703561530457": false,
                     "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
                     "6152912775364972041": false,
-                    "10106385962890515953": false,
+                    "13953638462837156301": false,
                     "394579324703252227": false,
-                    "17464486586416021590": false,
+                    "10106385962890515953": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -173,8 +173,8 @@
                 "gravityMultiplier": 1.0,
                 "restitution": 0.0,
                 "isRotatable": true,
-                "isTrigger": true,
-                "dynamicCollider": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
                 "toScaleWithTransform": true
             },
             "BoxCollider": {
@@ -198,6 +198,8 @@
                 "startSpeed": 1.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": true,
+                "minInitialRotationOffset": -3.251832628150482e+25,
+                "maxInitialRotationOffset": 9.935206112062953e-43,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -207,6 +209,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 1.0,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -628,7 +632,7 @@
                 "position": {
                     "x": -132.75572204589844,
                     "y": 32.8796501159668,
-                    "z": -71.73969268798828
+                    "z": -71.74002075195313
                 },
                 "scale": {
                     "x": 0.8499994874000549,
@@ -647,9 +651,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.9184112548828125,
+                    "x": -0.9183349609375,
                     "y": -0.18531036376953125,
-                    "z": -0.5605087280273438
+                    "z": -0.5608901977539063
                 },
                 "localScale": {
                     "x": 0.9999962449073792,
@@ -696,7 +700,7 @@
                 "position": {
                     "x": -132.75531005859375,
                     "y": 32.21561050415039,
-                    "z": -71.73973083496094
+                    "z": -71.73997497558594
                 },
                 "scale": {
                     "x": 1.9999980926513672,
@@ -715,9 +719,9 @@
                     "z": 3.530241377003307e-10
                 },
                 "localPosition": {
-                    "x": -0.917938232421875,
+                    "x": -0.917877197265625,
                     "y": -0.9665336608886719,
-                    "z": -0.5604476928710938
+                    "z": -0.56072998046875
                 },
                 "localScale": {
                     "x": 2.352931499481201,
@@ -762,20 +766,20 @@
             },
             "Transform": {
                 "position": {
-                    "x": -132.75515747070313,
+                    "x": -132.755126953125,
                     "y": 32.21547317504883,
-                    "z": -71.73966217041016
+                    "z": -71.73992919921875
                 },
                 "scale": {
-                    "x": 2.0003135204315186,
+                    "x": 2.0003252029418945,
                     "y": 2.000319004058838,
-                    "z": 2.000343084335327
+                    "z": 2.000354528427124
                 },
                 "rotation": {
-                    "w": -0.13215383887290955,
-                    "x": 1.102383521356387e-05,
+                    "w": -0.13215385377407074,
+                    "x": 1.1023760634998325e-05,
                     "y": 0.991229236125946,
-                    "z": -1.0294871799487737e-06
+                    "z": -1.029486270454072e-06
                 },
                 "eulerAngles": {
                     "x": -3.141587495803833,
@@ -783,24 +787,24 @@
                     "z": 3.1415696144104004
                 },
                 "localPosition": {
-                    "x": 7.62939453125e-05,
+                    "x": 8.7738037109375e-05,
                     "y": -6.866455078125e-05,
-                    "z": 4.1961669921875e-05
+                    "z": 3.4332275390625e-05
                 },
                 "localScale": {
-                    "x": 1.0001578330993652,
+                    "x": 1.0001636743545532,
                     "y": 1.0001599788665771,
-                    "z": 1.00017249584198
+                    "z": 1.0001782178878784
                 },
                 "localRotation": {
-                    "w": -0.06580109894275665,
-                    "x": 1.1068103958677966e-05,
+                    "w": -0.06580111384391785,
+                    "x": 1.106802938011242e-05,
                     "y": 0.9978327751159668,
-                    "z": -2.9253399702611205e-07
+                    "z": -2.9253811817397946e-07
                 },
                 "localEulerAngles": {
                     "x": -3.1415905952453613,
-                    "y": -0.13169735670089722,
+                    "y": -0.1316973865032196,
                     "z": 3.1415703296661377
                 }
             },
@@ -975,46 +979,46 @@
             },
             "Transform": {
                 "position": {
-                    "x": -132.32223510742188,
-                    "y": 32.2148323059082,
-                    "z": -70.28923034667969
+                    "x": -132.32228088378906,
+                    "y": 32.21478271484375,
+                    "z": -70.28936767578125
                 },
                 "scale": {
-                    "x": 2.0006513595581055,
-                    "y": 2.000239610671997,
-                    "z": 2.0003092288970947
+                    "x": 2.000664472579956,
+                    "y": 2.0002365112304688,
+                    "z": 2.0003206729888916
                 },
                 "rotation": {
                     "w": 0.7473475337028503,
-                    "x": 1.4154074051475618e-05,
+                    "x": 1.41542695928365e-05,
                     "y": -0.6644333600997925,
-                    "z": 4.374337095214287e-06
+                    "z": 4.374542186269537e-06
                 },
                 "eulerAngles": {
-                    "x": 0.00013107419363223016,
+                    "x": 0.0001310743682552129,
                     "y": -1.4534709453582764,
-                    "z": -0.00010482592915650457
+                    "z": -0.00010482552897883579
                 },
                 "localPosition": {
-                    "x": -0.01889801025390625,
-                    "y": -0.0003185272216796875,
-                    "z": -0.7564659118652344
+                    "x": -0.018840789794921875,
+                    "y": -0.0003452301025390625,
+                    "z": -0.7565116882324219
                 },
                 "localScale": {
-                    "x": 1.0001542568206787,
-                    "y": 0.9999603629112244,
-                    "z": 0.9999974370002747
+                    "x": 1.0001550912857056,
+                    "y": 0.9999586939811707,
+                    "z": 0.9999972581863403
                 },
                 "localRotation": {
                     "w": 0.7573713064193726,
-                    "x": 1.3761105947196484e-05,
+                    "x": 1.376114505546866e-05,
                     "y": 0.6529844999313354,
-                    "z": -2.1545922209043056e-05
+                    "z": -2.1545978597714566e-05
                 },
                 "localEulerAngles": {
-                    "x": -4.9542486522113904e-05,
+                    "x": -4.9542584747541696e-05,
                     "y": 1.423037052154541,
-                    "z": -9.961074101738632e-05
+                    "z": -9.961095202015713e-05
                 }
             },
             "MeshRenderer": {
@@ -1047,45 +1051,45 @@
             },
             "Transform": {
                 "position": {
-                    "x": -132.24868774414063,
-                    "y": 32.734825134277344,
-                    "z": -69.4968032836914
+                    "x": -132.24884033203125,
+                    "y": 32.73487091064453,
+                    "z": -69.49687957763672
                 },
                 "scale": {
-                    "x": 2.001319646835327,
-                    "y": 2.000523090362549,
-                    "z": 2.0011470317840576
+                    "x": 2.001338243484497,
+                    "y": 2.0005199909210205,
+                    "z": 2.001166343688965
                 },
                 "rotation": {
-                    "w": 0.6833298206329346,
-                    "x": -7.081531748553971e-06,
-                    "y": 0.7301098704338074,
-                    "z": -1.8210157577414066e-05
+                    "w": 0.6833299994468689,
+                    "x": -7.081523108354304e-06,
+                    "y": 0.730109691619873,
+                    "z": -1.82100211532088e-05
                 },
                 "eulerAngles": {
                     "x": -3.1410441398620605,
-                    "y": 1.5046271085739136,
+                    "y": 1.5046288967132568,
                     "z": -3.1410598754882813
                 },
                 "localPosition": {
-                    "x": 0.049411773681640625,
-                    "y": 0.25963592529296875,
-                    "z": -1.1484107971191406
+                    "x": 0.049526214599609375,
+                    "y": 0.2596569061279297,
+                    "z": -1.148468017578125
                 },
                 "localScale": {
-                    "x": 1.0004887580871582,
-                    "y": 1.0001020431518555,
-                    "z": 1.0004160404205322
+                    "x": 1.0004920959472656,
+                    "y": 1.0001003742218018,
+                    "z": 1.0004198551177979
                 },
                 "localRotation": {
-                    "w": 0.6334004998207092,
-                    "x": 1.0701894098019693e-05,
-                    "y": -0.773824155330658,
-                    "z": -1.1958116374444216e-05
+                    "w": 0.6334002614021301,
+                    "x": 1.0701886822062079e-05,
+                    "y": -0.7738243937492371,
+                    "z": -1.1958117283938918e-05
                 },
                 "localEulerAngles": {
                     "x": 3.141430377960205,
-                    "y": -1.3718796968460083,
+                    "y": -1.3718793392181396,
                     "z": -3.141432285308838
                 }
             },
@@ -1097,6 +1101,8 @@
                 "startSpeed": 1.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0371337331269416e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -1106,6 +1112,8 @@
                     "z": -107374176.0
                 },
                 "lifeTime": 1.0,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -1222,7 +1230,7 @@
                 "position": {
                     "x": -132.75572204589844,
                     "y": 32.21586990356445,
-                    "z": -71.73969268798828
+                    "z": -71.74002075195313
                 },
                 "scale": {
                     "x": 0.8499994874000549,
@@ -1241,9 +1249,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.9184112548828125,
+                    "x": -0.9183349609375,
                     "y": -0.9662284851074219,
-                    "z": -0.5605087280273438
+                    "z": -0.5608901977539063
                 },
                 "localScale": {
                     "x": 0.9999962449073792,
@@ -1277,16 +1285,16 @@
                 "entityGUID": 2399258079209947405,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "2785545264285399722": false,
-                    "6919815292445452220": true
+                    "6919815292445452220": true,
+                    "2785545264285399722": false
                 },
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": -131.89256286621094,
+                    "x": -131.89254760742188,
                     "y": 33.0369758605957,
-                    "z": -71.4389877319336
+                    "z": -71.43913269042969
                 },
                 "scale": {
                     "x": 0.8500019311904907,
@@ -1305,9 +1313,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.0002899169921875,
+                    "x": -0.000244140625,
                     "y": -0.00022125244140625,
-                    "z": -0.00069427490234375
+                    "z": -0.00084686279296875
                 },
                 "localScale": {
                     "x": 0.9999991059303284,
@@ -1379,9 +1387,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -130.88551330566406,
+                    "x": -130.88548278808594,
                     "y": 31.09450340270996,
-                    "z": -71.33892059326172
+                    "z": -71.339111328125
                 },
                 "scale": {
                     "x": 4.0000200271606445,
@@ -1400,9 +1408,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 1.133056640625,
+                    "x": 1.1331329345703125,
                     "y": -2.285480499267578,
-                    "z": 0.36405181884765625
+                    "z": 0.36385345458984375
                 },
                 "localScale": {
                     "x": 4.705892086029053,
@@ -1442,9 +1450,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -132.4774169921875,
+                    "x": -132.47750854492188,
                     "y": 31.838674545288086,
-                    "z": -72.61917114257813
+                    "z": -72.61932373046875
                 },
                 "scale": {
                     "x": 4.000086784362793,
@@ -1463,9 +1471,9 @@
                     "z": -0.5998787879943848
                 },
                 "localPosition": {
-                    "x": -0.35456275939941406,
+                    "x": -0.3545570373535156,
                     "y": 0.18604278564453125,
-                    "z": 0.3675708770751953
+                    "z": 0.3676013946533203
                 },
                 "localScale": {
                     "x": 1.000016689300537,
@@ -1514,9 +1522,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -130.8896026611328,
+                    "x": -130.88961791992188,
                     "y": 31.093008041381836,
-                    "z": -71.3401107788086
+                    "z": -71.34025573730469
                 },
                 "scale": {
                     "x": 4.000041484832764,
@@ -1535,9 +1543,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.0003871917724609375,
+                    "x": -0.000377655029296875,
                     "y": -0.00037384033203125,
-                    "z": 0.0009918212890625
+                    "z": 0.0010051727294921875
                 },
                 "localScale": {
                     "x": 1.0000053644180298,
@@ -1587,9 +1595,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -132.47035217285156,
+                    "x": -132.47030639648438,
                     "y": 32.83805465698242,
-                    "z": -70.60804748535156
+                    "z": -70.6081771850586
                 },
                 "scale": {
                     "x": 0.9999999403953552,
@@ -1608,9 +1616,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.14633560180664063,
+                    "x": 0.14635086059570313,
                     "y": 0.43588781356811523,
-                    "z": 0.4110374450683594
+                    "z": 0.41103553771972656
                 },
                 "localScale": {
                     "x": 0.24999889731407166,
@@ -1698,6 +1706,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0355441784029213e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -1707,6 +1717,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 2000.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -1819,9 +1831,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -136.3638916015625,
+                    "x": -136.36387634277344,
                     "y": 33.03693389892578,
-                    "z": -70.07298278808594
+                    "z": -70.07325744628906
                 },
                 "scale": {
                     "x": 1.2413201332092285,
@@ -1840,9 +1852,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -5.4811859130859375,
+                    "x": -5.481109619140625,
                     "y": -0.000270843505859375,
-                    "z": 0.46175384521484375
+                    "z": 0.4614410400390625
                 },
                 "localScale": {
                     "x": 1.460371971130371,
@@ -1869,6 +1881,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0362620418266724e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -1878,6 +1892,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 10.0,
                 "burstAmount": 30,
@@ -2040,6 +2056,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0364158697031905e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -2049,6 +2067,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 10.0,
                 "burstAmount": 30,
@@ -2211,6 +2231,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0381079763448895e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -2220,6 +2242,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 10.0,
                 "burstAmount": 30,
@@ -2408,9 +2432,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -130.6768798828125,
+                    "x": -130.67652893066406,
                     "y": 33.705074310302734,
-                    "z": -73.45747375488281
+                    "z": -73.45726776123047
                 },
                 "scale": {
                     "x": 1.0000028610229492,
@@ -2429,9 +2453,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.9966583251953125,
+                    "x": 0.9970245361328125,
                     "y": 0.6680984497070313,
-                    "z": -2.9082717895507813
+                    "z": -2.9081039428710938
                 },
                 "localScale": {
                     "x": 1.0000033378601074,
@@ -2458,6 +2482,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.038313080180247e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -2467,6 +2493,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -2629,6 +2657,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0378515965506927e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -2638,6 +2668,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -2800,6 +2832,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.038005424427211e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -2809,6 +2843,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -2921,9 +2957,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -133.21266174316406,
+                    "x": -133.21258544921875,
                     "y": 33.036598205566406,
-                    "z": -68.48947143554688
+                    "z": -68.4892807006836
                 },
                 "scale": {
                     "x": 1.0000028610229492,
@@ -2942,9 +2978,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -1.0034332275390625,
+                    "x": -1.0033416748046875,
                     "y": -0.000377655029296875,
-                    "z": 2.298542022705078
+                    "z": 2.298725128173828
                 },
                 "localScale": {
                     "x": 1.0000033378601074,
@@ -2971,6 +3007,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0381079763448895e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -2980,6 +3018,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -3092,9 +3132,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -131.37442016601563,
+                    "x": -131.3743438720703,
                     "y": 33.92780303955078,
-                    "z": -68.29527282714844
+                    "z": -68.29508209228516
                 },
                 "scale": {
                     "x": 1.0000028610229492,
@@ -3113,9 +3153,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.8450469970703125,
+                    "x": 0.845123291015625,
                     "y": 0.8908271789550781,
-                    "z": 2.2986373901367188
+                    "z": 2.2988204956054688
                 },
                 "localScale": {
                     "x": 1.0000033378601074,
@@ -3142,6 +3182,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0364158697031905e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -3151,6 +3193,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -3263,9 +3307,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -133.43792724609375,
+                    "x": -133.4376983642578,
                     "y": 33.29743194580078,
-                    "z": -62.911869049072266
+                    "z": -62.91168975830078
                 },
                 "scale": {
                     "x": 1.0000028610229492,
@@ -3284,9 +3328,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.6417694091796875,
+                    "x": -0.641510009765625,
                     "y": 0.2604560852050781,
-                    "z": 7.868961334228516
+                    "z": 7.869117736816406
                 },
                 "localScale": {
                     "x": 1.0000033378601074,
@@ -3313,6 +3357,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0351339707322063e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -3322,6 +3368,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -3434,9 +3482,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -131.96656799316406,
+                    "x": -131.9663543701172,
                     "y": 32.15464782714844,
-                    "z": -63.514190673828125
+                    "z": -63.51398849487305
                 },
                 "scale": {
                     "x": 1.0000028610229492,
@@ -3455,9 +3503,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.758209228515625,
+                    "x": 0.758453369140625,
                     "y": -0.8823280334472656,
-                    "z": 7.115467071533203
+                    "z": 7.1156463623046875
                 },
                 "localScale": {
                     "x": 1.0000033378601074,
@@ -3484,6 +3532,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0378003205918533e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -3493,6 +3543,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -3605,9 +3657,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -130.87220764160156,
+                    "x": -130.87200927734375,
                     "y": 32.75163269042969,
-                    "z": -66.9156723022461
+                    "z": -66.91548919677734
                 },
                 "scale": {
                     "x": 1.0000028610229492,
@@ -3626,9 +3678,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 1.489349365234375,
+                    "x": 1.4895477294921875,
                     "y": -0.2853431701660156,
-                    "z": 3.617870330810547
+                    "z": 3.6180343627929688
                 },
                 "localScale": {
                     "x": 1.0000033378601074,
@@ -3655,6 +3707,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.037595216756496e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -3664,6 +3718,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -3776,9 +3832,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -130.38365173339844,
+                    "x": -130.38343811035156,
                     "y": 33.11244201660156,
-                    "z": -71.5124282836914
+                    "z": -71.51226043701172
                 },
                 "scale": {
                     "x": 1.0000028610229492,
@@ -3797,9 +3853,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 1.4925079345703125,
+                    "x": 1.4927215576171875,
                     "y": 0.07546615600585938,
-                    "z": -1.0047760009765625
+                    "z": -1.0046272277832031
                 },
                 "localScale": {
                     "x": 1.0000033378601074,
@@ -3826,6 +3882,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.037492664838817e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -3835,6 +3893,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -3997,6 +4057,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0372875610034597e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -4006,6 +4068,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -4168,6 +4232,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0378515965506927e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -4177,6 +4243,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -4289,9 +4357,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -131.3662872314453,
+                    "x": -131.3660888671875,
                     "y": 33.70961380004883,
-                    "z": -73.269287109375
+                    "z": -73.26922607421875
                 },
                 "scale": {
                     "x": 1.0000028610229492,
@@ -4310,9 +4378,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.3308258056640625,
+                    "x": 0.3310089111328125,
                     "y": 0.672637939453125,
-                    "z": -2.6487350463867188
+                    "z": -2.6486968994140625
                 },
                 "localScale": {
                     "x": 1.0000033378601074,
@@ -4339,6 +4407,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.038005424427211e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -4348,6 +4418,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -4460,9 +4532,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -132.2017059326172,
+                    "x": -132.20155334472656,
                     "y": 32.583656311035156,
-                    "z": -75.42942810058594
+                    "z": -75.42923736572266
                 },
                 "scale": {
                     "x": 1.0000028610229492,
@@ -4481,9 +4553,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.7268218994140625,
+                    "x": -0.7266387939453125,
                     "y": -0.4533195495605469,
-                    "z": -4.709205627441406
+                    "z": -4.7090301513671875
                 },
                 "localScale": {
                     "x": 1.0000033378601074,
@@ -4510,6 +4582,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0355954543617606e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -4519,6 +4593,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -4631,9 +4707,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -132.23980712890625,
+                    "x": -132.23959350585938,
                     "y": 33.705204010009766,
-                    "z": -75.0826187133789
+                    "z": -75.08258819580078
                 },
                 "scale": {
                     "x": 1.0000050067901611,
@@ -4652,9 +4728,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.7282867431640625,
+                    "x": -0.7280731201171875,
                     "y": 0.6682281494140625,
-                    "z": -4.360317230224609
+                    "z": -4.360309600830078
                 },
                 "localScale": {
                     "x": 1.0000054836273193,
@@ -4681,6 +4757,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0368260773739054e-25,
+                "maxInitialRotationOffset": 1.0860063098517332e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -4690,6 +4768,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.5,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -4802,8 +4882,8 @@
                 "entityGUID": 11622630116064739605,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "17237801994024849853": true,
+                    "11935986701403193153": false,
                     "16861337649669213096": true,
                     "452538415452204233": true,
                     "6919815292445452220": false

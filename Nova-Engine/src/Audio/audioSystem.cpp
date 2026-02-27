@@ -123,6 +123,17 @@ void AudioSystem::update() {
 			++it;
 		}
 	}
+	for (auto positionalAudioGroupsIter = positionalAudioGroups.begin(); positionalAudioGroupsIter != positionalAudioGroups.end(); ++positionalAudioGroupsIter) {
+		auto& [resourceID, audioInstances] = *positionalAudioGroupsIter;
+		if (audioInstances.empty())
+			continue;
+		auto todelete = [&](const AudioInstance& audioInstance) {
+			return engine.ecs.registry.valid(audioInstance.entity) || audioInstance.toDelete;
+		};
+		auto audioInstancesIter = std::remove_if(audioInstances.begin(), audioInstances.end(), todelete);
+		if(audioInstancesIter!= audioInstances.end())
+			audioInstances.erase(audioInstancesIter, audioInstances.end());
+	}
 }
 
 void AudioSystem::updateListener() {
@@ -153,30 +164,44 @@ void AudioSystem::updatePositionalAudio() {
 	glm::vec3 listenerPos = camera.getPos();
 
 	// Get all objects with PositionalAudio Component
-	for (auto&& [entity,transform,audioComponent,positionalAudio] : engine.ecs.registry.view< Transform, AudioComponent, PositionalAudio>().each()) {
-		glm::vec3 sourcePos = transform.position;
-		float distance = glm::length(sourcePos - listenerPos);
+	for (auto positionalAudioGroupsIter = positionalAudioGroups.begin(); positionalAudioGroupsIter != positionalAudioGroups.end(); ++positionalAudioGroupsIter) {
+		auto& [resourceID, audioInstances] = *positionalAudioGroupsIter;
+		if (audioInstances.empty())
+			continue;
+		
+		// Sort based on Distance
+		auto comp = [&](AudioInstance const& audioInstance1, AudioInstance const& audioInstance2) {
+			Transform& transform1 = engine.ecs.registry.get<Transform>(audioInstance1.entity);
+			Transform& transform2 = engine.ecs.registry.get<Transform>(audioInstance2.entity);
+			float distance1 = glm::length(transform1.position - listenerPos);
+			float distance2 = glm::length(transform2.position - listenerPos);
+			return distance1 < distance2;
+		};
+		std::sort(std::begin(audioInstances), std::end(audioInstances), comp);
+		// Set Volume
+		for (int i{}; i < audioInstances.size();++i) {
+			Transform& transform = engine.ecs.registry.get<Transform>(audioInstances[i].entity);
+			PositionalAudio& positionalAudio = engine.ecs.registry.get<PositionalAudio>(audioInstances[i].entity);
 
-		float volumeMultiplier = 1.0f;
-		if (distance <= positionalAudio.innerRadius)
-			volumeMultiplier = 1.0f;
-		else if (distance >= positionalAudio.maxRadius)
-			volumeMultiplier = 0.0f;
-		else
-			volumeMultiplier = 1.0f - ((distance - positionalAudio.innerRadius) / (positionalAudio.maxRadius - positionalAudio.innerRadius));
+			glm::vec3 sourcePos = transform.position;
+			float distance = glm::length(sourcePos - listenerPos);
+			float volumeMultiplier = 1.0f;
+			if (distance <= positionalAudio.innerRadius)
+				volumeMultiplier = 1.0f;
+			else if (distance >= positionalAudio.maxRadius)
+				volumeMultiplier = 0.0f;
+			else
+				volumeMultiplier = 1.0f - ((distance - positionalAudio.innerRadius) / (positionalAudio.maxRadius - positionalAudio.innerRadius));
 
-		for (auto& [instanceId, audioInstance] : audioInstances) {
-			if (audioInstance.entity != entity)
-				continue;
 
-			if (audioInstance.channel) {
+			if (audioInstances[i].channel) {
 				FMOD_VECTOR pos = { sourcePos.x, sourcePos.y, sourcePos.z };
 				FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
 
-				audioInstance.channel->set3DAttributes(&pos, &vel);
+				audioInstances[i].channel->set3DAttributes(&pos, &vel);
 				// Set the MinMax Distance based on the values inputted inside the PositionalAudio Component inside the Editor 
-				audioInstance.channel->set3DMinMaxDistance(positionalAudio.innerRadius, positionalAudio.maxRadius);
-				audioInstance.channel->setVolume(audioInstance.volume * volumeMultiplier);
+				audioInstances[i].channel->set3DMinMaxDistance(positionalAudio.innerRadius, positionalAudio.maxRadius);
+				audioInstances[i].channel->setVolume(audioInstances[i].volume * volumeMultiplier * float(audioInstances.size() - i) / audioInstances.size());
 			}
 		}
 	}
@@ -473,13 +498,8 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 		case AudioComponent::AudioGroup::SFX:
 		{
 			channel->setChannelGroup(sfxChannelGroup);
-			if (sfxSoundGroups.find(audioInstance.audioId) == std::end(sfxSoundGroups)) {
-				fmodSystem->createSoundGroup(std::to_string(static_cast<size_t>(audioInstanceId)).c_str(), &(sfxSoundGroups[audioInstance.audioId]));
-				sfxSoundGroups[audioInstance.audioId]->setMaxAudibleBehavior(FMOD_SOUNDGROUP_BEHAVIOR_MUTE);
-				sfxSoundGroups[audioInstance.audioId]->setMaxAudible(3);
-				sfxSoundGroups[audioInstance.audioId]->setMuteFadeSpeed(0.2f);
-			}
-			audio->setSoundGroup(sfxSoundGroups[audioInstance.audioId]);
+			if(positionalAudio)
+				positionalAudioGroups[audioInstance.audioId].push_back(audioInstance);
 			break;
 		}
 		default:

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 23,
+    "RootEntity": 29,
     "Entities": [
         {
             "EntityData": {
@@ -8,9 +8,9 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    24,
-                    25,
-                    26
+                    30,
+                    31,
+                    32
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -79,21 +79,21 @@
                             {
                                 "name": "lightBurst",
                                 "data": {
-                                    "__variant_value": 25,
+                                    "__variant_value": 31,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "bigSpark",
                                 "data": {
-                                    "__variant_value": 24,
+                                    "__variant_value": 30,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "smallSpark",
                                 "data": {
-                                    "__variant_value": 26,
+                                    "__variant_value": 32,
                                     "__variant_type": 4
                                 }
                             }
@@ -101,13 +101,13 @@
                     }
                 ]
             },
-            "id": 23
+            "id": 29
         },
         {
             "EntityData": {
                 "name": "Spark_Big",
                 "tag": "",
-                "parent": 23,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -170,6 +170,8 @@
                 "startSpeed": 20.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -6.44471044039508e+17,
+                "maxInitialRotationOffset": 6.58610278232664e-43,
                 "initialAngularVelocity": 10.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -179,6 +181,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 1.0,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 1.0,
                 "burstAmount": 5,
@@ -272,13 +276,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 24
+            "id": 30
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 23,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -354,13 +358,13 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 25
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "Spark_Small",
                 "tag": "",
-                "parent": 23,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -423,6 +427,8 @@
                 "startSpeed": 10.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -6.444567503883469e+17,
+                "maxInitialRotationOffset": 6.58610278232664e-43,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -432,6 +438,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 1.0,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 1.0,
                 "burstAmount": 10,
@@ -525,7 +533,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 26
+            "id": 32
         }
     ]
 }

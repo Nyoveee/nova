@@ -1,5 +1,5 @@
 {
-    "RootEntity": 214,
+    "RootEntity": 24,
     "Entities": [
         {
             "EntityData": {
@@ -8,10 +8,10 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    215,
-                    216,
-                    217,
-                    218
+                    25,
+                    26,
+                    27,
+                    28
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -90,7 +90,7 @@
                             {
                                 "name": "lightGameobject",
                                 "data": {
-                                    "__variant_value": 218,
+                                    "__variant_value": 28,
                                     "__variant_type": 4
                                 }
                             }
@@ -98,13 +98,13 @@
                     }
                 ]
             },
-            "id": 214
+            "id": 24
         },
         {
             "EntityData": {
                 "name": "Initial Burst",
                 "tag": "",
-                "parent": 214,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -170,6 +170,8 @@
                 "startSpeed": 20.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.096186588814377e+17,
+                "maxInitialRotationOffset": 6.58610278232664e-43,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -179,6 +181,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.20000000298023224,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 0.0,
                 "burstAmount": 2000,
@@ -272,13 +276,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 215
+            "id": 25
         },
         {
             "EntityData": {
                 "name": "Spark",
                 "tag": "",
-                "parent": 214,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -343,6 +347,8 @@
                 "startSpeed": 20.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.098187699976929e+17,
+                "maxInitialRotationOffset": 6.58610278232664e-43,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -352,6 +358,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 1.0,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 0.0,
                 "burstAmount": 50,
@@ -445,13 +453,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 216
+            "id": 26
         },
         {
             "EntityData": {
                 "name": "Field",
                 "tag": "",
-                "parent": 214,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -516,6 +524,8 @@
                 "startSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": -4.0966153983492096e+17,
+                "maxInitialRotationOffset": 6.58610278232664e-43,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -525,6 +535,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 0.800000011920929,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 0.0,
                 "burstAmount": 1,
@@ -618,13 +630,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 217
+            "id": 27
         },
         {
             "EntityData": {
                 "name": "Light Burst",
                 "tag": "",
-                "parent": 214,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -700,7 +712,7 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 218
+            "id": 28
         }
     ]
 }
