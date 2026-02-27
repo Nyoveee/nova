@@ -1,0 +1,132 @@
+{
+    "RootEntity": 1048576,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Entity 1",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1878590979789803293,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -109.7844009399414,
+                    "y": 33.344085693359375,
+                    "z": 28.47713279724121
+                },
+                "scale": {
+                    "x": 7.109999656677246,
+                    "y": 7.109999656677246,
+                    "z": 7.109999656677246
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -109.7844009399414,
+                    "y": 33.344085693359375,
+                    "z": 28.47713279724121
+                },
+                "localScale": {
+                    "x": 7.109999656677246,
+                    "y": 7.109999656677246,
+                    "z": 7.109999656677246
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 17461828506921697571,
+                        "fields": [
+                            {
+                                "name": "shockwaveAttack",
+                                "data": {
+                                    "__variant_value": 725669475182448393,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "minInterval",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxInterval",
+                                "data": {
+                                    "__variant_value": 0.6000000238418579,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "slamDuration",
+                                "data": {
+                                    "__variant_value": 0.30000001192092896,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "slamRecoilDuration",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "slamDistance",
+                                "data": {
+                                    "__variant_value": 35.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "recoilDistance",
+                                "data": {
+                                    "__variant_value": 20.0,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 1048576
+        }
+    ]
+}

@@ -176,6 +176,30 @@ bool ParseFragmentShader(std::string& data, CustomShader::ShaderParserData& shad
 	return true;
 
 }
+
+// optional functional block.
+void ParseFunctions(std::string& data, CustomShader::ShaderParserData& shaderParserData) {
+	// Get full definition
+	std::regex functionShaderRegex{ R"(Functions\s*\{[\#\{\}\<\>\_\*\-\'\@\:\?\#\^\&\+/\w\s=(.,);\[\]]+\}[\#\{\}\<\>\_\*\-\'\@\:\?\#\^\&\+/\w\s=(.,);\[\]]*Vert\{)" };
+
+	auto begin{ std::sregex_iterator(std::begin(data),std::end(data), functionShaderRegex) };
+	ptrdiff_t count{ std::distance(begin, std::sregex_iterator()) };
+
+	// Check Count
+	if (count > 1) {
+		Logger::error("Multiple Function Blocks Found, they are ignored.");
+		return;
+	}
+
+	if (count == 0) {
+		return;
+	}
+
+	// Parse into shaderparserdata
+	std::string result{ begin->str() };
+	shaderParserData.functionsCode = result.substr(result.find_first_of('{') + 1, result.find_last_of('}') - result.find_first_of('{') - 1);
+}
+
 /******************************************************************************
 	Main Parsing function
 ******************************************************************************/ 
@@ -194,6 +218,7 @@ bool ShaderParser::Parse(AssetFilePath const& intermediaryAssetFilepath, CustomS
 	catch (...) {
 		return false;
 	}
+
 	// Parse Tags
 	if (!ParseTags(data, shaderParserData))
 		return false;
@@ -204,17 +229,7 @@ bool ShaderParser::Parse(AssetFilePath const& intermediaryAssetFilepath, CustomS
 	if (!ParseFragmentShader(data, shaderParserData))
 		return false;
 	
-#if 0
-	Logger::info("BlendingConfig = {}", magic_enum::enum_name(shaderParserData.blendingConfig));
-	Logger::info("DepthTestingMethod = {}", magic_enum::enum_name(shaderParserData.depthTestingMethod));
-	
-	for (auto&& [identifier, type] : shaderParserData.uniforms) {
-		Logger::info("Uniform = {}, Type = {}", identifier, type);
-	}
-
-	Logger::info("Vertex Shader Code\n{}", shaderParserData.vShaderCode);
-	Logger::info("Fragment Shader Code\n{}", shaderParserData.fShaderCode);
-#endif
+	ParseFunctions(data, shaderParserData);
 
 	return true;
 }

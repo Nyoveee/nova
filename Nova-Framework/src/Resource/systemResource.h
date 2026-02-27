@@ -20,6 +20,9 @@ enum SystemResourceID : unsigned long long {
 	NONE_TEXTURE_ID,			// None texture id.. is not really none ;) but rather a 1x1 white texture.
 	INVALID_TEXTURE_ID,			// the invalid minecraft texture
 
+//  sorry i cannot reorder these enums anymore.
+	TORUS_MODEL_ID,
+
 // =============================== Sentinel =============================== 
 	SENTINEL_SIZE_PLUS_ONE		// Indicates the size + 1 (because i start PBR shader at 1 smh). To be kept at last entry at all times
 };

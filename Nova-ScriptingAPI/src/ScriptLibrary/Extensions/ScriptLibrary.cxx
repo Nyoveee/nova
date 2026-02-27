@@ -192,6 +192,11 @@ void CameraAPI::UnlockMouse() {
 	Interface::engine->gameLockMouse(false);
 }
 
+void CameraAPI::shakeCamera(float duration, float amplication) {
+	Camera& gameCamera = Interface::engine->renderer.getGameCamera();
+	gameCamera.setCameraShake(duration, amplication);
+}
+
 // ======================================
 // This class is responsible for providing Navigation related APIs to the script.
 // ======================================

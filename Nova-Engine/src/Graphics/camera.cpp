@@ -118,8 +118,46 @@ glm::mat4 const& Camera::getPreviousViewProjectionMatrix() const {
 	return previousViewProjectionMatrix;
 }
 
+void Camera::updateCameraShake(float deltaTime) {
+	if (!cameraShake.active) {
+		return;
+	}
+
+	cameraShake.currentDuration -= deltaTime;
+
+	// powering the interval for quicker fall off.
+	cameraShake.currentAmplification = std::lerp(0.f, cameraShake.amplification, std::powf(cameraShake.currentDuration / cameraShake.duration, 3.f));
+
+	float offset = cameraShake.currentAmplification * std::cos(cameraShake.currentDuration);
+
+	cameraShake.positionOffset = glm::vec3{
+		offset * static_cast<float>(std::rand()) / RAND_MAX,
+		offset * static_cast<float>(std::rand()) / RAND_MAX,
+		offset * static_cast<float>(std::rand()) / RAND_MAX
+	};
+
+	if (cameraShake.currentDuration <= 0.f) {
+		cameraShake.active = false;
+		cameraShake.positionOffset = {};
+	}
+}
+
+void Camera::setCameraShake(float duration, float amplification) {
+	if (duration == 0) {
+		cameraShake.active = false;
+		return;
+	}
+
+	cameraShake.active = true;
+	cameraShake.duration = duration;
+	cameraShake.amplification = amplification;
+	cameraShake.currentDuration = duration;
+	cameraShake.currentAmplification = amplification;
+}
+
 void Camera::recalculateViewMatrix() {
-	viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, Up);
+	glm::vec3 pos = cameraPos + cameraShake.positionOffset;
+	viewMatrix = glm::lookAt(pos, pos + cameraFront, Up);
 	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
 

@@ -31,6 +31,7 @@ class Ichor : Script
     [SerializableField]
     private float damping = 1f;
 
+    [SerializableField]
     private Vector3 idlePositionVariance = new Vector3(1f, 1f, 1f);
 
     [SerializableField]

@@ -90,8 +90,26 @@ void CustomShader::compile()
 		vShaderLibraryStream << "uniform " << glslType << " " << identifier << "; " << comment << '\n';
 		fShaderLibraryStream << "uniform " << glslType << " " << identifier << "; " << comment << '\n';
 	}
+
 	// ========================================================
-	// We attach the Custom shader's Vertex code and wrap it in main..
+	// We attach the custom shader's function block to vertex shader and fragment shader..
+	// ========================================================
+	if (customShaderData.functionsCode.size()) {
+		vShaderLibraryStream << "\n// !! ==========================================";
+		vShaderLibraryStream << "\n// Custom Shader Function Block";
+		vShaderLibraryStream << "\n// !! ==========================================\n\n";
+		vShaderLibraryStream << customShaderData.functionsCode;
+	}
+
+	if (customShaderData.functionsCode.size()) {
+		fShaderLibraryStream << "\n// !! ==========================================";
+		fShaderLibraryStream << "\n// Custom Shader Function Block";
+		fShaderLibraryStream << "\n// !! ==========================================\n\n";
+		fShaderLibraryStream << customShaderData.functionsCode;
+	}
+
+	// ========================================================
+	// We attach the custom shader's Vertex code and wrap it in main..
 	// ========================================================
 	vShaderLibraryStream << "\n// !! ==========================================";
 	vShaderLibraryStream << "\n// Custom Shader Vertex Code";
