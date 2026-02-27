@@ -122,7 +122,7 @@ private:
 	FMOD::ChannelGroup* bgmChannelGroup;
 	FMOD::ChannelGroup* sfxChannelGroup;
 
-	std::unordered_map<ResourceID, FMOD::SoundGroup*> sfxSoundGroups;
+	std::unordered_map<ResourceID, std::vector<AudioInstance>> positionalAudioGroups;
 private:
 	AudioInstance* currentBGM;
 	std::unordered_map<ResourceID, FMOD::Sound*> sounds;

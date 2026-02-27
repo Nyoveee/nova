@@ -739,12 +739,17 @@ struct ParticleEmitter
 	// Rotation
 	float initialRotation{};
 	bool velocityBasedInitialRotation{};
+	float minInitialRotationOffset;
+	float maxInitialRotationOffset;
 	// Angular Velocity
 	float initialAngularVelocity{};
 	float minAngularVelocityOffset{};
 	float maxAngularVelocityOffset{};
-	// Particle spawning info
+	// LifeTime
 	float lifeTime = 1;
+	float minLifeTimeOffset;
+	float maxLifeTimeOffset;
+
 	float particleRate = 100;
 	float burstRate = 0;
 	int burstAmount = 30;
@@ -762,11 +767,15 @@ struct ParticleEmitter
 		startSpeed,
 		initialRotation,
 		velocityBasedInitialRotation,
+		minInitialRotationOffset,
+		maxInitialRotationOffset,
 		initialAngularVelocity,
 		minAngularVelocityOffset,
 		maxAngularVelocityOffset,
 		force,
 		lifeTime,
+		minLifeTimeOffset,
+		maxLifeTimeOffset,
 		particleRate,
 		burstRate,
 		burstAmount,

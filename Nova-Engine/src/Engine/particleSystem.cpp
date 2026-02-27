@@ -166,7 +166,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 		return glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1)) * emitter.startSpeed;
 	};
 	// Lifetime
-	particleLifeSpanData.currentLifeTime = particleLifeSpanData.lifeTime = emitter.lifeTime;
+	particleLifeSpanData.currentLifeTime = particleLifeSpanData.lifeTime = emitter.lifeTime + RandomRange::Float(emitter.minLifeTimeOffset, emitter.maxLifeTimeOffset);
 	switch (emissionShape) {
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 		{
@@ -297,6 +297,7 @@ void ParticleSystem::determineParticleRotation(ParticleLifespanData& particleLif
 	else{
 		particleVertex.rotation = emitter.initialRotation;
 	}
+	particleVertex.rotation += RandomRange::Float(emitter.minInitialRotationOffset, emitter.maxInitialRotationOffset);
 }
 
 void ParticleSystem::rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform)
