@@ -129,7 +129,7 @@ class EnemyCannon : Script
     private void RotateCannon() {
         currentTurningTime += Time.V_DeltaTime();
         currentTurningTime = Mathf.Min(currentTurningTime, cannonTurningTime);
-        gameObject.transform.localRotation = Quaternion.Slerp(startRotation, targetRotation, currentTurningTime / cannonTurningTime);
+        gameObject.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, currentTurningTime / cannonTurningTime);
     }
     private bool IsRotationFinished() {
         return currentTurningTime == cannonTurningTime;
@@ -182,7 +182,7 @@ class EnemyCannon : Script
         // Set the rotation
         Vector3 targetDirection = targetVelocity;
         targetDirection.Normalize();
-        startRotation = gameObject.transform.localRotation;
+        startRotation = gameObject.transform.rotation;
         targetRotation = Quaternion.LookRotation(targetDirection);
         
         // Set the timers

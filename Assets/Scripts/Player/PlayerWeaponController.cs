@@ -309,7 +309,7 @@ class PlayerWeaponController : Script
 
         // RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front,500f,layerMask);
 
-        RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 500f, mask);
+        RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 10000f, mask);
 
 
         //Do a raycast to objects
