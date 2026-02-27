@@ -19,12 +19,17 @@ entt::entity PrefabManager::instantiatePrefabRecursive(PrefabEntityID prefabEnti
 	prefabEntityIdToInstanceId[prefabEntity] = ecsEntity;
 
 	EntityData* entityData = ecsRegistry.try_get<EntityData>(ecsEntity);
+	EntityData* prefabEntityData = prefabRegistry.try_get<EntityData>(prefabEntity);
 
-	if (!entityData) {
+	if (!entityData || !prefabEntityData) {
 		Logger::error("Instantiation of prefab failed. Prefab entity {} is invalid.", static_cast<unsigned>(prefabEntity));
 		return entt::null;
 	}
 
+	// Copy entity data first..
+	// *entityData = *prefabEntityData;
+
+	// Update entityData metadata based on prefab instance..
 	// Contains the mapped entity id for children of the prefab instance.
 	std::vector<entt::entity> childrenEntityIds;
 	childrenEntityIds.reserve(entityData->children.size());

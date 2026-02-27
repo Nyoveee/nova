@@ -38,6 +38,9 @@ class Charger : Enemy
     [SerializableField]
     private Audio landSFX;
 
+    [SerializableField]
+    private Rigidbody_ chargerCollisionBox;
+
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -273,6 +276,7 @@ class Charger : Enemy
             ActivateNavMeshAgent();
             chargerState = ChargerState.Idle;
             gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0, gameObject.transform.position.z);
+            chargerCollisionBox.enable = true;
         }
     }
     private void Update_Idle(){

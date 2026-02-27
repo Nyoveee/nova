@@ -80,7 +80,7 @@ void Engine::update(float dt) {
 	audioSystem.update();
 
 	if (!inSimulationMode) {
-		scriptingAPIManager.checkIfRecompilationNeeded(dt); // real time checking if scripts need to recompile.
+		scriptingAPIManager.checkIfRecompilationNeeded(dt * deltaTimeMultiplier); // real time checking if scripts need to recompile.
 	}
 	else {
 		scriptingAPIManager.update();	

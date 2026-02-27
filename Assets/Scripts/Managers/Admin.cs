@@ -19,6 +19,26 @@ class Admin : Script
         {
             playerBody?.TakeDamage(1000);
         });
+
+
+        // closure..
+        bool isSpedUp = false;
+
+        // speed hack
+        MapKey(Key.L, () =>
+        {
+            isSpedUp = !isSpedUp;
+            
+            if(isSpedUp)
+            {
+                Time.timeScale = 5;
+            }
+            else
+            {
+                Time.timeScale = 1;
+            }
+
+        });
     }
 
     // This function is invoked every update.

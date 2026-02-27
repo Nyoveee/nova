@@ -296,8 +296,9 @@ void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptDa
 	}
 }
 
+#if 0
 template<typename T>
-void ComponentInspector::overrideProperties( T component, const char* dataMemberName) {
+void ComponentInspector::overrideProperties(T component, const char* dataMemberName) {
 	entt::entity selectedEntity = editor.getSelectedEntities()[0];
 	entt::registry& registry = ecs.registry;
 
@@ -326,6 +327,7 @@ void ComponentInspector::overrideProperties( T component, const char* dataMember
 		entityData.overridenProperties[Family::id<T>()].push_back(index);
 	}
 
+	
 	std::sort(entityData.overridenProperties[Family::id<T>()].begin(), entityData.overridenProperties[Family::id<T>()].end());
 	for (std::pair<std::size_t, std::vector<int>> pair : entityData.overridenProperties) {
 		std::cout <<std::endl<< pair.first << " and ";
@@ -334,5 +336,6 @@ void ComponentInspector::overrideProperties( T component, const char* dataMember
 		}
 	}
 }
+#endif
 
 #include "displayComponent.ipp"

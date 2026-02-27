@@ -388,6 +388,10 @@ void PhysicsManager::addBodiesToSystem(entt::registry&, entt::entity entityID)
 		return;
 	}
 
+	if (!engine.ecs.isComponentActive<Rigidbody>(entityID)) {
+		return;
+	}
+
 	createBody(entityID);
 }
 

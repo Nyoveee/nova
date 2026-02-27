@@ -180,18 +180,22 @@ void AudioSystem::updatePositionalAudio() {
 		std::sort(std::begin(audioInstances), std::end(audioInstances), comp);
 		// Set Volume
 		for (int i{}; i < audioInstances.size();++i) {
-			Transform& transform = engine.ecs.registry.get<Transform>(audioInstances[i].entity);
-			PositionalAudio& positionalAudio = engine.ecs.registry.get<PositionalAudio>(audioInstances[i].entity);
+			Transform* transform = engine.ecs.registry.try_get<Transform>(audioInstances[i].entity);
+			PositionalAudio* positionalAudio = engine.ecs.registry.try_get<PositionalAudio>(audioInstances[i].entity);
 
-			glm::vec3 sourcePos = transform.position;
+			if (!transform || !positionalAudio) {
+				continue;
+			}
+
+			glm::vec3 sourcePos = transform->position;
 			float distance = glm::length(sourcePos - listenerPos);
 			float volumeMultiplier = 1.0f;
-			if (distance <= positionalAudio.innerRadius)
+			if (distance <= positionalAudio->innerRadius)
 				volumeMultiplier = 1.0f;
-			else if (distance >= positionalAudio.maxRadius)
+			else if (distance >= positionalAudio->maxRadius)
 				volumeMultiplier = 0.0f;
 			else
-				volumeMultiplier = 1.0f - ((distance - positionalAudio.innerRadius) / (positionalAudio.maxRadius - positionalAudio.innerRadius));
+				volumeMultiplier = 1.0f - ((distance - positionalAudio->innerRadius) / (positionalAudio->maxRadius - positionalAudio->innerRadius));
 
 
 			if (audioInstances[i].channel) {
@@ -200,7 +204,7 @@ void AudioSystem::updatePositionalAudio() {
 
 				audioInstances[i].channel->set3DAttributes(&pos, &vel);
 				// Set the MinMax Distance based on the values inputted inside the PositionalAudio Component inside the Editor 
-				audioInstances[i].channel->set3DMinMaxDistance(positionalAudio.innerRadius, positionalAudio.maxRadius);
+				audioInstances[i].channel->set3DMinMaxDistance(positionalAudio->innerRadius, positionalAudio->maxRadius);
 				audioInstances[i].channel->setVolume(audioInstances[i].volume * volumeMultiplier * float(audioInstances.size() - i) / audioInstances.size());
 			}
 		}

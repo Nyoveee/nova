@@ -44,7 +44,8 @@ namespace {
 				toDisplay = ImGui::CollapsingHeader(name, &toShowHeader);
 				if constexpr(!NonComponentDisablingTypes<Component>) {
 					// Active State
-					EntityData* const entityData{ editor.engine.ecs.registry.try_get<EntityData>(entity) };
+					EntityData* const entityData{ registry.try_get<EntityData>(entity) };
+
 					if (entityData) {
 						bool b_Active{ editor.engine.ecs.isComponentActive<Component>(entity)};
 						// Display Checkbox

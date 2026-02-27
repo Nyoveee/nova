@@ -27,8 +27,10 @@ public:
 	template <typename ...Components>
 	void displayComponentDropDownList(entt::entity entity, entt::registry& registry);
 
+#if 0
 	template<typename T>
 	void overrideProperties(T component, const char* dataMemberName);
+#endif
 
 public:
 	ECS& ecs;
