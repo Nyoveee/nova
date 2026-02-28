@@ -48,6 +48,7 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 	editor.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
 		dataMember = DataMemberType{ resourceId };
 
+#if false
 		if constexpr (std::same_as<OriginalAssetType, Texture>) {
 			// replace the selected entity's transform to match the image..
 			auto&& [texture, _] = editor.resourceManager.getResource<Texture>(resourceId);
@@ -70,6 +71,7 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 
 			transform->scale = glm::vec3{ static_cast<float>(texture->getWidth()), static_cast<float>(texture->getHeight()), 1.f };
 		}
+#endif
 	});
 }
 
