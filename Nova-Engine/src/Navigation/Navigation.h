@@ -67,6 +67,9 @@ public:
 	//Start navigation for a particular agent. Returns bool false when unable to set destination to targetPosition.
 	ENGINE_DLL_API bool setDestination(entt::entity entityID, glm::vec3 targetPosition );
 
+	//returns a closest navmesh position from a center position. searchExtent is the search box given in dimensons X,Y,Z
+	ENGINE_DLL_API std::optional<glm::vec3> SampleNavMeshPosition(std::string agentMeshName, glm::vec3 sourcePosition, glm::vec3 searchExtent);
+
 
 	//--------- IN Managed Types -----//
 
