@@ -559,7 +559,7 @@ void Renderer::renderMain(RenderMode renderMode) {
 	case RenderMode::Editor:
 		// Main game render function
 		if (isGameScreenShown) {
-			render(gameMainFrameBuffer, gameCamera, gameHistoryTexture);
+			render(gameMainFrameBuffer, gameCamera, gameHistoryTexture,false);
 
 			// Apply HDR tone mapping + gamma correction post-processing
 			renderHDRTonemapping(gameMainFrameBuffer);
@@ -573,7 +573,7 @@ void Renderer::renderMain(RenderMode renderMode) {
 
 		// Main editor render function
 		if (isEditorScreenShown) {
-			render(editorMainFrameBuffer, editorCamera, editorHistoryTexture);
+			render(editorMainFrameBuffer, editorCamera, editorHistoryTexture,true);
 
 			// Apply HDR tone mapping + gamma correction post-processing
 			renderHDRTonemapping(editorMainFrameBuffer);
@@ -590,7 +590,7 @@ void Renderer::renderMain(RenderMode renderMode) {
 	// ===============================================
 	case RenderMode::Game:
 		// Main render function
-		render(gameMainFrameBuffer, gameCamera, gameHistoryTexture);
+		render(gameMainFrameBuffer, gameCamera, gameHistoryTexture,false);
 
 		// Apply HDR tone mapping + gamma correction post-processing
 		renderHDRTonemapping(gameMainFrameBuffer);
@@ -722,7 +722,7 @@ void Renderer::renderUI()
 	glBindVertexArray(mainVAO);
 }
 
-void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint historyTexture) {
+void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint historyTexture, bool isRenderingEditor) {
 	// Set up initial state..
 	glBindVertexArray(mainVAO);
 	glDepthMask(GL_TRUE);
@@ -805,7 +805,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	if (renderConfig.toEnableAntiAliasing) resolveTAA(frameBuffers, historyTexture);
 
 	// @TODO : Custom post processing stack. (Temp: Fog only..)
-	if (renderConfig.toEnableFog) {
+	if (renderConfig.toEnableFog && !isRenderingEditor) {
 		for (auto&& [entityId, entityData, fog] : registry.view<EntityData, Fog>().each()) {
 			if (!entityData.isActive || !engine.ecs.isComponentActive<Fog>(entityId)) {
 				continue;

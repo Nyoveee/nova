@@ -51,7 +51,7 @@ public:
 	void renderUI();
 
 	// renders the main scene in the perspective of given camera. 
-	void render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint TAAhistoryTexture);
+	void render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint TAAhistoryTexture, bool isRenderingEditor);
 	
 	void renderToDefaultFBO();
 
