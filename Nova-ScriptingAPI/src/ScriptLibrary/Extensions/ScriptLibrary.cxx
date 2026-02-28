@@ -204,6 +204,18 @@ bool NavigationAPI::setDestination(GameObject^ gameObject, Vector3^ targetPositi
 	return Interface::engine->navigationSystem.setDestination(Convert(gameObject), targetPosition->native());
 }
 
+System::Nullable<Vector3> NavigationAPI::SampleNavMeshPosition(System::String^ agentMeshName, Vector3^ sourcePosition, Vector3^ halfExtent)
+{
+	auto opt = Interface::engine->navigationSystem.SampleNavMeshPosition(Convert(agentMeshName), sourcePosition->native(), halfExtent->native());
+
+	if (!opt)
+	{
+		return {};
+	}
+
+	return Vector3(opt.value());
+}
+
 void NavigationAPI::stopAgent(GameObject^ gameObject)
 {
 	Interface::engine->navigationSystem.stopAgent(Convert(gameObject));

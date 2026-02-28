@@ -127,6 +127,7 @@ public:
 public ref class NavigationAPI {
 public:
 	static bool setDestination(GameObject^ gameObject, Vector3^ targetPosition);
+	static System::Nullable<Vector3> SampleNavMeshPosition(System::String^ agentMeshName, Vector3^ sourcePosition, Vector3^ halfExtent);
 	static void stopAgent(GameObject^ gameObject);
 };
 

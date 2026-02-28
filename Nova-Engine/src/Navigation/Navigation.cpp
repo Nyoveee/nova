@@ -632,8 +632,6 @@ bool NavigationSystem::warp(NavMeshAgent& navMeshAgent, glm::vec3 targetPosition
 		return true;
 	}
 
-
-
 	return false;
 }
 
@@ -708,6 +706,33 @@ void NavigationSystem::CompleteOffLinkData(NavMeshAgent& navMeshAgent)
 	dtVset(agent->dvel, 0, 0, 0);
 	//crowdManager[navMeshAgent.agentName]->requestMoveTarget(dtIndex,savedTargeteRef,savedTargetPos);
 
+}
+
+ENGINE_DLL_API std::optional<glm::vec3> NavigationSystem::SampleNavMeshPosition(std::string agentMeshName,glm::vec3 sourcePosition, glm::vec3 searchExtent)
+{
+	//invalid mesh name.
+	if (queryManager.find(agentMeshName) == queryManager.end())
+	{
+		return std::nullopt;
+	}
+
+
+	float sourcePos[3] = { sourcePosition.x,sourcePosition.y,sourcePosition.z };
+
+	float halfExtent[3] = { searchExtent.x, searchExtent.y,searchExtent.z };
+
+	dtQueryFilter const* filter = crowdManager[agentMeshName]->getFilter(0);
+
+	dtPolyRef nearestRef = 0;
+
+	float nearestPoint[3];
+
+	if (dtStatusSucceed(queryManager[agentMeshName]->findNearestPoly(sourcePos, halfExtent, filter, &nearestRef, nearestPoint) ))
+	{
+		return glm::make_vec3(nearestPoint);
+	}
+
+	return std::nullopt;
 }
 
 void NavigationSystem::stopAgent(entt::entity entityID)
