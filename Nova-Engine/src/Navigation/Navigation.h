@@ -71,6 +71,11 @@ public:
 	ENGINE_DLL_API std::optional<glm::vec3> SampleNavMeshPosition(std::string agentMeshName, glm::vec3 sourcePosition, glm::vec3 searchExtent);
 
 
+	//Given two points get a list of waypoints from start to end if possible. Returns empty vector if no path found.
+	// Note: current this function is set to find path lesser than 255 polys apart. if it fails because of it consider increasing arr size
+	//Suggest to use Sample NavMeshPosition to ensure start and position are on point. 
+	ENGINE_DLL_API std::vector<glm::vec3> FindPath(std::string agentMeshName, glm::vec3 startPosition, glm::vec3 endPosition);
+
 	//--------- IN Managed Types -----//
 
 	//Warp the agent to this point, moves the transform as well, so it will turn

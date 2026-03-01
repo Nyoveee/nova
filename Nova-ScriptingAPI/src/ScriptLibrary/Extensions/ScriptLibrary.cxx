@@ -216,6 +216,22 @@ System::Nullable<Vector3> NavigationAPI::SampleNavMeshPosition(System::String^ a
 	return Vector3(opt.value());
 }
 
+System::Collections::Generic::List<Vector3>^ NavigationAPI::CalculatePath(System::String^ agentMeshName, Vector3^ startPosition, Vector3^ endPosition)
+{
+
+	std::vector <glm::vec3> vectorList = Interface::engine->navigationSystem.FindPath(Convert(agentMeshName), startPosition->native(), endPosition->native());
+
+	System::Collections::Generic::List<Vector3>^ wayPointList = gcnew System::Collections::Generic::List<Vector3>();
+
+	for(auto& point : vectorList)
+	{
+		wayPointList->Add(Vector3(point));
+
+	}
+
+	return wayPointList;
+}
+
 void NavigationAPI::stopAgent(GameObject^ gameObject)
 {
 	Interface::engine->navigationSystem.stopAgent(Convert(gameObject));
