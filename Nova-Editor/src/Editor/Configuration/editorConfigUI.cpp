@@ -101,3 +101,8 @@ void EditorConfigUI::saveConfig() {
        // std::cout << "Exception in saveConfig: " << e.what() << std::endl;
     }
 }
+
+std::string EditorConfigUI::getPath()
+{
+    return configPath;
+}

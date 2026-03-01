@@ -128,6 +128,9 @@ public ref class NavigationAPI {
 public:
 	static bool setDestination(GameObject^ gameObject, Vector3^ targetPosition);
 	static System::Nullable<Vector3> SampleNavMeshPosition(System::String^ agentMeshName, Vector3^ sourcePosition, Vector3^ halfExtent);
+
+	//Suggest to use Sample NavMeshPosition if to test for startPosition and End Position
+	static  System::Collections::Generic::List<Vector3>^ CalculatePath(System::String^ agentMeshName, Vector3^ startPosition, Vector3^ endPosition);
 	static void stopAgent(GameObject^ gameObject);
 };
 

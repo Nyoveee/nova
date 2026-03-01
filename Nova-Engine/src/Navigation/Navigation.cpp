@@ -735,6 +735,91 @@ ENGINE_DLL_API std::optional<glm::vec3> NavigationSystem::SampleNavMeshPosition(
 	return std::nullopt;
 }
 
+ENGINE_DLL_API std::vector<glm::vec3> NavigationSystem::FindPath(std::string agentMeshName, glm::vec3 startPosition, glm::vec3 endPosition)
+{
+	static const int MAX_POLYS = 256;
+
+	if (queryManager.find(agentMeshName) == queryManager.end() || crowdManager.find(agentMeshName) == crowdManager.end())
+	{
+		Logger::error("Queried an Invalid NavMesh! Check the navmesh Name!");
+		return  std::vector<glm::vec3>();
+	}
+
+
+	//find start polyRef
+	float startPos[3] = { startPosition.x, startPosition.y, startPosition.z };
+	float halfExent[3] = { crowdManager[agentMeshName]->getQueryHalfExtents()[0], 
+						   crowdManager[agentMeshName]->getQueryHalfExtents()[1],
+						   crowdManager[agentMeshName]->getQueryHalfExtents()[2]};
+
+
+	dtQueryFilter const* filter = crowdManager[agentMeshName]->getFilter(0); //set to no filter as default
+
+	dtPolyRef nearestRefStart = 0;
+
+
+	if (!dtStatusSucceed(queryManager[agentMeshName]->findNearestPoly(startPos,halfExent,filter,&nearestRefStart, nullptr) ))
+	{	//failed
+		return std::vector<glm::vec3>();
+	}
+
+
+	float endPos[3] = { endPosition.x, endPosition.y, endPosition.z };
+	dtPolyRef nearestRefEnd = 0;
+	//find end polyRef
+	if (!dtStatusSucceed(queryManager[agentMeshName]->findNearestPoly(endPos, halfExent, filter, &nearestRefEnd, nullptr)))
+	{	
+		//Logger::info(" Failed 0 ");
+		//failed
+		return std::vector<glm::vec3>();
+	}
+
+	dtPolyRef polyPath[256];
+
+	int pathSize;
+
+	//we have start and end polys now we can use this function
+	dtStatus returnStatus = queryManager[agentMeshName]->findPath(nearestRefStart, nearestRefEnd, startPos, endPos, filter, polyPath, &pathSize, 256);
+	
+	//fail if neither condition succeed. DT_BUffer too small means returns partial path, still agreeble path. 
+	if( !( ((returnStatus & DT_BUFFER_TOO_SMALL) != 0) || ((returnStatus & DT_SUCCESS) != 0))  )
+	{
+		//Logger::info(" Failed 1 ");
+		//failed
+		return std::vector<glm::vec3>();
+	}
+
+	//No true path found. best possible only.
+	// This is implementation details specific if you want we can uncomment this no will find closest best path.
+	//if (dtStatusDetail(returnStatus,DT_PARTIAL_RESULT))
+	//{
+	//	Logger::info(" Failed 2 ");
+	//	return std::vector<glm::vec3>();
+	//}
+
+	//Now string path to create waypoint path
+	float straightPath[MAX_POLYS * 3];
+	int straightPathSize;
+	if (!dtStatusSucceed(queryManager[agentMeshName]->findStraightPath(startPos, endPos, polyPath, pathSize, straightPath, nullptr, nullptr, &straightPathSize, MAX_POLYS, 0)))
+	{
+		//Logger::info(" Failed 3 ");
+		//failed
+		return std::vector<glm::vec3>();
+	}
+
+	//convert into a glm vector3
+	std::vector<glm::vec3> wayPointList;
+
+	for (int i = 0; i < straightPathSize; i++)
+	{
+		wayPointList.push_back(glm::vec3(straightPath[i*3], straightPath[i * 3 +1], straightPath[i * 3 +2]));
+
+	}
+
+	//Logger::info(" Return a Set of Points! ");
+	return wayPointList;
+}
+
 void NavigationSystem::stopAgent(entt::entity entityID)
 {
 	//NavMeshAgent* agent = engine.ecs.registry.try_get<NavMeshAgent>(entityID);

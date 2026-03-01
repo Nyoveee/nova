@@ -24,7 +24,7 @@ class Main_Level_Select_Script : Script
         SelectNewLevel(0);
     }
 
-public void PreviewLevel(int level)
+    public void PreviewLevel(int level)
     {
         float levelCompleteDuration = PlayerPrefs.GetFloat("LevelCompletionDuration" + level, 0f);
 
