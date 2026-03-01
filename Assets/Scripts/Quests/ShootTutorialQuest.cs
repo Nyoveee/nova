@@ -12,9 +12,34 @@ class ShootTutorialQuest : Quest
     [SerializableField]
     private float questCompleteDelay = 3f;
 
-    private bool succeeded;
-
+    [SerializableField]
+    private float tutorialDelayTime;
+    private bool succeeded = false;
+    private bool ichorTutorialShown = false;
+    private bool executeTutorialShown = false;
+    private GameUIManager gameUIManager;
+    protected override void init()
+    {
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
+    }
     public override void UpdateQuest() {
+        
+        if(!ichorTutorialShown && grunt.getScript<Grunt>().WasRecentlyDamaged())
+        {
+            ichorTutorialShown = true;
+            Invoke(() =>
+            {
+                gameUIManager.ToggleTutorial();
+            }, tutorialDelayTime);
+        }
+        if(!executeTutorialShown && grunt.getScript<Grunt>().IsExecutable())
+        {
+            executeTutorialShown = true;
+            Invoke(() =>
+            {
+                gameUIManager.ToggleTutorial();
+            }, tutorialDelayTime);
+        }
         if (!succeeded && grunt != null && grunt.getScript<Grunt>().IsDead())
         {
             succeeded = true;
