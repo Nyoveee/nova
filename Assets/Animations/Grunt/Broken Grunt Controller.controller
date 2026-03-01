@@ -1,14 +1,6 @@
 {
     "entryNode": 1000,
     "nodes": {
-        "5707081516392038407": {
-            "id": 5707081516392038407,
-            "animation": 8029637102303461393,
-            "transitions": null,
-            "toLoop": false,
-            "name": "Grunt Death",
-            "animationEvents": null
-        },
         "1000": {
             "id": 1000,
             "animation": 18446744073709551615,
@@ -22,12 +14,12 @@
             "name": "Entry Node",
             "animationEvents": null
         },
-        "1671856250268090377": {
-            "id": 1671856250268090377,
-            "animation": 17253009139158237203,
+        "5707081516392038407": {
+            "id": 5707081516392038407,
+            "animation": 8029637102303461393,
             "transitions": null,
-            "toLoop": true,
-            "name": "Grunt Forward",
+            "toLoop": false,
+            "name": "Grunt Death",
             "animationEvents": null
         },
         "14930453553246748675": {
@@ -54,12 +46,28 @@
                 }
             ]
         },
+        "1671856250268090377": {
+            "id": 1671856250268090377,
+            "animation": 17253009139158237203,
+            "transitions": null,
+            "toLoop": true,
+            "name": "Grunt Forward",
+            "animationEvents": null
+        },
         "3977699259481686017": {
             "id": 3977699259481686017,
             "animation": 12064862368427425815,
             "transitions": null,
             "toLoop": true,
             "name": "Grunt Running",
+            "animationEvents": null
+        },
+        "6603517903568967745": {
+            "id": 6603517903568967745,
+            "animation": 2555898942351032321,
+            "transitions": null,
+            "toLoop": true,
+            "name": "Grunt Broken",
             "animationEvents": null
         },
         "7863461440795232589": {
@@ -75,14 +83,6 @@
                     "functionName": "TriggerEvent4"
                 }
             ]
-        },
-        "6603517903568967745": {
-            "id": 6603517903568967745,
-            "animation": 2555898942351032321,
-            "transitions": null,
-            "toLoop": true,
-            "name": "Grunt Broken",
-            "animationEvents": null
         }
     },
     "parameters": [
