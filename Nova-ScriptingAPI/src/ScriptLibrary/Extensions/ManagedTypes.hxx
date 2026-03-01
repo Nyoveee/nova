@@ -354,6 +354,9 @@ ManagedComponentDeclaration(
 	ColorAlpha, colorTint,
 	Vector2, textureCoordinatesRange
 )
+
+void SetTexture(ScriptingAPI::Texture^ texture);
+
 ManagedComponentEnd()
 
 // ======================================
@@ -370,7 +373,6 @@ ManagedComponentEnd()
 // ======================================
 ManagedComponentDeclaration(
 	Button,
-	bool, isInteractable,
 	ColorAlpha, normalColor,
 	ColorAlpha, highlightedColor,
 	ColorAlpha, pressedColor,
@@ -379,6 +381,11 @@ ManagedComponentDeclaration(
 
 ButtonState getState();
 void forceColorUpdate();
+
+property bool isInteractable {
+	bool get() { return nativeComponent()->isInteractable; }
+	void set(bool value) { value ? nativeComponent()->enableButton() : nativeComponent()->disableButton(); }
+};
 
 ManagedComponentEnd()
 

@@ -28,6 +28,7 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 	{
 	case AssetInfo<Texture>::Compression::Uncompressed_Linear:
 		format = "R8G8B8A8_UNORM";
+		option = "--ignore-srgb";
 		break;
 	case AssetInfo<Texture>::Compression::Uncompressed_SRGB:
 		format = "R8G8B8A8_UNORM_SRGB";
@@ -39,6 +40,7 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 		break;
 	case AssetInfo<Texture>::Compression::BC1_Linear:
 		format = "BC1_UNORM";
+		option = "--ignore-srgb";
 		break;
 	case AssetInfo<Texture>::Compression::BC3_SRGB:
 		format = "BC3_UNORM_SRGB";
@@ -46,6 +48,7 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 		break;
 	case AssetInfo<Texture>::Compression::BC3_Linear:
 		format = "BC3_UNORM";
+		option = "--ignore-srgb";
 		break;
 	case AssetInfo<Texture>::Compression::BC4:
 		format = "BC4_UNORM";
@@ -62,6 +65,7 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 		break;
 	case AssetInfo<Texture>::Compression::BC7_Linear:
 		format = "BC7_UNORM";
+		option = "--ignore-srgb";
 		break;
 	default:
 		Logger::error("Unknown compression format specified.");

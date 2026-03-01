@@ -98,12 +98,10 @@ void UISystem::updateSimulation(float dt) {
 		}
 
 		// update the color lerp of all buttons.. (hovering & pressed)
-		if (button.state != Button::State::Normal) {
-			updateButtonColor(button);
+		updateButtonColor(button);
 
-			if (button.timeElapsed < button.fadeDuration) {
-				button.timeElapsed += dt;
-			}
+		if (button.timeElapsed < button.fadeDuration) {
+			button.timeElapsed += dt;
 		}
 	}
 
@@ -112,21 +110,30 @@ void UISystem::updateSimulation(float dt) {
 }
 
 void UISystem::updateButtonColor(Button& button) {
-	float lerpFactor = std::clamp(button.timeElapsed / button.fadeDuration, 0.f, 1.f);
+	switch (button.state) {
+	case Button::State::Normal:
+		button.finalColor = button.normalColor;
+		break;
+	case Button::State::Disabled:
+		button.finalColor = button.disabledColor;
+		break;
+	default:
+		float lerpFactor = std::clamp(button.timeElapsed / button.fadeDuration, 0.f, 1.f);
 
-	ColorA startColor;
-	ColorA destinationColor;
+		glm::vec4 startColor;
+		glm::vec4 destinationColor;
 
-	if (button.state == Button::State::Hovered) {
-		startColor = button.normalColor;
-		destinationColor = button.highlightedColor;
+		if (button.state == Button::State::Hovered) {
+			startColor = button.normalColor;
+			destinationColor = glm::vec4{ button.highlightedColor } * button.colorMultiplier;
+		}
+		else if (button.state == Button::State::Pressed) {
+			startColor = glm::vec4{ button.highlightedColor } * button.colorMultiplier;
+			destinationColor = glm::vec4{ button.pressedColor } * button.colorMultiplier;
+		}
+
+		button.finalColor = glm::mix(startColor, destinationColor, lerpFactor);
 	}
-	else if (button.state == Button::State::Pressed) {
-		startColor = button.highlightedColor;
-		destinationColor = button.pressedColor;
-	}
-
-	button.finalColor = glm::mix(glm::vec4{ startColor }, glm::vec4{ destinationColor }, lerpFactor) * std::lerp(1.f, button.colorMultiplier, lerpFactor);
 }
 
 void UISystem::executeButtonCallback(Button const& button, std::string const& functionName) {

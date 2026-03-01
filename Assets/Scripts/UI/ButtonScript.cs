@@ -72,4 +72,9 @@ class ButtonScript : Script
             setting.toShowSettingsUI(true);
         }
     }
+
+    public void StartChapter()
+    {
+        GameObject.FindWithTag("Main_Level_Select_Script")?.getScript<Main_Level_Select_Script>()?.TransitionToLevel();
+    }
 }

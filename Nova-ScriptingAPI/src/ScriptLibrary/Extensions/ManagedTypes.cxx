@@ -759,3 +759,11 @@ bool VideoPlayer_::IsVideoFinished()
 	VideoPlayer* videoPlayer = nativeComponent();
 	return Interface::engine->videoSystem.IsVideoFinished(*videoPlayer);
 }
+
+// ======================================
+// Image
+// ======================================
+void Image_::SetTexture(ScriptingAPI::Texture^ texture)
+{
+	nativeComponent()->texture = texture->getId();
+}
