@@ -4,7 +4,7 @@
 class Main_Menu_Script : Script
 {
     [SerializableField] private Image_ pointer;
-    [SerializableField] private float yOffset = 100f;
+    [SerializableField] private float yOffset = 15f;
 
     private List<Button_> mainMenuButtons = new ();
 

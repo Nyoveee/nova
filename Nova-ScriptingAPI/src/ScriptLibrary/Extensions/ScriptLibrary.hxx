@@ -232,6 +232,11 @@ public:
 		void set(float value) { Interface::engine->renderer.vignette = value; };
 	};
 
+	static property float gamma {
+		float get() { return Interface::engine->dataManager.renderConfig.gamma; };
+		void set(float value) { Interface::engine->dataManager.renderConfig.gamma = value; };
+	};
+
 	static property bool ssaoEnabled {
 		bool get() { return Interface::engine->dataManager.renderConfig.toEnableSSAO; };
 		void set(bool value) { Interface::engine->dataManager.renderConfig.toEnableSSAO = value; };

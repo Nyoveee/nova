@@ -86,6 +86,20 @@ void UIViewPort::update() {
 			if (editor.resourceManager.isResource<Scene>(id)) {
 				editor.loadScene(id);
 			}
+			// create a texture when dropped..
+			else if (editor.resourceManager.isResource<Texture>(id)) {
+				auto&& [texture, _] = editor.resourceManager.getResource<Texture>(id);
+
+				if (texture) {
+					std::string const* assetName = editor.assetManager.getName(id);
+					glm::vec3 position = glm::vec3{ engine.window.getUISpacePos(), 1.f };
+					
+					entt::entity newEntity = engine.ecs.registry.create();
+					engine.ecs.registry.emplace<EntityData>(newEntity, EntityData{ assetName ? *assetName : "Texture" });
+					engine.ecs.registry.emplace<Transform>(newEntity, Transform{ position, glm::vec3{ texture->getWidth(), texture->getHeight(), 1.f} });
+					engine.ecs.registry.emplace<Image>(newEntity, Image{ id });
+				}
+			}
 		}
 
 		ImGui::EndDragDropTarget();

@@ -17,6 +17,9 @@ class PlayerRotateController : Script
     private float accumulateDifferenceX = 0;
     private float accumulateDifferenceY = 0;
     private float height = 0;
+
+    private float mouseSensitivity;
+
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -27,6 +30,7 @@ class PlayerRotateController : Script
 
         height = gameObject.transform.position.y - playerBody.position.y;
 
+        mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
     }
 
     // This function is invoked every fixed update.
@@ -43,16 +47,11 @@ class PlayerRotateController : Script
         //Invoke(MoveToOrientation,0);
 
     }
-
-    protected override void fixedUpdate()
+    
+    public void SetMouseSensitivity(float sensitivity)
     {
-
-
-
-
+        mouseSensitivity = sensitivity;
     }
-
-
 
     private void MoveToOrientation()
     {
@@ -108,16 +107,14 @@ class PlayerRotateController : Script
 
         Vector3 euler = gameObject.transform.localEulerAngles;
 
-        euler.x -= cameraSensitivity * deltaMouseY * Time.V_DeltaTime();
-        euler.y -= cameraSensitivity * deltaMouseX * Time.V_DeltaTime();
+        euler.x -= mouseSensitivity * cameraSensitivity * deltaMouseY * Time.V_DeltaTime();
+        euler.y -= mouseSensitivity * cameraSensitivity * deltaMouseX * Time.V_DeltaTime();
         euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
         playerOrientation.localEulerAngles = new Vector3(0, euler.y, 0);
 
         gameObject.transform.localEulerAngles = euler;
 
-
         //accumulateDifferenceX = 0;
         //accumulateDifferenceY = 0;
-
     }
 }

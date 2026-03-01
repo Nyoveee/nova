@@ -477,6 +477,11 @@ ButtonState Button_::getState()
 	}
 }
 
+
+void Button_::forceColorUpdate() {
+	Interface::engine->uiSystem.updateButtonColor(*nativeComponent());
+}
+
 // =================================================================
 // Animator
 // =================================================================

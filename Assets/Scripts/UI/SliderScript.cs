@@ -3,53 +3,57 @@
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
 
-enum AudioGroup
+enum Settings
 {
-    Master,
-    BGM,
-    SFX
+    MasterVolume,
+    BGMVolume,
+    SFXVolume,
+    MouseSensitivity,
+    Gamma,
+    Brightness
 };
 
 class SliderScript : Script
 {
     // Sliders Components
     [SerializableField]
-    private GameObject sliderFill;
+    private Image_ sliderFill;
 
     [SerializableField]
-    private AudioGroup audioGroup;
+    private Settings settings;
+
+    [SerializableField]
+    private float maxValue = 1;
+
+    [SerializableField]
+    private float minValue = 0;
 
     // Slider boundaries
     private float knobMinX;  
     private float knobMaxX;  
 
-    // Slider value settings
-    public float minValue;
-    public float maxValue;
-    public float defaultValue;
-
+    // hmm..
     private float maxVerticalDistance = 50f; // when u go to far it stops the mouse 
+
     private bool isDragging = false;
     private Vector2 mouseInitialPosition;
     private float clickOffset;
     private float sliderCenterY;
 
+    private float currentValue;
+    
     protected override void init()
     {
         sliderCenterY = gameObject.transform.position.y;
-        knobMinX = sliderFill.transform.position.x;
-        knobMaxX = sliderFill.transform.position.x + sliderFill.transform.scale.x;
+        knobMinX = sliderFill.gameObject.transform.position.x - sliderFill.gameObject.transform.scale.x / 2f;
+        knobMaxX = sliderFill.gameObject.transform.position.x + sliderFill.gameObject.transform.scale.x / 2f;
 
-        // Update initial position based on loaded value
-        
         // load saved value
         LoadSliderValue();
         UpdateKnobPosition();
         UpdateFillBar();
-
-        // Debug.Log("Game Object: " + gameObject);
-        // Debug.Log("Initial position X: " + gameObject.transform.position.x);
     }
+
     protected override void update()
     {
         if (isDragging)
@@ -84,7 +88,7 @@ class SliderScript : Script
             // calculate the slider value
             float sliderWidth = knobMaxX - knobMinX;
             float valuePercentage = (newX - knobMinX) / sliderWidth;
-            defaultValue = minValue + (maxValue - minValue) * valuePercentage;
+            currentValue = minValue + (maxValue - minValue) * valuePercentage;
 
             // update the fill bar
             UpdateFillBar();
@@ -111,16 +115,25 @@ class SliderScript : Script
     // load the saved slider value
     private void LoadSliderValue()
     {
-        switch(audioGroup)
+        switch(settings)
         {
-            case AudioGroup.Master:
-                defaultValue = AudioAPI.GetMasterVolume();
+            case Settings.MasterVolume:
+                currentValue = AudioAPI.GetMasterVolume();
                 break;
-            case AudioGroup.BGM:
-                defaultValue = AudioAPI.GetBGMVolume();
+            case Settings.BGMVolume:
+                currentValue = AudioAPI.GetBGMVolume();
                 break;
-            case AudioGroup.SFX:
-                defaultValue = AudioAPI.GetSFXVolume();
+            case Settings.SFXVolume:
+                currentValue = AudioAPI.GetSFXVolume();
+                break;
+            case Settings.Gamma:
+                currentValue = RendererAPI.gamma;
+                break;
+            case Settings.Brightness:
+                currentValue = 1f;
+                break;
+            case Settings.MouseSensitivity:
+                currentValue = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
                 break;
         }
     }
@@ -128,16 +141,33 @@ class SliderScript : Script
     // save the current slider value
     private void SaveSliderValue()
     {
-        switch (audioGroup)
+        switch (settings)
         {
-            case AudioGroup.Master:
-                AudioAPI.SetMasterVolume(defaultValue);
+            case Settings.MasterVolume:
+                AudioAPI.SetMasterVolume(currentValue);
                 break;
-            case AudioGroup.BGM:
-                AudioAPI.SetBGMVolume(defaultValue);
+            case Settings.BGMVolume:
+                AudioAPI.SetBGMVolume(currentValue);
                 break;
-            case AudioGroup.SFX:
-                AudioAPI.SetSFXVolume(defaultValue);
+            case Settings.SFXVolume:
+                AudioAPI.SetSFXVolume(currentValue);
+                break;
+            case Settings.Gamma:
+                RendererAPI.gamma = currentValue;
+                break;
+            case Settings.Brightness:
+                currentValue = 1f;
+                break;
+            case Settings.MouseSensitivity:
+                PlayerPrefs.SetFloat("MouseSensitivity", currentValue);
+
+                // We update the current player in the scene if any..
+                PlayerRotateController playerRotateController = GameObject.FindWithTag("PlayerHead")?.getScript<PlayerRotateController>();
+
+                if (playerRotateController != null) {
+                    playerRotateController.SetMouseSensitivity(currentValue);
+                }
+
                 break;
         }
     }
@@ -146,7 +176,7 @@ class SliderScript : Script
     private void UpdateKnobPosition()
     {
         float sliderWidth = knobMaxX - knobMinX;
-        float valuePercentage = (defaultValue - minValue) / (maxValue - minValue);
+        float valuePercentage = (currentValue - minValue) / (maxValue - minValue);
         float newX = knobMinX + (sliderWidth * valuePercentage);
 
         Vector3 currentPos = gameObject.transform.position;
@@ -158,9 +188,8 @@ class SliderScript : Script
     {
         if (sliderFill != null)
         {
-            float valuePercentage = (defaultValue - minValue) / (maxValue - minValue);
-            Vector3 fillScale = sliderFill.transform.localScale;
-            sliderFill.transform.localScale = new Vector3(valuePercentage, fillScale.y, fillScale.z);
+            float valuePercentage = (currentValue - minValue) / (maxValue - minValue);
+            sliderFill.textureCoordinatesRange = new Vector2(valuePercentage, 1.0f);
         }
     }
 }

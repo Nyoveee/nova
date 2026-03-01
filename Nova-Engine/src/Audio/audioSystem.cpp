@@ -123,16 +123,18 @@ void AudioSystem::update() {
 			++it;
 		}
 	}
+
 	for (auto positionalAudioGroupsIter = positionalAudioGroups.begin(); positionalAudioGroupsIter != positionalAudioGroups.end(); ++positionalAudioGroupsIter) {
-		auto& [resourceID, audioInstances] = *positionalAudioGroupsIter;
-		if (audioInstances.empty())
+		auto& [resourceID, positionalAudioInstances] = *positionalAudioGroupsIter;
+		if (positionalAudioInstances.empty())
 			continue;
 		auto todelete = [&](const AudioInstance& audioInstance) {
 			return engine.ecs.registry.valid(audioInstance.entity) || audioInstance.toDelete;
 		};
-		auto audioInstancesIter = std::remove_if(audioInstances.begin(), audioInstances.end(), todelete);
-		if(audioInstancesIter!= audioInstances.end())
-			audioInstances.erase(audioInstancesIter, audioInstances.end());
+
+		auto audioInstancesIter = std::remove_if(positionalAudioInstances.begin(), positionalAudioInstances.end(), todelete);
+		if(audioInstancesIter!= positionalAudioInstances.end())
+			positionalAudioInstances.erase(audioInstancesIter, positionalAudioInstances.end());
 	}
 }
 
@@ -165,8 +167,8 @@ void AudioSystem::updatePositionalAudio() {
 
 	// Get all objects with PositionalAudio Component
 	for (auto positionalAudioGroupsIter = positionalAudioGroups.begin(); positionalAudioGroupsIter != positionalAudioGroups.end(); ++positionalAudioGroupsIter) {
-		auto& [resourceID, audioInstances] = *positionalAudioGroupsIter;
-		if (audioInstances.empty())
+		auto& [resourceID, positionalAudioInstances] = *positionalAudioGroupsIter;
+		if (positionalAudioInstances.empty())
 			continue;
 		
 		// Sort based on Distance
@@ -177,11 +179,11 @@ void AudioSystem::updatePositionalAudio() {
 			float distance2 = glm::length(transform2.position - listenerPos);
 			return distance1 < distance2;
 		};
-		std::sort(std::begin(audioInstances), std::end(audioInstances), comp);
+		std::sort(std::begin(positionalAudioInstances), std::end(positionalAudioInstances), comp);
 		// Set Volume
-		for (int i{}; i < audioInstances.size();++i) {
-			Transform* transform = engine.ecs.registry.try_get<Transform>(audioInstances[i].entity);
-			PositionalAudio* positionalAudio = engine.ecs.registry.try_get<PositionalAudio>(audioInstances[i].entity);
+		for (int i{}; i < positionalAudioInstances.size();++i) {
+			Transform* transform = engine.ecs.registry.try_get<Transform>(positionalAudioInstances[i].entity);
+			PositionalAudio* positionalAudio = engine.ecs.registry.try_get<PositionalAudio>(positionalAudioInstances[i].entity);
 
 			if (!transform || !positionalAudio) {
 				continue;
@@ -198,14 +200,14 @@ void AudioSystem::updatePositionalAudio() {
 				volumeMultiplier = 1.0f - ((distance - positionalAudio->innerRadius) / (positionalAudio->maxRadius - positionalAudio->innerRadius));
 
 
-			if (audioInstances[i].channel) {
+			if (positionalAudioInstances[i].channel) {
 				FMOD_VECTOR pos = { sourcePos.x, sourcePos.y, sourcePos.z };
 				FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
 
-				audioInstances[i].channel->set3DAttributes(&pos, &vel);
+				positionalAudioInstances[i].channel->set3DAttributes(&pos, &vel);
 				// Set the MinMax Distance based on the values inputted inside the PositionalAudio Component inside the Editor 
-				audioInstances[i].channel->set3DMinMaxDistance(positionalAudio->innerRadius, positionalAudio->maxRadius);
-				audioInstances[i].channel->setVolume(audioInstances[i].volume * volumeMultiplier * float(audioInstances.size() - i) / audioInstances.size());
+				positionalAudioInstances[i].channel->set3DMinMaxDistance(positionalAudio->innerRadius, positionalAudio->maxRadius);
+				positionalAudioInstances[i].channel->setVolume(positionalAudioInstances[i].volume * volumeMultiplier * float(positionalAudioInstances.size() - i) / positionalAudioInstances.size());
 			}
 		}
 	}

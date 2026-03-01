@@ -18,6 +18,8 @@ public:
 	ENGINE_DLL_API void updateNonSimulation();
 	ENGINE_DLL_API void updateSimulation(float dt);
 
+	ENGINE_DLL_API void updateButtonColor(Button& button);
+
 private:
 	ENGINE_DLL_API void executeButtonCallback(Button const& button, std::string const& functionName);
 	ENGINE_DLL_API void onButtonCreation(entt::registry& registry, entt::entity entityId);

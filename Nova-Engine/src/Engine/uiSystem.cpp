@@ -47,62 +47,59 @@ void UISystem::updateNonSimulation() {
 }
 
 void UISystem::updateSimulation(float dt) {
-	entt::entity hoveringButtonId = entt::null;
 	glm::vec2 screenSpacePosition = window.getUISpacePos();
 
 	// determine which button is being hovered..
 	for (auto&& [entity, transform, entityData, button] : registry.view<Transform, EntityData, Button>().each()) {
-		if (!entityData.isActive || !engine.ecs.isComponentActive<Button>(entity) || !button.isInteractable) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Button>(entity)) {
 			continue;
 		}
 
-		if (Math::isPointInRect(screenSpacePosition, transform.position + button.offset, transform.scale + button.padding) && hoveringButtonId == entt::null) {
-			// determine if the hover was first frame..
-			if (button.state == Button::State::Normal) {
-				button.timeElapsed = 0.f;
-				button.state = Button::State::Hovered;
+		bool isMouseOnButton = Math::isPointInRect(screenSpacePosition, transform.position + button.offset, transform.scale + button.padding);
 
-				executeButtonCallback(button, button.onHoverFunction);
-			}
+		if (isMouseOnButton) {
+			if (button.isInteractable) {
+				// determine if the hover was first frame..
+				if (button.state == Button::State::Normal) {
+					button.timeElapsed = 0.f;
+					button.state = Button::State::Hovered;
 
-			// determine if the hovered button is clicked..
-			if (button.state == Button::State::Hovered && toSelect) {
-				button.timeElapsed = 0.f;
-				button.state = Button::State::Pressed;
+					executeButtonCallback(button, button.onHoverFunction);
+				}
 
-				executeButtonCallback(button, button.onPressFunction);
+				// determine if the hovered button is clicked..
+				if (button.state == Button::State::Hovered && toSelect) {
+					button.timeElapsed = 0.f;
+					button.state = Button::State::Pressed;
+
+					executeButtonCallback(button, button.onPressFunction);
+				}
 			}
 		}
 		// transition back to normal when not hovered over.. 
 		else if (button.state == Button::State::Hovered) {
 			button.state = Button::State::Normal;
 			button.finalColor = button.normalColor;
+
+			executeButtonCallback(button, button.onHoverLeaveFunction);
 		}
 		
 		// determine if the pressed button was released.. this check is done outside
 		if (button.state == Button::State::Pressed && leftMouseReleased) {
 			button.timeElapsed = 0.f;
-			button.state = Button::State::Hovered;
+			button.state = isMouseOnButton ? Button::State::Hovered : Button::State::Normal;
 
 			executeButtonCallback(button, button.onClickReleasedFunction);
+
+			if (button.state == Button::State::Normal) {
+				executeButtonCallback(button, button.onHoverLeaveFunction);
+				button.finalColor = button.normalColor;
+			}
 		}
 
 		// update the color lerp of all buttons.. (hovering & pressed)
 		if (button.state != Button::State::Normal) {
-			float lerpFactor = std::clamp(button.timeElapsed / button.fadeDuration, 0.f, 1.f);
-
-			ColorA startColor;
-			ColorA destinationColor;
-			if (button.state == Button::State::Hovered) {
-				startColor = button.normalColor;
-				destinationColor = button.highlightedColor;
-			}
-			else if (button.state == Button::State::Pressed) {
-				startColor = button.highlightedColor;
-				destinationColor = button.pressedColor;
-			}
-
-			button.finalColor = glm::mix(glm::vec4{ startColor }, glm::vec4{ destinationColor }, lerpFactor) * std::lerp(1.f, button.colorMultiplier, lerpFactor);
+			updateButtonColor(button);
 
 			if (button.timeElapsed < button.fadeDuration) {
 				button.timeElapsed += dt;
@@ -112,6 +109,24 @@ void UISystem::updateSimulation(float dt) {
 
 	toSelect = false;
 	leftMouseReleased = false;
+}
+
+void UISystem::updateButtonColor(Button& button) {
+	float lerpFactor = std::clamp(button.timeElapsed / button.fadeDuration, 0.f, 1.f);
+
+	ColorA startColor;
+	ColorA destinationColor;
+
+	if (button.state == Button::State::Hovered) {
+		startColor = button.normalColor;
+		destinationColor = button.highlightedColor;
+	}
+	else if (button.state == Button::State::Pressed) {
+		startColor = button.highlightedColor;
+		destinationColor = button.pressedColor;
+	}
+
+	button.finalColor = glm::mix(glm::vec4{ startColor }, glm::vec4{ destinationColor }, lerpFactor) * std::lerp(1.f, button.colorMultiplier, lerpFactor);
 }
 
 void UISystem::executeButtonCallback(Button const& button, std::string const& functionName) {

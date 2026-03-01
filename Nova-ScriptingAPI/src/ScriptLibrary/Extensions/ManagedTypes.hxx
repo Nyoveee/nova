@@ -370,10 +370,15 @@ ManagedComponentEnd()
 // ======================================
 ManagedComponentDeclaration(
 	Button,
-	bool, isInteractable
+	bool, isInteractable,
+	ColorAlpha, normalColor,
+	ColorAlpha, highlightedColor,
+	ColorAlpha, pressedColor,
+	ColorAlpha, disabledColor
 )
 
 ButtonState getState();
+void forceColorUpdate();
 
 ManagedComponentEnd()
 

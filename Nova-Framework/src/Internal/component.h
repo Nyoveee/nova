@@ -835,7 +835,7 @@ struct EntityScript {
 };
 
 struct Button {
-	bool isInteractable;
+	bool isInteractable = true;
 	EntityScript reference;
 
 	ColorA normalColor		= ColorA{ 1.f, 1.f, 1.f, 1.f };
@@ -846,6 +846,7 @@ struct Button {
 	std::string onClickReleasedFunction;
 	std::string onPressFunction;
 	std::string onHoverFunction;
+	std::string onHoverLeaveFunction;
 
 	float fadeDuration = 0.1f;
 	float colorMultiplier = 1.f;
@@ -864,6 +865,7 @@ struct Button {
 		onClickReleasedFunction,
 		onPressFunction,
 		onHoverFunction,
+		onHoverLeaveFunction,
 		fadeDuration,
 		colorMultiplier,
 		offset,
