@@ -207,7 +207,8 @@ void AudioSystem::updatePositionalAudio() {
 				positionalAudioInstances[i].channel->set3DAttributes(&pos, &vel);
 				// Set the MinMax Distance based on the values inputted inside the PositionalAudio Component inside the Editor 
 				positionalAudioInstances[i].channel->set3DMinMaxDistance(positionalAudio->innerRadius, positionalAudio->maxRadius);
-				positionalAudioInstances[i].channel->setVolume(positionalAudioInstances[i].volume * volumeMultiplier * float(positionalAudioInstances.size() - i) / positionalAudioInstances.size());
+				float zipfMultiplier = 1.f / (static_cast<float>(i) + 1.f);
+				positionalAudioInstances[i].channel->setVolume(positionalAudioInstances[i].volume * volumeMultiplier * zipfMultiplier);
 			}
 		}
 	}

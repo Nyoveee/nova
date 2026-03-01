@@ -81,7 +81,7 @@ class Grunt : Enemy
         updateState.Add(GruntState.PreJump, Update_PreJump);
         updateState.Add(GruntState.Jump, Update_Jump);
 
-        animator.PlayAnimation("Grunt Idle (Base)");
+        // animator.PlayAnimation("Grunt Idle (Base)");
 
         ActivateRigidbody();
 

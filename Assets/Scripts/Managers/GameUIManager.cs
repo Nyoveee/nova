@@ -30,7 +30,11 @@ class GameUIManager : Script
     private Image_? ultimateBar = null;
 
     [SerializableField]
+    private GameObject? tutorialUI = null;
+    [SerializableField]
     private GameObject? pauseUI = null;
+    [SerializableField]
+    private GameObject? deathUI = null;
 
     [SerializableField]
     private Image_? damageBackground = null;
@@ -47,8 +51,7 @@ class GameUIManager : Script
     [SerializableField]
     private Text_? currentAmmoText = null;
 
-    [SerializableField]
-    private GameObject? deathUI = null;
+
 
     // Cutscene related stuff..
     [SerializableField]
@@ -61,8 +64,10 @@ class GameUIManager : Script
 
     private float timeElapsed = 0f;
 
+    private PlayerController_V2 playerController = null;
     protected override void init()
     {
+        playerController = GameObject.FindWithTag("Player")?.getScript<PlayerController_V2>();
         dialogueScript = getScript<DialogueScript>();
 
         progressBars[ProgressBarType.DashBar] = dashBar;
@@ -155,7 +160,25 @@ class GameUIManager : Script
         textureCoordinates.x = Mathf.Interpolate(0, 1f, (float)currentSp / maxSp, 1);
         ultimateBar.textureCoordinatesRange = textureCoordinates;
     }
-
+    /***********************************************************
+       Tutorial Prompt
+    ***********************************************************/
+    public void ToggleTutorial()
+    {
+        isPaused = !isPaused;
+        Systems.Pause = isPaused;
+        tutorialUI?.SetActive(isPaused);
+        if (isPaused)
+        {
+            tutorialUI?.getScript<TutorialPrompt>()?.BeginNextTutorial();
+            CameraAPI.UnlockMouse();
+        } 
+        else
+        {
+            playerController.ResetWASDMovement();
+            CameraAPI.LockMouse();
+        }
+    }
     /***********************************************************
        Pause handler..
     ***********************************************************/

@@ -871,10 +871,14 @@ class PlayerController_V2 : Script
 
     public void Reset()
     {
-        isMovingBackward = isMovingForward = isMovingLeft = isMovingRight = false;
+        ResetWASDMovement();
         OnTeleport();
         currentHealth = maxHealth;
         gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+    }
+    public void ResetWASDMovement()
+    {
+        isMovingBackward = isMovingForward = isMovingLeft = isMovingRight = false;
     }
 
     // Disable movement until touching the floor
