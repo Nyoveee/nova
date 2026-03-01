@@ -768,7 +768,9 @@ ENGINE_DLL_API std::vector<glm::vec3> NavigationSystem::FindPath(std::string age
 	dtPolyRef nearestRefEnd = 0;
 	//find end polyRef
 	if (!dtStatusSucceed(queryManager[agentMeshName]->findNearestPoly(endPos, halfExent, filter, &nearestRefEnd, nullptr)))
-	{	//failed
+	{	
+		//Logger::info(" Failed 0 ");
+		//failed
 		return std::vector<glm::vec3>();
 	}
 
@@ -777,21 +779,30 @@ ENGINE_DLL_API std::vector<glm::vec3> NavigationSystem::FindPath(std::string age
 	int pathSize;
 
 	//we have start and end polys now we can use this function
-	dtStatus returnStatus = dtStatusSucceed(queryManager[agentMeshName]->findPath(nearestRefStart, nearestRefEnd, startPos, endPos, filter, polyPath, &pathSize, 256));
+	dtStatus returnStatus = queryManager[agentMeshName]->findPath(nearestRefStart, nearestRefEnd, startPos, endPos, filter, polyPath, &pathSize, 256);
 	
 	//fail if neither condition succeed. DT_BUffer too small means returns partial path, still agreeble path. 
 	if( !( ((returnStatus & DT_BUFFER_TOO_SMALL) != 0) || ((returnStatus & DT_SUCCESS) != 0))  )
 	{
+		//Logger::info(" Failed 1 ");
 		//failed
 		return std::vector<glm::vec3>();
 	}
 
-	//Now string path to create waypoint path
+	//No true path found. best possible only.
+	// This is implementation details specific if you want we can uncomment this no will find closest best path.
+	//if (dtStatusDetail(returnStatus,DT_PARTIAL_RESULT))
+	//{
+	//	Logger::info(" Failed 2 ");
+	//	return std::vector<glm::vec3>();
+	//}
 
+	//Now string path to create waypoint path
 	float straightPath[MAX_POLYS * 3];
 	int straightPathSize;
 	if (!dtStatusSucceed(queryManager[agentMeshName]->findStraightPath(startPos, endPos, polyPath, pathSize, straightPath, nullptr, nullptr, &straightPathSize, MAX_POLYS, 0)))
 	{
+		//Logger::info(" Failed 3 ");
 		//failed
 		return std::vector<glm::vec3>();
 	}
@@ -805,7 +816,7 @@ ENGINE_DLL_API std::vector<glm::vec3> NavigationSystem::FindPath(std::string age
 
 	}
 
-
+	//Logger::info(" Return a Set of Points! ");
 	return wayPointList;
 }
 
