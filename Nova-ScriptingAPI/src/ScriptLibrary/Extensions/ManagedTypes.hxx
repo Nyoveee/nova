@@ -17,9 +17,15 @@ namespace ScriptingAPI {
 	ManagedResource(Audio)
 }
 
-
 #define ALL_MANAGED_TYPED_RESOURCE_ID \
 	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material, ScriptingAPI::Scene, ScriptingAPI::Audio
+
+public enum class ButtonState {
+	Normal,
+	Hovered,
+	Pressed,
+	Disabled
+};
 
 // ===========================================================================================
 // 1. Defining structs..
@@ -366,6 +372,9 @@ ManagedComponentDeclaration(
 	Button,
 	bool, isInteractable
 )
+
+ButtonState getState();
+
 ManagedComponentEnd()
 
 // ======================================

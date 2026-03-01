@@ -456,6 +456,28 @@ float Rigidbody_::GetMass()
 }
 
 // =================================================================
+// Button
+// =================================================================
+
+ButtonState Button_::getState()
+{
+	Button* button = nativeComponent();
+	
+	switch (button->state) {
+	case Button::State::Normal:
+		return ButtonState::Normal;
+	case Button::State::Hovered:
+		return ButtonState::Hovered;
+	case Button::State::Pressed:
+		return ButtonState::Pressed;
+	case Button::State::Disabled:
+		return ButtonState::Disabled;
+	default:
+		return ButtonState::Normal;
+	}
+}
+
+// =================================================================
 // Animator
 // =================================================================
 
