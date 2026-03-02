@@ -34,7 +34,7 @@ class CannonWaveManager : Script
     // This function is invoked every update.
     protected override void update()
     {
-        activeEnemies.RemoveAll(e => e == null || !e.IsActive());
+        activeEnemies.RemoveAll(e => e == null || e.getScript<Enemy>().IsDead());
         //if (!waveActive && currentWave < totalWaves)
         //{
         //    waveActive = true;

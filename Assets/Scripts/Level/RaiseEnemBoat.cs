@@ -25,6 +25,7 @@ class RaiseEnemBoat : Script
 
     private bool isSinking = false;
     private float sinkSpeed = 10f;
+    private bool hasSunk = false;
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
@@ -40,7 +41,7 @@ class RaiseEnemBoat : Script
     // This function is invoked every update.
     protected override void update()
     {
-        if(furthestDistance.getComponent<Transform_>().position.z < -600 && isSinking == false)
+        if(furthestDistance.getComponent<Transform_>().position.z < -600 && isSinking == false && !hasSunk)
         {
             isRising = true;
         }
@@ -89,6 +90,7 @@ class RaiseEnemBoat : Script
                 pos.y = startY;
                 this.gameObject.transform.position = pos;
                 isSinking = false;
+                hasSunk = true;
             }
         }
     }
