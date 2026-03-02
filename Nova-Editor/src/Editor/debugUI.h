@@ -20,6 +20,8 @@ private:
 	void renderHDRSection();
 	void renderGammaCorrectionSection();
 
+	void renderTransformShift();
+
 private:
 	Editor& editor;
 	Engine& engine;
