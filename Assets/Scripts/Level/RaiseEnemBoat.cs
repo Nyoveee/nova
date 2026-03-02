@@ -23,6 +23,10 @@ class RaiseEnemBoat : Script
     private float targetY;
     private bool reachedTarget = false;
 
+    private bool isSinking = false;
+    private float sinkSpeed = 10f;
+    private bool hasSunk = false;
+
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
     {}
@@ -37,7 +41,7 @@ class RaiseEnemBoat : Script
     // This function is invoked every update.
     protected override void update()
     {
-        if(furthestDistance.getComponent<Transform_>().position.z < -600)
+        if(furthestDistance.getComponent<Transform_>().position.z < -600 && isSinking == false && !hasSunk)
         {
             isRising = true;
         }
@@ -74,6 +78,21 @@ class RaiseEnemBoat : Script
             waveManager.getScript<CannonWaveManager>().StartWave();
             waveStarted = true;
         }
+
+        if (isSinking)
+        {
+            Vector3 pos = this.gameObject.transform.position;
+            pos.y -= sinkSpeed * Time.V_DeltaTime();
+            this.gameObject.transform.position = pos;
+
+            if (pos.y <= startY)
+            {
+                pos.y = startY;
+                this.gameObject.transform.position = pos;
+                isSinking = false;
+                hasSunk = true;
+            }
+        }
     }
 
     // This function is invoked every update.
@@ -84,4 +103,10 @@ class RaiseEnemBoat : Script
     protected override void exit()
     {}
 
+    public void Sink()
+    {
+        isSinking = true;
+        isRising = false;
+        reachedTarget = false;
+    }
 }
