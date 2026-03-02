@@ -4,7 +4,12 @@
         "1000": {
             "id": 1000,
             "animation": 18446744073709551615,
-            "transitions": null,
+            "transitions": [
+                {
+                    "nextNode": 7999528233743074039,
+                    "conditions": null
+                }
+            ],
             "toLoop": true,
             "name": "Entry Node",
             "animationEvents": null
