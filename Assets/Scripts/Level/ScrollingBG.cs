@@ -20,6 +20,8 @@ class ScrollingBG : Script
     [SerializableField]
     private GameObject lever; 
 
+    private bool isScrolling = false;
+
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
     {}
@@ -31,7 +33,14 @@ class ScrollingBG : Script
     // This function is invoked every update.
     protected override void update()
     {
-        if(lever.getScript<Switch>().isSwitchActivated() == true)
+        if (lever.getScript<Switch>().isSwitchActivated() == true)
+        {
+            if (isScrolling == false)
+            {
+                isScrolling = true;
+            }
+        }
+        if(isScrolling == true)
         {
             Vector3 pos = gameObject.transform.position;
             pos.z -= scrollSpeed * Time.V_DeltaTime();
@@ -54,4 +63,9 @@ class ScrollingBG : Script
     protected override void exit()
     {}
 
+    public void StopScrolling()
+    {
+        isScrolling = false;
+        scrollSpeed = 0;
+    }
 }

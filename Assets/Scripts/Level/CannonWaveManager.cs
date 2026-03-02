@@ -9,6 +9,12 @@ class CannonWaveManager : Script
     private int enemiesPerWave = 2;
     [SerializableField] 
     private int totalWaves = 3;
+    [SerializableField]
+    private GameObject endofLevel;
+    [SerializableField]
+    private GameObject boat;
+    [SerializableField]
+    private GameObject boat2;
 
     private int currentWave = 0;
     private bool waveActive = false;
@@ -51,6 +57,9 @@ class CannonWaveManager : Script
             else
             {
                 Debug.Log("All waves completed");
+                endofLevel.getScript<EndOfLevel2>().StartScroll();
+                boat.getScript<RaiseEnemBoat>().Sink();
+                boat2.getScript<RaiseEnemBoat>().Sink();
             }
         }
     }
