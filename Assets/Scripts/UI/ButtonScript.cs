@@ -15,9 +15,14 @@ class ButtonScript : Script
     Inspector Variables
     ***********************************************************/
     [SerializableField]
+    private Canvas_ parentCanvas;
+
+    [SerializableField]
     private Audio onHoverSFX;
+
     [SerializableField]
     private Audio onClickSFX;
+
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -56,21 +61,27 @@ class ButtonScript : Script
     // used by settings
     public void DisableSettingsUI()
     {
-        MainSettingsScript setting = GameObject.FindWithTag("Setting UI")?.getScript<MainSettingsScript>();
-
-        if (setting != null) {
-            setting.toShowSettingsUI(false);
-        }
+        ToShowPopUI("Setting UI", false);
     }
 
     public void EnableSettingsUI()
     {
-        MainSettingsScript setting = GameObject.FindWithTag("Setting UI")?.getScript<MainSettingsScript>();
+        ToShowPopUI("Setting UI", true);
+    }
 
-        if (setting != null)
-        {
-            setting.toShowSettingsUI(true);
-        }
+    public void DisableControlsUI()
+    {
+        ToShowPopUI("Controls UI", false);
+    }
+
+    public void EnableControlsUI()
+    {
+        ToShowPopUI("Controls UI", true);
+    }
+
+    private void ToShowPopUI(string tagName, bool value)
+    {
+        GameObject.FindWithTag(tagName).getScript<UIPopupScript>().toShowUI(value, parentCanvas);
     }
 
     public void StartChapter()

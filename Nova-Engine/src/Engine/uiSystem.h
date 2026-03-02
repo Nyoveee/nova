@@ -24,6 +24,8 @@ private:
 	ENGINE_DLL_API void executeButtonCallback(Button const& button, std::string const& functionName);
 	ENGINE_DLL_API void onButtonCreation(entt::registry& registry, entt::entity entityId);
 
+	void setChildAlphaAndInteractabliltiy(entt::entity entity, float alpha, bool isInteractable);
+
 private:
 	Engine& engine;
 	InputManager& inputManager;

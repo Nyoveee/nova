@@ -192,7 +192,8 @@
                 ]
             },
             "Canvas": {
-                "placeholder": ""
+                "alpha": 1.0,
+                "isInteractable": true
             },
             "id": 42991779
         },
@@ -1369,6 +1370,13 @@
                                 }
                             },
                             {
+                                "name": "parentCanvas",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
                                 "name": "onHoverSFX",
                                 "data": {
                                     "__variant_value": 18282072967288242303,
@@ -1525,6 +1533,13 @@
                                 "data": {
                                     "__variant_value": 931858692302405727,
                                     "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "parentCanvas",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
                                 }
                             },
                             {
@@ -1713,5 +1728,7 @@
         {
             "name": "Settings Text"
         }
-    ]
+    ],
+    "iblDiffuseStrength": 1.0,
+    "iblSpecularStrength": 1.0
 }

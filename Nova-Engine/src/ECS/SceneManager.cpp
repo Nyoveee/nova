@@ -31,7 +31,7 @@ void SceneManager::loadScene(ResourceID id) {
 	engine.SystemsUnload();
 	currentScene = NO_SCENE_LOADED;
 
-	Serialiser::deserialiseScene(ecs.registry, layers, scene->getFilePath().string.c_str());
+	Serialiser::deserialiseScene(ecs.registry, layers, iblDiffuseStrength, iblSpecularStrength, scene->getFilePath().string.c_str());
 	currentScene = scene->id();
 
 	engine.SystemsOnLoad();
@@ -49,7 +49,7 @@ void SceneManager::editorChangeScene(ResourceID id, AssetFilePath const& sceneAs
 	engine.SystemsUnload();
 	currentScene = NO_SCENE_LOADED;
 
-	Serialiser::deserialiseScene(ecs.registry, layers, sceneAssetFilepath.string.c_str());
+	Serialiser::deserialiseScene(ecs.registry, layers, iblDiffuseStrength, iblSpecularStrength, sceneAssetFilepath.string.c_str());
 	currentScene = id;
 
 	engine.SystemsOnLoad();

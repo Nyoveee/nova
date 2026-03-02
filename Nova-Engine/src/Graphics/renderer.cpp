@@ -2182,7 +2182,7 @@ void Renderer::renderText(Transform const& transform, Text const& text, ColorA c
 		return;
 	}
 
-	textShader.setVec3("textColor", text.fontColor* glm::vec3{ colorMultiplier });
+	textShader.setVec4("textColor", glm::vec4{ glm::vec3{ text.fontColor }, text.canvasAlphaMultiplier } * colorMultiplier);
 
 	Font::Atlas const& atlas = font->getAtlas();
 	float fontScale = static_cast<float>(text.fontSize) / font->getFontSize();
@@ -2279,7 +2279,10 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 		return;
 	}
 
-	texture2dShader.setVec4("tintColor", image.colorTint * colorMultiplier);
+	glm::vec4 color = image.colorTint * colorMultiplier;
+	color.a *= image.canvasAlphaMultiplier;
+
+	texture2dShader.setVec4("tintColor", color);
 	texture2dShader.setMatrix("model", transform.modelMatrix);
 	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
 
@@ -2656,8 +2659,8 @@ void Renderer::preparePBRUniforms() {
 	int ssao					= renderConfig.toEnableSSAO;
 	int directionalLightCaster	= hasDirectionalLightShadowCaster;
 	int ibl						= renderConfig.toEnableIBL;
-	float iblDiffuseStrength	= engine.gameConfig.iblDiffuseStrength;
-	float iblSpecularStrength	= engine.gameConfig.iblSpecularStrength;
+	float iblDiffuseStrength	= engine.ecs.sceneManager.iblDiffuseStrength;
+	float iblSpecularStrength	= engine.ecs.sceneManager.iblSpecularStrength;
 
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightSpaceMatrix), sizeof(glm::mat4x4), glm::value_ptr(directionalLightViewMatrix));
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightDir), sizeof(glm::vec3), glm::value_ptr(directionalLightDir));

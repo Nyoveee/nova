@@ -429,6 +429,8 @@ struct Image {
 		textureCoordinatesRange,
 		toTile
 	)
+
+	float canvasAlphaMultiplier = 1.f;
 };
 
 struct ScriptData
@@ -813,14 +815,18 @@ struct Text {
 		fontColor,
 		alignment
 	)
+
+	float canvasAlphaMultiplier = 1.f;
 };
 
 struct Canvas {
-	std::string placeholder;
+	NormalizedFloat alpha = 1.f;
+	bool isInteractable = true;
 
 	REFLECTABLE
 	(
-		placeholder
+		alpha,
+		isInteractable
 	)
 };
 
@@ -880,8 +886,8 @@ struct Button {
 	} state = State::Normal;
 
 	float timeElapsed = 0.f;
-
 	ColorA finalColor = normalColor;
+	bool isCanvasInteractable = true;
 
 	void enableButton() {
 		isInteractable = true;

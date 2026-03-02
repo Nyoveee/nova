@@ -44,9 +44,27 @@ void UISystem::updateNonSimulation() {
 		button.state = Button::State::Normal;
 		button.finalColor = button.normalColor;
 	}
+
+	// update all ui element's canvas's alpha..
+	for (auto&& [entity, transform, entityData, canvas] : registry.view<Transform, EntityData, Canvas>().each()) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Canvas>(entity)) {
+			continue;
+		}
+
+		setChildAlphaAndInteractabliltiy(entity, canvas.alpha, canvas.isInteractable);
+	}
 }
 
 void UISystem::updateSimulation(float dt) {
+	// update all ui element's canvas's alpha..
+	for (auto&& [entity, transform, entityData, canvas] : registry.view<Transform, EntityData, Canvas>().each()) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Canvas>(entity)) {
+			continue;
+		}
+
+		setChildAlphaAndInteractabliltiy(entity, canvas.alpha, canvas.isInteractable);
+	}
+
 	glm::vec2 screenSpacePosition = window.getUISpacePos();
 
 	// determine which button is being hovered..
@@ -58,7 +76,7 @@ void UISystem::updateSimulation(float dt) {
 		bool isMouseOnButton = Math::isPointInRect(screenSpacePosition, transform.position + button.offset, transform.scale + button.padding);
 
 		if (isMouseOnButton) {
-			if (button.isInteractable) {
+			if (button.isInteractable && button.isCanvasInteractable) {
 				// determine if the hover was first frame..
 				if (button.state == Button::State::Normal) {
 					button.timeElapsed = 0.f;
@@ -146,4 +164,28 @@ void UISystem::onButtonCreation(entt::registry&, entt::entity entityId) {
 	Button& button = registry.get<Button>(entityId);
 	button.state = Button::State::Normal;
 	button.finalColor = button.normalColor;
+}
+
+void UISystem::setChildAlphaAndInteractabliltiy(entt::entity entity, float alpha, bool isInteractable) {
+	EntityData const& entityData = registry.get<EntityData>(entity);
+
+	Image* image = registry.try_get<Image>(entity);
+	Text* text = registry.try_get<Text>(entity);
+	Button* button = registry.try_get<Button>(entity);
+
+	if (image) {
+		image->canvasAlphaMultiplier = alpha;
+	}
+
+	if (text) {
+		text->canvasAlphaMultiplier = alpha;
+	}
+
+	if (button) {
+		button->isCanvasInteractable = isInteractable;
+	}
+
+	for (entt::entity child : entityData.children) {
+		setChildAlphaAndInteractabliltiy(child, alpha, isInteractable);
+	}
 }

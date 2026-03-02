@@ -390,6 +390,17 @@ property bool isInteractable {
 ManagedComponentEnd()
 
 // ======================================
+// Canvas Component
+// ======================================
+ManagedComponentDeclaration(
+	Canvas,
+	float, alpha,
+	bool, isInteractable
+)
+
+ManagedComponentEnd()
+
+// ======================================
 // MeshRenderer & SkinnedMeshRenderer Component
 // ======================================
 ManagedComponentDeclaration(
