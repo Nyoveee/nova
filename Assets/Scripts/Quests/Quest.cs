@@ -38,6 +38,7 @@ public abstract class Quest : Script
     ***********************************************************/
     public virtual void OnEnter() { }
     public virtual void OnSuccess() { }
+    public virtual void OnSkip() { }
     public virtual void OnFail() { }
     public virtual void OnRestart(){}
 

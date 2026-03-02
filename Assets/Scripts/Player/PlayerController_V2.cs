@@ -218,7 +218,7 @@ class PlayerController_V2 : Script
             } 
             else
             {
-            rigidbody.SetGravityFactor(float.Lerp(jumpGravityFactor, baseGravityFactor, gravityLerpTimer / lerpGravityFactorDuration));
+                rigidbody.SetGravityFactor(float.Lerp(jumpGravityFactor, baseGravityFactor, gravityLerpTimer / lerpGravityFactorDuration));
             }
         }
 
@@ -869,10 +869,9 @@ class PlayerController_V2 : Script
     }
 
 
-    public void Reset()
+    public void ResetHealth()
     {
-        ResetWASDMovement();
-        OnTeleport();
+
         currentHealth = maxHealth;
         gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
     }
@@ -886,6 +885,9 @@ class PlayerController_V2 : Script
     {
         playerMoveStates = PlayerMoveStates.InitState;
         rigidbody.SetVelocity(Vector3.Zero());
+        rigidbody.SetLinearDamping(airDrag);
+        rigidbody.SetGravityFactor(baseGravityFactor);
+        rigidbody.SetVelocityLimits(100000);
         currentStamina = 0;
     }
 }

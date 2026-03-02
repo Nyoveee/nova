@@ -111,7 +111,7 @@ class Switch : Script
     protected override void exit()
     {}
 
-    private void handleSwitchActivation()
+    public void handleSwitchActivation()
     {
         if (!hasBeenActivated && isPlayerCloseToSwitch) {
             audioComponent?.PlaySound(switchSfx);
@@ -126,7 +126,12 @@ class Switch : Script
     {
         return hasBeenActivated;
     }
-
+    public void forceEnableSwitch()
+    {
+        hasBeenActivated = true;
+        isAnimating = true;
+        switchMesh?.setMaterialBool(1, "isActive", false);
+    }
     public void enableSwitch()
     {
         isEnabled = true;

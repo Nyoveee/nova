@@ -5,6 +5,10 @@ class MovementBasedQuest : Quest
 {
     [SerializableField]
     private GameObject checkPointIndicator;
+    public override void OnSkip()
+    {
+        Destroy(checkPointIndicator);
+    }
     public override void OnSuccess(){
         Destroy(checkPointIndicator);
     }

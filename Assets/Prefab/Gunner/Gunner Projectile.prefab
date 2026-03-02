@@ -1,5 +1,5 @@
 {
-    "RootEntity": 3,
+    "RootEntity": 8,
     "Entities": [
         {
             "EntityData": {
@@ -129,6 +129,10 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": 1.0737622461419342e+27,
+                "maxInitialRotationOffset": 8.057466169867698e-43,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -138,6 +142,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 1.0,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -231,7 +237,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 3
+            "id": 8
         }
     ]
 }

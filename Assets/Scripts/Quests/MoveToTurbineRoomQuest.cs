@@ -71,9 +71,4 @@ class MoveToTurbineRoomQuest : MovementBasedQuest
         }
 
     }
-
-    public override void OnSuccess()
-    {
-    }
-
 }

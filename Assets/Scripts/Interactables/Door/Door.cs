@@ -219,7 +219,7 @@ class Door : Script
     public void CloseDoor()
     {
         doorState = DoorState.Closing;
-        audioComponent?.PlaySound(closeSFX);
+        // audioComponent?.PlaySound(closeSFX);
     }
 
     public void LockDoor()
