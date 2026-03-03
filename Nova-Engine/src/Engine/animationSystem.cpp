@@ -131,15 +131,35 @@ void AnimationSystem::playAnimation(Animator& animator, std::string name) {
 	animator.executedAnimationEvents.clear();
 }
 
-void AnimationSystem::resetSequence(Sequence& sequence) {
-	sequence.currentFrame = 0;
-	sequence.timeElapsed = 0.f;
-	sequence.lastTimeElapsed = 0.f;
+void AnimationSystem::resetSequence(Sequence& sequence, Sequencer& sequencer) {
+	if (sequence.speedMultiplier > 0) {
+		sequence.currentFrame = 0;
+		sequence.timeElapsed = 0.f;
+		sequence.lastTimeElapsed = 0.f;
+	}
+	else {
+		sequence.currentFrame = sequencer.data.lastFrame;
+		sequence.timeElapsed = static_cast<float>(sequencer.data.lastFrame) / static_cast<float>(FPS);
+		sequence.lastTimeElapsed = static_cast<float>(sequencer.data.lastFrame) / static_cast<float>(FPS);
+	}
+
 	sequence.executedAnimationEvents.clear();
 }
 
+void AnimationSystem::resetSequence(Sequence& sequence) {
+	auto&& [sequencer, _] = resourceManager.getResource<Sequencer>(sequence.sequencerId);
+
+	if (sequencer) {
+		resetSequence(sequence, *sequencer);
+	}
+}
+
 void AnimationSystem::updateSequencer(entt::entity entityId, Sequence& sequence, Sequencer& sequencer, float dt) {
-	if (sequence.currentFrame < sequencer.data.lastFrame) {
+	// advance sequencer..
+	if (
+			sequence.speedMultiplier > 0 && sequence.currentFrame < sequencer.data.lastFrame	// forward animate..
+		||	sequence.speedMultiplier < 0 && sequence.currentFrame > 0							// backwards animate..
+	) {
 		sequence.timeElapsed += dt * sequence.speedMultiplier;
 		sequence.currentFrame = static_cast<int>(sequence.timeElapsed * FPS);
 	}
@@ -155,7 +175,14 @@ void AnimationSystem::updateSequencer(entt::entity entityId, Sequence& sequence,
 		sequence.currentFrame = sequencer.data.lastFrame;
 
 		if (sequence.toLoop) {
-			resetSequence(sequence);
+			resetSequence(sequence, sequencer);
+		}
+	}
+	else if (sequence.currentFrame <= 0) {
+		sequence.currentFrame = 0;
+
+		if (sequence.toLoop) {
+			resetSequence(sequence, sequencer);
 		}
 	}
 }

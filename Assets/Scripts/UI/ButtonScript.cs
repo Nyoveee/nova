@@ -40,11 +40,11 @@ class ButtonScript : Script
 
     public void onPressed()
     {
+        audioComponent.PlaySound(onClickSFX);
     }
 
     public void onReleased()
     {
-        audioComponent.PlaySound(onClickSFX);
         SceneAPI.ChangeScene(nextScene);
     }
 
@@ -87,5 +87,15 @@ class ButtonScript : Script
     public void StartChapter()
     {
         GameObject.FindWithTag("Main_Level_Select_Script")?.getScript<Main_Level_Select_Script>()?.TransitionToLevel();
+    }
+
+    public void GoToLevelSelect()
+    {
+        GameObject.FindWithTag("Main UI Manager")?.getScript<MainUIManager>()?.GoToLevelSelectUI();
+    }
+
+    public void GoToMainMenu()
+    {
+        GameObject.FindWithTag("Main UI Manager")?.getScript<MainUIManager>()?.GoToMainMenuUI();
     }
 }
