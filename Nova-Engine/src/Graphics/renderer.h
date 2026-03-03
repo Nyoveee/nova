@@ -204,14 +204,16 @@ private:
 	// attempts to create a material batch..
 	void createMaterialBatchEntry(Camera const& camera, Model const& model, ResourceID materialId, Mesh& mesh, entt::entity entity, MeshType meshType, int layerIndex, RenderQueueConfig renderQueueConfig);
 	void createOpaqueMaterialBatchEntry(Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType, int layerIndex);
-	void createTransparentMaterialEntry(Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType);
+	void createTransparentMaterialEntry(std::vector<TransparentEntry>& transparentMaterials, Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType);
 	void createShadowBatchEntry(Model const& model, Mesh& mesh, entt::entity entity, MeshType meshType);
 
 	// render all models (normal and skinned).
 	void renderModels(RenderPass renderPass, std::optional<GLuint> depthTextureId);
 
-	// render all TranslucentMeshRenderers.
 	void renderTranslucentModels(FrameBuffer const& frameBuffer);
+
+	void renderDepthTranslucentModels(FrameBuffer const& frameBuffer);
+	void renderOITTransculentModels(FrameBuffer const& frameBuffer);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text, ColorA const& colorMultiplier);

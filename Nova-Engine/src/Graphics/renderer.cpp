@@ -65,6 +65,9 @@ namespace {
 	}
 }
 
+constexpr glm::vec4 zeroClearColor = glm::vec4{ 0.0f };
+constexpr glm::vec4 oneClearColor = glm::vec4{ 1.0f };
+
 // INVALID_ID means it's not holding to any dynamically allocated resource.
 constexpr inline GLuint INVALID_ID = std::numeric_limits<GLuint>::max();
 
@@ -203,6 +206,7 @@ struct alignas(16) ReflectionProbeUBO {
 static constexpr int RenderOutputNormal = 0;
 static constexpr int RenderOutputColor = 1;
 static constexpr int RenderOutputTransparency = 2;
+static constexpr int RenderOutputDepthTransparency = 3;
 
 #pragma warning( pop )
 
@@ -289,10 +293,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	haltonFrameIndex				{},
 	ssaoNoiseTextureId				{ INVALID_ID },
 	videoVAO						{},
-	hdrExposure						{ 0.9f },				 // color..     gbuffer stuff..				transparency..
-															 // main		normal			velocity	accumulation	revealage
-	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8 } },
-	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8 } },
+	hdrExposure						{ 0.9f },				 // color..     gbuffer stuff..				transparency..				depth transparency..
+															 // main		normal			velocity	accumulation	revealage,	main color..
+	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8,		GL_RGBA16F } },
+	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8,		GL_RGBA16F } },
 	uiMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA8 } },
 	physicsDebugFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer				{ gameWidth, gameHeight, { GL_R32UI } },
@@ -1089,7 +1093,7 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 }
 
 void Renderer::depthPrePass(FrameBuffer const& frameBuffer) {
-	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_NONE, GL_NONE };
+	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_NONE, GL_NONE, GL_NONE };
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -1713,7 +1717,8 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 	// @TODO: Batch render with multi indirect draw call..
 
 	renderQueue.opaqueMaterials.clear();
-	renderQueue.transparentMaterials.clear();
+	renderQueue.oitTransparentMaterials.clear();
+	renderQueue.depthTransparentMaterials.clear();
 	renderQueue.materialResourceIdToOpaqueIndex.clear();
 
 	// Let's start sorting all our game objects into these batches..
@@ -1784,14 +1789,12 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 		layerIndex++;
 	}
 
-#if false
 	if (renderQueueConfig == RenderQueueConfig::Normal) {
 		// Sort transparent objects by the z value, from camera..
-		std::sort(renderQueue.transparentMaterials.begin(), renderQueue.transparentMaterials.end(), [&](auto&& lhs, auto&& rhs) {
+		std::sort(renderQueue.depthTransparentMaterials.begin(), renderQueue.depthTransparentMaterials.end(), [&](auto&& lhs, auto&& rhs) {
 			return lhs.distanceToCamera > rhs.distanceToCamera;
 		});
 	}
-#endif
 }
 
 void Renderer::frustumCullAndSetupShadowRenderQueue(glm::mat4 const& viewProjectionMatrix) {
@@ -1888,7 +1891,12 @@ void Renderer::createMaterialBatchEntry(Camera const& camera, Model const& model
 	}
 	// we dont create a transparent entry if requested to ignore..
 	else if (renderQueueConfig != RenderQueueConfig::IgnoreTransparent) {
-		createTransparentMaterialEntry(camera, model, *material, *customShader, shader, mesh, entity, meshType);
+		if (material->materialData.depthTestingMethod == DepthTestingMethod::DepthTest) {
+			createTransparentMaterialEntry(renderQueue.depthTransparentMaterials, camera, model, *material, *customShader, shader, mesh, entity, meshType);
+		}
+		else {
+			createTransparentMaterialEntry(renderQueue.oitTransparentMaterials, camera, model, *material, *customShader, shader, mesh, entity, meshType);
+		}
 	}
 }
 
@@ -1952,11 +1960,11 @@ void Renderer::createOpaqueMaterialBatchEntry(Model const& model, Material const
 	materialBatch.entities[modelIndex].meshes.push_back(mesh);
 }
 
-void Renderer::createTransparentMaterialEntry(Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType) {
+void Renderer::createTransparentMaterialEntry(std::vector<TransparentEntry>& transparentMaterials, Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType) {
 	// let's check if the given model has already a recorded entry..
 	auto modelIterator = std::find_if(
-		renderQueue.transparentMaterials.begin(),
-		renderQueue.transparentMaterials.end(),
+		transparentMaterials.begin(),
+		transparentMaterials.end(),
 		[&](auto&& transparentEntry) {
 			return transparentEntry.entity == entity;
 		}
@@ -1965,7 +1973,7 @@ void Renderer::createTransparentMaterialEntry(Camera const& camera, Model const&
 	int index; 
 
 	// this model has not been recorded in this particular material batch
-	if (modelIterator == renderQueue.transparentMaterials.end()) {
+	if (modelIterator == transparentMaterials.end()) {
 		// lets add a new entry..
 		// we need to calculate the distance between camera and game object..
 		Transform& transform = registry.get<Transform>(entity);
@@ -1979,14 +1987,14 @@ void Renderer::createTransparentMaterialEntry(Camera const& camera, Model const&
 			.distanceToCamera	= distance
 		};
 
-		index = static_cast<int>(renderQueue.transparentMaterials.size());
-		renderQueue.transparentMaterials.push_back(transparentEntry);
+		index = static_cast<int>(transparentMaterials.size());
+		transparentMaterials.push_back(transparentEntry);
 	}
 	else {
-		index = static_cast<int>(std::distance(renderQueue.transparentMaterials.begin(), modelIterator));
+		index = static_cast<int>(std::distance(transparentMaterials.begin(), modelIterator));
 	}
 
-	std::vector<TransparentMaterial>& materials = renderQueue.transparentMaterials[index].materials;
+	std::vector<TransparentMaterial>& materials = transparentMaterials[index].materials;
 	
 	// Let's now find the correct material entry in this model entry..
 	auto materialIterator = std::find_if(
@@ -2083,82 +2091,157 @@ void Renderer::renderModels(RenderPass renderPass, std::optional<GLuint> depthTe
 }
 
 void Renderer::renderTranslucentModels(FrameBuffer const& frameBuffer) {
-	static constexpr glm::vec4 zeroClearColor = glm::vec4{ 0.0f };
-	static constexpr glm::vec4 oneClearColor  = glm::vec4{ 1.0f };
+	renderOITTransculentModels(frameBuffer);
+	renderDepthTranslucentModels(frameBuffer);
+}
+
+void Renderer::renderDepthTranslucentModels(FrameBuffer const& frameBuffer) {
+	// We cache the previous material and entity..
+	auto previousMaterialId = INVALID_RESOURCE_ID;
+	auto previousEntity = entt::null;
+
+	setDepthMode(DepthTestingMethod::DepthTest);
+	setBlendMode(BlendingConfig::Disabled);
+
+	// ==============================================================
+	// 1. Rendering back to front..
+	// ==============================================================
+	static constexpr GLenum depthTransparencyBuffers[] = { GL_NONE, GL_NONE, GL_NONE, GL_NONE, GL_NONE, GL_COLOR_ATTACHMENT5 };
+	static constexpr int DEPTH_TRANSPARENCY_ATTACHMENT_INDEX = 5;
+
+	if (renderQueue.depthTransparentMaterials.size()) {
+		// Disable the color attachment, enable the depth transparency attachments.
+		glNamedFramebufferDrawBuffers(frameBuffer.fboId(), 6, depthTransparencyBuffers);
+
+		// we clear these color attachments..
+		glClearBufferfv(GL_COLOR, DEPTH_TRANSPARENCY_ATTACHMENT_INDEX, glm::value_ptr(zeroClearColor));
+
+		// Set PBR UBO to output depth transparency details only..
+		glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputDepthTransparency);
+
+		for (auto const& transparentEntry : renderQueue.depthTransparentMaterials) {
+			for (auto const& material : transparentEntry.materials) {
+				// set the uniforms of the material.. if it's different..
+				if (previousMaterialId != material.material.get().id()) {
+					setupMaterial(material.material, material.customShader, material.shader, DepthConfig::Ignore, BlendConfig::Ignore, std::nullopt);
+					previousMaterialId = material.material.get().id();
+				}
+
+				// set the uniforms of the model.. if it's different..
+				if (previousEntity != transparentEntry.entity) {
+					setupModelUniforms(transparentEntry.entity, material.shader, transparentEntry.model, transparentEntry.meshType);
+				}
+
+				// for each mesh..
+				for (auto const& mesh : material.meshes) {
+					renderMesh(mesh);
+				}
+			}
+		}
+
+		// Reset color attachment active back to original..
+		frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
+
+		// Reset PBR UBO uniforms..
+		glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
+
+		// we now composite the depth transparent color attachment over..
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+		setBlendMode(BlendingConfig::AlphaBlending);
+
+		overlayShader.use();
+
+		// Bind the depth transparency texture..
+		glBindTextureUnit(0, frameBuffer.textureIds()[DEPTH_TRANSPARENCY_ATTACHMENT_INDEX]);
+
+		overlayShader.setImageUniform("overlay", 0);
+
+		// Render fullscreen quad
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+}
+
+void Renderer::renderOITTransculentModels(FrameBuffer const& frameBuffer) {
+	// ==============================================================
+	// 2. Rendering OIT..
+	// ==============================================================
 	static constexpr int ACCUMULATION_COLOR_ATTACHMENT_INDEX = 3;
 	static constexpr int REVEALAGE_COLOR_ATTACHMENT_INDEX = 4;
-	static constexpr GLenum buffers[] = { GL_NONE, GL_NONE, GL_NONE, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
-
-	// https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended
-	// We will be using weighted blending OIT to render transculent models..
-
-	// Disable the color attachment, enable the transparency attachments.
-	glNamedFramebufferDrawBuffers(frameBuffer.fboId(), 5, buffers);
-
-	// we setup the appropriate blending equations..
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	glBlendFunci(ACCUMULATION_COLOR_ATTACHMENT_INDEX, GL_ONE, GL_ONE); // accumulation blend target
-	glBlendFunci(REVEALAGE_COLOR_ATTACHMENT_INDEX, GL_ZERO, GL_ONE_MINUS_SRC_COLOR); // revealge blend target
-	glBlendEquation(GL_FUNC_ADD);
-
-	// we clear these color attachments..
-	glClearBufferfv(GL_COLOR, ACCUMULATION_COLOR_ATTACHMENT_INDEX, glm::value_ptr(zeroClearColor));
-	glClearBufferfv(GL_COLOR, REVEALAGE_COLOR_ATTACHMENT_INDEX, glm::value_ptr(oneClearColor));
-
-	// Set PBR UBO to output transparency details only..
-	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputTransparency);
+	static constexpr GLenum oitBuffers[] = { GL_NONE, GL_NONE, GL_NONE, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_NONE };
 
 	// We cache the previous material and entity..
 	auto previousMaterialId = INVALID_RESOURCE_ID;
 	auto previousEntity = entt::null;
 
-	for (auto const& transparentEntry : renderQueue.transparentMaterials) {
-		for (auto const& material : transparentEntry.materials) {
-			// set the uniforms of the material.. if it's different..
-			if (previousMaterialId != material.material.get().id()) {
-				setupMaterial(material.material, material.customShader, material.shader, DepthConfig::Ignore, BlendConfig::Ignore, frameBuffer.depthStencilId());
-				previousMaterialId = material.material.get().id();
-			}
+	if (renderQueue.oitTransparentMaterials.size()) {
+		// https://learnopengl.com/Guest-Articles/2020/OIT/Weighted-Blended
+		// We will be using weighted blending OIT to render transculent models..
 
-			// set the uniforms of the model.. if it's different..
-			if (previousEntity != transparentEntry.entity) {
-				setupModelUniforms(transparentEntry.entity, material.shader, transparentEntry.model, transparentEntry.meshType);
-			}
+		// Disable the color attachment, enable the transparency attachments.
+		glNamedFramebufferDrawBuffers(frameBuffer.fboId(), 5, oitBuffers);
 
-			// for each mesh..
-			for (auto const& mesh : material.meshes) {
-				renderMesh(mesh);
+		// we setup the appropriate blending equations..
+		glDepthMask(GL_FALSE);
+		glEnable(GL_BLEND);
+		glBlendFunci(ACCUMULATION_COLOR_ATTACHMENT_INDEX, GL_ONE, GL_ONE); // accumulation blend target
+		glBlendFunci(REVEALAGE_COLOR_ATTACHMENT_INDEX, GL_ZERO, GL_ONE_MINUS_SRC_COLOR); // revealge blend target
+		glBlendEquation(GL_FUNC_ADD);
+
+		// we clear these color attachments..
+		glClearBufferfv(GL_COLOR, ACCUMULATION_COLOR_ATTACHMENT_INDEX, glm::value_ptr(zeroClearColor));
+		glClearBufferfv(GL_COLOR, REVEALAGE_COLOR_ATTACHMENT_INDEX, glm::value_ptr(oneClearColor));
+
+		// Set PBR UBO to output transparency details only..
+		glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputTransparency);
+
+		for (auto const& transparentEntry : renderQueue.oitTransparentMaterials) {
+			for (auto const& material : transparentEntry.materials) {
+				// set the uniforms of the material.. if it's different..
+				if (previousMaterialId != material.material.get().id()) {
+					setupMaterial(material.material, material.customShader, material.shader, DepthConfig::Ignore, BlendConfig::Ignore, frameBuffer.depthStencilId());
+					previousMaterialId = material.material.get().id();
+				}
+
+				// set the uniforms of the model.. if it's different..
+				if (previousEntity != transparentEntry.entity) {
+					setupModelUniforms(transparentEntry.entity, material.shader, transparentEntry.model, transparentEntry.meshType);
+				}
+
+				// for each mesh..
+				for (auto const& mesh : material.meshes) {
+					renderMesh(mesh);
+				}
 			}
 		}
+
+		// Reset color attachment active back to original..
+		frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
+
+		// Reset PBR UBO uniforms..
+		glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
+
+		// we now composite the transparent object over..
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+
+		setBlendMode(BlendingConfig::AlphaBlending);
+
+		weightedBlendingCompositeShader.use();
+
+		// Bind the respective textures..
+		glBindTextureUnit(0, frameBuffer.textureIds()[ACCUMULATION_COLOR_ATTACHMENT_INDEX]);
+		glBindTextureUnit(1, frameBuffer.textureIds()[REVEALAGE_COLOR_ATTACHMENT_INDEX]);
+
+		weightedBlendingCompositeShader.setImageUniform("accum", 0);
+		weightedBlendingCompositeShader.setImageUniform("reveal", 1);
+
+		// Render fullscreen quad
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		// reset render states
+		glEnable(GL_DEPTH_TEST);
 	}
-
-	// Reset color attachment active back to original..
-	frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
-
-	// Reset PBR UBO uniforms..
-	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
-
-	// we now composite the transparent object over..
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-
-	setBlendMode(BlendingConfig::AlphaBlending);
-
-	weightedBlendingCompositeShader.use();
-
-	// Bind the respective textures..
-	glBindTextureUnit(0, frameBuffer.textureIds()[ACCUMULATION_COLOR_ATTACHMENT_INDEX]);
-	glBindTextureUnit(1, frameBuffer.textureIds()[REVEALAGE_COLOR_ATTACHMENT_INDEX]);
-
-	weightedBlendingCompositeShader.setImageUniform("accum", 0);
-	weightedBlendingCompositeShader.setImageUniform("reveal", 1);
-
-	// Render fullscreen quad
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	// reset render states
-	glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::renderText(Transform const& transform, Text const& text, ColorA const& colorMultiplier) {

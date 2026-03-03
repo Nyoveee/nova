@@ -12,7 +12,7 @@ class Main_Level_Select_Script : Script
     [SerializableField] private List<Scene> levels;
     [SerializableField] ColorAlpha selectedLevelColor;
 
-    [SerializableField] private Image_ darkOverlay;
+    [SerializableField] private Canvas_ darkOverlay;
     [SerializableField] private float sceneFadeOutDuration = 1.5f;
 
     int selectedLevel = 0;
@@ -88,7 +88,7 @@ class Main_Level_Select_Script : Script
         timeElapsed += Time.V_DeltaTime();
 
         float interval = Mathf.Clamp(timeElapsed / sceneFadeOutDuration, 0f, 1f);
-        darkOverlay.colorTint = new ColorAlpha(0f, 0f, 0f, interval);
+        darkOverlay.alpha = interval;
 
         if(interval == 1f)
         {

@@ -417,6 +417,13 @@ void setMaterialInt(int index, System::String^ name, int data);
 void setMaterialUInt(int index, System::String^ name, unsigned data);
 void setMaterialFloat(int index, System::String^ name, float data);
 
+Vector3 getMaterialVector3(int index, System::String^ name);
+Vector2 getMaterialVector2(int index, System::String^ name);
+bool getMaterialBool(int index, System::String^ name);
+int getMaterialInt(int index, System::String^ name);
+unsigned getMaterialUInt(int index, System::String^ name);
+float getMaterialFloat(int index, System::String^ name);
+
 ManagedComponentEnd()
 
 ManagedComponentDeclaration(
@@ -431,6 +438,13 @@ void setMaterialBool(int index, System::String^ name, bool data);
 void setMaterialInt(int index, System::String^ name, int data);
 void setMaterialUInt(int index, System::String^ name, unsigned data);
 void setMaterialFloat(int index, System::String^ name, float data);
+
+Vector3 getMaterialVector3(int index, System::String^ name);
+Vector2 getMaterialVector2(int index, System::String^ name);
+bool getMaterialBool(int index, System::String^ name);
+int getMaterialInt(int index, System::String^ name);
+unsigned getMaterialUInt(int index, System::String^ name);
+float getMaterialFloat(int index, System::String^ name);
 
 ManagedComponentEnd()
 

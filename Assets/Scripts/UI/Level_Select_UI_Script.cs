@@ -25,7 +25,7 @@ class Level_Select_UI_Script : Script
         audioComponent = getComponent<AudioComponent_>();
         button = getComponent<Button_>();
 
-        int completedLevels = PlayerPrefs.GetInt("CompletedLevel", 0);
+        int completedLevels = PlayerPrefs.GetInt("CompletedLevel", 2);
           
         if (completedLevels < level)
         {
@@ -52,11 +52,11 @@ class Level_Select_UI_Script : Script
 
     public void onPressed()
     {
+        audioComponent.PlaySound(onClickSFX);
     }
 
     public void onReleased()
     {
-        audioComponent.PlaySound(onClickSFX);
         levelSelectScript?.SelectNewLevel(level);
     }
 }

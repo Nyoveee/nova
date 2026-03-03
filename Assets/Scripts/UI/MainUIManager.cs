@@ -1,6 +1,8 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using System.Runtime.CompilerServices;
+
 class MainUIManager : Script
 {
     private delegate void Callback();
@@ -14,15 +16,26 @@ class MainUIManager : Script
     [SerializableField] GameObject camera;
     [SerializableField] Canvas_ mainMenuUi;
     [SerializableField] Canvas_ levelSelectUi;
+    [SerializableField] Canvas_ darkOverlay;
+    [SerializableField] ExpandingScale intersectionVfx;
+    [SerializableField] Translation blackBackground;
+    [SerializableField] GoddessAnimateGlow goddess;
+    [SerializableField] Transform_ cameraMainMenuPos;
+
+    [SerializableField] public float initialLerpDuration = 2f;
+    [SerializableField] public float lerpPower = 0.3f;
 
     [SerializableField] public float delay = 1f;
     [SerializableField] public float fadeDuration = 0.7f;
     [SerializableField] public float travelTime = 1f;
 
+    [SerializableField] public float initialFadeOut = 1f;
+
     private CameraComponent_ cameraComponent;
     private Sequence_ cameraSequence;
 
     private bool isTransitioning = false;
+    private bool isCameraMoving = false;
     private float timeElapsed = 0f;
 
     private CurrentUI state = CurrentUI.MainMenu;
@@ -30,6 +43,17 @@ class MainUIManager : Script
 
     private Canvas_ fromCanvas;
     private Canvas_ toCanvas;
+
+    private Vector3 initialCameraPosition;
+    private Vector3 finalCameraPosition;
+
+    private Canvas_ canvasToFade;
+    private float initialAlpha = 1f;
+    private float finalAlpha = 0f;
+    private bool isFading = false;
+    private float fadeOutTimeElasped = 0f;
+
+    private Callback fadeOutCallback;
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
@@ -40,10 +64,55 @@ class MainUIManager : Script
     {
         cameraComponent = camera.getComponent<CameraComponent_>();
         cameraSequence = camera.getComponent<Sequence_>();
+
+        initialCameraPosition = camera.transform.position;
+        finalCameraPosition = cameraMainMenuPos.position;
+
+        Invoke(() =>
+        {
+            Invoke(() => { 
+                blackBackground.move(); 
+            }, 0.6f);
+            intersectionVfx.expand();
+            goddess.toGlow();
+
+            Invoke(() =>
+            {
+                canvasToFade = mainMenuUi;
+                initialAlpha = 0f;
+                finalAlpha = 1f;
+                isFading = true;
+
+                fadeOutTimeElasped = 0f;
+
+                fadeOutCallback = () => mainMenuUi.isInteractable = true;
+            }, 2f);
+
+        }, 4.5f);
+
+        Invoke(() =>
+        {
+            canvasToFade = darkOverlay;
+            initialAlpha = 1f;
+            finalAlpha = 0f;
+
+            isCameraMoving = true;
+            isFading = true;
+        }, 1f);
     }
 
     protected override void update()
     {
+        if(isCameraMoving)
+        {
+            handleCameraMovement();
+        }
+
+        if(isFading)
+        {
+            handleFading();
+        }
+
         if(!isTransitioning)
         {
             return;
@@ -70,6 +139,39 @@ class MainUIManager : Script
         }
 
         timeElapsed += Time.V_DeltaTime(); 
+    }
+
+    private void handleCameraMovement()
+    {
+        timeElapsed += Time.V_DeltaTime();
+
+        float interval = timeElapsed / initialLerpDuration;
+
+        camera.transform.position = Vector3.Lerp(initialCameraPosition, finalCameraPosition, Mathf.Pow(interval, lerpPower));
+
+        if (timeElapsed > initialLerpDuration)
+        {
+            isCameraMoving = false;
+        }
+    }
+
+    private void handleFading()
+    {
+        fadeOutTimeElasped += Time.V_DeltaTime();
+
+        float interval = fadeOutTimeElasped / fadeDuration;
+
+        canvasToFade.alpha = Mathf.Interpolate(initialAlpha, finalAlpha, interval, 1f);
+
+        if (fadeOutTimeElasped > fadeDuration)
+        {
+            isFading = false;
+
+            if(fadeOutCallback != null)
+            {
+                fadeOutCallback();
+            }
+        }
     }
 
     public void GoToLevelSelectUI()

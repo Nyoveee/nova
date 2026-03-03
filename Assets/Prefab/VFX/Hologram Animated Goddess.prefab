@@ -1,0 +1,144 @@
+{
+    "RootEntity": 0,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Hologram Goddess Idle",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10125711047109495557,
+                "entityGUID": 16477915176055604279,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3372761309146881,
+                    "y": -0.11413104832172394,
+                    "z": -1.0
+                },
+                "scale": {
+                    "x": 1.0000064373016357,
+                    "y": 1.0,
+                    "z": 1.0000064373016357
+                },
+                "rotation": {
+                    "w": 0.9958915710449219,
+                    "x": 0.0,
+                    "y": 0.09055494517087936,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.18135833740234375,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.3372761309146881,
+                    "y": -0.11413104832172394,
+                    "z": -1.0
+                },
+                "localScale": {
+                    "x": 1.0000064373016357,
+                    "y": 1.0,
+                    "z": 1.0000064373016357
+                },
+                "localRotation": {
+                    "w": 0.9958914518356323,
+                    "x": 0.0,
+                    "y": 0.09055495262145996,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 0.18135832250118256,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 6666946533270978677,
+                        "fields": [
+                            {
+                                "name": "glowDuration",
+                                "data": {
+                                    "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "delay",
+                                "data": {
+                                    "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "goddessMaterials",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 1314040127509315701,
+                                                "__variant_type": 13
+                                            },
+                                            {
+                                                "__variant_value": 9308219737159155801,
+                                                "__variant_type": 13
+                                            },
+                                            {
+                                                "__variant_value": 7655108402847465591,
+                                                "__variant_type": 13
+                                            },
+                                            {
+                                                "__variant_value": 6502186898239750259,
+                                                "__variant_type": 13
+                                            },
+                                            {
+                                                "__variant_value": 9384490659758309497,
+                                                "__variant_type": 13
+                                            },
+                                            {
+                                                "__variant_value": 1314040127509315701,
+                                                "__variant_type": 13
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 13
+                                    },
+                                    "__variant_type": 20
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "SkinnedMeshRenderer": {
+                "modelId": 2411968471045395973,
+                "materialIds": [
+                    10499940810948640843,
+                    15460172029031137395,
+                    1048653221445566581,
+                    7617637049431523397,
+                    12229323067858911305,
+                    10499940810948640843
+                ],
+                "socketConnections": {
+                    "6": 4294967295
+                },
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "Animator": {
+                "controllerId": 16823487278640043589
+            },
+            "id": 0
+        }
+    ]
+}
