@@ -1,6 +1,7 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
 using System; 
 using System.Collections.Generic; 
 
@@ -17,21 +18,30 @@ public class Boss : Enemy
     private float abilityCoolDownTime = 2f; //boss will spam abilities until exausted or no more abilities to spam then it will refresh its currentdeck based on condition such as hp state
     [SerializableField]
     private int maxStamina = 5;
+    [SerializableField]
+    private float spawningDuration = 8f;
 
-
+    /***********************************************************
+    Ability Prefabs
+    ***********************************************************/
+    [SerializableField]
+    private Prefab shockwavePrefab = null;
 
 
     /***********************************************************
     Private Variables (made public cause of ability sequencer)
     ***********************************************************/
     //private float accumulatedDamageInstance = 0;
-    public BossState currentState = BossState.Idle;
+    public BossState currentState = BossState.Spawning;
     public int currentStamina;
     public bool terminateExecution = false;
     public int sequenceIndexer = -1;
     public int abilityIndexer = -1;
     private float abilitytimeElapsed = 0;
     private float cooldowntimeElapsed = 0;
+    Blackboard blackboard = new Blackboard(); //a blackboard helper class since i realised we gonna need to pass a lot of data around and i dont feel like creating 100 variables
+
+    Vector3 halfExtent; //based on scaling values
 
     // the current moveset that is going to be carried out by the boss
     // AbilitySequence currentMoveSequence;
@@ -43,7 +53,7 @@ public class Boss : Enemy
 
     public enum BossState
     {
-
+        Spawning,
         Idle,
         Walking,
         SelectAbility,
@@ -67,13 +77,15 @@ public class Boss : Enemy
         navMeshAgent.setAutomateNavMeshOfflinksState(false);
         bossStats = getScript<EnemyStats>();
         player = GameObject.FindWithTag("Player");
+        navMeshAgent.setIsUpdateRotation(false);
+        halfExtent = new Vector3(gameObject.transform.scale.x, gameObject.transform.scale.y, gameObject.transform.scale.z);
 
         currentStamina = maxStamina;
 
         //Create an ability deck
-        currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart); ;
+        currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart);
 
-
+        BossState currentState = BossState.Spawning;
     }
 
     // This function is invoked every update.
@@ -82,9 +94,23 @@ public class Boss : Enemy
         FlushDamageEnemy();
         //Debug.Log(bossStats.health);
 
+
+
     
         switch (currentState)
         {
+            case BossState.Spawning:
+                {
+                    cooldowntimeElapsed += Time.V_DeltaTime();
+
+                    if (cooldowntimeElapsed > spawningDuration)
+                    { 
+                        cooldowntimeElapsed = 0;
+                        currentState = BossState.Idle;
+                    }
+
+                }
+                break;
             case BossState.Idle:
                 {
                     if (currentAbilityDeck.Count() == 0 || currentStamina == 0)
@@ -200,22 +226,44 @@ public class Boss : Enemy
     /***********************************************************
     Weaver Actions
     ***********************************************************/
-    public void StartJump()
+    public void StarStationaryJump()
     {
-        Debug.Log("Jump");
         sequenceIndexer++;
 
         abilitytimeElapsed = 0;
+        navMeshAgent.enable = false;
+
+        blackboard.SetValue("Jump Height", 20.0f);
+        blackboard.SetValue("Jump Time",   1.0f);
+        blackboard.SetValue("InitialPosition", gameObject.transform.position);
+        blackboard.SetValue("EndPosition", gameObject.transform.position);
 
     }
 
     public void Jumping()
     {
-        if(abilitytimeElapsed > 1.0f)
+        blackboard.TryGetValue("Jump Height", out float jumpHeight);
+        blackboard.TryGetValue("InitialPosition", out Vector3 initialPosition);
+        blackboard.TryGetValue("EndPosition", out Vector3 endPosition);
+        blackboard.TryGetValue("Jump Time", out float jumpTime);
+
+        if (abilitytimeElapsed < jumpTime)
         {
-            Debug.Log("JumpEnd");
+            abilitytimeElapsed += Time.V_DeltaTime();
+            float t = abilitytimeElapsed / jumpTime;
+
+            Vector3 currentPos = Vector3.Lerp(initialPosition, endPosition, t);
+
+
+            float heightOffset = jumpHeight * 4 * t * (1 - t);
+
+            currentPos.y += heightOffset;
+
+            gameObject.transform.position = currentPos;
+        }
+        else
+        { 
             sequenceIndexer++;
-            abilitytimeElapsed = 0;
         }
     }
 
@@ -223,6 +271,20 @@ public class Boss : Enemy
     {
         Debug.Log("Shockwave");
         sequenceIndexer++;
+        Instantiate(shockwavePrefab, gameObject.transform.position, gameObject.transform.rotation);
+    }
+
+
+    public void RestoreDefaultSettings()
+    {
+        navMeshAgent.enable = true;
+        Vector3? position  = NavigationAPI.SampleNavMeshPosition("Boss", gameObject.transform.position, halfExtent);
+
+        if (position != null)
+        {
+            gameObject.transform.position = position.Value;
+            navMeshAgent.Warp(gameObject.transform.position);
+        }
     }
     /******************End of Weaver Action*******************/
 
@@ -321,6 +383,7 @@ public class Boss : Enemy
 
     public override void SetSpawningDuration(float seconds)
     {
+        
     }
 
 
@@ -355,7 +418,7 @@ public class BasicGroundSlam : AbilitySequence
     {
         this.boss = boss;
 
-        sequence.Add(boss.StartJump);
+        sequence.Add(boss.StarStationaryJump);
         sequence.Add(boss.Jumping);
         sequence.Add(boss.CreateShockWave);
     }
@@ -392,6 +455,30 @@ public static class ListExtensions
             list[k] = list[n];
             list[n] = value;
         }
+    }
+}
+
+public class Blackboard
+{
+    private readonly Dictionary<string, object> entries = new();
+
+    public void SetValue<T>(string key, T value)
+    {
+        entries[key] = value;
+    }
+
+    public bool TryGetValue<T>(string key, out T value)
+    {
+
+        if (entries.TryGetValue(key, out var obj) && obj is T typedValue)
+        {
+            value = typedValue;
+            return true;
+        }
+
+        Debug.LogError("Blackboard does not contain key: " + key);
+        value = default;
+        return false;
     }
 }
 

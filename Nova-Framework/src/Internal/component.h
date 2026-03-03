@@ -388,6 +388,16 @@ struct MeshCollider {
 	)
 };
 
+struct ConvexHullCollider {
+	float shapeScale = 1.f;
+
+	REFLECTABLE(
+		shapeScale
+	)
+};
+
+
+
 struct SkyBox {
 	TypedResourceID<EquirectangularMap> equirectangularMap{ INVALID_RESOURCE_ID };
 	
