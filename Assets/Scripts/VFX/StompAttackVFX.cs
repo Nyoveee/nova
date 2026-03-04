@@ -3,24 +3,50 @@
 // Editor will automatically rename and recompile this file.
 class StompAttackVFX : Script
 {
-    // This function is invoked once before init when gameobject is active.
-    protected override void awake()
-    {}
+    [SerializableField] private float movingDuration = 2f;
+    [SerializableField] private float distance = 100f;
+    [SerializableField] private float lerpPower = 1f;
+
+    bool isMoving = false;
+    float timeElapsed = 0f;
+
+    Vector3 initialPosition;
+    Vector3 finalPosition;
 
     // This function is invoked once when gameobject is active.
+    protected override void awake()
+    {
+        initialPosition = gameObject.transform.position;
+        finalPosition = initialPosition + gameObject.transform.front * distance;
+    }
+
     protected override void init()
-    {}
+    {
+        move();
+    }
 
     // This function is invoked every update.
     protected override void update()
-    {}
+    {
+        if (!isMoving)
+        {
+            return;
+        }
 
-    // This function is invoked every update.
-    protected override void fixedUpdate()
-    {}
+        gameObject.transform.position = Vector3.Lerp(initialPosition, finalPosition, Mathf.Pow(timeElapsed / movingDuration, lerpPower));
 
-    // This function is invoked when destroyed.
-    protected override void exit()
-    {}
+        timeElapsed += Time.V_DeltaTime();
 
+        if (timeElapsed > movingDuration)
+        {
+            isMoving = false;
+            Destroy(gameObject);
+        }
+    }
+
+    public void move()
+    {
+        timeElapsed = 0f;
+        isMoving = true;
+    }
 }

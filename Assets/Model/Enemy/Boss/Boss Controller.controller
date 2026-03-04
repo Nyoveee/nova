@@ -1,0 +1,76 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "id": 1000,
+            "animation": 18446744073709551615,
+            "transitions": [
+                {
+                    "nextNode": 7424483658214441141,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Entry Node",
+            "animationEvents": null
+        },
+        "7424483658214441141": {
+            "id": 7424483658214441141,
+            "animation": 3349368110232731651,
+            "transitions": [
+                {
+                    "nextNode": 17800777199676096695,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Boss_Idle",
+            "animationEvents": null
+        },
+        "17800777199676096695": {
+            "id": 17800777199676096695,
+            "animation": 3349368110232748037,
+            "transitions": [
+                {
+                    "nextNode": 11459708924338585787,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Boss_Jump",
+            "animationEvents": null
+        },
+        "11459708924338618557": {
+            "id": 11459708924338618557,
+            "animation": 11419818642480660481,
+            "transitions": [
+                {
+                    "nextNode": 7424483658214441141,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Boss_Attack",
+            "animationEvents": null
+        },
+        "11459708924338585787": {
+            "id": 11459708924338585787,
+            "animation": 11996279394784100361,
+            "transitions": [
+                {
+                    "nextNode": 11459708924338618557,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Boss_Run",
+            "animationEvents": null
+        }
+    },
+    "parameters": null
+}
