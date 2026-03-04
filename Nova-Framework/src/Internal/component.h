@@ -388,14 +388,6 @@ struct MeshCollider {
 	)
 };
 
-struct ConvexHullCollider {
-	float shapeScale = 1.f;
-
-	REFLECTABLE(
-		shapeScale
-	)
-};
-
 
 
 struct SkyBox {

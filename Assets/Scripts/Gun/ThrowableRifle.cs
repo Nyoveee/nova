@@ -348,7 +348,7 @@ class ThrowableRifle : Script
         Vector3 localFront = gameObject.transform.rotation * Vector3.Front();
 
         Vector3 currentVelocity = localFront * weaponReturnSpeed;
-
+        
         weaponRB.SetVelocity(currentVelocity);
     }
 

@@ -26,58 +26,58 @@ class Shockwave : Script
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
-        //CameraAPI.shakeCamera(0.6f, 1f);
-        //meshRenderer = getComponent<MeshRenderer_>();
+        CameraAPI.shakeCamera(0.6f, 1f);
+        meshRenderer = getComponent<MeshRenderer_>();
 
-        //foreach (GameObject child in gameObject.GetChildren())
-        //{
-        //    ParticleEmitter_ emitter = child.getComponent<ParticleEmitter_>();
+        foreach (GameObject child in gameObject.GetChildren())
+        {
+            ParticleEmitter_ emitter = child.getComponent<ParticleEmitter_>();
 
-        //    if (emitter != null)
-        //    {
-        //        initialParticleRate = emitter.particleRate;
-        //        initialParticleRadius = emitter.getRadius();
-        //        break;
-        //    }
-        //}
+            if (emitter != null)
+            {
+                initialParticleRate = emitter.particleRate;
+                initialParticleRadius = emitter.getRadius();
+                break;
+            }
+        }
 
-        //getComponent<ParticleEmitter_>()?.emit(500);
+        getComponent<ParticleEmitter_>()?.emit(500);
     }
 
     // This function is invoked every update.
     protected override void update()
     {
-        //if (timeElapsed > duration)
-        //{
-        //    Destroy(gameObject);
-        //    return;
-        //}
+        if (timeElapsed > duration)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
-        //float interval = timeElapsed / duration;
-        //float lerpedSize = Mathf.Interpolate(0, maxRadius, interval, motionLerpPower);
-        //float heightSize = Mathf.Interpolate(0f, maxRadius / 2f, interval, motionLerpPower);
-        //gameObject.transform.scale = new Vector3(lerpedSize, heightSize, lerpedSize);
-        //timeElapsed += Time.V_DeltaTime();
+        float interval = timeElapsed / duration;
+        float lerpedSize = Mathf.Interpolate(0, maxRadius, interval, motionLerpPower);
+        float heightSize = Mathf.Interpolate(0f, maxRadius / 2f, interval, motionLerpPower);
+        gameObject.transform.scale = new Vector3(lerpedSize, heightSize, lerpedSize);
+        timeElapsed += Time.V_DeltaTime();
 
-        //// Expand the emission size of the particle emitter..
-        //foreach (GameObject child in gameObject.GetChildren())
-        //{
-        //    ParticleEmitter_ emitter = child.getComponent<ParticleEmitter_>();
+        // Expand the emission size of the particle emitter..
+        foreach (GameObject child in gameObject.GetChildren())
+        {
+            ParticleEmitter_ emitter = child.getComponent<ParticleEmitter_>();
 
-        //    if (emitter != null)
-        //    {
-        //        emitter.setRadius(initialParticleRadius * lerpedSize);
-        //        emitter.particleRate = initialParticleRate * lerpedSize;
-        //    }
-        //}
+            if (emitter != null)
+            {
+                emitter.setRadius(initialParticleRadius * lerpedSize);
+                emitter.particleRate = initialParticleRate * lerpedSize;
+            }
+        }
 
-        //if (timeElapsed > duration - fadeOutDuration)
-        //{
-        //    interval = Mathf.Pow((timeElapsed - (duration - fadeOutDuration)) / (fadeOutDuration), 0.4f);
+        if (timeElapsed > duration - fadeOutDuration)
+        {
+            interval = Mathf.Pow((timeElapsed - (duration - fadeOutDuration)) / (fadeOutDuration), 0.4f);
 
-        //    meshRenderer.setMaterialFloat(0, "emissivemultiplier", emissiveMultiplier * (1 - interval));
-        //    meshRenderer.setMaterialFloat(0, "transparency", (1 - interval));
-        //}
+            meshRenderer.setMaterialFloat(0, "emissivemultiplier", emissiveMultiplier * (1 - interval));
+            meshRenderer.setMaterialFloat(0, "transparency", (1 - interval));
+        }
     }
 
     // This function is invoked every update.
@@ -90,22 +90,22 @@ class Shockwave : Script
 
     protected override void onCollisionEnter(GameObject other)
     {
-        //if (hasDamagedPlayer)
-        //{
-        //    return;
-        //}
+        if (hasDamagedPlayer)
+        {
+            return;
+        }
 
-        //if (other.tag != "Player")
-        //{
-        //    return;
-        //}
+        if (other.tag != "Player")
+        {
+            return;
+        }
 
-        //hasDamagedPlayer = true;
-        //other.getScript<PlayerController_V2>()?.TakeDamage(damage);
+        hasDamagedPlayer = true;
+        other.getScript<PlayerController_V2>()?.TakeDamage(damage);
 
-        //Vector3 forceDirection = other.transform.position - gameObject.transform.position;
-        //forceDirection.Normalize();
-        //forceDirection *= knockbackMultiplier;
-        //other.getComponent<Rigidbody_>().AddImpulse(forceDirection);
+        Vector3 forceDirection = other.transform.position - gameObject.transform.position;
+        forceDirection.Normalize();
+        forceDirection *= knockbackMultiplier;
+        other.getComponent<Rigidbody_>().AddImpulse(forceDirection);
     }
 }

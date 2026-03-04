@@ -20,6 +20,11 @@ public class Boss : Enemy
     private int maxStamina = 5;
     [SerializableField]
     private float spawningDuration = 8f;
+    [SerializableField]
+    private float rotationSpeed = 120f;
+    [SerializableField]
+    private float lookAngle = 30f;
+
 
     /***********************************************************
     Ability Prefabs
@@ -94,6 +99,7 @@ public class Boss : Enemy
         FlushDamageEnemy();
         //Debug.Log(bossStats.health);
 
+        //make the boss look at the player
 
 
     
@@ -122,7 +128,7 @@ public class Boss : Enemy
                             cooldowntimeElapsed = 0;
                             currentStamina = maxStamina;
                             currentState = BossState.SelectAbility;
-                            Debug.Log("Select Ability");
+                            //Debug.Log("Select Ability");
                         }
                     }
                     else
@@ -223,6 +229,30 @@ public class Boss : Enemy
     
     }
 
+
+    //Rotate Whenever
+    public void RotateToPlayer()
+    {
+        Vector3 direction = player.transform.position - gameObject.transform.position;
+
+
+        direction.y = 0;
+
+        //above or below the player
+        if (direction.Length() > 1f)
+        {
+            direction.Normalize();
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            float angleRemaining = Quaternion.Angle(gameObject.transform.rotation, targetRotation);
+
+            if (angleRemaining > lookAngle)
+            {
+                gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, targetRotation, rotationSpeed * Time.V_DeltaTime());
+            }
+        }
+    }
+
     /***********************************************************
     Weaver Actions
     ***********************************************************/
@@ -269,9 +299,9 @@ public class Boss : Enemy
 
     public void CreateShockWave()
     {
-        Debug.Log("Shockwave");
-        sequenceIndexer++;
-        Instantiate(shockwavePrefab, gameObject.transform.position, gameObject.transform.rotation);
+        //Debug.Log("Shockwave");
+        //sequenceIndexer++;
+        //Instantiate(shockwavePrefab, gameObject.transform.position, gameObject.transform.rotation);
     }
 
 
@@ -286,15 +316,46 @@ public class Boss : Enemy
             navMeshAgent.Warp(gameObject.transform.position);
         }
     }
+
+    public void RotateToPlayerFully()
+    {
+        Vector3 direction = player.transform.position - gameObject.transform.position;
+
+        
+
+       direction.y = 0;
+
+        //above or below the player
+        if (direction.Length() > 1f)
+        {
+            direction.Normalize();
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            float angleRemaining = Quaternion.Angle(gameObject.transform.rotation, targetRotation);
+            //Debug.Log( (float) (rotationSpeed * Time.V_DeltaTime()));
+
+            if (angleRemaining > lookAngle)
+            {
+                gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation,targetRotation,rotationSpeed * Time.V_DeltaTime());
+            }
+            else
+            {
+                sequenceIndexer++;
+
+            }
+        }
+        else {  sequenceIndexer++; }
+
+
+
+    }
+
+
     /******************End of Weaver Action*******************/
 
 
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
-        //if (gruntState == GruntState.Spawning)
-        //{
-        //    return;
-        //}
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
 
@@ -418,6 +479,7 @@ public class BasicGroundSlam : AbilitySequence
     {
         this.boss = boss;
 
+        sequence.Add(boss.RotateToPlayerFully);
         sequence.Add(boss.StarStationaryJump);
         sequence.Add(boss.Jumping);
         sequence.Add(boss.CreateShockWave);

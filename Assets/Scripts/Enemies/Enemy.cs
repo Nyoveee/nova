@@ -328,5 +328,9 @@ public abstract class Enemy : Script
         physicsRigidbody.SetAngularDamping(0);
     }
 
+    protected override void onCollisionEnter(GameObject other)
+    {
+    }
+
 
 }

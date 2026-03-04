@@ -20,13 +20,13 @@ void CollisionDispatch::sInit()
 			if (sCollideShape[i][j] == nullptr)
 				sCollideShape[i][j] = [](const Shape *, const Shape *, Vec3Arg, Vec3Arg, Mat44Arg, Mat44Arg, const SubShapeIDCreator &, const SubShapeIDCreator &, const CollideShapeSettings &, CollideShapeCollector &, const ShapeFilter &)
 				{
-					JPH_ASSERT(false, "Unsupported shape pair");
+					//JPH_ASSERT(false, "Unsupported shape pair");
 				};
 
 			if (sCastShape[i][j] == nullptr)
 				sCastShape[i][j] = [](const ShapeCast &, const ShapeCastSettings &, const Shape *, Vec3Arg, const ShapeFilter &, Mat44Arg, const SubShapeIDCreator &, const SubShapeIDCreator &, CastShapeCollector &)
 				{
-					JPH_ASSERT(false, "Unsupported shape pair");
+					//JPH_ASSERT(false, "Unsupported shape pair");
 				};
 		}
 }

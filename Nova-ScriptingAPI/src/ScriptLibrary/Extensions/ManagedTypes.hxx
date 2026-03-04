@@ -141,6 +141,8 @@ static Quaternion Identity();
 static Quaternion Slerp(Quaternion a, Quaternion b, float t);
 static Quaternion LookRotation(Vector3 directionToLook);
 static Quaternion AngleAxis(float angle, Vector3 axis);
+static Quaternion RotateTowards(Quaternion current, Quaternion target, float angleDegrees);
+static float Angle(Quaternion a, Quaternion b);
 static Quaternion operator*(Quaternion lhs,Quaternion rhs);
 ManagedStructEnd(Quaternion, glm::quat)
 
