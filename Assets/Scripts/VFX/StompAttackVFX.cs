@@ -4,20 +4,25 @@
 class StompAttackVFX : Script
 {
     [SerializableField] private float movingDuration = 2f;
-    [SerializableField] private float distance = 100f;
-    [SerializableField] private float lerpPower = 1f;
+    [SerializableField] private float speed = 50f;
+    [SerializableField] private float sizeIncrease = 2f;
+    [SerializableField] private float fadeOut = 0.3f;
+
+    MeshRenderer_ meshRenderer;
 
     bool isMoving = false;
     float timeElapsed = 0f;
 
-    Vector3 initialPosition;
-    Vector3 finalPosition;
+    Vector3 initialScale;
+    Vector3 finalScale;
 
     // This function is invoked once when gameobject is active.
     protected override void awake()
     {
-        initialPosition = gameObject.transform.position;
-        finalPosition = initialPosition + gameObject.transform.front * distance;
+        initialScale = gameObject.transform.scale;
+        finalScale = initialScale * sizeIncrease;
+
+        meshRenderer = getComponent<MeshRenderer_>();
     }
 
     protected override void init()
@@ -33,11 +38,26 @@ class StompAttackVFX : Script
             return;
         }
 
-        gameObject.transform.position = Vector3.Lerp(initialPosition, finalPosition, Mathf.Pow(timeElapsed / movingDuration, lerpPower));
+        // Scaling happens throughout..
+        float interval = timeElapsed / movingDuration;
+        gameObject.transform.scale = Vector3.Lerp(initialScale, finalScale, interval);
+        
+        // Constant velocity throughout before fade out..
+        if(timeElapsed < movingDuration)
+        {
+            gameObject.transform.position += gameObject.transform.front * speed * Time.V_DeltaTime();
+        }
+        // Fading out..
+        else
+        {
+            interval = 1 - ((timeElapsed - movingDuration) / fadeOut);
+            meshRenderer.setMaterialFloat(0, "alphaMultiplier", interval);
+            gameObject.transform.position += gameObject.transform.front * speed * interval * Time.V_DeltaTime();
+        }
 
         timeElapsed += Time.V_DeltaTime();
 
-        if (timeElapsed > movingDuration)
+        if (timeElapsed > (movingDuration + fadeOut))
         {
             isMoving = false;
             Destroy(gameObject);

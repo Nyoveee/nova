@@ -441,6 +441,7 @@ inline void DisplayProperty<std::vector<ScriptData>>(Editor& editor, const char*
 	}
 	//ImGui::EndDisabled();
 }
+
 #if 0
 template<>
 inline void DisplayProperty<std::unordered_map<std::string, AudioData>>(Editor& editor, const char*, std::unordered_map<std::string, AudioData>& dataMember) {
@@ -514,82 +515,6 @@ inline void DisplayProperty<std::unordered_map<std::string, AudioData>>(Editor& 
 	ImGui::EndChild();
 }
 #endif
-template<>
-inline void DisplayProperty<ParticleEmissionTypeSelection>(Editor& editor, const char*, ParticleEmissionTypeSelection& dataMember) {
-	DisplayProperty<ParticleEmissionTypeSelection::EmissionShape>(editor, "Emission Shape", dataMember.emissionShape);
-
-	if (dataMember.emissionShape != ParticleEmissionTypeSelection::EmissionShape::Point) {
-		ImGui::BeginChild("", ImVec2(0, 200), ImGuiChildFlags_Border);
-		switch (dataMember.emissionShape) {
-		case ParticleEmissionTypeSelection::EmissionShape::Cube:
-			DisplayProperty<glm::vec3>(editor, "Min", dataMember.cubeEmitter.min);
-			DisplayProperty<glm::vec3>(editor, "Max", dataMember.cubeEmitter.max);
-			break;
-		case ParticleEmissionTypeSelection::EmissionShape::Cone:
-			DisplayProperty<float>(editor, "Arc", dataMember.coneEmitter.arc);
-			DisplayProperty<float>(editor, "Distance", dataMember.coneEmitter.distance);
-			DisplayProperty<float>(editor, "Radius", dataMember.radiusEmitter.radius);
-			break;
-		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
-		case ParticleEmissionTypeSelection::EmissionShape::Edge:
-		case ParticleEmissionTypeSelection::EmissionShape::Circle:
-		case ParticleEmissionTypeSelection::EmissionShape::Hemisphere:
-			DisplayProperty<float>(editor, "Radius", dataMember.radiusEmitter.radius);
-			break;
-		}
-		ImGui::EndChild();
-	}
-}
-
-template<>
-inline void DisplayProperty<ParticleColorSelection>(Editor& editor, const char*, ParticleColorSelection& dataMember) {
-	ImGui::BeginChild("Particle Color", ImVec2(0, 200), ImGuiChildFlags_Border);
-	DisplayProperty<ColorA>(editor, "Color", dataMember.color);
-	DisplayProperty<glm::vec3>(editor, "Color Offset Min", dataMember.colorOffsetMin);
-	DisplayProperty<glm::vec3>(editor, "Color Offset Max", dataMember.colorOffsetMax);
-	DisplayProperty<float>(editor, "Emissive Multiplier", dataMember.emissiveMultiplier);
-	ImGui::EndChild();
-}
-
-template<>
-inline void DisplayProperty<SizeOverLifetime>(Editor& editor, const char* dataMemberName, SizeOverLifetime& dataMember) {
-	DisplayProperty<bool>(editor, dataMemberName, dataMember.selected);
-
-	if (dataMember.selected) {
-		ImGui::BeginChild("", ImVec2(0, 100), ImGuiChildFlags_Border);
-		DisplayProperty<InterpolationType>(editor, "InterpolationType", dataMember.interpolationType);
-		DisplayProperty<float>(editor, "EndSize", dataMember.endSize);
-		ImGui::EndChild();
-	}
-}
-
-template<>
-inline void DisplayProperty<ColorOverLifetime>(Editor& editor, const char* dataMemberName, ColorOverLifetime& dataMember) {
-	DisplayProperty<bool>(editor, dataMemberName, dataMember.selected);
-
-	if (dataMember.selected) {
-		ImGui::BeginChild("", ImVec2(0, 100), ImGuiChildFlags_Border);
-		DisplayProperty<InterpolationType>(editor, "InterpolationType", dataMember.interpolationType);
-		DisplayProperty<ColorA>(editor, "EndColor", dataMember.endColor);
-		ImGui::EndChild();
-	}
-}
-
-template<>
-inline void DisplayProperty<Trails>(Editor& editor, const char* dataMemberName, Trails& dataMember) {
-	DisplayProperty<bool>(editor, dataMemberName, dataMember.selected);
-	if (dataMember.selected) {
-		ImGui::BeginChild("", ImVec2(0, 300), ImGuiChildFlags_Border);
-		DisplayProperty<TypedResourceID<Texture>>(editor, "Trail Texture", dataMember.trailTexture);
-		DisplayProperty<float>(editor, "Distance Per Emission", dataMember.distancePerEmission);
-		DisplayProperty<float>(editor, "Trail Size", dataMember.trailSize);
-		DisplayProperty<ColorA>(editor, "Trail Color", dataMember.trailColor);
-		DisplayProperty<glm::vec3>(editor, "Color Offset Min", dataMember.trailColorOffsetMin);
-		DisplayProperty<glm::vec3>(editor, "Color Offset Max", dataMember.trailColorOffsetMax);
-		DisplayProperty<float>(editor, "Trail Color Emissive Multiplier", dataMember.trailEmissiveMultiplier);
-		ImGui::EndChild();
-	}
-}
 
 template<>
 inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& editor, const char*, std::vector<TypedResourceID<Material>>& dataMember) {

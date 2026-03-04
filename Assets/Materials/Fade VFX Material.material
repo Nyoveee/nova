@@ -7,8 +7,8 @@
             "value": {
                 "__variant_value": {
                     "r": 1.0,
-                    "g": 0.10749107599258423,
-                    "b": 0.06896549463272095
+                    "g": 0.03793102502822876,
+                    "b": 0.03793102502822876
                 },
                 "__variant_type": 10
             }
@@ -17,7 +17,7 @@
             "glslType": "float",
             "identifier": "emissiveMultiplier",
             "value": {
-                "__variant_value": 13.0,
+                "__variant_value": 50.0,
                 "__variant_type": 3
             }
         },
@@ -40,9 +40,17 @@
                 "__variant_value": 3.0,
                 "__variant_type": 3
             }
+        },
+        {
+            "glslType": "float",
+            "identifier": "alphaMultiplier",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 3
+            }
         }
     ],
     "blendingConfig": "AlphaBlending",
     "depthTestingMethod": "DepthTest",
-    "cullingConfig": "Enable"
+    "cullingConfig": "Disable"
 }

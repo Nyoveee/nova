@@ -698,15 +698,20 @@ struct ColorOverLifetime {
 		endColor
 	)
 };
+
 struct Trails {
 	bool selected{false};
 	TypedResourceID<Texture> trailTexture;
-	float distancePerEmission{0.1f};
+	float distancePerEmission { 0.1f };
+	float minDistanceOffset = 0.f;
+	float maxDistanceOffset = 0.f;
+
 	float trailSize{ 0.1f };
 	ColorA trailColor{ ColorA{1.f,1.f,1.f,1.f} };
 	glm::vec3 trailColorOffsetMin{};
 	glm::vec3 trailColorOffsetMax{};
 	float trailEmissiveMultiplier{ 1.f };
+
 	REFLECTABLE(
 		selected,
 		trailTexture,
@@ -717,6 +722,9 @@ struct Trails {
 		trailColorOffsetMax,
 		trailEmissiveMultiplier
 	)
+
+	// runtime value..
+	float nextDistancePerEmission;
 };
 
 struct ParticleEmitter
@@ -726,6 +734,7 @@ struct ParticleEmitter
 	float currentBurstTime{};
 	glm::vec3 prevPosition{};
 	bool b_firstPositionUpdate{ true };
+
 	// Categories
 	TypedResourceID<Texture> texture{};
 	ParticleEmissionTypeSelection particleEmissionTypeSelection{};

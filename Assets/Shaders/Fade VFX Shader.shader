@@ -12,6 +12,8 @@ Properties{
     float emissiveMultiplier;
     vec3 direction;
     float alphaPower;
+
+    float alphaMultiplier;
 }
 
 // Vertex shader..
@@ -25,5 +27,5 @@ Vert{
 // Fragment shader..
 Frag{
     float alpha = pow(fsIn.textureUnit.x, alphaPower);
-	return vec4(color * emissiveMultiplier, alpha);
+	return vec4(color * emissiveMultiplier, alpha * alphaMultiplier);
 }
