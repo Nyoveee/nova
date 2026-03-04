@@ -37,20 +37,20 @@ struct Transition {
 };
 
 struct Node {
-	ControllerNodeID		id			= NO_CONTROLLER_NODE;
-	TypedResourceID<Model>	animation	{ INVALID_RESOURCE_ID };
-	std::vector<Transition> transitions	{};
-	bool					toLoop		= true;
-
-	std::string name					{};
-
-	std::vector<AnimationEvent>	animationEvents;
+	ControllerNodeID			id					= NO_CONTROLLER_NODE;
+	TypedResourceID<Model>		animation			{ INVALID_RESOURCE_ID };
+	std::vector<Transition>		transitions			{};
+	bool						toLoop				= true;
+	float						blendFactor			= 0.2f;
+	std::string					name				{};
+	std::vector<AnimationEvent>	animationEvents		{};
 
 	REFLECTABLE(
 		id,
 		animation,
 		transitions,
 		toLoop,
+		blendFactor,
 		name,
 		animationEvents
 	)

@@ -64,7 +64,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, Ass
 	// 1. We prepare assimp to load the model..
 	// --------------------------------------------------------------------
 	constexpr unsigned int PostProcessingFlags {
-		aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
+		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
 	};
 
 	Assimp::Importer importer;

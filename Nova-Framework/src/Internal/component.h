@@ -258,7 +258,9 @@ struct Animator {
 	float timeElapsed = 0;
 	ControllerNodeID currentNode = NO_CONTROLLER_NODE;
 	TypedResourceID<Model> currentAnimation;
-	
+	TypedResourceID<Model> previousAnimation;
+	float blendFactor = 0.2f;
+
 	// this will be instantiated in runtime.
 	std::vector<Controller::Parameter> parameters;
 

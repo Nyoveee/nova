@@ -38,6 +38,8 @@ void AnimationSystem::initialiseAnimator(Animator& animator) {
 	animator.timeElapsed = 0.f;
 	animator.currentNode = NO_CONTROLLER_NODE;
 	animator.currentAnimation = TypedResourceID<Model>{ INVALID_RESOURCE_ID };
+	animator.previousAnimation = animator.currentAnimation;
+	animator.blendFactor = 0.f;
 	animator.executedAnimationEvents.clear();
 
 	auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
@@ -74,7 +76,9 @@ void AnimationSystem::handleTransition(Animator& animator, Controller::Node cons
 
 		animator.currentNode = transition.nextNode;
 		animator.timeElapsed = 0;
+		animator.previousAnimation = animator.currentAnimation;
 		animator.currentAnimation = iterator->second.animation;
+		animator.blendFactor = iterator->second.blendFactor;
 		animator.executedAnimationEvents.clear();
 		return;
 	}
@@ -83,6 +87,7 @@ void AnimationSystem::handleTransition(Animator& animator, Controller::Node cons
 	if (currentNode.toLoop) {
 		animator.timeElapsed = 0;
 		animator.executedAnimationEvents.clear();
+		animator.previousAnimation = animator.currentAnimation;
 	}
 }
 
@@ -127,7 +132,9 @@ void AnimationSystem::playAnimation(Animator& animator, std::string name) {
 
 	animator.currentNode = iterator->first;
 	animator.timeElapsed = 0;
+	animator.previousAnimation = animator.currentAnimation;
 	animator.currentAnimation = iterator->second.animation;
+	animator.blendFactor = iterator->second.blendFactor;
 	animator.executedAnimationEvents.clear();
 }
 
@@ -308,23 +315,37 @@ void AnimationSystem::calculateBoneMatrixes() {
 		// retrieve animation...
 		Animator* animator = registry.try_get<Animator>(entityId);
 		Animation const* currentAnimation = nullptr;
-		float timeInTicks = 0.f;
+		Animation const* previousAnimation = nullptr;
+		
+		float currentAnimationTicks = 0.f;
+		float previousAnimationTicks = 0.f;
+		float lerpFactor = 0.f;
 
 		if (animator) {
-			auto&& [animation, __] = resourceManager.getResource<Model>(animator->currentAnimation);
+			auto&& [current_animation, __] = resourceManager.getResource<Model>(animator->currentAnimation);
+			auto&& [previous_animation, ___] = resourceManager.getResource<Model>(animator->previousAnimation);
 
-			if (animation && animation->animations.size()) {
-				currentAnimation = &animation->animations[0];
-				timeInTicks = std::min(animator->timeElapsed * currentAnimation->ticksPerSecond, currentAnimation->durationInTicks - 0.01f);
+			if (current_animation && current_animation->animations.size()) {
+				currentAnimation = &current_animation->animations[0];
+				currentAnimationTicks = std::min(animator->timeElapsed * currentAnimation->ticksPerSecond, currentAnimation->durationInTicks - 0.01f);
 
 				// because the bones are moving, we need to update the child potentially attaching to a socket..
 				engine.transformationSystem.setChildrenDirtyFlag(entityId);
+
+				// Calculate the appropriate lerp factor.. this lerp factor will be based on the current animation length..
+				float maxBlendSeconds = animator->blendFactor * currentAnimation->durationInSeconds;
+				lerpFactor = std::clamp(animator->timeElapsed / maxBlendSeconds, 0.f, 1.f);
+			}
+
+			if (animator->previousAnimation != animator->currentAnimation && animator->blendFactor != 0.f && previous_animation && previous_animation->animations.size()) {
+				previousAnimation = &previous_animation->animations[0];
+				previousAnimationTicks = std::min(animator->timeElapsed * previousAnimation->ticksPerSecond, previousAnimation->durationInTicks - 0.01f);
 			}
 		}
 
 		// we find the root node first, and recursively calculate the final transformation matrix down...
 		ModelNodeIndex rootNode = skeleton.rootNode;
-		calculateFinalMatrix(*model, rootNode, skeleton.nodes[rootNode].transformationMatrix, skeleton, skinnedMeshRenderer, currentAnimation, timeInTicks);
+		calculateFinalMatrix(*model, rootNode, skeleton.nodes[rootNode].transformationMatrix, skeleton, skinnedMeshRenderer, currentAnimation, currentAnimationTicks, previousAnimation, previousAnimationTicks, lerpFactor);
 	}
 }
 
@@ -333,19 +354,48 @@ void AnimationSystem::calculateBoneMatrixes() {
 // -> transformation		: maps from local bone space to parent bone space. (chained w/ all parent node that is not a bone)
 // -> globalTransformation	: maps from local bone space to model space. (if bind pose, the exact inverse of offset matrix. with animation, it will change.)
 // -> finalTransformation	: globalTransformation * offset matrix. we essientially map from local, to bone, back to local.
-void AnimationSystem::calculateFinalMatrix(Model& model, ModelNodeIndex nodeIndex, glm::mat4x4 const& parentGlobalTransformation, Skeleton const& skeleton, SkinnedMeshRenderer& skinnedMeshRenderer, Animation const* animation, float timeInTicks) {
+void AnimationSystem::calculateFinalMatrix(
+	Model&					model, 
+	ModelNodeIndex			nodeIndex, 
+	glm::mat4x4 const&		parentGlobalTransformation, 
+	Skeleton const&			skeleton, 
+	SkinnedMeshRenderer&	skinnedMeshRenderer, 
+	Animation const*		currentAnimation, 
+	float					currentAnimationTicks, 
+	Animation const*		previousAnimation,
+	float					previousAnimationTicks,
+	float					blendFactor	
+) {
 	ModelNode const& node = skeleton.nodes[nodeIndex];
 
 	// calculate this node's global transformation -> which is parent's global transformation * this node's transformation.
 	// however, we need to find the animation data to recalculate the children's transformation matrix.
 	// this is IF this current node has a corresponding animation, AND that this animation has channels that corresponding to this node.
 	glm::mat4x4 globalTransformation = [&]() {
-		if (AnimationChannel const* channel = (animation ? findAnimationChannel(node.name, *animation) : nullptr)) {
-			return parentGlobalTransformation * channel->getAnimatedTransform(timeInTicks);
-		}
-		else {
+		AnimationChannel const* currentAnimationChannel = currentAnimation ? findAnimationChannel(node.name, *currentAnimation) : nullptr;
+
+		// no current animation..
+		if (!currentAnimationChannel) {
 			return parentGlobalTransformation * skeleton.nodes[nodeIndex].transformationMatrix;
 		}
+
+		AnimationChannel const* previousAnimationChannel = previousAnimation ? findAnimationChannel(node.name, *previousAnimation) : nullptr;
+		auto [currentPosition, currentRotation, currentScale] = currentAnimationChannel->getAnimatedTransform(currentAnimationTicks);
+		
+		if (previousAnimationChannel) {
+			auto [previousPosition, previousRotation, previousScale] = previousAnimationChannel->getAnimatedTransform(previousAnimationTicks);
+			currentPosition = glm::mix(previousPosition, currentPosition, blendFactor);
+			currentRotation = glm::slerp(previousRotation, currentRotation, blendFactor);
+			currentScale = glm::mix(previousScale, currentScale, blendFactor);
+		}
+
+		// Form transformation matrix..
+		glm::mat4x4 animatedTransform{ 1 };
+		animatedTransform = glm::translate(animatedTransform, currentPosition);
+		animatedTransform = animatedTransform * glm::mat4_cast(currentRotation);
+		animatedTransform = glm::scale(animatedTransform, currentScale);
+
+		return parentGlobalTransformation * animatedTransform;
 	}();
 
 	// calculate final transformation, if it is a bone.
@@ -371,7 +421,7 @@ void AnimationSystem::calculateFinalMatrix(Model& model, ModelNodeIndex nodeInde
 		
 	// recurse downwards..
 	for (ModelNodeIndex childNodeIndex : node.nodeChildrens) {
-		calculateFinalMatrix(model, childNodeIndex, globalTransformation, skeleton, skinnedMeshRenderer, animation, timeInTicks);
+		calculateFinalMatrix(model, childNodeIndex, globalTransformation, skeleton, skinnedMeshRenderer, currentAnimation, currentAnimationTicks, previousAnimation, previousAnimationTicks, blendFactor);
 	}
 }
 
