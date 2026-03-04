@@ -48,16 +48,19 @@ public abstract class Enemy : Script
     private float deathFlickerMinSpeedOffset;
     [SerializableField]
     private float deathFlickerMaxSpeedOffset;
-    
+    [SerializableField]
+    private float ichorSpawnPositionVarianceMax = 1.5f;
+    [SerializableField]
+    private float ichorSpawnPositionVarianceMin = 0f;
 
     /***********************************************************
         Local Variables
     ***********************************************************/
     protected GameObject? player = null;
     protected GameObject? playerHead = null;
-    private EnemyStats? enemyStats = null;
+    protected EnemyStats? enemyStats = null;
     private bool wasRecentlyDamaged = false;
-    private float ichorSpawnPositionVariance = 1.5f;
+
     protected float accumulatedDamageInstance = 0f;
     private Vector3 navigationTargetPosition;
     // Jump
@@ -88,17 +91,17 @@ public abstract class Enemy : Script
         {
             Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
             direction.Normalize();
-            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
+            float spawnDistance = Random.Range(ichorSpawnPositionVarianceMin, ichorSpawnPositionVarianceMax);
             Instantiate(ichorPrefab, ichorSpawnPoint.transform.position + direction * spawnDistance);
         }
         // Explode VFX
-        GameObject explodeVFX = Instantiate(explodeVFXPrefab,ichorSpawnPoint.transform.position);
+        GameObject explodeVFX = Instantiate(explodeVFXPrefab, ichorSpawnPoint.transform.position);
         foreach (GameObject emitter in explodeVFX.GetChildren())
         {
             ParticleEmitter_? particleEmitter_ = emitter.getComponent<ParticleEmitter_>();
             if (particleEmitter_ != null)
                 particleEmitter_.emit();
-        } 
+        }
     }
     public bool IsTouchingGround()
     {
@@ -201,29 +204,45 @@ public abstract class Enemy : Script
     }
 
     protected void SpawnIchorFrame()
-    { 
+    {
         int currentSpawnAmount = (int)(accumulatedDamageInstance / enemyStats.ichorPerDamage);
 
         for (int i = 0; i < currentSpawnAmount; ++i)
         {
-            Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
-            direction.Normalize();
-            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
+            //Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
+            //direction.Normalize();
+            float spawnDistance = Random.Range(ichorSpawnPositionVarianceMin, ichorSpawnPositionVarianceMax);
             GameObject ichor = Instantiate(ichorPrefab);
-            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
+            ichor.transform.position = ichorSpawnPoint.transform.position + ichor.getScript<Ichor>().GetDirection() * spawnDistance;
         }
 
     }
-    protected void SpawnIchor()
-    {
-        for (int i = 0; i < enemyStats.ichorPerDamage; ++i){
-            Vector3 direction = new Vector3(0, Random.Range(-1f,1f), 0);
-            direction.Normalize();
-            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
-            GameObject ichor = Instantiate(ichorPrefab);
-            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
-        }
-    }
+
+    //protected void SpawnIchorFrame(Vector3 spawnDistance)
+    //{
+    //    int currentSpawnAmount = (int)(accumulatedDamageInstance / enemyStats.ichorPerDamage);
+
+    //    for (int i = 0; i < currentSpawnAmount; ++i)
+    //    {
+    //        Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
+    //        direction.Normalize();
+    //        float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
+    //        GameObject ichor = Instantiate(ichorPrefab);
+    //        ichor.getScript<Ichor>().IchorSetting(postiveDirection, negativeDirection, minForce, maxForce, minGravity, maxGravity, rapidSlowTime, damping);
+    //        ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
+    //    }
+
+    //}
+    //protected void SpawnIchor()
+    //{
+    //    //for (int i = 0; i < enemyStats.ichorPerDamage; ++i){
+    //    //    Vector3 direction = new Vector3(0, Random.Range(-1f,1f), 0);
+    //    //    direction.Normalize();
+    //    //    float spawnDistance = Random.Range(0, ichorSpawnPositionVarianceMax);
+    //    //    GameObject ichor = Instantiate(ichorPrefab);
+    //    //    ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
+    //    //}
+    //}
 
 
     protected void MoveToNavMeshPosition(Vector3 position)
@@ -300,6 +319,10 @@ public abstract class Enemy : Script
     {
         physicsRigidbody.SetLinearDamping(0);
         physicsRigidbody.SetAngularDamping(0);
+    }
+
+    protected override void onCollisionEnter(GameObject other)
+    {
     }
 
 

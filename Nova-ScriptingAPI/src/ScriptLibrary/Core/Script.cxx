@@ -1,7 +1,6 @@
 #include "Script.hxx"
 #include "API/ScriptingAPI.hxx"
 #include "ScriptLibrary/Extensions/ManagedTypes.hxx"
-
 #include <msclr/marshal_cppstd.h>
 // C++/cli doesn't support friend class so this is a way to make sure scripts cannot access the init update exit functions of other scripts
 // These also includes exception handling for scripts
@@ -71,7 +70,7 @@ void Script::callExit() {
 void Script::callOnCollisionEnter(unsigned otherEntityID) {
 	try { 
 		GameObject^ other = gcnew GameObject(otherEntityID);
-		onCollisionEnter(other); 
+		onCollisionEnter(other);
 	}
 	catch (const std::exception& e) {
 		Logger::error("{}Unable to call onCollisionEnter(): {}", gameObject->GetNameID(), e.what());
@@ -87,10 +86,10 @@ void Script::callOnCollisionExit(unsigned otherEntityID) {
 		onCollisionExit(other);
 	}
 	catch (const std::exception& e) {
-		Logger::error("{}Unable to call onCollisionEnter(): {}", gameObject->GetNameID(), e.what());
+		Logger::error("{}Unable to call onCollisionExit(): {}", gameObject->GetNameID(), e.what());
 	}
 	catch (System::Exception^ e) {
-		Logger::error("{}Unable to call onCollisionEnter(): {}", gameObject->GetNameID(), Convert(e->ToString()));
+		Logger::error("{}Unable to call onCollisionExit(): {}", gameObject->GetNameID(), Convert(e->ToString()));
 	}
 }
 

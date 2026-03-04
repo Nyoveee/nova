@@ -11,6 +11,7 @@ GameObject::GameObject() {}
 
 GameObject::GameObject(System::UInt32 p_entityID) {
 	entityID = p_entityID;
+	_gameObject = this; //need to reference itself
 	transformReference = getComponent<Transform_^>();
 }
 
@@ -19,6 +20,13 @@ GameObject^ GameObject::GetReference(System::UInt32 p_entityID)
 	GameObject^ newGameObject = gcnew GameObject(p_entityID);
 	return newGameObject;
 }
+
+GameObject^ GameObject::FindWithID(System::UInt32 p_entityID)
+{
+
+	return GetReference(static_cast<unsigned int>(p_entityID));
+}
+
 
 GameObject^ GameObject::Find(System::String^ name)
 {

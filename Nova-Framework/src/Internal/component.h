@@ -390,6 +390,8 @@ struct MeshCollider {
 	)
 };
 
+
+
 struct SkyBox {
 	TypedResourceID<EquirectangularMap> equirectangularMap{ INVALID_RESOURCE_ID };
 	

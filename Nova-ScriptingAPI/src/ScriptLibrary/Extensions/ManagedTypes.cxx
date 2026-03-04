@@ -142,6 +142,44 @@ Quaternion Quaternion::AngleAxis(float angle, Vector3 axis){ return Quaternion{ 
 Quaternion Quaternion::operator*(Quaternion lhs, Quaternion rhs){ return Quaternion(lhs.native() * rhs.native());}
 
 
+//A extention of slerp to ensure a object rotates towards a target without overshooting
+Quaternion Quaternion::RotateTowards(Quaternion current, Quaternion target, float angleDegrees)
+{
+	// 1. Find the dot product to get the angle
+	float dot = glm::dot(current.native(), target.native());
+
+	// Quaternions represent the same rotation as their negative
+	// This ensures we take the shortest path
+	if (dot < 0.0f) {
+		target.native() = -target.native();
+		dot = -dot;
+	}
+
+	// 2. Calculate the actual angle between them
+	// Clamp to avoid float precision errors leading to NaN
+	float angle = std::acos(std::min(1.0f, dot));
+	angle = glm::degrees(angle);
+
+	// 3. If the angle is very small, just return the target
+	if (angle < 0.0001f ||angleDegrees >= angle) {
+		return target;
+	}
+
+	// 4. Calculate the interpolation factor (0 to 1)
+	float t = angleDegrees / angle;
+
+	// 5. Slerp towards the target
+	return Quaternion{ glm::slerp(current.native(), target.native(), t) };
+}
+
+float Quaternion::Angle(Quaternion a, Quaternion b)
+{
+	// This calculates the shortest angular difference in radians
+	float angleRadians = glm::angle(glm::conjugate(a.native()) * b.native());
+
+	return glm::degrees(angleRadians);
+}
+
 
 //Quaternion Quaternion::Slerp(Quaternion a, Quaternion b, float t) {
 //	return Quaternion{ glm::look(a.native(), b.native(), t) };

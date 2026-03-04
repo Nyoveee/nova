@@ -127,7 +127,7 @@ public abstract class Gun : Script
 
         GameObject collidedEntity = new GameObject(result.Value.entity);
 
-        if (collidedEntity.tag != "Wall" && collidedEntity.tag != "Enemy_ArmouredSpot" && collidedEntity.tag != "Enemy_WeakSpot" && collidedEntity.tag != "Enemy")
+        if (collidedEntity.tag != "Wall" && collidedEntity.tag != "Enemy_ArmouredSpot" && collidedEntity.tag != "Enemy_WeakSpot" && collidedEntity.tag != "Enemy" )
         {
             return false;
         }

@@ -90,7 +90,7 @@ class Shockwave : Script
 
     protected override void onCollisionEnter(GameObject other)
     {
-        if(hasDamagedPlayer)
+        if (hasDamagedPlayer)
         {
             return;
         }

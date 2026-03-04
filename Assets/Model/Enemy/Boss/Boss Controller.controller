@@ -25,8 +25,17 @@
                 }
             ],
             "toLoop": true,
-            "blendFactor": 0.20000000298023224,
+            "blendFactor": 0.09300000220537186,
             "name": "Boss_Idle",
+            "animationEvents": null
+        },
+        "11459708924338618557": {
+            "id": 11459708924338618557,
+            "animation": 11419818642480660481,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.02199999988079071,
+            "name": "Boss_Attack",
             "animationEvents": null
         },
         "17800777199676096695": {
@@ -39,22 +48,8 @@
                 }
             ],
             "toLoop": true,
-            "blendFactor": 0.20000000298023224,
+            "blendFactor": 0.06199999898672104,
             "name": "Boss_Jump",
-            "animationEvents": null
-        },
-        "11459708924338618557": {
-            "id": 11459708924338618557,
-            "animation": 11419818642480660481,
-            "transitions": [
-                {
-                    "nextNode": 7424483658214441141,
-                    "conditions": null
-                }
-            ],
-            "toLoop": true,
-            "blendFactor": 0.20000000298023224,
-            "name": "Boss_Attack",
             "animationEvents": null
         },
         "11459708924338585787": {
@@ -67,7 +62,7 @@
                 }
             ],
             "toLoop": true,
-            "blendFactor": 0.20000000298023224,
+            "blendFactor": 0.027000000700354576,
             "name": "Boss_Run",
             "animationEvents": null
         }
