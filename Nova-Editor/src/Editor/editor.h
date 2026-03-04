@@ -168,6 +168,9 @@ private:
 	std::string uppercaseEntityName;
 
 	int imguiCounter = 0;
+
+	/// ****
+	// save copied resource id
 };
 
 #include "editor.ipp"

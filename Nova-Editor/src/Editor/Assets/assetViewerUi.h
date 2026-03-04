@@ -52,6 +52,9 @@ private:
 
 	void handleRecompilation();
 
+	/// ****
+	// getter for resource id..
+
 public:
 	bool isHovering = false;
 

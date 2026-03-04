@@ -98,6 +98,9 @@ public:
 	BasicAssetInfo*								getDescriptor(ResourceID id);
 	ResourceID									getResourceID(AssetFilePath const& assetFilePath)	const;
 
+	/// ****
+	void										createAssetCopy(ResourceID id);
+
 private:
 	friend class AssetDirectoryWatcher;
 	
@@ -139,6 +142,7 @@ private:
 
 	template <ValidResource T>
 	void serializeAllResources();
+
 
 private:
 	ResourceManager& resourceManager;

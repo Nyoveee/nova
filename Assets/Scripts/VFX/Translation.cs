@@ -3,8 +3,10 @@
 // Editor will automatically rename and recompile this file.
 class Translation : Script
 {
+    [SerializableField] private bool playOnStart = false;
     [SerializableField] private float expandDuration = 2f;
     [SerializableField] private float distance = 100f;
+    [SerializableField] private float lerpPower = 1f;
 
     bool isExpanding = false;
     float timeElapsed = 0f;
@@ -19,6 +21,14 @@ class Translation : Script
         finalPosition = initialPosition + gameObject.transform.front * distance;
     }
 
+    protected override void init()
+    {
+        if(playOnStart)
+        {
+            move();
+        }
+    }
+
     // This function is invoked every update.
     protected override void update()
     {
@@ -27,7 +37,7 @@ class Translation : Script
             return;
         }
 
-        gameObject.transform.position = Vector3.Lerp(initialPosition, finalPosition, timeElapsed / expandDuration);
+        gameObject.transform.position = Vector3.Lerp(initialPosition, finalPosition, Mathf.Pow(timeElapsed / expandDuration, lerpPower));
 
         timeElapsed += Time.V_DeltaTime();
 

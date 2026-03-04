@@ -420,6 +420,21 @@ ResourceID AssetManager::getResourceID(AssetFilePath const& assetFilePath) const
 	return descriptor.descriptor.id;
 }
 
+void AssetManager::createAssetCopy(ResourceID id) {
+	/// STUB..
+
+	// check if id is not invalid..
+	
+	// get asset filepath from id via assetToDescriptor unordered map..
+	std::filesystem::path filepath{ /* */ };
+	
+	// while is filepath doesnt exist..
+		// generate new filepath name
+		// filepath.filename() + " - Copy - Copy";
+	
+	// use std::filesystem to copy
+}
+
 void AssetManager::onAssetAddition(AssetFilePath const& assetFilePath) {
 	auto iterator = intermediaryAssetsToDescriptor.find(assetFilePath);
 
