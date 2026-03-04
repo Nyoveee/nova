@@ -63,10 +63,19 @@ public class QuestManager : Script
 
     protected override void update()
     {
-        if (currentQuest != null)
-            currentQuest?.UpdateQuest();
+        currentQuest?.UpdateQuest();
     }
-
+    public void SkipCurrentQuest()
+    {
+        if (currentQuest != null)
+        {
+            currentQuest.OnSkip();
+            MoveToNextQuest();
+            if (questIndex < quests.Count)
+                TeleportToCheckPoint();
+        }
+  
+    }
     private void HandleQuestStateChanged(object sender, Quest.QuestStateChangedEventArgs e)
     {
         if (e.NewState == e.OldState)
@@ -97,6 +106,7 @@ public class QuestManager : Script
         }
         else if(questContainer!= null)
         {
+            currentQuest = null;
             Debug.Log("Player Won/Quests are done");
             questContainer.SetActive(false);
         }
@@ -134,15 +144,20 @@ public class QuestManager : Script
             currentQuest.OnRestart();
             currentQuest.SetQuestState(Quest.QuestState.InProgress);
         }
-           
         if (player != null)
         {
-            player.gameObject.transform.position = currentQuest.GetCheckpointPosition();
-            player.playerMoveStates = PlayerMoveStates.GroundedMovement;
-            player.Reset();
+            TeleportToCheckPoint();
             player.getScript<PlayerWeaponController>()?.Reset();
+            player.ResetHealth();
             foreach (GameObject hitbox in GameObject.FindGameObjectsWithTag("EnemyHitBox"))
                 Destroy(hitbox);
+
         }
+        
+    }
+    private void TeleportToCheckPoint()
+    {
+        player.gameObject.transform.position = currentQuest.GetCheckpointPosition();
+        player.OnTeleport();
     }
 }

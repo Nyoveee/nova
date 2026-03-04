@@ -2,6 +2,7 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
+using Windows.Graphics.Display;
 
 class ElevatorQuest : Quest
 {
@@ -30,12 +31,10 @@ class ElevatorQuest : Quest
     [SerializableField]
     private float delayForDialogue = 3;
 
-    private AudioComponent_ audioComponent;
     private GameUIManager gameUIManager;
 
     protected override void init()
     {
-        audioComponent = getComponent<AudioComponent_>();
         gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
     }
 
@@ -57,7 +56,10 @@ class ElevatorQuest : Quest
             }
         }
     }
-
+    public override void OnSkip()
+    {
+        Destroy(checkPointIndicator);
+    }
     public override void OnSuccess()
     {
         Destroy(checkPointIndicator);
@@ -65,7 +67,7 @@ class ElevatorQuest : Quest
 
         Invoke(() =>
         {
-            gameUIManager.ActivateDialogue(speaker, dialogues, timings, finalDialogueTime);
+            gameUIManager?.ActivateDialogue(speaker, dialogues, timings, finalDialogueTime);
         }, delayForDialogue);
     }
 

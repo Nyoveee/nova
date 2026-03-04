@@ -78,11 +78,10 @@ public abstract class Enemy : Script
     /***********************************************************
        Public Functions
     ***********************************************************/
-    public bool IsDead() => (enemyStats.health <= 0); 
-    public void UpdateExecutableMaterialState()
-    {
-        renderer.setMaterialBool(1, "isActive", enemyStats.health <= enemyStats.enemyExecuteThreshold && enemyStats.health > 0);
-    }
+    public bool IsDead() => (enemyStats.health <= 0);
+    public bool IsExecutable() => (enemyStats.health <= enemyStats.enemyExecuteThreshold && enemyStats.health > 0);
+    public bool WasRecentlyDamaged() => wasRecentlyDamaged;
+    public void UpdateExecutableMaterialState() { renderer.setMaterialBool(1, "isActive", IsExecutable()); }
     public void Explode()
     {
         for (int i = 0; i < enemyStats.ichorExplodeSpawnAmount; ++i)
@@ -194,7 +193,7 @@ public abstract class Enemy : Script
     {
         return player != null ? Vector3.Distance(player.transform.position, gameObject.transform.position) : 0f;
     }
-    protected bool HasLineOfSightToPlayer(GameObject from)
+    protected bool HasLineOfSight(GameObject from)
     {
         string[] layerMask = { "Wall","Floor" };
         float distance = Vector3.Distance(from.transform.position, playerHead.transform.position);
@@ -215,8 +214,6 @@ public abstract class Enemy : Script
         }
 
     }
-
-
     protected void SpawnIchor()
     {
         for (int i = 0; i < enemyStats.ichorPerDamage; ++i){
@@ -240,10 +237,6 @@ public abstract class Enemy : Script
         }
 
             
-    }
-    protected bool WasRecentlyDamaged()
-    {
-        return wasRecentlyDamaged;
     }
     protected void TriggerRecentlyDamageCountdown()
     {

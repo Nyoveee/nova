@@ -34,7 +34,7 @@ private:
 	void displayScriptInfo(AssetInfo<ScriptAsset>& descriptor);
 	void displayPrefabInfo(AssetInfo<Prefab>& descriptor);
 
-	void displayAnimationInfo(Model const& animationResource);
+	void displayAnimationInfo(Model const& animationResource, AssetInfo<Model>& descriptor);
 	void displayBoneHierarchy(AssetInfo<Model>& descriptor, BoneIndex boneIndex, Skeleton& skeleton);
 	void displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton);
 
@@ -78,6 +78,7 @@ private:
 
 	// Model
 	float copyOfScale = 1.f;
+	float copyOfSpeedMultiplier = 1.f;
 
 	// ---------------------------------------------------
 	bool toSerialiseSelectedDescriptor;

@@ -6,7 +6,7 @@
 #include <algorithm>
 
 namespace Serialiser {
-	void Serialiser::serialiseScene(entt::registry& registry, std::vector<Layer> const& layers, const char* fileName) {
+	void Serialiser::serialiseScene(entt::registry& registry, std::vector<Layer> const& layers, NormalizedFloat const& iblDiffuseStrength, NormalizedFloat const& iblSpecularStrength, const char* fileName) {
 
 		Json js;
 		std::vector<Json> jsonVec;
@@ -31,6 +31,9 @@ namespace Serialiser {
 
 		js["layers"] = layerJson;
 
+		js["iblDiffuseStrength"] = static_cast<float>(iblDiffuseStrength);
+		js["iblSpecularStrength"] = static_cast<float>(iblSpecularStrength);
+
 		std::ofstream file(fileName);
 
 		if (!file) {
@@ -41,7 +44,7 @@ namespace Serialiser {
 		file << js.dump(4) << std::endl;
 	}
 
-	void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, const char* fileName) {
+	void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, NormalizedFloat& iblDiffuseStrength, NormalizedFloat& iblSpecularStrength, const char* fileName) {
 		try {
 			std::ifstream file(fileName);
 
@@ -53,7 +56,8 @@ namespace Serialiser {
 			j = nlohmann::ordered_json::parse(file);
 
 			//file >> j;
-
+			
+			// layers
 			layers.clear();
 
 			for (const auto& layerJsonElement : j["layers"]) {
@@ -67,6 +71,27 @@ namespace Serialiser {
 				layers.push_back({ "Default", {} });
 			}
 
+			// diffuse strength
+			if (j.find("iblDiffuseStrength") != j.end()) {
+				float value = j["iblDiffuseStrength"];
+				iblDiffuseStrength = value;
+			}
+			else {
+				Logger::warn("No ibl diffuse strength found in scene. Creating a default value of 1..");
+				iblDiffuseStrength = 1.f;
+			}
+
+			// specular strength
+			if (j.find("iblSpecularStrength") != j.end()) {
+				float value = j["iblSpecularStrength"];
+				iblSpecularStrength = value;
+			}
+			else {
+				Logger::warn("No ibl specular strength found in scene. Creating a default value of 1..");
+				iblSpecularStrength = 1.f;
+			}
+
+			// deserialize entities & components..
 			for (const auto& en : j["entities"]) {
 				auto entity = registry.create(en["id"]);
 				deserialiseComponents<ALL_COMPONENTS>(registry, entity, en);

@@ -23,8 +23,6 @@ struct GameConfig {
 	TypedResourceID<CubeMap>	environmentSpecularMap	= { INVALID_RESOURCE_ID };
 
 	ToneMappingMethod			toneMappingMethod		= ToneMappingMethod::ACES;
-	NormalizedFloat				iblDiffuseStrength		= 1.f;
-	NormalizedFloat				iblSpecularStrength		= 1.f;
 
 	REFLECTABLE(
 		gameName,
@@ -34,9 +32,7 @@ struct GameConfig {
 		gravityStrength,
 		environmentDiffuseMap,
 		environmentSpecularMap,
-		toneMappingMethod,
-		iblDiffuseStrength,
-		iblSpecularStrength
+		toneMappingMethod
 	)
 };
 

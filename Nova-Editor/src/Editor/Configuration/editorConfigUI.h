@@ -11,6 +11,7 @@ public:
     void update();
     void loadConfig();
     void saveConfig();
+    std::string getPath();
 
 private:
     Editor& editor;

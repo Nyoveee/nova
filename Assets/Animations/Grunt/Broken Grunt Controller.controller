@@ -1,0 +1,104 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "id": 1000,
+            "animation": 18446744073709551615,
+            "transitions": [
+                {
+                    "nextNode": 6603517903568967745,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Entry Node",
+            "animationEvents": null
+        },
+        "5707081516392038407": {
+            "id": 5707081516392038407,
+            "animation": 8029637102303461393,
+            "transitions": null,
+            "toLoop": false,
+            "blendFactor": 0.20000000298023224,
+            "name": "Grunt Death",
+            "animationEvents": null
+        },
+        "14930453553246748675": {
+            "id": 14930453553246748675,
+            "animation": 12641323120730849295,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Grunt Attack",
+            "animationEvents": [
+                {
+                    "key": 10,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent3"
+                },
+                {
+                    "key": 25,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 44,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent2"
+                }
+            ]
+        },
+        "1671856250268090377": {
+            "id": 1671856250268090377,
+            "animation": 17253009139158237203,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Grunt Forward",
+            "animationEvents": null
+        },
+        "3977699259481686017": {
+            "id": 3977699259481686017,
+            "animation": 12064862368427425815,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Grunt Running",
+            "animationEvents": null
+        },
+        "6603517903568967745": {
+            "id": 6603517903568967745,
+            "animation": 2555898942351032321,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Grunt Broken",
+            "animationEvents": null
+        },
+        "7863461440795232589": {
+            "id": 7863461440795232589,
+            "animation": 16985018599458111491,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Grunt Jump",
+            "animationEvents": [
+                {
+                    "key": 15,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent4"
+                }
+            ]
+        }
+    },
+    "parameters": [
+        {
+            "name": "Range",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 1
+            }
+        }
+    ]
+}

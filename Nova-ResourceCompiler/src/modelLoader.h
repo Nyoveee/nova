@@ -66,7 +66,7 @@ struct IntermediaryVertexWeight {
 
 class ModelLoader {
 public:
-	static std::optional<ModelData> loadModel(std::string const& filepath, float scale, std::vector<BoneIndex> sockets);
+	static std::optional<ModelData> loadModel(std::string const& filepath, AssetInfo<Model> const& descriptor);
 
 private:
 	static MeshData processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat4x4 const& globalTransformationMatrix);
@@ -76,7 +76,7 @@ private:
 	static void printBone(BoneIndex boneIndex, unsigned int padding);
 	static void printMatrix(glm::mat4x4 const matrix);
 
-	static Animation processAnimation(aiAnimation const* assimpAnimation);
+	static Animation processAnimation(aiAnimation const* assimpAnimation, float speedMultiplier);
 
 	static BoneIndex findParentBone(aiNode const* parentNode);
 

@@ -258,7 +258,9 @@ struct Animator {
 	float timeElapsed = 0;
 	ControllerNodeID currentNode = NO_CONTROLLER_NODE;
 	TypedResourceID<Model> currentAnimation;
-	
+	TypedResourceID<Model> previousAnimation;
+	float blendFactor = 0.2f;
+
 	// this will be instantiated in runtime.
 	std::vector<Controller::Parameter> parameters;
 
@@ -429,6 +431,8 @@ struct Image {
 		textureCoordinatesRange,
 		toTile
 	)
+
+	float canvasAlphaMultiplier = 1.f;
 };
 
 struct ScriptData
@@ -813,14 +817,18 @@ struct Text {
 		fontColor,
 		alignment
 	)
+
+	float canvasAlphaMultiplier = 1.f;
 };
 
 struct Canvas {
-	std::string placeholder;
+	NormalizedFloat alpha = 1.f;
+	bool isInteractable = true;
 
 	REFLECTABLE
 	(
-		placeholder
+		alpha,
+		isInteractable
 	)
 };
 
@@ -835,7 +843,7 @@ struct EntityScript {
 };
 
 struct Button {
-	bool isInteractable;
+	bool isInteractable = true;
 	EntityScript reference;
 
 	ColorA normalColor		= ColorA{ 1.f, 1.f, 1.f, 1.f };
@@ -846,6 +854,7 @@ struct Button {
 	std::string onClickReleasedFunction;
 	std::string onPressFunction;
 	std::string onHoverFunction;
+	std::string onHoverLeaveFunction;
 
 	float fadeDuration = 0.1f;
 	float colorMultiplier = 1.f;
@@ -864,6 +873,7 @@ struct Button {
 		onClickReleasedFunction,
 		onPressFunction,
 		onHoverFunction,
+		onHoverLeaveFunction,
 		fadeDuration,
 		colorMultiplier,
 		offset,
@@ -878,8 +888,8 @@ struct Button {
 	} state = State::Normal;
 
 	float timeElapsed = 0.f;
-
 	ColorA finalColor = normalColor;
+	bool isCanvasInteractable = true;
 
 	void enableButton() {
 		isInteractable = true;

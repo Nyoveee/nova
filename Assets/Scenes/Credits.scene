@@ -1,0 +1,415 @@
+{
+    "entities": [
+        {
+            "EntityData": {
+                "name": "Credit Screen Canvas",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    0
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 8937314893164036281,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Canvas": {
+                "placeholder": ""
+            },
+            "id": 42991779
+        },
+        {
+            "EntityData": {
+                "name": "Background",
+                "tag": "",
+                "parent": 42991779,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 3749168122433388731,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": -3218.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1960.883056640625,
+                    "y": 8596.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": -3218.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1960.883056640625,
+                    "y": 8596.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 3409489404249309185,
+                        "fields": [
+                            {
+                                "name": "startY",
+                                "data": {
+                                    "__variant_value": -3218.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "endY",
+                                "data": {
+                                    "__variant_value": 4294.32177734375,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "scrollSpeed",
+                                "data": {
+                                    "__variant_value": 150.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "transitionDelay",
+                                "data": {
+                                    "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "mainMenuScene",
+                                "data": {
+                                    "__variant_value": 931858692302405727,
+                                    "__variant_type": 14
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 1309598116772916699,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Environment",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    1048588
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6897896714855290243,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 1.52587890625e-05,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000089406967163,
+                    "y": 1.0000098943710327,
+                    "z": 1.0000089406967163
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": -1.4821865761405206e-06,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.01416381448507309,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 1.52587890625e-05,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0000089406967163,
+                    "y": 1.0000098943710327,
+                    "z": 1.0000089406967163
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": -1.4821865761405206e-06,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -2.9643731522810413e-06,
+                    "z": 0.0
+                }
+            },
+            "id": 3145739
+        },
+        {
+            "EntityData": {
+                "name": "Camera",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 16765820092762243783,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 145.2519989013672,
+                    "y": 11.524435997009277,
+                    "z": 37.88560485839844
+                },
+                "scale": {
+                    "x": 1.0000121593475342,
+                    "y": 0.999997615814209,
+                    "z": 1.0000203847885132
+                },
+                "rotation": {
+                    "w": 0.9824670553207397,
+                    "x": 0.0758916512131691,
+                    "y": -0.16854842007160187,
+                    "z": -0.024297701194882393
+                },
+                "eulerAngles": {
+                    "x": 0.1672736406326294,
+                    "y": -0.33365491032600403,
+                    "z": -0.07768417149782181
+                },
+                "localPosition": {
+                    "x": 145.2519989013672,
+                    "y": 11.524435997009277,
+                    "z": 37.88560485839844
+                },
+                "localScale": {
+                    "x": 1.0000121593475342,
+                    "y": 0.999997615814209,
+                    "z": 1.0000203847885132
+                },
+                "localRotation": {
+                    "w": 0.9824670553207397,
+                    "x": 0.0758916512131691,
+                    "y": -0.16854842007160187,
+                    "z": -0.024297701194882393
+                },
+                "localEulerAngles": {
+                    "x": 0.1672736406326294,
+                    "y": -0.33365491032600403,
+                    "z": -0.07768417149782181
+                }
+            },
+            "CameraComponent": {
+                "camStatus": true,
+                "fov": 45.0,
+                "nearPlane": 0.30000001192092896,
+                "farPlane": 1000.0
+            },
+            "id": 2097358
+        },
+        {
+            "EntityData": {
+                "name": "Skybox",
+                "tag": "",
+                "parent": 3145739,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 12730594826639366827,
+                "entityGUID": 13775693787802373605,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "17464486586416021590": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 3.039850344066508e-05,
+                    "y": 0.0,
+                    "z": 4.488068944263901e-11
+                },
+                "scale": {
+                    "x": 1.0000215768814087,
+                    "y": 1.0000627040863037,
+                    "z": 1.0000215768814087
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": -2.9373597953963326e-06,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.014166729524731636,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 1.5139579772949219e-05,
+                    "y": 0.0,
+                    "z": 9.26342336171615e-16
+                },
+                "localScale": {
+                    "x": 1.0000126361846924,
+                    "y": 1.000052809715271,
+                    "z": 1.0000126361846924
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": -1.4551731055689743e-06,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -2.9103462111379486e-06,
+                    "z": 0.0
+                }
+            },
+            "SkyBox": {
+                "equirectangularMap": 17591087065804193799
+            },
+            "id": 1048588
+        }
+    ],
+    "layers": [
+        {
+            "name": "Default"
+        },
+        {
+            "name": "Panel"
+        },
+        {
+            "name": "Button"
+        },
+        {
+            "name": "Text"
+        },
+        {
+            "name": "Settings Panel"
+        },
+        {
+            "name": "Settings Bar Fill"
+        },
+        {
+            "name": "Settings Foreground"
+        },
+        {
+            "name": "Settings Text"
+        }
+    ]
+}

@@ -7,10 +7,17 @@ class PauseButtonScript : Script
 {
     public Scene mainMenuScene;
     private GameUIManager uiManager;
+    private AudioComponent_ audioComponent;
+
+    [SerializableField]
+    private Audio onHoverSFX;
+    [SerializableField]
+    private Audio onClickSFX;
 
     protected override void init()
     {
         uiManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
+        audioComponent = getComponent<AudioComponent_>();
     }
 
     public void ResumeGame()
@@ -28,7 +35,17 @@ class PauseButtonScript : Script
         SceneAPI.ChangeScene(mainMenuScene);
     }
 
-public void RestartGame()
+    public void onHover()
+    {
+        audioComponent.PlaySound(onHoverSFX);
+    }
+
+    public void onPressed()
+    { 
+        audioComponent.PlaySound(onClickSFX);
+    }
+
+    public void RestartGame()
     {
         Systems.Restart();
     }

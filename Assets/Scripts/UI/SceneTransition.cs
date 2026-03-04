@@ -19,11 +19,14 @@ class SceneTransition : Script
     private TransitionState transitionState;
     [SerializableField]
     private Image_ transitionImage;
+
     private float currentTransitionTime;
+    private GameplayStatisticsManager gameplayStatisticsManager;
     protected override void init()
     {
         if(transitionState == TransitionState.FadeOut)
             currentTransitionTime = transitionTime;
+        gameplayStatisticsManager = GameObject.FindWithTag("Gameplay Statistics Manager")?.getScript<GameplayStatisticsManager>();
     }
     // This function is invoked every update.
     protected override void update()
@@ -38,7 +41,7 @@ class SceneTransition : Script
                     ColorAlpha imageColor = new ColorAlpha(0, 0, 0, alpha);
                     transitionImage.colorTint = imageColor;
                     if (currentTransitionTime <= 0)
-                        SceneAPI.ChangeScene(sceneToChange);
+                        SceneAPI.ChangeScene(sceneToChange);  
                     break;
                 }
             case TransitionState.FadeOut:
@@ -55,6 +58,7 @@ class SceneTransition : Script
     }
     public void BeginTransition()
     {
+        gameplayStatisticsManager?.CompleteLevel();
         transitionState = TransitionState.FadeIn;
         currentTransitionTime = transitionTime;
     }

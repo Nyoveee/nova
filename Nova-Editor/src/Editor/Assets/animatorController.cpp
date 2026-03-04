@@ -177,13 +177,18 @@ void AnimatorController::displayRightPanel(Animator& animator, Controller& contr
 
 		ControllerNodeID nodeId = Math::getGUID();
 
-		controller.data.nodes.insert({ nodeId, Controller::Node {
-			nodeId,
-			animationId,
-			{},
-			true,
-			*namePtr
-		} });
+		controller.data.nodes.insert({ 
+			nodeId, 
+			Controller::Node {
+				.id = nodeId,
+				.animation = animationId,
+				.transitions = {},
+				.toLoop = true,
+				.blendFactor = 0.2f,
+				.name = *namePtr,
+				.animationEvents = {}
+			}
+		});
 	});
 
 
@@ -597,6 +602,10 @@ void AnimatorController::displaySelectedNodeProperties([[maybe_unused]] Animator
 			ImGui::Checkbox("To loop?", &node.toLoop);
 		}
 
+		if (nodeId != ENTRY_NODE) {
+			ImGui::SliderFloat("Blend factor", &node.blendFactor, 0.f, 1.f);
+		}
+
 		if (node.transitions.empty()) {
 			ImGui::Text("No transition. Create a transition in the node graph!");
 		}
@@ -725,13 +734,18 @@ void AnimatorController::handleDragAndDrop(Controller& controller) {
 
 	ControllerNodeID nodeId = Math::getGUID();
 
-	controller.data.nodes.insert({ nodeId, Controller::Node {
+	controller.data.nodes.insert({
 		nodeId,
-		animationId,
-		{},
-		true,
-		name
-	}});
+		Controller::Node {
+			.id = nodeId,
+			.animation = animationId,
+			.transitions = {},
+			.toLoop = true,
+			.blendFactor = 0.2f,
+			.name = name,
+			.animationEvents = {}
+		}
+	});
 }
 
 void AnimatorController::renderNodes(Animator& animator, Controller& controller) {

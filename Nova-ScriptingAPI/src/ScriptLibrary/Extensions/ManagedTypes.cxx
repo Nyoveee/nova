@@ -456,6 +456,33 @@ float Rigidbody_::GetMass()
 }
 
 // =================================================================
+// Button
+// =================================================================
+
+ButtonState Button_::getState()
+{
+	Button* button = nativeComponent();
+	
+	switch (button->state) {
+	case Button::State::Normal:
+		return ButtonState::Normal;
+	case Button::State::Hovered:
+		return ButtonState::Hovered;
+	case Button::State::Pressed:
+		return ButtonState::Pressed;
+	case Button::State::Disabled:
+		return ButtonState::Disabled;
+	default:
+		return ButtonState::Normal;
+	}
+}
+
+
+void Button_::forceColorUpdate() {
+	Interface::engine->uiSystem.updateButtonColor(*nativeComponent());
+}
+
+// =================================================================
 // Animator
 // =================================================================
 
@@ -542,6 +569,47 @@ void SetUniformValue(int index, System::String^ name, std::vector<TypedResourceI
 	uniformData.value = data;
 }
 
+// private helper function.. (nullable)
+template <typename T>
+T GetUniformValue(int index, System::String^ name, std::vector<TypedResourceID<Material>>& materialIds) {
+	if (index < 0 || index >= materialIds.size()) {
+		return T{};
+	}
+
+	ResourceID materialId = materialIds[index];
+	auto&& [material, _] = Interface::engine->resourceManager.getResource<Material>(materialId);
+
+	if (!material) {
+		Logger::warn("Invalid material when getting material property..");
+		return T{};
+	}
+
+	std::string parameterName = Convert(name);
+
+	auto iterator = std::find_if(
+		material->materialData.uniformDatas.begin(),
+		material->materialData.uniformDatas.end(),
+		[&](auto&& uniformData) {
+			return uniformData.identifier == parameterName;
+		}
+	);
+
+	if (iterator == material->materialData.uniformDatas.end()) {
+		Logger::warn("Invalid parameter name {} when getting material property", parameterName);
+		return T{};
+	}
+
+	auto&& uniformData = *iterator;
+	
+	try {
+		return T{ std::get<typename ManagedToNative<T>::Native>(uniformData.value) };
+	}
+	catch (...) {
+		Logger::warn("Invalid type associated with material name.. return default constructed type.");
+		return T{};
+	}
+}
+
 void MeshRenderer_::setMaterialFloat(int index, System::String^ name, float data) {
 	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
 }
@@ -564,6 +632,30 @@ void MeshRenderer_::setMaterialInt(int index, System::String^ name, int data) {
 
 void MeshRenderer_::setMaterialUInt(int index, System::String^ name, unsigned data) {
 	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+Vector3 MeshRenderer_::getMaterialVector3(int index, System::String^ name) {
+	return GetUniformValue<Vector3>(index, name, nativeComponent()->materialIds);
+}
+
+Vector2 MeshRenderer_::getMaterialVector2(int index, System::String^ name) {
+	return GetUniformValue<Vector2>(index, name, nativeComponent()->materialIds);
+}
+
+bool MeshRenderer_::getMaterialBool(int index, System::String^ name) {
+	return GetUniformValue<bool>(index, name, nativeComponent()->materialIds);
+}
+
+int MeshRenderer_::getMaterialInt(int index, System::String^ name) {
+	return GetUniformValue<int>(index, name, nativeComponent()->materialIds);
+}
+
+unsigned MeshRenderer_::getMaterialUInt(int index, System::String^ name) {
+	return GetUniformValue<unsigned>(index, name, nativeComponent()->materialIds);
+}
+
+float MeshRenderer_::getMaterialFloat(int index, System::String^ name) {
+	return GetUniformValue<float>(index, name, nativeComponent()->materialIds);
 }
 
 void SkinnedMeshRenderer_::changeMaterial(int index, ScriptingAPI::Material^ material) {
@@ -605,6 +697,29 @@ void SkinnedMeshRenderer_::setMaterialUInt(int index, System::String^ name, unsi
 	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
 }
 
+Vector3 SkinnedMeshRenderer_::getMaterialVector3(int index, System::String^ name) {
+	return GetUniformValue<Vector3>(index, name, nativeComponent()->materialIds);
+}
+
+Vector2 SkinnedMeshRenderer_::getMaterialVector2(int index, System::String^ name) {
+	return GetUniformValue<Vector2>(index, name, nativeComponent()->materialIds);
+}
+
+bool SkinnedMeshRenderer_::getMaterialBool(int index, System::String^ name) {
+	return GetUniformValue<bool>(index, name, nativeComponent()->materialIds);
+}
+
+int SkinnedMeshRenderer_::getMaterialInt(int index, System::String^ name) {
+	return GetUniformValue<int>(index, name, nativeComponent()->materialIds);
+}
+
+unsigned SkinnedMeshRenderer_::getMaterialUInt(int index, System::String^ name) {
+	return GetUniformValue<unsigned>(index, name, nativeComponent()->materialIds);
+}
+
+float SkinnedMeshRenderer_::getMaterialFloat(int index, System::String^ name) {
+	return GetUniformValue<float>(index, name, nativeComponent()->materialIds);
+}
 
 // =================================================================
 // Navmesh Agent
@@ -731,4 +846,12 @@ bool VideoPlayer_::IsVideoFinished()
 {
 	VideoPlayer* videoPlayer = nativeComponent();
 	return Interface::engine->videoSystem.IsVideoFinished(*videoPlayer);
+}
+
+// ======================================
+// Image
+// ======================================
+void Image_::SetTexture(ScriptingAPI::Texture^ texture)
+{
+	nativeComponent()->texture = texture->getId();
 }

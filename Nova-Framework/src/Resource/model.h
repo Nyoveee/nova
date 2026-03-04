@@ -52,4 +52,6 @@ struct AssetInfo<Model> : public BasicAssetInfo {
 	float scale = 1.f;
 	std::vector<BoneIndex> sockets;
 	std::vector<TypedResourceID<Material>> materials { DEFAULT_PBR_MATERIAL_ID };
+
+	float speedMultiplier = 1.f;
 };
