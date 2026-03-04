@@ -212,7 +212,6 @@ class GameUIManager : Script
     {
         dialogueScript.BeginDialogueSequence(speaker, text, times, finalDialogueTime);
     }
-
     /***********************************************************
        Death 
     ***********************************************************/

@@ -77,7 +77,14 @@ class UnlockGateQuest : Quest
 
         isAnimating = true;
     }
+    public override void OnSkip()
+    {
+        vaultDoor.UnlockDoor();
+        vaultDoor.OpenDoor();
+        hubSwitch.forceEnableSwitch();
 
+        isAnimating = true;
+    }
     public override void UpdateQuest()
     {
         if(!hasSucceeded && hubSwitch.isSwitchActivated())
