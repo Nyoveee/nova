@@ -1,0 +1,197 @@
+{
+    "RootEntity": 24,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "MeleeWave",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    25
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 11419994564541874559,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 341.7496643066406,
+                    "y": -76.3830337524414,
+                    "z": 55.42784881591797
+                },
+                "scale": {
+                    "x": 0.999989926815033,
+                    "y": 1.0,
+                    "z": 0.999989926815033
+                },
+                "rotation": {
+                    "w": 0.7337794899940491,
+                    "x": 0.0,
+                    "y": -0.6793877482414246,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -1.493856430053711,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 341.7496643066406,
+                    "y": -76.3830337524414,
+                    "z": 55.42784881591797
+                },
+                "localScale": {
+                    "x": 0.999989926815033,
+                    "y": 1.0,
+                    "z": 0.999989926815033
+                },
+                "localRotation": {
+                    "w": 0.7337794899940491,
+                    "x": 0.0,
+                    "y": -0.6793877482414246,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -1.493856430053711,
+                    "z": 0.0
+                }
+            },
+            "Rigidbody": {
+                "motionType": "Dynamic",
+                "layer": "Moving",
+                "motionQuality": "Continuous",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 1.0,
+                "gravityMultiplier": 0.0,
+                "restitution": 0.0,
+                "isRotatable": false,
+                "isTrigger": true,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 10.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 4.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 7961230050730181303,
+                        "fields": [
+                            {
+                                "name": "damage",
+                                "data": {
+                                    "__variant_value": 20.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "waveSpeed",
+                                "data": {
+                                    "__variant_value": 20.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "duration",
+                                "data": {
+                                    "__variant_value": 20.0,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 24
+        },
+        {
+            "EntityData": {
+                "name": "WaveMesh",
+                "tag": "",
+                "parent": 24,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 467240270778007937,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 341.7496643066406,
+                    "y": -73.4122543334961,
+                    "z": 55.427818298339844
+                },
+                "scale": {
+                    "x": 0.9999900460243225,
+                    "y": 7.3633904457092285,
+                    "z": 0.9999900460243225
+                },
+                "rotation": {
+                    "w": 0.7337794899940491,
+                    "x": 0.0,
+                    "y": -0.6793877482414246,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -1.493856430053711,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -3.0517578125e-05,
+                    "y": 2.9707794189453125,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0000001192092896,
+                    "y": 7.3633904457092285,
+                    "z": 1.0000001192092896
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 25
+        }
+    ]
+}

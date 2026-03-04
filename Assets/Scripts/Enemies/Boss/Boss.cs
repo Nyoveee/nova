@@ -25,13 +25,25 @@ public class Boss : Enemy
     [SerializableField]
     private float lookAngle = 30f;
 
+    /***********************************************************
+    Position Variables
+    ***********************************************************/
+    [SerializableField]
+    private GameObject mainLauncher = null;
+    [SerializableField]
+    private List<GameObject> sideLauncher;
+    [SerializableField]
+    private GameObject meleeAttackPosition = null;
 
     /***********************************************************
     Ability Prefabs
     ***********************************************************/
     [SerializableField]
     private Prefab shockwavePrefab = null;
-
+    [SerializableField]
+    private Prefab missilePrefab = null;
+    [SerializableField]
+    private Prefab meleeWavePrefab = null;
 
     /***********************************************************
     Private Variables (made public cause of ability sequencer)
@@ -51,8 +63,17 @@ public class Boss : Enemy
     // the current moveset that is going to be carried out by the boss
     // AbilitySequence currentMoveSequence;
 
+    //The idea is that the boss can have a deck of abilities like a card game, which he can use. 
+    //WHen he uses an ability, he will remove it from the deck. it cannot be used until deck is exhausted or he chooses to refresh it.
+    //This allows us to shuffle the moveset also to make it less predictable
+    //Each ability has a condition check for example if the boss is in melee range only then he will use melee attack
+    //Weavere also has a stamina cost as a way to control pacing (a concept i took from ultrakill). If he get exhausted he will stop spaming abilites for awhile
+    //The weaver can have multiple ability decks such as one for 50> hp and 50< hp. 
+
     List<AbilitySequence> AbilityDeckStart = new List<AbilitySequence>();
-    List<AbilitySequence> currentAbilityDeck = new List<AbilitySequence>();
+
+    //current set of abilities
+    List<AbilitySequence> currentAbilityDeck = new List<AbilitySequence>(); 
     
 
 
@@ -71,7 +92,18 @@ public class Boss : Enemy
     protected override void  awake()
     {
         //lets create our own ability deck :D
-        AbilityDeckStart.Add(new BasicGroundSlam(this));
+
+
+
+
+        AbilitySequence[] abilitySequences = {
+            new MeleeAttack(this),
+            new BasicGroundSlam(this),
+            new BasicGroundSlam(this),
+            new MissileBarrage(this)
+            };
+
+        AbilityDeckStart.AddRange(abilitySequences);
     }
 
     protected override void init()
@@ -258,7 +290,7 @@ public class Boss : Enemy
     ***********************************************************/
     public void StarStationaryJump()
     {
-        sequenceIndexer++;
+        AdvanceToNextSequence();
 
         abilitytimeElapsed = 0;
         navMeshAgent.enable = false;
@@ -279,7 +311,6 @@ public class Boss : Enemy
 
         if (abilitytimeElapsed < jumpTime)
         {
-            abilitytimeElapsed += Time.V_DeltaTime();
             float t = abilitytimeElapsed / jumpTime;
 
             Vector3 currentPos = Vector3.Lerp(initialPosition, endPosition, t);
@@ -292,16 +323,105 @@ public class Boss : Enemy
             gameObject.transform.position = currentPos;
         }
         else
-        { 
-            sequenceIndexer++;
+        {
+            AdvanceToNextSequence();
         }
     }
 
     public void CreateShockWave()
     {
         //Debug.Log("Shockwave");
-        //sequenceIndexer++;
-        //Instantiate(shockwavePrefab, gameObject.transform.position, gameObject.transform.rotation);
+        AdvanceToNextSequence();
+        Instantiate(shockwavePrefab, gameObject.transform.position, gameObject.transform.rotation);
+    }
+
+
+
+    public void FireMissileCombination()
+    { 
+        //launch interval
+        float launchInterval = 0.5f;
+
+       // int count = launchInterval / abilitytimeElapsed;
+
+        if (abilitytimeElapsed > launchInterval)
+        {
+            //Launch from all three side
+
+            //Top
+            GameObject topMissile = Instantiate(missilePrefab, mainLauncher.transform.position, mainLauncher.transform.rotation);
+
+            //Left
+            GameObject leftMissile = Instantiate(missilePrefab, sideLauncher[0].transform.position, sideLauncher[0].transform.rotation);
+
+            GameObject rightMissile = Instantiate(missilePrefab, sideLauncher[1].transform.position, sideLauncher[1].transform.rotation);
+
+            topMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(mainLauncher.transform.front);
+            leftMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(sideLauncher[0].transform.front);
+            rightMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(sideLauncher[1].transform.front);
+
+
+            AdvanceToNextSequence();
+        }
+
+
+
+
+
+
+    }
+
+    public void FireMissileMain()
+    {
+        //launch interval
+        float launchInterval = 0.5f;
+        if (abilitytimeElapsed > launchInterval)
+        {
+            //Top
+            GameObject topMissile = Instantiate(missilePrefab, mainLauncher.transform.position, Quaternion.Identity());
+            topMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(mainLauncher.transform.front);
+            AdvanceToNextSequence();
+        }
+    }
+
+    public void FannedMeleeAttack()
+    {
+
+        float angle = 60;
+        int count = 3;
+
+        float angleStep = (count > 1) ? angle / (count - 1) : 0;
+        float minimalAngle = -(angle / 2.0f);
+
+
+
+        for (int i = 0; i < count; i++)
+        {
+
+            float currentAngle = minimalAngle + (angleStep * i);
+
+            Quaternion offset = Quaternion.AngleAxis(Mathf.Deg2Rad * currentAngle, meleeAttackPosition.transform.up);
+
+            Quaternion finalRotation =  Quaternion.LookRotation(-meleeAttackPosition.transform.front) * offset ;
+
+            GameObject meleeWave = Instantiate(meleeWavePrefab, meleeAttackPosition.transform.position, Quaternion.Identity());
+
+            meleeWave.transform.rotation = finalRotation;
+        }
+
+        AdvanceToNextSequence();
+    }
+
+
+    //Use with a lambda to delay action
+    public void DelayedSequence( float delayTime)
+    { 
+        abilitytimeElapsed += delayTime;
+
+        if (abilitytimeElapsed > delayTime)
+        {
+            AdvanceToNextSequence();
+        }
     }
 
 
@@ -320,8 +440,6 @@ public class Boss : Enemy
     public void RotateToPlayerFully()
     {
         Vector3 direction = player.transform.position - gameObject.transform.position;
-
-        
 
        direction.y = 0;
 
@@ -346,12 +464,118 @@ public class Boss : Enemy
         }
         else {  sequenceIndexer++; }
 
-
+        
 
     }
 
 
     /******************End of Weaver Action*******************/
+
+
+    /***********************************************************
+    Ability List (Create our Mix Ups in here :D)
+    ***********************************************************/
+    public class BasicGroundSlam : AbilitySequence
+    {
+
+        public BasicGroundSlam(Boss boss) : base(boss)
+        {
+            this.boss = boss;
+
+            sequence.Add(boss.RotateToPlayerFully);
+            sequence.Add(boss.StarStationaryJump);
+            sequence.Add(boss.Jumping);
+            sequence.Add(boss.CreateShockWave);
+        }
+
+
+        public override bool CheckConditions()
+        {
+            if (boss != null && boss.currentStamina > 1)
+            {
+                //TBH can apply cost here lmao but i want to keep it clean
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 1;
+        }
+    }
+
+
+    public class MissileBarrage : AbilitySequence
+    {
+
+        public MissileBarrage(Boss boss) : base(boss)
+        {
+            this.boss = boss;
+
+            sequence.Add(boss.FireMissileCombination);
+            sequence.Add(boss.FireMissileMain);
+            sequence.Add(boss.FireMissileMain);
+        }
+
+
+        public override bool CheckConditions()
+        {
+            if (boss != null && boss.currentStamina > 2)
+            {
+               
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 2;
+        }
+    }
+
+    public class MeleeAttack : AbilitySequence
+    {
+
+        public MeleeAttack(Boss boss) : base(boss)
+        {
+            this.boss = boss;
+
+            sequence.Add(boss.RotateToPlayerFully);
+            sequence.Add(boss.FannedMeleeAttack);
+            sequence.Add( () => { boss.DelayedSequence(0.5f); }); //quick way to delay action
+        }
+
+
+        public override bool CheckConditions()
+        {
+            Vector3 direction = boss.meleeAttackPosition.transform.position  - boss.player.transform.position;
+
+
+            if (boss != null && boss.currentStamina > 1 && direction.Length() < 300)
+            {
+
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 1;
+        }
+    }
+
+
+    /***************End of Ability List *****************/
+
+
+
+    //Helper function to advance to the next sequence in the ability
+    public void AdvanceToNextSequence()
+    {
+        sequenceIndexer++;
+        abilitytimeElapsed = 0;
+    
+    }
 
 
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
@@ -469,40 +693,7 @@ public abstract class AbilitySequence
     public abstract void ApplyCost();
 }
 
-/***********************************************************
-Ability List (Create our Mix Ups in here :D)
-***********************************************************/
-public class BasicGroundSlam : AbilitySequence
-{
 
-    public BasicGroundSlam(Boss boss) : base(boss)
-    {
-        this.boss = boss;
-
-        sequence.Add(boss.RotateToPlayerFully);
-        sequence.Add(boss.StarStationaryJump);
-        sequence.Add(boss.Jumping);
-        sequence.Add(boss.CreateShockWave);
-    }
-
-
-    public override bool CheckConditions()
-    {
-        if (boss != null && boss.currentStamina > 1)
-        {
-            //TBH can apply cost here lmao but i want to keep it clean
-            return true;
-        }
-        return false;
-    }
-    public override void ApplyCost()
-    {
-        boss.currentStamina -= 1;
-    }
-}
-
-
-/***************End of Ability List *****************/
 
 public static class ListExtensions
 {
