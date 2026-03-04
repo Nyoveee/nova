@@ -123,6 +123,16 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 			}
 			
 			assetInfo.materials = std::move(materials);
+
+			std::string speedMultiplierLine;
+			std::getline(descriptorFile, speedMultiplierLine);
+
+			try {
+				assetInfo.speedMultiplier = static_cast<float>(std::stof(speedMultiplierLine));
+			}
+			catch (std::exception const&) {
+				assetInfo.speedMultiplier = 1.f;
+			}
 		}
 		else if constexpr (std::same_as<T, ScriptAsset>) {
 			try {
@@ -186,8 +196,9 @@ static AssetInfo<T> AssetIO::createDescriptorFile(ResourceID id, std::filesystem
 		descriptorFile << DEFAULT_FONT_SIZE << '\n';
 	}
 	else if constexpr (std::same_as<T, Model>) {
-		descriptorFile << 1.f << "\n"; // newline for empty sockets.
+		descriptorFile << 1.f << "\n\n"; // newline for empty sockets.
 		descriptorFile << DEFAULT_PBR_MATERIAL_ID << '\n';
+		descriptorFile << 1.f << '\n';
 	}
 	else if constexpr (std::same_as <T, ScriptAsset>) {
 		descriptorFile << false << '\n' << false << '\n';

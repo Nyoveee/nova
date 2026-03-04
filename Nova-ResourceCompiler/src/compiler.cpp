@@ -210,7 +210,7 @@ int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetInfo<M
 		return -1;
 	}
 
-	auto optModelData = ModelLoader::loadModel(descriptor.filepath, descriptor.scale, std::move(descriptor.sockets));
+	auto optModelData = ModelLoader::loadModel(descriptor.filepath, descriptor);
 
 	if (!optModelData) {
 		return -1;
