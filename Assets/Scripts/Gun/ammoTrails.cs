@@ -40,7 +40,7 @@ class ammoTrails: Script
         if (t <= 1)
         {
 
-            gameObject.transform.position  = Vector3.Lerp(startPosition, endPosition, t);
+            gameObject.transform.position  = Vector3.Lerp(endPosition ,startPosition, t);
         }
 
 
