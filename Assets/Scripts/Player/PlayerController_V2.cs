@@ -479,18 +479,30 @@ class PlayerController_V2 : Script
             currentHorizontalVelocity.y = 0f;
 
 
-            bool isAllowedtoAddForce = true;
+            //bool isAllowedtoAddForce = true;
 
-            //do a quick check if applying
-            Vector3 forceapplied = directionVector * airAcceleration;
+            ////do a quick check if applying
+            //Vector3 forceapplied = directionVector * airAcceleration;
 
-            Vector3 predictedVelocity = currentHorizontalVelocity + (forceapplied/rigidbody.GetMass()) * Time.V_FixedDeltaTime();
+            //Vector3 predictedVelocity = currentHorizontalVelocity + (forceapplied/rigidbody.GetMass()) * Time.V_FixedDeltaTime();
 
-            //player is moving faster than allowed, stop accelerating
-            if (predictedVelocity.Length() < aerialMaxMoveSpeed)
+            ////player is moving faster than allowed, stop accelerating
+            //if (predictedVelocity.Length() < aerialMaxMoveSpeed)
+            //{
+            //    rigidbody.AddForce(directionVector * airAcceleration);
+            //}
+
+            Vector3 normalizedDirection = directionVector;
+            normalizedDirection.Normalize();
+
+            // Only check speed in the direction we want to move
+            float speedInDesiredDirection = Vector3.Dot(currentHorizontalVelocity, normalizedDirection);
+
+            if (speedInDesiredDirection < aerialMaxMoveSpeed)
             {
-                rigidbody.AddForce(directionVector * airAcceleration);
+                rigidbody.AddForce(normalizedDirection * airAcceleration);
             }
+
             //    rigidbody.SetLinearDamping(0);
             //}
             //else
