@@ -62,7 +62,8 @@
                 }
             },
             "Canvas": {
-                "placeholder": ""
+                "alpha": 1.0,
+                "isInteractable": true
             },
             "id": 1048577
         },
@@ -165,5 +166,7 @@
         {
             "name": "Default"
         }
-    ]
+    ],
+    "iblDiffuseStrength": 1.0,
+    "iblSpecularStrength": 1.0
 }

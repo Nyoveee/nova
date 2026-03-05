@@ -14,43 +14,61 @@ enum RenderSettings
 class SettingsButtonScript : Script
 {
     [SerializableField]
-    Image_ yesImage;
-    
-    [SerializableField]
-    Image_ noImage;
-    
-    [SerializableField]
     private RenderSettings preference;
+
+    private bool enabled = false;
+    private Button_ fill;
+
     protected override void init()
     {
-        bool enabled = false;
-        try{
-            enabled = GetConfigStatus(preference);
-        }
-        catch{}
-            
+        enabled = GetConfigStatus(preference);
+
+        fill = getComponent<Button_>();
+
         if (enabled)
-            YesEnabled();
-        else 
-            NoEnabled();
+            Enable();
+        else
+            Disable();
+
+        if (!enabled)
+            // we overwrite normal color above, and because button is not hovering, we need to explicitly update the color..
+            fill.forceColorUpdate();
     }
-    public void onPressed(){}
+
+    public void onReleased()
+    {
+        enabled = !enabled;
+
+        if (enabled)
+        {
+            Enable();
+            fill.highlightedColor = new ColorAlpha(fill.highlightedColor.r, fill.highlightedColor.g, fill.highlightedColor.b, 1);
+        }
+        else
+        {
+            Disable();
+            fill.highlightedColor = new ColorAlpha(fill.highlightedColor.r, fill.highlightedColor.g, fill.highlightedColor.b, 0);
+        }
+    }
 
     public void onHover(){}
 
-    public void YesEnabled()
+    public void onHoverLeave() 
     {
-        yesImage.colorTint = new ColorAlpha(1, 1, 1, 1);
-        noImage.colorTint = new ColorAlpha(0.5f, 0.5f, 0.5f, 0.5f);
-
-        SetConfigStatus(preference, true);
+        if (!enabled)
+            fill.highlightedColor = new ColorAlpha(fill.highlightedColor.r, fill.highlightedColor.g, fill.highlightedColor.b, 1);
     }
-    public void NoEnabled()
-    {
-        yesImage.colorTint = new ColorAlpha(0.5f, 0.5f, 0.5f, 0.5f);
-        noImage.colorTint = new ColorAlpha(1, 1, 1, 1);
 
+    public void Enable()
+    {
+        SetConfigStatus(preference, true);
+        fill.normalColor = new ColorAlpha(1, 1, 1, 1);
+    }
+
+    public void Disable()
+    {
         SetConfigStatus(preference, false);
+        fill.normalColor = new ColorAlpha(0, 0, 0, 0);
     }
 
     public bool GetConfigStatus(RenderSettings renderSettings)

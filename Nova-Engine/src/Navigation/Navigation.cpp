@@ -404,7 +404,11 @@ void NavigationSystem::SetAgentAutoOffMeshTraversalParams(NavMeshAgent& navMeshA
 	navMeshAgent.autoTraverseOffMeshLink = state;
 
 	int dtAgentIndex = GetDTCrowdIndex(navMeshAgent.agentName, navMeshAgent.agentIndex);
-	crowdManager[navMeshAgent.agentName]->getEditableAgent(dtAgentIndex)->params.autoTraverseOffMeshLink = state;
+	auto* agent = crowdManager[navMeshAgent.agentName]->getEditableAgent(dtAgentIndex);
+	
+	if(agent) {
+		agent->params.autoTraverseOffMeshLink = state;
+	}
 }
 
 void NavigationSystem::initNavMeshSystems()
@@ -868,9 +872,13 @@ int NavigationSystem::AddAgent(std::string const& agentName, NavMeshAgent& agent
 
 int NavigationSystem::GetDTCrowdIndex(std::string const& agentName, int agentID)
 {
-
 	//get from mapper the mapped location
 	int index = agentToIndexMap[agentName][agentID];
+
+	if (index >= agentList[agentName].size()) {
+		return -1;
+	}
+
 	return agentList[agentName][index];
 }
 

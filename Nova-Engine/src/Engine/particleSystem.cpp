@@ -56,8 +56,9 @@ void ParticleSystem::update(float dt)
 		if (!entityData.isActive || !engine.ecs.isComponentActive<ParticleEmitter>(entity))
 			continue;
 		continuousGeneration(transform, emitter, dt);
-		burstGeneration(transform, emitter, dt);
 		trailGeneration(transform, emitter);
+		
+		burstGeneration(transform, emitter, dt);
 	}
 	particleUpdateComputeShader.use();
 	particleUpdateComputeShader.setFloat("dt", dt);
@@ -76,7 +77,7 @@ int ParticleSystem::getMaxParticles()
 
 void ParticleSystem::continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt)
 {
-	if (emitter.particleRate <= 0 || !emitter.looping)
+	if (emitter.trails.selected || emitter.particleRate <= 0 || !emitter.looping)
 		return;
 	emitter.currentContinuousTime -= dt;
 	while (emitter.currentContinuousTime <= 0) {
@@ -100,18 +101,23 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 {
 	if (!emitter.trails.selected || emitter.trails.distancePerEmission <= 0)
 		return;
-	float distancePerEmission{ std::max(emitter.trails.distancePerEmission,0.00001f) }; // Hard limit to distance
-	if (glm::distance(emitter.prevPosition, transform.position) > distancePerEmission) {
+
+	if (glm::distance(emitter.prevPosition, transform.position) > emitter.trails.nextDistancePerEmission) {
 		if (emitter.b_firstPositionUpdate) {
 			emitter.prevPosition = transform.position;
 			emitter.b_firstPositionUpdate = false;
+			emitter.trails.nextDistancePerEmission = std::max(emitter.trails.distancePerEmission + RandomRange::Float(emitter.trails.minDistanceOffset, emitter.trails.maxDistanceOffset), 0.0001f);
 			return;
 		}
+
 		float maxDistance{ glm::distance(emitter.prevPosition,transform.position) };
 		glm::vec3 startPosition{ emitter.prevPosition };
 		glm::vec3 direction{ glm::normalize(transform.position - emitter.prevPosition) };
-		int index{};
+		// int index{};
+
 		while (maxDistance > 0.f) {
+			spawnParticle(transform, emitter);
+#if 0
 			ParticleLifespanData particleLifeSpanData{};
 			ParticleVertex particleVertex{};
 			determineParticleSpawnDetails(
@@ -146,8 +152,12 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 			addParticleToList(particleLifeSpanData, particleVertex,emitter.trails.trailTexture);
 			// Update the loop
 			++index;
-			maxDistance -= distancePerEmission;
+#endif
+
+			maxDistance -= emitter.trails.nextDistancePerEmission;
+			emitter.trails.nextDistancePerEmission = std::max(emitter.trails.distancePerEmission + RandomRange::Float(emitter.trails.minDistanceOffset, emitter.trails.maxDistanceOffset), 0.0001f);
 		}
+
 		emitter.prevPosition = transform.position;
 	}
 }
@@ -166,7 +176,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 		return glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1)) * emitter.startSpeed;
 	};
 	// Lifetime
-	particleLifeSpanData.currentLifeTime = particleLifeSpanData.lifeTime = emitter.lifeTime;
+	particleLifeSpanData.currentLifeTime = particleLifeSpanData.lifeTime = emitter.lifeTime + RandomRange::Float(emitter.minLifeTimeOffset, emitter.maxLifeTimeOffset);
 	switch (emissionShape) {
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 		{
@@ -297,6 +307,7 @@ void ParticleSystem::determineParticleRotation(ParticleLifespanData& particleLif
 	else{
 		particleVertex.rotation = emitter.initialRotation;
 	}
+	particleVertex.rotation += RandomRange::Float(emitter.minInitialRotationOffset, emitter.maxInitialRotationOffset);
 }
 
 void ParticleSystem::rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform)
@@ -367,6 +378,7 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 {
 	ParticleLifespanData particleLifeSpanData{};
 	ParticleVertex particleVertex{};
+
 	determineParticleSpawnDetails(
 		particleLifeSpanData,
 		particleVertex,
@@ -374,6 +386,7 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		emitter, 
 		emitter.particleEmissionTypeSelection.emissionShape
 	);
+
 	determineParticleColor(
 		particleLifeSpanData,
 		particleVertex,
@@ -384,6 +397,7 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		emitter.particleColorSelection.colorOffsetMin,
 		emitter.particleColorSelection.colorOffsetMax
 	);
+
 	determineParticleSize(	
 		particleLifeSpanData,
 		particleVertex,
@@ -393,13 +407,16 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		emitter.minStartSizeOffset,
 		emitter.maxStartSizeOffset
 	);
+
 	rotateParticle(particleLifeSpanData,particleVertex,transform);
+	
 	if (emitter.invertMovement) {
 		particleVertex.position += particleLifeSpanData.lifeTime * particleLifeSpanData.velocity;
 		particleLifeSpanData.velocity = -particleLifeSpanData.velocity;
 	}
+	
 	determineParticleRotation(particleLifeSpanData, particleVertex, emitter);
-	addParticleToList(particleLifeSpanData, particleVertex,emitter.texture);
+	addParticleToList(particleLifeSpanData, particleVertex, emitter.texture);
 }
 
 

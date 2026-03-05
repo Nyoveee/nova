@@ -258,7 +258,9 @@ struct Animator {
 	float timeElapsed = 0;
 	ControllerNodeID currentNode = NO_CONTROLLER_NODE;
 	TypedResourceID<Model> currentAnimation;
-	
+	TypedResourceID<Model> previousAnimation;
+	float blendFactor = 0.2f;
+
 	// this will be instantiated in runtime.
 	std::vector<Controller::Parameter> parameters;
 
@@ -431,6 +433,8 @@ struct Image {
 		textureCoordinatesRange,
 		toTile
 	)
+
+	float canvasAlphaMultiplier = 1.f;
 };
 
 struct ScriptData
@@ -694,15 +698,20 @@ struct ColorOverLifetime {
 		endColor
 	)
 };
+
 struct Trails {
 	bool selected{false};
 	TypedResourceID<Texture> trailTexture;
-	float distancePerEmission{0.1f};
+	float distancePerEmission { 0.1f };
+	float minDistanceOffset = 0.f;
+	float maxDistanceOffset = 0.f;
+
 	float trailSize{ 0.1f };
 	ColorA trailColor{ ColorA{1.f,1.f,1.f,1.f} };
 	glm::vec3 trailColorOffsetMin{};
 	glm::vec3 trailColorOffsetMax{};
 	float trailEmissiveMultiplier{ 1.f };
+
 	REFLECTABLE(
 		selected,
 		trailTexture,
@@ -713,6 +722,9 @@ struct Trails {
 		trailColorOffsetMax,
 		trailEmissiveMultiplier
 	)
+
+	// runtime value..
+	float nextDistancePerEmission;
 };
 
 struct ParticleEmitter
@@ -722,6 +734,7 @@ struct ParticleEmitter
 	float currentBurstTime{};
 	glm::vec3 prevPosition{};
 	bool b_firstPositionUpdate{ true };
+
 	// Categories
 	TypedResourceID<Texture> texture{};
 	ParticleEmissionTypeSelection particleEmissionTypeSelection{};
@@ -741,12 +754,17 @@ struct ParticleEmitter
 	// Rotation
 	float initialRotation{};
 	bool velocityBasedInitialRotation{};
+	float minInitialRotationOffset;
+	float maxInitialRotationOffset;
 	// Angular Velocity
 	float initialAngularVelocity{};
 	float minAngularVelocityOffset{};
 	float maxAngularVelocityOffset{};
-	// Particle spawning info
+	// LifeTime
 	float lifeTime = 1;
+	float minLifeTimeOffset;
+	float maxLifeTimeOffset;
+
 	float particleRate = 100;
 	float burstRate = 0;
 	int burstAmount = 30;
@@ -764,11 +782,15 @@ struct ParticleEmitter
 		startSpeed,
 		initialRotation,
 		velocityBasedInitialRotation,
+		minInitialRotationOffset,
+		maxInitialRotationOffset,
 		initialAngularVelocity,
 		minAngularVelocityOffset,
 		maxAngularVelocityOffset,
 		force,
 		lifeTime,
+		minLifeTimeOffset,
+		maxLifeTimeOffset,
 		particleRate,
 		burstRate,
 		burstAmount,
@@ -806,14 +828,18 @@ struct Text {
 		fontColor,
 		alignment
 	)
+
+	float canvasAlphaMultiplier = 1.f;
 };
 
 struct Canvas {
-	std::string placeholder;
+	NormalizedFloat alpha = 1.f;
+	bool isInteractable = true;
 
 	REFLECTABLE
 	(
-		placeholder
+		alpha,
+		isInteractable
 	)
 };
 
@@ -828,7 +854,7 @@ struct EntityScript {
 };
 
 struct Button {
-	bool isInteractable;
+	bool isInteractable = true;
 	EntityScript reference;
 
 	ColorA normalColor		= ColorA{ 1.f, 1.f, 1.f, 1.f };
@@ -839,6 +865,7 @@ struct Button {
 	std::string onClickReleasedFunction;
 	std::string onPressFunction;
 	std::string onHoverFunction;
+	std::string onHoverLeaveFunction;
 
 	float fadeDuration = 0.1f;
 	float colorMultiplier = 1.f;
@@ -857,6 +884,7 @@ struct Button {
 		onClickReleasedFunction,
 		onPressFunction,
 		onHoverFunction,
+		onHoverLeaveFunction,
 		fadeDuration,
 		colorMultiplier,
 		offset,
@@ -871,8 +899,8 @@ struct Button {
 	} state = State::Normal;
 
 	float timeElapsed = 0.f;
-
 	ColorA finalColor = normalColor;
+	bool isCanvasInteractable = true;
 
 	void enableButton() {
 		isInteractable = true;

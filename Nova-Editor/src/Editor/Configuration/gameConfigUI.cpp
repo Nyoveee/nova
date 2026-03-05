@@ -65,8 +65,8 @@ void GameConfigUI::update() {
 		editor.engine.physicsManager.setGravity(gravity);
 	}
 
-	DisplayProperty<NormalizedFloat>(editor, "IBL Diffuse Strength", gameConfig.iblDiffuseStrength);
-	DisplayProperty<NormalizedFloat>(editor, "IBL Specular Strength", gameConfig.iblSpecularStrength);
+	DisplayProperty<NormalizedFloat>(editor, "IBL Diffuse Strength", editor.engine.ecs.sceneManager.iblDiffuseStrength);
+	DisplayProperty<NormalizedFloat>(editor, "IBL Specular Strength", editor.engine.ecs.sceneManager.iblSpecularStrength);
 
     ImGui::Separator();
 

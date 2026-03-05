@@ -15,8 +15,8 @@
             "value": {
                 "__variant_value": {
                     "r": 1.0,
-                    "g": 0.9959992170333862,
-                    "b": 0.27586209774017334
+                    "g": 0.7686274647712708,
+                    "b": 0.1568627506494522
                 },
                 "__variant_type": 10
             }
@@ -27,8 +27,8 @@
             "value": {
                 "__variant_value": {
                     "r": 1.0,
-                    "g": 0.9529411792755127,
-                    "b": 0.0
+                    "g": 0.7669441103935242,
+                    "b": 0.1551724076271057
                 },
                 "__variant_type": 10
             }
@@ -37,7 +37,7 @@
             "glslType": "float",
             "identifier": "emissiveMultiplier",
             "value": {
-                "__variant_value": 20.0,
+                "__variant_value": 5.0,
                 "__variant_type": 3
             }
         },
@@ -45,7 +45,7 @@
             "glslType": "float",
             "identifier": "fresnelPower",
             "value": {
-                "__variant_value": 2.0,
+                "__variant_value": 4.0,
                 "__variant_type": 3
             }
         },
@@ -58,11 +58,27 @@
             }
         },
         {
-            "glslType": "NormalizedFloat",
+            "glslType": "float",
             "identifier": "resultingAlpha",
             "value": {
-                "__variant_value": 0.2329999953508377,
-                "__variant_type": 12
+                "__variant_value": 0.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "sampler2D",
+            "identifier": "albedoMap",
+            "value": {
+                "__variant_value": 9829309083630682115,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "ORMMap",
+            "identifier": "packedMap",
+            "value": {
+                "__variant_value": 9252848331327291401,
+                "__variant_type": 16
             }
         },
         {
@@ -71,6 +87,14 @@
             "value": {
                 "__variant_value": 13288073597451239431,
                 "__variant_type": 13
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "lerpPercentage",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 3
             }
         }
     ],

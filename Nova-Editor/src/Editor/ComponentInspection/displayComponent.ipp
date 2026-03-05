@@ -4,6 +4,7 @@
 
 void displayLightComponent(Editor& editor, Light& dataMember);
 void displayReflectionProbeComponent(Editor& editor, ReflectionProbe& dataMember, Transform const& transform);
+void displayParticleEmitterComponent(Editor& editor, ParticleEmitter& dataMember);
 
 template <typename T> // T can be either MeshRenderer or SkinnedMeshRenderer.
 void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity entity);
@@ -44,7 +45,8 @@ namespace {
 				toDisplay = ImGui::CollapsingHeader(name, &toShowHeader);
 				if constexpr(!NonComponentDisablingTypes<Component>) {
 					// Active State
-					EntityData* const entityData{ editor.engine.ecs.registry.try_get<EntityData>(entity) };
+					EntityData* const entityData{ registry.try_get<EntityData>(entity) };
+
 					if (entityData) {
 						bool b_Active{ editor.engine.ecs.isComponentActive<Component>(entity)};
 						// Display Checkbox
@@ -103,6 +105,9 @@ namespace {
 			// same for renderers..
 			else if constexpr (std::same_as<Component, MeshRenderer> || std::same_as<Component, SkinnedMeshRenderer>) {
 				displayRendererComponent<Component>(editor, component, entity);
+			}
+			else if constexpr (std::same_as<Component, ParticleEmitter>) {
+				displayParticleEmitterComponent(editor, component);
 			}
 			else {
 				// Visits each of the component's data member and renders them.

@@ -59,12 +59,12 @@ namespace {
 	}
 }
 
-std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, float scale, std::vector<BoneIndex> sockets) {
+std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, AssetInfo<Model> const& descriptor) {
 	// --------------------------------------------------------------------
 	// 1. We prepare assimp to load the model..
 	// --------------------------------------------------------------------
 	constexpr unsigned int PostProcessingFlags {
-		aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
+		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
 	};
 
 	Assimp::Importer importer;
@@ -97,7 +97,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 	meshesData.reserve(scene->mNumMeshes);
 	
 	// We process the node hierarchy, and load meshes accordingly..
-	processNodeHierarchy(scene, meshesData, scene->mRootNode, glm::mat4{ 1.f });
+	processNodeHierarchy(scene, meshesData, scene->mRootNode, toGlmMat4(scene->mRootNode->mTransformation));
 
 	// --------------------------------------------------------------------
 	// 4. We now process bones, skeletons and animation data..
@@ -111,14 +111,14 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 	std::optional<Skeleton> skeletonOpt;
 
 	for (unsigned i = 0; i < scene->mNumAnimations; ++i) {
-		animations.push_back(processAnimation(scene->mAnimations[i]));
+		animations.push_back(processAnimation(scene->mAnimations[i], descriptor.speedMultiplier));
 	}
 
 	// Process node hierarchy.. (if this model has bones..)
 	if (bones.size()) {
 		Skeleton skeleton {};
 		skeleton.bones = std::move(bones);
-		skeleton.sockets = std::move(sockets);
+		skeleton.sockets = std::move(descriptor.sockets);
 
 		// start recursive processing..
 		processBoneNodeHierarchy(skeleton, scene->mRootNode, NO_NODE);
@@ -218,16 +218,16 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 
 	// We are done :)
 	ModelData modelData{ 
-		.meshes			= std::move(meshes),
-		.materialNames	= std::move(materialNames), 
-		.skeleton		= std::move(skeletonOpt), 
-		.animations		= std::move(animations), 
-		.maxDimension	= maxDimension * scale, 
-		.scale			= scale, 
-		.maxBound		= maxBound * scale, 
-		.minBound		= minBound * scale, 
-		.center			= centerPoint * scale, 
-		.extents		= extent * scale
+		.meshes				= std::move(meshes),
+		.materialNames		= std::move(materialNames), 
+		.skeleton			= std::move(skeletonOpt), 
+		.animations			= std::move(animations), 
+		.maxDimension		= maxDimension * descriptor.scale,
+		.scale				= descriptor.scale,
+		.maxBound			= maxBound * descriptor.scale,
+		.minBound			= minBound * descriptor.scale,
+		.center				= centerPoint * descriptor.scale,
+		.extents			= extent * descriptor.scale
 	};
 
 	return modelData;
@@ -559,7 +559,9 @@ void ModelLoader::printMatrix(glm::mat4x4 const matrix) {
 	}
 }
 
-Animation ModelLoader::processAnimation(aiAnimation const* animation) {
+Animation ModelLoader::processAnimation(aiAnimation const* animation, float speedMultiplier) {
+	float timeFactor = speedMultiplier == 0 ? 1.f : 1.f / speedMultiplier;
+
 	// an animation channel correspond to a bone name.
 	std::unordered_map<std::string, AnimationChannel> animationChannel;
 
@@ -574,7 +576,7 @@ Animation ModelLoader::processAnimation(aiAnimation const* animation) {
 
 		for (unsigned j = 0; j < aiChannel->mNumPositionKeys; j++) {
 			aiVectorKey const& positionKey = aiChannel->mPositionKeys[j];
-			positionKeys.push_back(VectorKey{ static_cast<float>(positionKey.mTime), toGlmVec3(positionKey.mValue) });
+			positionKeys.push_back(VectorKey{ static_cast<float>(positionKey.mTime * timeFactor), toGlmVec3(positionKey.mValue) });
 		}
 
 		// 2. rotation
@@ -583,7 +585,7 @@ Animation ModelLoader::processAnimation(aiAnimation const* animation) {
 
 		for (unsigned j = 0; j < aiChannel->mNumRotationKeys; j++) {
 			aiQuatKey const& rotationKey = aiChannel->mRotationKeys[j];
-			rotationKeys.push_back(QuatKey{ static_cast<float>(rotationKey.mTime), toGlmQuat(rotationKey.mValue) });
+			rotationKeys.push_back(QuatKey{ static_cast<float>(rotationKey.mTime * timeFactor), toGlmQuat(rotationKey.mValue) });
 		}
 
 		// 3. scaling
@@ -592,7 +594,7 @@ Animation ModelLoader::processAnimation(aiAnimation const* animation) {
 
 		for (unsigned j = 0; j < aiChannel->mNumScalingKeys; j++) {
 			aiVectorKey const& scalingKey = aiChannel->mScalingKeys[j];
-			scalingKeys.push_back(VectorKey{ static_cast<float>(scalingKey.mTime), toGlmVec3(scalingKey.mValue) });
+			scalingKeys.push_back(VectorKey{ static_cast<float>(scalingKey.mTime * timeFactor), toGlmVec3(scalingKey.mValue) });
 		}
 
 		AnimationChannel channel {
@@ -606,7 +608,7 @@ Animation ModelLoader::processAnimation(aiAnimation const* animation) {
 	
 	return {
 		animation->mName.C_Str(),
-		static_cast<float>(animation->mDuration),
+		static_cast<float>(animation->mDuration * timeFactor),
 		static_cast<float>(animation->mTicksPerSecond),
 		std::move(animationChannel)
 	};

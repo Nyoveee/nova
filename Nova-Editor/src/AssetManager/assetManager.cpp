@@ -46,7 +46,7 @@ AssetManager::~AssetManager() {
 	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
 		assert(serialiseFunctorPtr && "Should never be nullptr");
 
-		if (!resourceManager.isResource<ScriptAsset>(id)) {
+		if (!resourceManager.isResource<Model>(id)) {
 			continue;
 		}
 
@@ -418,6 +418,21 @@ ResourceID AssetManager::getResourceID(AssetFilePath const& assetFilePath) const
 
 	auto&& [_, descriptor] = *iterator;
 	return descriptor.descriptor.id;
+}
+
+void AssetManager::createAssetCopy(ResourceID id) {
+	/// STUB..
+
+	// check if id is not invalid..
+	
+	// get asset filepath from id via assetToDescriptor unordered map..
+	std::filesystem::path filepath{ /* */ };
+	
+	// while is filepath doesnt exist..
+		// generate new filepath name
+		// filepath.filename() + " - Copy - Copy";
+	
+	// use std::filesystem to copy
 }
 
 void AssetManager::onAssetAddition(AssetFilePath const& assetFilePath) {

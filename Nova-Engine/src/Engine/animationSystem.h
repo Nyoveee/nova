@@ -39,6 +39,7 @@ public:
 	
 	ENGINE_DLL_API void playAnimation(Animator& animator, std::string name);
 
+	ENGINE_DLL_API void resetSequence(Sequence& sequence, Sequencer& sequencer);
 	ENGINE_DLL_API void resetSequence(Sequence& sequence);
 
 private:
@@ -51,7 +52,19 @@ private:
 	ENGINE_DLL_API void updateAnimator(float dt);
 	ENGINE_DLL_API void calculateBoneMatrixes();
 
-	ENGINE_DLL_API void calculateFinalMatrix(Model& model, ModelNodeIndex nodeIndex, glm::mat4x4 const& globalTransformationMatrix, Skeleton const& skeleton, SkinnedMeshRenderer& skinnedMeshRenderer, Animation const* animation, float timeInSeconds);
+	ENGINE_DLL_API void calculateFinalMatrix(
+		Model&					model, 
+		ModelNodeIndex			nodeIndex, 
+		glm::mat4x4 const&		parentGlobalTransformation, 
+		Skeleton const&			skeleton, 
+		SkinnedMeshRenderer&	skinnedMeshRenderer, 
+		Animation const*		currentAnimation, 
+		float					currentAnimationTicks, 
+		Animation const*		previousAnimation,
+		float					previousAnimationTicks,
+		float					blendFactor	
+	);
+
 	ENGINE_DLL_API AnimationChannel const* findAnimationChannel(std::string const& nodeName, Animation const& animation);
 
 	bool checkIfConditionFulfilled(Animator const& animator, Controller::Transition const& transition);

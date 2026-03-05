@@ -81,7 +81,7 @@ class Grunt : Enemy
         updateState.Add(GruntState.PreJump, Update_PreJump);
         updateState.Add(GruntState.Jump, Update_Jump);
 
-        animator.PlayAnimation("Grunt Idle (Base)");
+        // animator.PlayAnimation("Grunt Idle (Base)");
 
         ActivateRigidbody();
 
@@ -281,7 +281,7 @@ class Grunt : Enemy
             Debug.LogWarning("Missing Reference Found : " + gameObject);
             return;
         }
-        if(GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSightToPlayer(headPosition))
+        if(GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSight(headPosition))
         {
             //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
             if(Random.Range(0, 1) <= this.spotCallSFXChance)
@@ -294,7 +294,7 @@ class Grunt : Enemy
     }
     private void Update_PatrolState()
     {
-        if (GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSightToPlayer(headPosition))
+        if (GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSight(headPosition))
         {
             //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
             if (Random.Range(0, 1) <= this.spotCallSFXChance)
@@ -305,7 +305,7 @@ class Grunt : Enemy
             gruntState = GruntState.Chasing;
             return;
         }
-        if(IsTargetNavigationPositionReached() && !HasLineOfSightToPlayer(headPosition))
+        if(IsTargetNavigationPositionReached() && !HasLineOfSight(headPosition))
         {
             animator.PlayAnimation("Grunt Idle (Base)");
             gruntState = GruntState.Idle;
@@ -324,7 +324,7 @@ class Grunt : Enemy
             LookAt(GetTargetJumpPosition());
             return;
         }
-        if (GetDistanceFromPlayer() > gruntStats.chasingRadius || !HasLineOfSightToPlayer(headPosition))
+        if (GetDistanceFromPlayer() > gruntStats.chasingRadius || !HasLineOfSight(headPosition))
         {
             gruntState = GruntState.Patrol;
             MoveToNavMeshPosition(player.transform.position);

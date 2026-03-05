@@ -31,6 +31,8 @@ void DebugUI::update() {
 		editor.editorViewPort.gizmo.editingMode = editingMode;
 	});
 
+	renderTransformShift();
+
 	if (ImGui::Button("Bake skybox")) {
 		AssetSerializer::serialiseCubeMap(renderer.bakeDiffuseIrradianceMap([&] {
 			renderer.renderSkyBox();
@@ -142,4 +144,43 @@ void DebugUI::renderGammaCorrectionSection() {
 	ImGui::SeparatorText("Gamma Correction");
 
 	ImGui::Checkbox("Gamma correction", &renderer.toGammaCorrect);
+}
+
+void DebugUI::renderTransformShift() {
+	auto&& entities = editor.getSelectedEntities();
+
+	if (entities.empty()) {
+		return;
+	}
+
+	// shift game object by half of transform scale..
+	ImGui::SeparatorText("Shift game object by half it's scale, useful for UI.");
+
+	glm::vec3 offset = {};
+
+	if (ImGui::Button("X+")) {
+		offset.x = editor.engine.ecs.registry.get<Transform>(entities[0]).scale.x / 2.f;
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("X-")) {
+		offset.x = -editor.engine.ecs.registry.get<Transform>(entities[0]).scale.x / 2.f;
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Y+")) {
+		offset.y = editor.engine.ecs.registry.get<Transform>(entities[0]).scale.y / 2.f;
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Y-")) {
+		offset.y = -editor.engine.ecs.registry.get<Transform>(entities[0]).scale.y / 2.f;
+	}
+
+	if (offset != glm::vec3{}) {
+		editor.engine.ecs.registry.get<Transform>(entities[0]).position += offset;
+	}
 }

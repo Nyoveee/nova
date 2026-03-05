@@ -26,7 +26,7 @@ class Hiding : Script
             if (pos.z > -1500)
             {
                 //50
-                pos.z -= 200 * Time.V_DeltaTime();
+                pos.z -= 50 * Time.V_DeltaTime();
                 gameObject.transform.position = pos;
             }
         }

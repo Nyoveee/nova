@@ -17,9 +17,15 @@ namespace ScriptingAPI {
 	ManagedResource(Audio)
 }
 
-
 #define ALL_MANAGED_TYPED_RESOURCE_ID \
 	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material, ScriptingAPI::Scene, ScriptingAPI::Audio
+
+public enum class ButtonState {
+	Normal,
+	Hovered,
+	Pressed,
+	Disabled
+};
 
 // ===========================================================================================
 // 1. Defining structs..
@@ -350,6 +356,9 @@ ManagedComponentDeclaration(
 	ColorAlpha, colorTint,
 	Vector2, textureCoordinatesRange
 )
+
+void SetTexture(ScriptingAPI::Texture^ texture);
+
 ManagedComponentEnd()
 
 // ======================================
@@ -366,8 +375,31 @@ ManagedComponentEnd()
 // ======================================
 ManagedComponentDeclaration(
 	Button,
+	ColorAlpha, normalColor,
+	ColorAlpha, highlightedColor,
+	ColorAlpha, pressedColor,
+	ColorAlpha, disabledColor
+)
+
+ButtonState getState();
+void forceColorUpdate();
+
+property bool isInteractable {
+	bool get() { return nativeComponent()->isInteractable; }
+	void set(bool value) { value ? nativeComponent()->enableButton() : nativeComponent()->disableButton(); }
+};
+
+ManagedComponentEnd()
+
+// ======================================
+// Canvas Component
+// ======================================
+ManagedComponentDeclaration(
+	Canvas,
+	float, alpha,
 	bool, isInteractable
 )
+
 ManagedComponentEnd()
 
 // ======================================
@@ -387,6 +419,13 @@ void setMaterialInt(int index, System::String^ name, int data);
 void setMaterialUInt(int index, System::String^ name, unsigned data);
 void setMaterialFloat(int index, System::String^ name, float data);
 
+Vector3 getMaterialVector3(int index, System::String^ name);
+Vector2 getMaterialVector2(int index, System::String^ name);
+bool getMaterialBool(int index, System::String^ name);
+int getMaterialInt(int index, System::String^ name);
+unsigned getMaterialUInt(int index, System::String^ name);
+float getMaterialFloat(int index, System::String^ name);
+
 ManagedComponentEnd()
 
 ManagedComponentDeclaration(
@@ -401,6 +440,13 @@ void setMaterialBool(int index, System::String^ name, bool data);
 void setMaterialInt(int index, System::String^ name, int data);
 void setMaterialUInt(int index, System::String^ name, unsigned data);
 void setMaterialFloat(int index, System::String^ name, float data);
+
+Vector3 getMaterialVector3(int index, System::String^ name);
+Vector2 getMaterialVector2(int index, System::String^ name);
+bool getMaterialBool(int index, System::String^ name);
+int getMaterialInt(int index, System::String^ name);
+unsigned getMaterialUInt(int index, System::String^ name);
+float getMaterialFloat(int index, System::String^ name);
 
 ManagedComponentEnd()
 

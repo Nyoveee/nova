@@ -23,6 +23,14 @@ class RaiseEnemBoat : Script
     private float targetY;
     private bool reachedTarget = false;
 
+    private bool isSinking = false;
+    private float sinkSpeed = 10f;
+    private bool hasSunk = false;
+
+    private float swayAmplitude = 20f;
+    private float swayFrequency = 0.8f;
+    private float startX;
+
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
     {}
@@ -31,13 +39,15 @@ class RaiseEnemBoat : Script
     protected override void init()
     {
         startY = this.gameObject.transform.position.y;
+        startX = this.gameObject.transform.position.x;
+
         targetY = startY + riseHeight;
     }
 
     // This function is invoked every update.
     protected override void update()
     {
-        if(furthestDistance.getComponent<Transform_>().position.z < -600)
+        if(furthestDistance.getComponent<Transform_>().position.z < -600 && isSinking == false && !hasSunk)
         {
             isRising = true;
         }
@@ -63,6 +73,7 @@ class RaiseEnemBoat : Script
             {
                 bobTimer += Time.V_DeltaTime();
                 pos.y = targetY + Mathf.Sin(riseTimer * bobFrequency) * bobAmplitude;
+                pos.x = startX + Mathf.Sin(riseTimer * swayFrequency) * swayAmplitude;
             }
 
             this.gameObject.transform.position = pos;
@@ -74,6 +85,21 @@ class RaiseEnemBoat : Script
             waveManager.getScript<CannonWaveManager>().StartWave();
             waveStarted = true;
         }
+
+        if (isSinking)
+        {
+            Vector3 pos = this.gameObject.transform.position;
+            pos.y -= sinkSpeed * Time.V_DeltaTime();
+            this.gameObject.transform.position = pos;
+
+            if (pos.y <= startY)
+            {
+                pos.y = startY;
+                this.gameObject.transform.position = pos;
+                isSinking = false;
+                hasSunk = true;
+            }
+        }
     }
 
     // This function is invoked every update.
@@ -84,4 +110,10 @@ class RaiseEnemBoat : Script
     protected override void exit()
     {}
 
+    public void Sink()
+    {
+        isSinking = true;
+        isRising = false;
+        reachedTarget = false;
+    }
 }

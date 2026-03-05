@@ -4,7 +4,8 @@
 class Admin : Script
 {
     private PlayerController_V2 playerBody;
-
+    [SerializableField]
+    private QuestManager questManager;
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
     {}
@@ -19,6 +20,33 @@ class Admin : Script
         {
             playerBody?.TakeDamage(1000);
         });
+
+
+        // closure..
+        bool isSpedUp = false;
+
+        // speed hack
+        MapKey(Key.L, () =>
+        {
+            isSpedUp = !isSpedUp;
+            
+            if(isSpedUp)
+            {
+                Time.timeScale = 5;
+            }
+            else
+            {
+                Time.timeScale = 1;
+            }
+
+        });
+
+        // Skip Quest
+        MapKey(Key.O, () =>
+        {
+            questManager?.SkipCurrentQuest();
+        });
+
     }
 
     // This function is invoked every update.

@@ -1,0 +1,104 @@
+{
+    "selectedShader": 3396919773648666693,
+    "uniformDatas": [
+        {
+            "glslType": "bool",
+            "identifier": "isActive",
+            "value": {
+                "__variant_value": true,
+                "__variant_type": 0
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "baseColor",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 0.7686274647712708,
+                    "b": 0.1568627506494522
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "emissiveColor",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 0.7669441103935242,
+                    "b": 0.1551724076271057
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "emissiveMultiplier",
+            "value": {
+                "__variant_value": 5.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "fresnelPower",
+            "value": {
+                "__variant_value": 4.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "speedMultiplier",
+            "value": {
+                "__variant_value": 3.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "resultingAlpha",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "sampler2D",
+            "identifier": "albedoMap",
+            "value": {
+                "__variant_value": 1758858551382802443,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "ORMMap",
+            "identifier": "packedMap",
+            "value": {
+                "__variant_value": 17899759615878676497,
+                "__variant_type": 16
+            }
+        },
+        {
+            "glslType": "NormalMap",
+            "identifier": "normalMap",
+            "value": {
+                "__variant_value": 13288073597451288591,
+                "__variant_type": 13
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "lerpPercentage",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 3
+            }
+        }
+    ],
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Enable"
+}

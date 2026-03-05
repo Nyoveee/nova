@@ -238,7 +238,7 @@ ResourceID ResourceManager::createResourceInstance(ResourceID id) {
 	std::unique_ptr<Resource> resourceInstancePtr = std::make_unique<T>(*resource);
 	resourceInstancePtr->setId(resourceInstanceId);
 
-	auto&& [resourceIterator, __] = loadedResources.insert({ resourceInstanceId, std::move(resourceInstancePtr) });
+auto&& [resourceIterator, __] = loadedResources.insert({ resourceInstanceId, std::move(resourceInstancePtr) });
 	assert(resourceIterator != loadedResources.end());
 
 	createdResourceInstances.push_back(resourceInstanceId);

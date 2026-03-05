@@ -45,6 +45,7 @@ layout(std140, binding = 2) uniform PBRUBO {
 const int renderNormals = 0;
 const int renderColors = 1;
 const int renderTransparency = 2;
+const int renderDepthTransparency = 3;
 
 layout (binding = 3) uniform sampler2D depthTexture;
 
@@ -85,6 +86,7 @@ layout (location = 2) out vec2 velocityUV;
 // transparency.. for OIT..
 layout (location = 3) out vec4 accumulation;
 layout (location = 4) out float revealage;
+layout (location = 5) out vec4 DepthTransparencyColor;
 
 // Wrapper around user entry point.
 void main() { 
@@ -104,6 +106,9 @@ void main() {
 
         // store pixel revealage thresholda
         revealage = color.a;
+    }
+    else if(renderOutputMode == renderDepthTransparency) {
+        DepthTransparencyColor = __internal__main__();   
     }
     else {
         FragColor = __internal__main__();   

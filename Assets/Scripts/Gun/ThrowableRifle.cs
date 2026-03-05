@@ -579,11 +579,18 @@ class ThrowableRifle : Script
                 continue;
             }
 
-            float t = Vector3.Dot(pointOnLine, rayCast);
+
+            //Vector3 newPointOnLine = pointOnLine.Normalize();
+            Vector3 newPointOnLine = pointOnLine;
+            Vector3 newRayCast = rayCast;
+            newPointOnLine.Normalize();
+            newRayCast.Normalize();
+
+            float t = Vector3.Dot(newPointOnLine, newRayCast);
 
 
             //is on line segment?
-            if (t > 0 && pointOnLine.Length() < rayCast.Length())
+            if (t > 0 && (pointOnLine.Length() < rayCast.Length()))
             {
                 float currentDistance = Vector3.Distance(pointOnLine + origin, enemy.transform.position);
 

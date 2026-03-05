@@ -8,7 +8,7 @@ public class QuestLocationCheckPoint : Script
     private Quest quest;
     protected override void onCollisionEnter(GameObject other)
     {
-        if (quest != null && other.tag == "Player")
+        if (gameObject != null && quest != null && other.tag == "Player")
             quest.SetQuestState(Quest.QuestState.Success);
     }
 

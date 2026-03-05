@@ -47,19 +47,23 @@ struct AnimationChannel {
 		scalings
 	)
 
-	glm::mat4x4 getAnimatedTransform(float timeInTicks) const {
+	struct TransformKeys {
+		glm::vec3 position;
+		glm::quat rotation;
+		glm::vec3 scale;
+	};
+
+	TransformKeys getAnimatedTransform(float timeInTicks) const {
 		// Get the new local position, rotation and scale.
 		glm::vec3 position = getInterpolatedPosition(timeInTicks);
 		glm::quat rotation = glm::normalize(getInterpolatedRotation(timeInTicks));
 		glm::vec3 scale    = getInterpolatedScale(timeInTicks);
 
-		// Recalculate the transform matrix.
-		glm::mat4x4 animatedTransform { 1 };
-		animatedTransform = glm::translate(animatedTransform, position);
-		animatedTransform = animatedTransform * glm::mat4_cast(rotation);
-		animatedTransform = glm::scale(animatedTransform, scale);
-
-		return animatedTransform;
+		return TransformKeys {
+			position,
+			rotation,
+			scale
+		};
 	}
 
 	template <typename Container>

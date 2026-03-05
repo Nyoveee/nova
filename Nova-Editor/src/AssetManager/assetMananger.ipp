@@ -386,6 +386,7 @@ void AssetManager::serializeDescriptor(ResourceID id) {
 		}
 
 		descriptorFile << '\n';
+		descriptorFile << assetInfo->speedMultiplier << '\n';
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
 		descriptorFile << assetInfo->adminScript << '\n' << assetInfo->toExecuteEvenWhenPaused << '\n';

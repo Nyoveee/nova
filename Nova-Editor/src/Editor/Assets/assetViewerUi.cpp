@@ -720,11 +720,26 @@ void AssetViewerUI::displayModelInfo(AssetInfo<Model>& descriptor) {
 		}
 	}
 
-	displayAnimationInfo(*model);
+	displayAnimationInfo(*model, descriptor);
 }
 
-void AssetViewerUI::displayAnimationInfo(Model const& animationResource) {
+void AssetViewerUI::displayAnimationInfo(Model const& animationResource, AssetInfo<Model>& descriptor) {
 	if (ImGui::CollapsingHeader("Animation")) {
+		ImGui::InputFloat("Speed multiplier", &copyOfSpeedMultiplier);
+
+		if (ImGui::IsItemDeactivatedAfterEdit()) {
+			if (copyOfSpeedMultiplier <= 0.f) {
+				// invalid scale..
+				copyOfSpeedMultiplier = descriptor.speedMultiplier;
+			}
+			else {
+				// we recompile..
+				descriptor.speedMultiplier = copyOfSpeedMultiplier;
+				recompileResourceWithUpdatedDescriptor<Model>(descriptor);
+				return;
+			}
+		}
+
 		for (auto&& animation : animationResource.animations) {
 			ImGui::SeparatorText(animation.name.c_str());
 			ImGui::Text("Duration (in seconds): %.2f", animation.durationInSeconds);
@@ -908,6 +923,7 @@ void AssetViewerUI::selectResourceID(ResourceID id) {
 	else if (resourceManager.isResource<Model>(id)) {
 		AssetInfo<Model>* modelDescriptorPtr = static_cast<AssetInfo<Model>*>(descriptorPtr);
 		copyOfScale = modelDescriptorPtr->scale;
+		copyOfSpeedMultiplier = modelDescriptorPtr->speedMultiplier;
 	}
 	// we need to make sure that this prefab is loaded before displaying the prefav details.
 	else if (resourceManager.isResource<Prefab>(id)) {

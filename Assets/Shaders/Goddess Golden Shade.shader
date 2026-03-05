@@ -16,17 +16,19 @@ Properties{
     float fresnelPower;
     float speedMultiplier;
 
-    NormalizedFloat resultingAlpha;
+    float resultingAlpha;
 
+    sampler2D albedoMap;
+    ORMMap packedMap;
     NormalMap normalMap;
+
+    float lerpPercentage;
 }
 
 // Vertex shader..
 Vert{
     // Calculate world space of our local attributes..
     WorldSpace worldSpace = calculateWorldSpace();
-
-    // worldSpace.position.xyz += worldSpace.normal * 0.05;
 
     gl_Position = calculateClipPosition(worldSpace.position);
     passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. 
@@ -39,30 +41,36 @@ Vert{
 // ^ same as schlink fresnel..
 
 Frag{
-    // switch..
-    if(isActive == false) {
-        return vec4(0);
-    }
-
     // === Handling normal ===
-    vec3 _normal;
-    if(toUseNormalMap) {
-        _normal = getNormalFromMap(normalMap, fsIn.textureUnit); 
-    }
-    else {
-        _normal = normalize(fsIn.normal);
-    }
-
-    float time = timeElapsed * speedMultiplier;
-    time = sin(time);
-
-    float brightness = emissiveMultiplier + (emissiveMultiplier * 0.7 * time);
+    vec3 _normal = getNormalFromMap(normalMap, fsIn.textureUnit);
+    // vec3 _normal = normalize(fsIn.normal);
 
     // We calculate fresnel factor..
     vec3 viewDir = normalize(cameraPosition - fsIn.fragWorldPos);
     float NdotV = max(dot(_normal, viewDir), 0.0);
     float fresnelFactor = pow(1.0 - NdotV, fresnelPower);
 
-    vec3 color = baseColor + emissiveColor * brightness * fresnelFactor;
-	return vec4(color, resultingAlpha);
+    vec4 fresnelColor = vec4(emissiveColor * emissiveMultiplier, fresnelFactor);
+
+    // ==================
+    // PBR..
+    // === Handling the 3 properties ===
+    float roughness; 
+    float metallic; 
+    float occulusion;
+
+    vec2 uv = fsIn.textureUnit;
+
+    vec3 map = texture(packedMap, uv).rgb;
+    metallic   = 1 - map.r;
+    roughness  = 1 - map.g;
+    occulusion = 1 - map.b;
+
+    // ==================
+    vec4 albedo = texture(albedoMap, uv);
+    float pbrAlpha = albedo.a;
+
+    vec3 pbrColor = PBRCaculation(vec3(albedo), _normal, roughness, metallic, occulusion);
+
+	return mix(fresnelColor + vec4(baseColor, resultingAlpha), vec4(pbrColor, albedo.a), lerpPercentage);
 }

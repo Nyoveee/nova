@@ -14,6 +14,8 @@ class Gunner : Enemy
     [SerializableField]
     private GameObject? projectileSpawnPoint;
     [SerializableField]
+    private GameObject? gunnerHead;
+    [SerializableField]
     private Rigidbody_? rigidBody;
     [SerializableField]
     private List<Audio> attackSFX;
@@ -95,9 +97,11 @@ class Gunner : Enemy
             return;
         foreach (GameObject vantagePoint in gameGlobalReferenceManager.vantagePoints)
         {
-            if (!HasLineOfSightToPlayer(vantagePoint))
+            if (!HasLineOfSight(vantagePoint))
                 continue;
-            float distance = Vector3.Distance(vantagePoint.transform.position, gameObject.transform.position);
+            if (Vector3.Distance(vantagePoint.transform.position, playerHead.transform.position) <= gunnerStats.escapeRange)
+                continue;
+            float distance = Vector3.Distance(vantagePoint.transform.position, gunnerHead.transform.position);
             if (distance < closestVantagePoint)
             {
                 targetVantagePoint = vantagePoint;
@@ -255,23 +259,20 @@ class Gunner : Enemy
     }
     private void Update_Idle()
     {
-        if(GetDistanceFromPlayer() <= gunnerStats.shootingRange)
-        {
-            GetVantagePoint();
+        GetVantagePoint();
 
-            // Walk towards vantage Point
-            if (targetVantagePoint != null)
-            {
-                audioComponent.PlayRandomSound(spotSFX);
-                gunnerState = GunnerState.Walk;
-                animator.PlayAnimation("Gunner_Walk");
-                MoveToNavMeshPosition(targetVantagePoint.transform.position);
-            }
+        // Walk towards vantage Point
+        if (targetVantagePoint != null)
+        {
+            audioComponent.PlayRandomSound(spotSFX);
+            gunnerState = GunnerState.Walk;
+            animator.PlayAnimation("Gunner_Run");
+            MoveToNavMeshPosition(targetVantagePoint.transform.position);
         }
     }
     private void Update_Walk()
     {
-        if (!HasLineOfSightToPlayer(targetVantagePoint))
+        if (!HasLineOfSight(targetVantagePoint) || Vector3.Distance(targetVantagePoint.transform.position, playerHead.transform.position) <= gunnerStats.escapeRange)
         {
             GetVantagePoint();
 
@@ -293,22 +294,26 @@ class Gunner : Enemy
             return;
         }
 
-        Vector3 vanatagePoint = new Vector3(targetVantagePoint.transform.position.x, 0, targetVantagePoint.transform.position.z);
+        Vector3 vantagePoint = new Vector3(targetVantagePoint.transform.position.x, 0, targetVantagePoint.transform.position.z);
         Vector3 gunnerPos     = new Vector3(gameObject.transform.position.x,         0, gameObject.transform.position.z);
       
-
-        if (Vector3.Distance(vanatagePoint, gunnerPos) <= gunnerStats.targetDistanceFromVantagePoint)
+        if(HasLineOfSight(playerHead) && GetDistanceFromPlayer() >= gunnerStats.shootingRange)
         {
             gunnerState = GunnerState.Shoot;
             animator.PlayAnimation("Gunner_Attack");
             NavigationAPI.stopAgent(gameObject);
-            return;
+        }
+        else if (Vector3.Distance(vantagePoint, gunnerPos) <= gunnerStats.targetDistanceFromVantagePoint)
+        {
+            gunnerState = GunnerState.Shoot;
+            animator.PlayAnimation("Gunner_Attack");
+            NavigationAPI.stopAgent(gameObject);
         }
     }
     private void Update_Shoot()
     {
         LookAt(player);
-        if (!HasLineOfSightToPlayer(targetVantagePoint))
+        if (!HasLineOfSight(playerHead) || GetDistanceFromPlayer() < gunnerStats.escapeRange)
         {
             gunnerState = GunnerState.Idle;
             animator.PlayAnimation("Gunner_Idle");
@@ -347,13 +352,12 @@ class Gunner : Enemy
         // Shoot Projectile
         GameObject projectile = Instantiate(projectilePrefab);
         projectile.transform.position = projectileSpawnPoint.transform.position;
-        Vector3 direction = player.transform.position - projectileSpawnPoint.transform.position;
+        Vector3 direction = playerHead.transform.position - projectileSpawnPoint.transform.position;
         direction.Normalize();
         projectile.getScript<GunnerProjectile>().SetDirection(direction);
     }
     public void EndStagger()
     {
-      
         gunnerState = GunnerState.Idle;
         animator.PlayAnimation("Gunner_Idle");
     }

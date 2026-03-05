@@ -218,7 +218,7 @@ class PlayerController_V2 : Script
             } 
             else
             {
-            rigidbody.SetGravityFactor(float.Lerp(jumpGravityFactor, baseGravityFactor, gravityLerpTimer / lerpGravityFactorDuration));
+                rigidbody.SetGravityFactor(float.Lerp(jumpGravityFactor, baseGravityFactor, gravityLerpTimer / lerpGravityFactorDuration));
             }
         }
 
@@ -479,18 +479,30 @@ class PlayerController_V2 : Script
             currentHorizontalVelocity.y = 0f;
 
 
-            bool isAllowedtoAddForce = true;
+            //bool isAllowedtoAddForce = true;
 
-            //do a quick check if applying
-            Vector3 forceapplied = directionVector * airAcceleration;
+            ////do a quick check if applying
+            //Vector3 forceapplied = directionVector * airAcceleration;
 
-            Vector3 predictedVelocity = currentHorizontalVelocity + (forceapplied/rigidbody.GetMass()) * Time.V_FixedDeltaTime();
+            //Vector3 predictedVelocity = currentHorizontalVelocity + (forceapplied/rigidbody.GetMass()) * Time.V_FixedDeltaTime();
 
-            //player is moving faster than allowed, stop accelerating
-            if (predictedVelocity.Length() < aerialMaxMoveSpeed)
+            ////player is moving faster than allowed, stop accelerating
+            //if (predictedVelocity.Length() < aerialMaxMoveSpeed)
+            //{
+            //    rigidbody.AddForce(directionVector * airAcceleration);
+            //}
+
+            Vector3 normalizedDirection = directionVector;
+            normalizedDirection.Normalize();
+
+            // Only check speed in the direction we want to move
+            float speedInDesiredDirection = Vector3.Dot(currentHorizontalVelocity, normalizedDirection);
+
+            if (speedInDesiredDirection < aerialMaxMoveSpeed)
             {
-                rigidbody.AddForce(directionVector * airAcceleration);
+                rigidbody.AddForce(normalizedDirection * airAcceleration);
             }
+
             //    rigidbody.SetLinearDamping(0);
             //}
             //else
@@ -642,6 +654,8 @@ class PlayerController_V2 : Script
         //check jump conditions
         if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && jumpEnabled && (jumpTimer > jumpCD))
         {
+            rigidbody.SetVelocityLimits(100000); //player movespeed is uncapped in air
+            rigidbody.SetLinearDamping(0f);
             playerMoveStates = PlayerMoveStates.StartJump;
         }
 
@@ -867,12 +881,15 @@ class PlayerController_V2 : Script
     }
 
 
-    public void Reset()
+    public void ResetHealth()
     {
-        isMovingBackward = isMovingForward = isMovingLeft = isMovingRight = false;
-        OnTeleport();
+
         currentHealth = maxHealth;
         gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+    }
+    public void ResetWASDMovement()
+    {
+        isMovingBackward = isMovingForward = isMovingLeft = isMovingRight = false;
     }
 
     // Disable movement until touching the floor
@@ -880,6 +897,9 @@ class PlayerController_V2 : Script
     {
         playerMoveStates = PlayerMoveStates.InitState;
         rigidbody.SetVelocity(Vector3.Zero());
+        rigidbody.SetLinearDamping(airDrag);
+        rigidbody.SetGravityFactor(baseGravityFactor);
+        rigidbody.SetVelocityLimits(100000);
         currentStamina = 0;
     }
 }
