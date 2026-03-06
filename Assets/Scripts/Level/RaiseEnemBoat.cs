@@ -27,6 +27,10 @@ class RaiseEnemBoat : Script
     private float sinkSpeed = 10f;
     private bool hasSunk = false;
 
+    private float swayAmplitude = 20f;
+    private float swayFrequency = 0.8f;
+    private float startX;
+
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
     {}
@@ -35,6 +39,8 @@ class RaiseEnemBoat : Script
     protected override void init()
     {
         startY = this.gameObject.transform.position.y;
+        startX = this.gameObject.transform.position.x;
+
         targetY = startY + riseHeight;
     }
 
@@ -67,6 +73,7 @@ class RaiseEnemBoat : Script
             {
                 bobTimer += Time.V_DeltaTime();
                 pos.y = targetY + Mathf.Sin(riseTimer * bobFrequency) * bobAmplitude;
+                pos.x = startX + Mathf.Sin(riseTimer * swayFrequency) * swayAmplitude;
             }
 
             this.gameObject.transform.position = pos;

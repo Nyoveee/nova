@@ -108,8 +108,14 @@ static Vector3 Proj(Vector3 vector, Vector3 onNormal);
 static Vector3 Cross(Vector3 lhs, Vector3 rhs);
 static Vector3 Abs(Vector3 vec);
 
-
 ManagedStructEnd(Vector3, glm::vec3)
+
+public value struct SphereCollideResult {
+	entt::entity entity;
+	Vector3^ point;
+	float penetrationDepth;
+};
+
 // ======================================
 // This struct is responsible for ColorA Types
 // ======================================
