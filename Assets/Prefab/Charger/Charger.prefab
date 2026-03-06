@@ -295,13 +295,6 @@
                                 }
                             },
                             {
-                                "name": "chargerCollisionBox",
-                                "data": {
-                                    "__variant_value": 32,
-                                    "__variant_type": 4
-                                }
-                            },
-                            {
                                 "name": "rigidbody",
                                 "data": {
                                     "__variant_value": 15,
@@ -446,7 +439,7 @@
                             {
                                 "name": "damage",
                                 "data": {
-                                    "__variant_value": 20.0,
+                                    "__variant_value": 45.0,
                                     "__variant_type": 18
                                 }
                             },
@@ -460,14 +453,14 @@
                             {
                                 "name": "chargingRange",
                                 "data": {
-                                    "__variant_value": 40.0,
+                                    "__variant_value": 50.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "chargeDamage",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 50,
                                     "__variant_type": 17
                                 }
                             },
@@ -495,7 +488,7 @@
                             {
                                 "name": "stompDamage",
                                 "data": {
-                                    "__variant_value": 12.0,
+                                    "__variant_value": 33.0,
                                     "__variant_type": 18
                                 }
                             },
@@ -530,28 +523,28 @@
                             {
                                 "name": "health",
                                 "data": {
-                                    "__variant_value": 300.0,
+                                    "__variant_value": 240.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "movementSpeed",
                                 "data": {
-                                    "__variant_value": 10.0,
+                                    "__variant_value": 30.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "ichorPerDamage",
                                 "data": {
-                                    "__variant_value": 30,
+                                    "__variant_value": 20,
                                     "__variant_type": 17
                                 }
                             },
                             {
                                 "name": "ichorExplodeSpawnAmount",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 40,
                                     "__variant_type": 17
                                 }
                             },
@@ -572,7 +565,7 @@
                             {
                                 "name": "enemyExecuteThreshold",
                                 "data": {
-                                    "__variant_value": 50.0,
+                                    "__variant_value": 40.0,
                                     "__variant_type": 18
                                 }
                             },
@@ -615,10 +608,10 @@
             },
             "NavMeshAgent": {
                 "agentName": "Humanoid",
-                "agentMaxSpeed": 10.0,
-                "agentMaxAcceleration": 10.0,
+                "agentMaxSpeed": 30.0,
+                "agentMaxAcceleration": 1000.0,
                 "agentRotationSpeed": 100.0,
-                "separationWeight": 0.0
+                "separationWeight": 1.0
             },
             "id": 15
         },

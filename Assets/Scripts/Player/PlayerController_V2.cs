@@ -190,7 +190,6 @@ class PlayerController_V2 : Script
     protected override void update()
     {
         currentStamina = Mathf.Clamp(currentStamina + Time.V_DeltaTime() * dashStaminaRecovery, 0f, maxStamina);
-
     }
 
     // This function is invoked every update.
