@@ -269,6 +269,7 @@ float Mathf::Sin		(float radian)								{ return std::sin(radian); }
 float Mathf::Atan2		(float y, float x)							{ return std::tan(y / x); }
 float Mathf::Clamp		(float value, float min, float max)			{ return std::clamp(value, min, max); }
 float Mathf::Interpolate(float a, float b, float t, float degree)	{ return Interpolation::Interpolation(a, b, t, degree); }
+Colour Mathf::Interpolate(Colour a, Colour b, float t){ return Colour(Interpolation::Interpolation(a.native(), b.native(), t, 1)); }
 float Mathf::Min		(float a, float b)							{ return std::min(a, b); }
 float Mathf::Max		(float a, float b)							{ return std::max(a, b); }
 float Mathf::Pow		(float base, float exponent)				{ return std::powf(base, exponent); }

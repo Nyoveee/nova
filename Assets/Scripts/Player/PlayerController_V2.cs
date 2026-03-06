@@ -67,7 +67,8 @@ class PlayerController_V2 : Script
     // References
     // ==================================
     private GameUIManager gameUIManager;
-    
+    private VignetteController vignetteController;
+
     [SerializableField]
     private Transform_? playerOrientation = null;
     
@@ -183,6 +184,7 @@ class PlayerController_V2 : Script
         MapKey(Key.LeftShift, triggerDash, dashkeyUpHandler);
 
         gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
+        vignetteController = gameUIManager?.getScript<VignetteController>();
         isIFrames = false;
     }
 
@@ -863,6 +865,9 @@ class PlayerController_V2 : Script
     {
         currentHealth += heal;
         currentHealth = Mathf.Min(maxHealth, currentHealth);
+        gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+        if (heal > 0)
+            vignetteController.TriggerVignette(0.03f, 1, new Colour(0f, 1.0f, 0.0f));
     }
 
     public void PositionFreeze(bool value)

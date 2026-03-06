@@ -287,6 +287,7 @@ void Engine::SystemsUnload() {
 
 	renderer.hdrExposure = 0.9f;
 	renderer.vignette = 0.f;
+	renderer.vignetteColor = glm::vec3(0.0, 0.0, 0.0);
 	renderer.resetLoadedReflectionProbes();
 
 	scriptingAPIManager.cleanPreviousSceneScriptState();

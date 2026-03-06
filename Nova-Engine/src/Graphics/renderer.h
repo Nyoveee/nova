@@ -179,6 +179,7 @@ public:
 	float bloomCompositePercentage = 0.04f;
 
 	float vignette = 0.f;
+	glm::vec3 vignetteColor;
 
 	glm::vec3 chromaticAberration;
 

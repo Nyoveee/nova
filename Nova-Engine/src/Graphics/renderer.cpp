@@ -3550,9 +3550,13 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fo
 	postprocessingShader.setImageUniform("depthTexture", 1);
 
 	postprocessingShader.setVec3("fogColor", fog.fogInscatteringColor);
+
 	postprocessingShader.setFloat("fogNear", fog.startDistance);
 	postprocessingShader.setFloat("fogFar", fog.endDistance);
 	postprocessingShader.setFloat("fogDensity", fog.inscatteringDensity);
+
+	postprocessingShader.setFloat("vignette", vignette);
+	postprocessingShader.setVec3("vignetteColor", vignetteColor);
 
 	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
