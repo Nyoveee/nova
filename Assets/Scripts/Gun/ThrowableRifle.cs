@@ -510,8 +510,8 @@ class ThrowableRifle : Script
         //update player health
         if (playerGameobject.getScript<PlayerController_V2>() != null)
         {
-            int heal = (int)( totalIchorGained /healthGainedPerIchor);
-            int sp = (int)(totalIchorGained / spGainPerIchor);
+            int heal = (int)( totalIchorGained * healthGainedPerIchor);
+            int sp = (int)(totalIchorGained * spGainPerIchor);
 
             playerGameobject.getScript<PlayerController_V2>().GainHealth(heal);
 
