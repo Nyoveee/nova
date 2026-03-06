@@ -149,7 +149,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			// copy when mouse is over the asset viewer (isHovering)
 
 			ResourceID selected = assetViewerUi.getCurrentResourceID();
-			if (selected != INVALID_RESOURCE_ID && assetViewerUi.isHovering)
+			if (selected != INVALID_RESOURCE_ID && assetManagerUi.isHovering)
 			{
 				savedResourceIDToCopy = selected;
 			}
@@ -168,7 +168,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 				return;
 
 			assetManager.createAssetCopy(savedResourceIDToCopy);
-			
+			savedResourceIDToCopy = INVALID_RESOURCE_ID;
 		}
 	);
 
