@@ -36,6 +36,13 @@ public class GeneratorArenaQuest : ArenaQuest
     [SerializableField]
     private float lerpPower = 1f;
 
+    [SerializableField]
+    private string arenaStartVoiceOverText;
+    [SerializableField]
+    private float arenaStartVoiceOverTime;
+    [SerializableField]
+    private Audio arenaStartVoiceOverAudio;
+
     private bool isAnimating = false;
     private bool isAnimatingGeneratorSwitch = false;
 
@@ -46,6 +53,11 @@ public class GeneratorArenaQuest : ArenaQuest
     private float initialSwitchLightIntensity = 0f;
     private float initialShadowCasterIntensity = 0f;
 
+    private VoiceoverScript voiceoverScript;
+    protected override void init()
+    {
+        voiceoverScript = GameObject.FindWithTag("Game UI Manager")?.getScript<VoiceoverScript>();
+    }
     public override void OnEnter()
     {
         if (generatorSwitchLight != null)
@@ -54,9 +66,9 @@ public class GeneratorArenaQuest : ArenaQuest
             generatorSwitchLight.gameObject.getScript<PulsatingLight>().isActive = false;
             isAnimatingGeneratorSwitch = true;
         }
-
         Invoke(() =>
         {
+            voiceoverScript.TriggerVoiceOver("Goddess", arenaStartVoiceOverText, arenaStartVoiceOverAudio, arenaStartVoiceOverTime);
             arenaManager.StartArena(this);
 
             if (shadowCasters.Count > 0)
