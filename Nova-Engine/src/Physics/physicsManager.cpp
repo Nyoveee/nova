@@ -29,9 +29,11 @@
 #include <Jolt/Physics/Collision/Shape/MeshShape.h>
 #include <Jolt/Physics/Collision/Shape/ConvexHullShape.h>
 #include <Jolt/Physics/Collision/RayCast.h>
+#include <Jolt/Physics/Collision/ShapeCast.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyActivationListener.h>
-
+#include <Jolt/Physics/Collision/CollisionCollectorImpl.h>
+#include <Jolt/Physics/Collision/CollideShape.h>
 
 namespace {
 	// Callback for traces, connect this to your own trace function if you have one
@@ -716,10 +718,44 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 		JPH::BodyLockRead lock(physicsSystem.GetBodyLockInterfaceNoLock(), rayCastResult.mBodyID); //goofy ahh engine, Not lock here
 		glm::vec3 hitSurfaceNormal = toGlmVec3(lock.GetBody().GetWorldSpaceSurfaceNormal(rayCastResult.mSubShapeID2, toJPHVec3(collisionPoint)));
 
-		return PhysicsRayCastResult{ entity, collisionPoint, hitSurfaceNormal};
+		return PhysicsRayCastResult{ entity, collisionPoint, hitSurfaceNormal };
 	}
 
 	return std::nullopt;
+}
+
+std::vector<PhysicsSphereCollideResult> PhysicsManager::sphereCollide(glm::vec3 position, float radius, std::vector<uint8_t> const& layerMask) {
+	std::vector<PhysicsSphereCollideResult> results;
+
+	auto&& narrowPhaseQuery = physicsSystem.GetNarrowPhaseQuery();
+
+	JPH::AllHitCollisionCollector<JPH::CollideShapeCollector> collector;
+
+	RayCastLayerMaskFilterImpl layerMaskFilter(layerMask);
+
+	// 3. Perform the static check
+	narrowPhaseQuery.CollideShape(
+		sphere,
+		JPH::Vec3::sReplicate(radius),									// Scale
+		JPH::Mat44::sTranslation(toJPHVec3(position)),                  // Position
+		JPH::CollideShapeSettings(),		// Default settings
+		JPH::Vec3::sZero(),					// Base offset (usually zero)
+		collector,
+		layerMaskFilter						// Filter layers
+	);
+
+	// 3. Extract the closest object's information
+	if (collector.HadHit()) {
+		// mHits is a JPH::Array (similar to std::vector) containing all hit data
+		for (const JPH::CollideShapeResult& hit : collector.mHits) {
+			entt::entity entity = static_cast<entt::entity>(bodyInterface.GetUserData(hit.mBodyID2));
+			glm::vec3 collisionPoint = toGlmVec3(hit.mContactPointOn2);
+
+			results.push_back({ entity, collisionPoint, hit.mPenetrationDepth });
+		}
+	}
+
+	return results;
 }
 
 

@@ -250,6 +250,8 @@ void displayParticleEmitterComponent(Editor& editor, ParticleEmitter& emitter) {
 		DisplayProperty<Color>(editor, "-ve color variance", minOffset);
 		DisplayProperty<Color>(editor, "+ve color variance", maxOffset);
 
+		DisplayProperty<float>(editor, "Emissive multiplier", emitter.particleColorSelection.emissiveMultiplier);
+
 		emitter.particleColorSelection.colorOffsetMin = minOffset;
 		emitter.particleColorSelection.colorOffsetMax = maxOffset;
 

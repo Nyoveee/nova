@@ -154,15 +154,17 @@ template<>
 inline void DisplayProperty<Color>(Editor&, const char* dataMemberName, Color& dataMember) {
 	ImGui::Text(dataMemberName);
 	glm::vec3 vec = dataMember;
-	ImGui::ColorEdit3("##", glm::value_ptr(vec));
+	std::string label = std::string{ "##" } + dataMemberName;
+	ImGui::ColorEdit3(label.c_str(), glm::value_ptr(vec));
 	dataMember = vec;
 }
 
 template<>
 inline void DisplayProperty<ColorA>(Editor&, const char* dataMemberName, ColorA& dataMember) {
 	ImGui::Text(dataMemberName);
-	glm::vec4 vec = dataMember;
-	ImGui::ColorEdit4("##", glm::value_ptr(vec));
+	glm::vec4 vec = dataMember; 
+	std::string label = std::string{ "##" } + dataMemberName;
+	ImGui::ColorEdit4(label.c_str(), glm::value_ptr(vec));
 	dataMember = vec;
 }
 

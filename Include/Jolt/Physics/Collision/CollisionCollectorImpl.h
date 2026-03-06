@@ -48,7 +48,7 @@ public:
 
 /// Simple implementation that collects the closest / deepest hit
 template <class CollectorType>
-class ClosestHitCollisionCollector : public CollectorType
+class AllHitCollisionCollector : public CollectorType
 {
 public:
 	/// Redeclare ResultType
