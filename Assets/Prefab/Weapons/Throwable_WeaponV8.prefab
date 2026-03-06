@@ -1,5 +1,5 @@
 {
-    "RootEntity": 44,
+    "RootEntity": 23,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    45,
-                    46,
-                    51,
-                    55,
-                    58
+                    24,
+                    25,
+                    30,
+                    34,
+                    37
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -134,7 +134,7 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 46,
+                                    "__variant_value": 25,
                                     "__variant_type": 4
                                 }
                             },
@@ -286,28 +286,28 @@
                             {
                                 "name": "absorbtionEmitters",
                                 "data": {
-                                    "__variant_value": 51,
+                                    "__variant_value": 30,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "throwingEmitters",
                                 "data": {
-                                    "__variant_value": 55,
+                                    "__variant_value": 34,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "slicingEmitters",
                                 "data": {
-                                    "__variant_value": 48,
+                                    "__variant_value": 27,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "jetStreamEmitters",
                                 "data": {
-                                    "__variant_value": 58,
+                                    "__variant_value": 37,
                                     "__variant_type": 4
                                 }
                             },
@@ -412,13 +412,13 @@
                     }
                 ]
             },
-            "id": 44
+            "id": 23
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 44,
+                "parent": 23,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -536,7 +536,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 44,
+                                    "__variant_value": 23,
                                     "__variant_type": 4
                                 }
                             }
@@ -544,17 +544,17 @@
                     }
                 ]
             },
-            "id": 45
+            "id": 24
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 44,
+                "parent": 23,
                 "attachedSocket": 65535,
                 "children": [
-                    47,
-                    48
+                    26,
+                    27
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -653,13 +653,13 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 46
+            "id": 25
         },
         {
             "EntityData": {
                 "name": "Rifle Outline",
                 "tag": "",
-                "parent": 46,
+                "parent": 25,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -753,17 +753,17 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 47
+            "id": 26
         },
         {
             "EntityData": {
                 "name": "BladeSliceEmitter",
                 "tag": "",
-                "parent": 46,
+                "parent": 25,
                 "attachedSocket": 65535,
                 "children": [
-                    49,
-                    50
+                    28,
+                    29
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -817,13 +817,13 @@
                     "z": 0.21420755982398987
                 }
             },
-            "id": 48
+            "id": 27
         },
         {
             "EntityData": {
                 "name": "BlueSpark",
                 "tag": "",
-                "parent": 48,
+                "parent": 27,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -992,13 +992,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 49
+            "id": 28
         },
         {
             "EntityData": {
                 "name": "Yellowpark",
                 "tag": "",
-                "parent": 48,
+                "parent": 27,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1167,18 +1167,18 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 50
+            "id": 29
         },
         {
             "EntityData": {
                 "name": "Abs_Emitter",
                 "tag": "",
-                "parent": 44,
+                "parent": 23,
                 "attachedSocket": 65535,
                 "children": [
-                    52,
-                    53,
-                    54
+                    31,
+                    32,
+                    33
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1232,13 +1232,13 @@
                     "z": 0.0
                 }
             },
-            "id": 51
+            "id": 30
         },
         {
             "EntityData": {
                 "name": "Halo",
                 "tag": "",
-                "parent": 51,
+                "parent": 30,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1407,13 +1407,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 52
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "Star Shine",
                 "tag": "",
-                "parent": 51,
+                "parent": 30,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1582,13 +1582,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 53
+            "id": 32
         },
         {
             "EntityData": {
                 "name": "absorption effect",
                 "tag": "",
-                "parent": 51,
+                "parent": 30,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1757,17 +1757,17 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 54
+            "id": 33
         },
         {
             "EntityData": {
                 "name": "ThrowingEmitter",
                 "tag": "",
-                "parent": 44,
+                "parent": 23,
                 "attachedSocket": 65535,
                 "children": [
-                    56,
-                    57
+                    35,
+                    36
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1851,13 +1851,13 @@
                     "z": 0.0
                 }
             },
-            "id": 55
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "SparkStream",
                 "tag": "",
-                "parent": 55,
+                "parent": 34,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2056,13 +2056,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 56
+            "id": 35
         },
         {
             "EntityData": {
                 "name": "ArcTrail",
                 "tag": "",
-                "parent": 55,
+                "parent": 34,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2231,21 +2231,21 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 57
+            "id": 36
         },
         {
             "EntityData": {
                 "name": "StreamLines_Emitter",
                 "tag": "",
-                "parent": 44,
+                "parent": 23,
                 "attachedSocket": 65535,
                 "children": [
-                    59,
-                    60,
-                    61,
-                    62,
-                    63,
-                    64
+                    38,
+                    39,
+                    40,
+                    41,
+                    42,
+                    43
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -2299,13 +2299,13 @@
                     "z": 0.0
                 }
             },
-            "id": 58
+            "id": 37
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 58,
+                "parent": 37,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2474,13 +2474,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 59
+            "id": 38
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 58,
+                "parent": 37,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2649,13 +2649,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 60
+            "id": 39
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 58,
+                "parent": 37,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2824,13 +2824,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 61
+            "id": 40
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 58,
+                "parent": 37,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2999,13 +2999,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 62
+            "id": 41
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 58,
+                "parent": 37,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3174,13 +3174,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 63
+            "id": 42
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 58,
+                "parent": 37,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3349,7 +3349,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 64
+            "id": 43
         }
     ]
 }

@@ -15,6 +15,10 @@ class CannonWaveManager : Script
     private GameObject boat;
     [SerializableField]
     private GameObject boat2;
+    [SerializableField]
+    public bool useWave = true;
+    [SerializableField]
+    private float timeCount = 180f;
 
     private int currentWave = 0;
     private bool waveActive = false;
@@ -34,29 +38,42 @@ class CannonWaveManager : Script
     // This function is invoked every update.
     protected override void update()
     {
-        activeEnemies.RemoveAll(e => e == null || e.getScript<Enemy>().IsDead());
-        //if (!waveActive && currentWave < totalWaves)
-        //{
-        //    waveActive = true;
-        //    FireWave();
-        //}
-
-        // If wave is active, check if all enemies are dead
-        if (waveActive && pendingEnemies == 0 && activeEnemies.Count == 0)
+        if(useWave)
         {
-            waveActive = false;
-            currentWave++;
-            Debug.Log($"Wave {currentWave} finished");
+            activeEnemies.RemoveAll(e => e == null || e.getScript<Enemy>().IsDead());
+            //if (!waveActive && currentWave < totalWaves)
+            //{
+            //    waveActive = true;
+            //    FireWave();
+            //}
 
-            if (currentWave < totalWaves)
+            // If wave is active, check if all enemies are dead
+            if (waveActive && pendingEnemies == 0 && activeEnemies.Count == 0)
             {
-                waveActive = true;
-                FireWave();
-                Debug.Log($"Wave {currentWave + 1} started");
+                waveActive = false;
+                currentWave++;
+                //Debug.Log($"Wave {currentWave} finished");
+
+                if (currentWave < totalWaves)
+                {
+                    waveActive = true;
+                    FireWave();
+                    //Debug.Log($"Wave {currentWave + 1} started");
+                }
+                else
+                {
+                    //Debug.Log("All waves completed");
+                    endofLevel.getScript<EndOfLevel2>().StartScroll();
+                    boat.getScript<RaiseEnemBoat>().Sink();
+                    boat2.getScript<RaiseEnemBoat>().Sink();
+                }
             }
-            else
+        }
+        else
+        {
+            timeCount -= Time.V_DeltaTime();
+            if (timeCount <= 0)
             {
-                Debug.Log("All waves completed");
                 endofLevel.getScript<EndOfLevel2>().StartScroll();
                 boat.getScript<RaiseEnemBoat>().Sink();
                 boat2.getScript<RaiseEnemBoat>().Sink();

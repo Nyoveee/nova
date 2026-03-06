@@ -46,7 +46,7 @@ class EnemyCannon : Script
 
     // Shooting Update
     private float arcTime;
-    //private float currentShootCooldown;
+    private float currentShootCooldown;
     private GameObject enemyObject;
 
     // Shooting Arc Parameters
@@ -76,20 +76,21 @@ class EnemyCannon : Script
         Vector3 pos = gameObject.transform.position;
         pos.y = boat.transform.position.y + yOffset;
         gameObject.transform.position = pos;
+        
         // Cooldown
-        //if(enemyObject == null)
-        //{
-        //    currentShootCooldown -= Time.V_DeltaTime();
-        //    if(currentShootCooldown <= 0)
-        //    {
-        //        GetTargetingLocation();
-        //        PrepareEnemyCannon();
-        //        return;
-        //    }
-        //}
+        if(enemyObject == null && waveManager.getScript<CannonWaveManager>().useWave == false)
+        {
+            currentShootCooldown -= Time.V_DeltaTime();
+            if(currentShootCooldown <= 0)
+            {
+                GetTargetingLocation();
+                PrepareEnemyCannon();
+                return;
+            }
+        }
 
         // For Wave Manager
-        if (shotsQueued > 0 && enemyObject == null && !b_IsCharging)
+        if (shotsQueued > 0 && enemyObject == null && !b_IsCharging && waveManager.getScript<CannonWaveManager>().useWave == true)
         {
             shotsQueued--;
             GetTargetingLocation();
