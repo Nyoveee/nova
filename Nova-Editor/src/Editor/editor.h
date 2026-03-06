@@ -170,7 +170,7 @@ private:
 	int imguiCounter = 0;
 
 	/// ****
-	// save copied resource id
+	ResourceID savedResourceIDToCopy;
 };
 
 #include "editor.ipp"

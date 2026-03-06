@@ -1051,4 +1051,9 @@ void AssetViewerUI::handleRecompilation() {
 	}
 }
 
+ResourceID AssetViewerUI::getCurrentResourceID()
+{
+	return selectedResourceId;
+}
+
 #include "Editor/ComponentInspection/displayComponent.ipp"
