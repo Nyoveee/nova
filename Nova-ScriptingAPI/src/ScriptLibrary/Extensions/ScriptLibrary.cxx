@@ -145,7 +145,8 @@ System::Collections::Generic::List<SphereCollideResult>^ PhysicsAPI::SphereColli
 	}
 	
 	for (auto const& nativeResult : Interface::engine->physicsManager.sphereCollide(origin.native(), radius, layerIds)) {
-		results->Add(SphereCollideResult{ nativeResult.entity, Vector3{ nativeResult.point }, nativeResult.penetrationDepth });
+		Vector3^ point = gcnew Vector3{ nativeResult.point };
+		results->Add(SphereCollideResult{ nativeResult.entity, point, nativeResult.penetrationDepth });
 	}
 
 	return results;

@@ -729,6 +729,7 @@ std::vector<PhysicsSphereCollideResult> PhysicsManager::sphereCollide(glm::vec3 
 
 	auto&& narrowPhaseQuery = physicsSystem.GetNarrowPhaseQuery();
 
+#if 1
 	JPH::AllHitCollisionCollector<JPH::CollideShapeCollector> collector;
 
 	RayCastLayerMaskFilterImpl layerMaskFilter(layerMask);
@@ -754,6 +755,7 @@ std::vector<PhysicsSphereCollideResult> PhysicsManager::sphereCollide(glm::vec3 
 			results.push_back({ entity, collisionPoint, hit.mPenetrationDepth });
 		}
 	}
+#endif
 
 	return results;
 }

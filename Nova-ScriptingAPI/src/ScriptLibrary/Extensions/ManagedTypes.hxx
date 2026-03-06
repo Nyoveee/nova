@@ -112,9 +112,10 @@ ManagedStructEnd(Vector3, glm::vec3)
 
 public value struct SphereCollideResult {
 	entt::entity entity;
-	Vector3 point;
-	float penetrationDepth
+	Vector3^ point;
+	float penetrationDepth;
 };
+
 // ======================================
 // This struct is responsible for ColorA Types
 // ======================================
