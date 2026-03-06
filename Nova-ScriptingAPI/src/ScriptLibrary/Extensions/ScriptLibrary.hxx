@@ -103,6 +103,9 @@ public:
 	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance, GameObject^ entityToIgnore);
 	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end);
 	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end, array<System::String^>^ layermask);
+
+	static System::Collections::Generic::List<SphereCollideResult>^ SphereCollide(Vector3 origin, float radius);
+	static System::Collections::Generic::List<SphereCollideResult>^ SphereCollide(Vector3 origin, float radius, array<System::String^>^ layermask);
 };
 
 // ======================================

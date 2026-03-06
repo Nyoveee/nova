@@ -174,7 +174,7 @@ struct ParticleEmitter
 	float maxStartSizeOffset = 0.f;
 	float startSpeed = 1;
 	glm::vec3 force{};
-	// Rotation
+// Rotation
 	float initialRotation{};
 	bool velocityBasedInitialRotation{};
 	float minInitialRotationOffset;
@@ -250,6 +250,8 @@ void displayParticleEmitterComponent(Editor& editor, ParticleEmitter& emitter) {
 		DisplayProperty<Color>(editor, "-ve color variance", minOffset);
 		DisplayProperty<Color>(editor, "+ve color variance", maxOffset);
 
+		DisplayProperty<float>(editor, "Emissive multiplier", emitter.particleColorSelection.emissiveMultiplier);
+
 		emitter.particleColorSelection.colorOffsetMin = minOffset;
 		emitter.particleColorSelection.colorOffsetMax = maxOffset;
 
@@ -289,15 +291,29 @@ void displayParticleEmitterComponent(Editor& editor, ParticleEmitter& emitter) {
 	}
 
 	if (ImGui::TreeNode("Rotation")) {
-		DisplayProperty<float>(editor, "Initial rotation", emitter.initialRotation);
-		DisplayProperty<float>(editor, "-ve rotation variance", emitter.minStartSizeOffset);
-		DisplayProperty<float>(editor, "+ve rotation variance", emitter.maxStartSizeOffset);
+		Radian initialRotation			= emitter.initialRotation;
+		Radian minInitialRotation		= emitter.minInitialRotationOffset;
+		Radian maxInitialRotation		= emitter.maxInitialRotationOffset;
+		Radian initialAngularVelocity	= emitter.initialAngularVelocity;
+		Radian minAngularVelocityOffset = emitter.minAngularVelocityOffset;
+		Radian maxAngularVelocityOffset = emitter.maxAngularVelocityOffset;
+
+		DisplayProperty<Radian>(editor, "Initial rotation", initialRotation);
+		DisplayProperty<Radian>(editor, "-ve rotation variance", minInitialRotation);
+		DisplayProperty<Radian>(editor, "+ve rotation variance", maxInitialRotation);
 		
 		DisplayProperty<bool>(editor, "Align rotation to velocity?", emitter.velocityBasedInitialRotation);
 		
-		DisplayProperty<float>(editor, "Initial angular velocity", emitter.initialAngularVelocity);
-		DisplayProperty<float>(editor, "-ve angular rotation variance", emitter.minAngularVelocityOffset);
-		DisplayProperty<float>(editor, "+ve angular rotation variance", emitter.maxAngularVelocityOffset);
+		DisplayProperty<Radian>(editor, "Initial angular velocity", initialAngularVelocity);
+		DisplayProperty<Radian>(editor, "-ve angular rotation variance", minAngularVelocityOffset);
+		DisplayProperty<Radian>(editor, "+ve angular rotation variance", maxAngularVelocityOffset);
+
+		emitter.initialRotation				= initialRotation;
+		emitter.minInitialRotationOffset	= minInitialRotation;
+		emitter.maxInitialRotationOffset	= maxInitialRotation;
+		emitter.initialAngularVelocity		= initialAngularVelocity;
+		emitter.minAngularVelocityOffset	= minAngularVelocityOffset;
+		emitter.maxAngularVelocityOffset	= maxAngularVelocityOffset;
 
 		ImGui::TreePop();
 	}

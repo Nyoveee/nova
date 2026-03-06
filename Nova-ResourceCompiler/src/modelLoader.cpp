@@ -97,7 +97,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, Ass
 	meshesData.reserve(scene->mNumMeshes);
 	
 	// We process the node hierarchy, and load meshes accordingly..
-	processNodeHierarchy(scene, meshesData, scene->mRootNode, glm::mat4{ 1.f });
+	processNodeHierarchy(scene, meshesData, scene->mRootNode, toGlmMat4(scene->mRootNode->mTransformation));
 
 	// --------------------------------------------------------------------
 	// 4. We now process bones, skeletons and animation data..
