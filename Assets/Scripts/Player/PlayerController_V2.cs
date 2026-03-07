@@ -192,7 +192,6 @@ class PlayerController_V2 : Script
     protected override void update()
     {
         currentStamina = Mathf.Clamp(currentStamina + Time.V_DeltaTime() * dashStaminaRecovery, 0f, maxStamina);
-
     }
 
     // This function is invoked every update.
@@ -767,6 +766,7 @@ class PlayerController_V2 : Script
         }
         currentHealth = Mathf.Max(0, currentHealth - damage);
         gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+           vignetteController.TriggerVignette(0.07f, 1, new Colour(1.0f, 0.0f, 0.0f));
         if (gameUIManager != null)
             gameUIManager.ActivateDamageUI();
 
@@ -775,6 +775,7 @@ class PlayerController_V2 : Script
         {
             audioComponent.PlayRandomSound(deathSFX);
             OnPlayerDeath?.Invoke(this, EventArgs.Empty);
+
         }
     }
 
@@ -888,7 +889,7 @@ class PlayerController_V2 : Script
 
     public void ResetHealth()
     {
-
+        vignetteController.TriggerVignette(0.00f, 0, new Colour(0.0f, 0.0f, 0.0f));
         currentHealth = maxHealth;
         gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
     }

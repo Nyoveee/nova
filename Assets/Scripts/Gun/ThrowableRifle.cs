@@ -110,7 +110,7 @@ class ThrowableRifle : Script
     private float timeElapsed = 0f;
     private List<GameObject> hasDamageList = new List<GameObject>();
     private float playerHeight =5.0f;
-
+    private float homingDelay = 0.1f;
 
     public enum ThrowingWeaponState
     { 
@@ -356,17 +356,26 @@ class ThrowableRifle : Script
 
     void HomingToTarget()
     {
-        if (targetObject != null)
+        if (targetObject == null)
         {
             seekingFailed = true;
+            return;
 
         }
-        Vector3 directionToTarget = targetObject.transform.position - gameObject.transform.position;
-
-        directionToTarget.Normalize();
 
         float distance = Vector3.Distance(targetObject.transform.position, gameObject.transform.position);
 
+        if (timeElapsed < homingDelay)
+        {
+            Vector3 v = weaponRB.GetVelocity();
+            v.y -= fakeGravity * Time.V_FixedDeltaTime();
+            weaponRB.SetVelocity(v);
+            return;
+        }
+
+        Vector3 directionToTarget = targetObject.transform.position - gameObject.transform.position;
+
+        directionToTarget.Normalize();
         float steerPower = (startSteeringDistance - distance) / (startSteeringDistance - maxSteeringDistance);
 
 
