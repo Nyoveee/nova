@@ -19,6 +19,7 @@ struct Particle{
     bool colorOverLifetime;
     bool sizeOverLifetime;
     bool b_Active;
+    int renderAlignment;
 };
 
 layout(std430, binding = 5) buffer ParticleList {

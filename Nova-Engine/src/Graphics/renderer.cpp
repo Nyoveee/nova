@@ -793,15 +793,11 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 
 	renderTranslucentModels(frameBuffers.getActiveFrameBuffer());
 
-	// Original depth test..
-	glDepthFunc(GL_LESS);
-
 	// Render particles
 	renderParticles();
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
 
 	setBlendMode(BlendingConfig::Disabled);
 
@@ -2413,8 +2409,13 @@ void Renderer::renderOutline() {
 
 void Renderer::renderParticles()
 {
+	// Original depth test..
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glDisable(GL_CULL_FACE);
+
 	glBindVertexArray(particleVAO);
-	setBlendMode(BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::PremultipliedAlpha);
 	particleShader.use();
 	particleShader.setUInt("maxParticlesPerTexture", engine.particleSystem.MAX_PARTICLES_PER_TEXTURE);
 	
@@ -2424,10 +2425,17 @@ void Renderer::renderParticles()
 	EBO.uploadData(squareIndices);
 
 	// render texture by texture
-	for (int textureIndex{}; textureIndex < engine.particleSystem.usedTextures.size(); ++textureIndex) {
-		auto&& [texture, result] = resourceManager.getResource<Texture>(engine.particleSystem.usedTextures[textureIndex]);
+	std::sort(engine.particleSystem.usedTextures.begin(), engine.particleSystem.usedTextures.end(), [&](auto const& lhs, auto const& rhs) {
+		return lhs.layer < rhs.layer;
+	});
+
+	for (auto const& textureLayer : engine.particleSystem.usedTextures) {
+		auto&& [renderOrder, textureId, textureIndex, _] = textureLayer;
+		auto&& [texture, result] = resourceManager.getResource<Texture>(textureId);
+
 		if (!texture)
 			continue;
+
 		glBindTextureUnit(0, texture->getTextureId());
 		particleShader.setUInt("textureIndex", textureIndex);
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, engine.particleSystem.MAX_PARTICLES_PER_TEXTURE);

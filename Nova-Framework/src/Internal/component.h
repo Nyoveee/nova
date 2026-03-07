@@ -729,12 +729,6 @@ struct Trails {
 
 struct ParticleEmitter
 {
-	// Update
-	float currentContinuousTime{};
-	float currentBurstTime{};
-	glm::vec3 prevPosition{};
-	bool b_firstPositionUpdate{ true };
-
 	// Categories
 	TypedResourceID<Texture> texture{};
 	ParticleEmissionTypeSelection particleEmissionTypeSelection{};
@@ -742,6 +736,7 @@ struct ParticleEmitter
 	SizeOverLifetime sizeOverLifetime{};
 	ColorOverLifetime colorOverLifetime{};
 	Trails trails{};
+
 	// Core
 	bool looping = true;
 	bool randomizedDirection = false;
@@ -772,6 +767,13 @@ struct ParticleEmitter
 	float lightIntensity{};
 	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
 	float lightRadius{};
+
+	enum class RenderAlignment {
+		View,
+		Local
+	} renderAlignment = RenderAlignment::View;
+
+	int renderOrder = 0;
 
 	REFLECTABLE
 	(
@@ -804,8 +806,16 @@ struct ParticleEmitter
 		particleColorSelection,
 		sizeOverLifetime,
 		colorOverLifetime,
-		trails
+		trails,
+		renderAlignment,
+		renderOrder
 	)
+
+	// Update
+	float currentContinuousTime{};
+	float currentBurstTime{};
+	glm::vec3 prevPosition{};
+	bool b_firstPositionUpdate{ true };
 };
 
 struct Text {

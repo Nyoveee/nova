@@ -12,6 +12,17 @@ class Engine;
 class ParticleSystem
 {
 public:
+	struct TextureLayer {
+		int layer;
+		TypedResourceID<Texture> texture;
+
+		// index in the SSBO.. partitioned into different sections for each texture layer..
+		// its a runtime value.
+		int textureIndex;
+		int counter; // a counter that increases for each texture added in, and loops back..
+	};
+
+public:
 	ENGINE_DLL_API ParticleSystem(Engine& p_engine);
 	ENGINE_DLL_API ParticleSystem(ParticleSystem const& other) = delete;
 	ENGINE_DLL_API ParticleSystem(ParticleSystem&& other) = delete;
@@ -25,8 +36,7 @@ public:
 	void reset();
 	void update(float dt);
 public:
-	std::vector<TypedResourceID<Texture>> usedTextures;
-	std::vector<int> counterInEachTextures;
+	std::vector<TextureLayer> usedTextures;
 
 	// Edit as you wish
 	const int MAX_PARTICLES_PER_TEXTURE = 100000;
@@ -40,14 +50,15 @@ private:
 	void trailGeneration(Transform& transform, ParticleEmitter& emitter);
 	void spawnParticle(Transform const& transform, ParticleEmitter& emitter);
 	// Setup everything the particle needs to work
-	void determineParticleSpawnDetails(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex,glm::vec3 position, ParticleEmitter& emitter ,ParticleEmissionTypeSelection::EmissionShape emissionShape);
+	void determineParticleSpawnDetails(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform, ParticleEmitter& emitter ,ParticleEmissionTypeSelection::EmissionShape emissionShape);
 	void determineParticleColor(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, ParticleEmitter& emitter, float emissiveMultiplier, ColorA startcolor, ColorA endColor, glm::vec3 colorOffsetMin, glm::vec3 colorOffsetMax);
 	void determineParticleSize(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, ParticleEmitter& emitter, float startSize, float endSize, float minStartSizeOffset, float maxStartSizeOffset);
 	void determineParticleRotation(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, ParticleEmitter& emitter);
 	// Rotate Particle's position, velocity and force values based on transform
 	void rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform);
+	
 	// Add to compute Shader
-	void addParticleToList(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, TypedResourceID<Texture> texture);
+	void addParticleToList(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, TypedResourceID<Texture> texture, int renderOrder);
 private:
 	ComputeShader particleUpdateComputeShader;
 	ComputeShader particleFindLightsComputeShader;

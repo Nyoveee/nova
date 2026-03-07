@@ -173,10 +173,11 @@ namespace reflection {
 #define APPLY_MACRO_TO_EACH_30(macro, index, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd)					macro(a, index) APPLY_MACRO_TO_EACH_29(macro, index + 1, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd)
 #define APPLY_MACRO_TO_EACH_31(macro, index, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee)				macro(a, index) APPLY_MACRO_TO_EACH_30(macro, index + 1, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee)
 #define APPLY_MACRO_TO_EACH_32(macro, index, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee, ff)			macro(a, index) APPLY_MACRO_TO_EACH_31(macro, index + 1, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee, ff)
+#define APPLY_MACRO_TO_EACH_33(macro, index, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee, ff, gg)		macro(a, index) APPLY_MACRO_TO_EACH_31(macro, index + 1, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, aa, bb, cc, dd, ee, ff, gg)
 
 // Dispatch to the correct APPLY_MACRO according to argument count.
-#define GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, NAME, ...) NAME
-#define APPLY_MACRO_TO_EACH(macro, ...) GET_MACRO(__VA_ARGS__, APPLY_MACRO_TO_EACH_32, APPLY_MACRO_TO_EACH_31, APPLY_MACRO_TO_EACH_30, APPLY_MACRO_TO_EACH_29, APPLY_MACRO_TO_EACH_28, APPLY_MACRO_TO_EACH_27, APPLY_MACRO_TO_EACH_26, APPLY_MACRO_TO_EACH_25, APPLY_MACRO_TO_EACH_24, APPLY_MACRO_TO_EACH_23, APPLY_MACRO_TO_EACH_22, APPLY_MACRO_TO_EACH_21, APPLY_MACRO_TO_EACH_20, APPLY_MACRO_TO_EACH_19, APPLY_MACRO_TO_EACH_18, APPLY_MACRO_TO_EACH_17, APPLY_MACRO_TO_EACH_16, APPLY_MACRO_TO_EACH_15, APPLY_MACRO_TO_EACH_14, APPLY_MACRO_TO_EACH_13, APPLY_MACRO_TO_EACH_12, APPLY_MACRO_TO_EACH_11, APPLY_MACRO_TO_EACH_10, APPLY_MACRO_TO_EACH_9, APPLY_MACRO_TO_EACH_8, APPLY_MACRO_TO_EACH_7, APPLY_MACRO_TO_EACH_6, APPLY_MACRO_TO_EACH_5, APPLY_MACRO_TO_EACH_4, APPLY_MACRO_TO_EACH_3, APPLY_MACRO_TO_EACH_2, APPLY_MACRO_TO_EACH_1)(macro, 0, __VA_ARGS__)
+#define GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, NAME, ...) NAME
+#define APPLY_MACRO_TO_EACH(macro, ...) GET_MACRO(__VA_ARGS__, APPLY_MACRO_TO_EACH_33, APPLY_MACRO_TO_EACH_32, APPLY_MACRO_TO_EACH_31, APPLY_MACRO_TO_EACH_30, APPLY_MACRO_TO_EACH_29, APPLY_MACRO_TO_EACH_28, APPLY_MACRO_TO_EACH_27, APPLY_MACRO_TO_EACH_26, APPLY_MACRO_TO_EACH_25, APPLY_MACRO_TO_EACH_24, APPLY_MACRO_TO_EACH_23, APPLY_MACRO_TO_EACH_22, APPLY_MACRO_TO_EACH_21, APPLY_MACRO_TO_EACH_20, APPLY_MACRO_TO_EACH_19, APPLY_MACRO_TO_EACH_18, APPLY_MACRO_TO_EACH_17, APPLY_MACRO_TO_EACH_16, APPLY_MACRO_TO_EACH_15, APPLY_MACRO_TO_EACH_14, APPLY_MACRO_TO_EACH_13, APPLY_MACRO_TO_EACH_12, APPLY_MACRO_TO_EACH_11, APPLY_MACRO_TO_EACH_10, APPLY_MACRO_TO_EACH_9, APPLY_MACRO_TO_EACH_8, APPLY_MACRO_TO_EACH_7, APPLY_MACRO_TO_EACH_6, APPLY_MACRO_TO_EACH_5, APPLY_MACRO_TO_EACH_4, APPLY_MACRO_TO_EACH_3, APPLY_MACRO_TO_EACH_2, APPLY_MACRO_TO_EACH_1)(macro, 0, __VA_ARGS__)
 
 /*!***********************************************************************
 * @brief
@@ -190,7 +191,7 @@ namespace reflection {
 #define REFLECTABLE(...) \
 static int constexpr _reflection_fields_n = COUNT_ARGS(__VA_ARGS__); \
 friend reflection::query; \
-static_assert(_reflection_fields_n < 32, "Reflection does not support more than 32 data members."); \
+static_assert(_reflection_fields_n < 33, "Reflection does not support more than 32 data members."); \
 template<int N, typename Object> \
 struct _FieldData {}; \
 APPLY_MACRO_TO_EACH(REFLECT_EACH, __VA_ARGS__) \

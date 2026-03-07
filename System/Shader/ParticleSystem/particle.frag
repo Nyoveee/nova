@@ -9,5 +9,12 @@ out vec4 FragColor;
 
 void main()
 {
-    FragColor = color * texture(image,textureUnit);
+    vec4 textureColor = texture(image, textureUnit);
+    
+    // reverse premultiply alpha..
+    if(textureColor.a != 0) {
+        textureColor.rgb /= textureColor.a;
+    }
+
+    FragColor = color * textureColor;
 }
