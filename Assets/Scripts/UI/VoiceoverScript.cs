@@ -13,6 +13,8 @@ class VoiceoverScript : Script
     [SerializableField]
     private GameObject voiceOverTextUI;
     [SerializableField]
+    private GameObject sceneTextUI;
+    [SerializableField]
     private Vector3 voiceOverSpeakerTempPosition;
     [SerializableField]
     private Vector3 voiceOverTextTempPosition;
@@ -26,9 +28,9 @@ class VoiceoverScript : Script
     public void TriggerVoiceOver(string speaker, string text, Audio audio, float voiceOverTime)
     {
         //audioComponent.PlaySound(audio);
-
         cutSceneUI.SetActive(true);
         blackBarUI.SetActive(false);
+        sceneTextUI.SetActive(false);
         // Temperory
         voiceOverSpeakerUI.transform.position = voiceOverSpeakerTempPosition;
         voiceOverTextUI.transform.position = voiceOverTextTempPosition;

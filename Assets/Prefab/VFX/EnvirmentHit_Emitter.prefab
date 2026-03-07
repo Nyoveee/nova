@@ -1,5 +1,5 @@
 {
-    "RootEntity": 67,
+    "RootEntity": 65,
     "Entities": [
         {
             "EntityData": {
@@ -8,9 +8,9 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    68,
-                    69,
-                    70
+                    66,
+                    67,
+                    68
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -79,21 +79,21 @@
                             {
                                 "name": "lightBurst",
                                 "data": {
-                                    "__variant_value": 69,
+                                    "__variant_value": 67,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "bigSpark",
                                 "data": {
-                                    "__variant_value": 68,
+                                    "__variant_value": 66,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "smallSpark",
                                 "data": {
-                                    "__variant_value": 70,
+                                    "__variant_value": 68,
                                     "__variant_type": 4
                                 }
                             }
@@ -101,13 +101,13 @@
                     }
                 ]
             },
-            "id": 67
+            "id": 65
         },
         {
             "EntityData": {
                 "name": "Spark_Big",
                 "tag": "",
-                "parent": 67,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -276,13 +276,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 68
+            "id": 66
         },
         {
             "EntityData": {
                 "name": "Light",
                 "tag": "",
-                "parent": 67,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -358,13 +358,13 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 69
+            "id": 67
         },
         {
             "EntityData": {
                 "name": "Spark_Small",
                 "tag": "",
-                "parent": 67,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -533,7 +533,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 70
+            "id": 68
         }
     ]
 }
