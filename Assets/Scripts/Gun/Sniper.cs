@@ -76,7 +76,7 @@ class Sniper : Gun
     // Returns true if the gun is off cooldown and a fire happens.
     public override bool Fire()
     {
-        if (onCooldown)
+        if (onCooldown|| CurrentAmmo <= 0)
         {
             return false;
         }

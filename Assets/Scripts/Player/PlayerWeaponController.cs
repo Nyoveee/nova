@@ -321,20 +321,24 @@ class PlayerWeaponController : Script
 
             thrownRifle.getScript<ThrowableRifle>().flightPath = targetDirection;
 
-            thrownRifle.getScript<ThrowableRifle>().SeekTarget(playerCamera.position, result.Value.point);
+            //thrownRifle.getScript<ThrowableRifle>().SeekTarget(playerCamera.position, result.Value.point);
 
 
         }
         else
         {
+            //thrownRifle.getScript<ThrowableRifle>().flightPath = playerCamera.front;
+
+            //Vector3 endPoint = (playerCamera.front - playerCamera.position) * 500f;
+
+            //endPoint += playerCamera.position;
+
+
+            //thrownRifle.getScript<ThrowableRifle>().SeekTarget(throwPosition.position,endPoint);
+
             thrownRifle.getScript<ThrowableRifle>().flightPath = playerCamera.front;
-
-            Vector3 endPoint = (playerCamera.front - playerCamera.position) * 500f;
-
-            endPoint += playerCamera.position;
-
-
-            thrownRifle.getScript<ThrowableRifle>().SeekTarget(throwPosition.position,endPoint);
+            Vector3 endPoint = playerCamera.position + playerCamera.front * 500f;
+            thrownRifle.getScript<ThrowableRifle>().SeekTarget(playerCamera.position, endPoint);
         }
 
         currentlyHeldGun.gameObject.SetActive(false);
