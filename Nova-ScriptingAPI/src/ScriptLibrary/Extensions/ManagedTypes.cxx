@@ -83,6 +83,13 @@ float Vector3::Dot(Vector3 a, Vector3 b){ return a.x * b.x + a.y * b.y + a.z * b
 Vector3 Vector3::Lerp(Vector3 a, Vector3 b, float interval) {
 	return Vector3{ std::lerp(a.x, b.x, interval), std::lerp(a.y, b.y, interval), std::lerp(a.z, b.z, interval) };
 }
+Vector3 Vector3::Interpolate(Vector3 a, Vector3 b, float interval, float degree)
+{
+	return Vector3{ Interpolation::Interpolation(a.x, b.x, interval,degree),
+					Interpolation::Interpolation(a.y, b.y, interval, degree),
+					Interpolation::Interpolation(a.z, b.z, interval, degree) };
+}
+
 
 Vector3 Vector3::Proj(Vector3 vector, Vector3 onNormal)
 {
