@@ -43,6 +43,13 @@ public class GeneratorArenaQuest : ArenaQuest
     [SerializableField]
     private Audio arenaStartVoiceOverAudio;
 
+    [SerializableField]
+    private string arenaEndVoiceOverText;
+    [SerializableField]
+    private float arenaEndVoiceOverTime;
+    [SerializableField]
+    private Audio arenaEndVoiceOverAudio;
+
     private bool isAnimating = false;
     private bool isAnimatingGeneratorSwitch = false;
 
@@ -82,6 +89,7 @@ public class GeneratorArenaQuest : ArenaQuest
 
     public override void OnSuccess()
     {
+        voiceoverScript.TriggerVoiceOver("Goddess", arenaEndVoiceOverText, arenaEndVoiceOverAudio, arenaEndVoiceOverTime);
         // enable door lamp to sewer..
         if (doorLamp != null)
         {
