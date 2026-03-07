@@ -424,15 +424,26 @@ void AssetManager::createAssetCopy(ResourceID id) {
 	/// STUB..
 
 	// check if id is not invalid..
-	
+	if (id == INVALID_RESOURCE_ID)
+		return;
 	// get asset filepath from id via assetToDescriptor unordered map..
-	std::filesystem::path filepath{ /* */ };
+	auto iter = assetToDescriptor.find(id);
+	if (iter == assetToDescriptor.end())
+		return;
+	std::filesystem::path filepath{ iter->second.get()->filepath};
 	
 	// while is filepath doesnt exist..
 		// generate new filepath name
 		// filepath.filename() + " - Copy - Copy";
+	while (std::filesystem::exists(filepath))
+	{
+		std::filesystem::path stem = filepath.stem();
+		std::filesystem::path ext = filepath.extension();
+		filepath = filepath.parent_path() / (stem.string() + " - Copy" + ext.string());
+	}
 	
 	// use std::filesystem to copy
+	std::filesystem::copy(iter->second.get()->filepath, filepath);
 }
 
 void AssetManager::onAssetAddition(AssetFilePath const& assetFilePath) {
