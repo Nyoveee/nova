@@ -113,6 +113,19 @@ class Gunner : Enemy
     /***********************************************************
        Inherited Functions
     ***********************************************************/
+    public override void StaggerMovement()
+    {
+        if (navMeshAgent.enable && gunnerState!= GunnerState.Stagger)
+        {
+            base.StaggerMovement();
+            GunnerState originalState = gunnerState;
+            gunnerState = GunnerState.Stagger;
+            Invoke(() => {
+                if (gunnerState != GunnerState.Death)
+                    gunnerState = originalState;
+            }, movementStaggerTime);
+        }
+    }
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
         audioComponent.PlayRandomSound(impactSFX);
@@ -228,6 +241,7 @@ class Gunner : Enemy
             }
             else
             {
+                StaggerMovement();
                 TriggerRecentlyDamageCountdown();
                 if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
                 {
@@ -281,7 +295,7 @@ class Gunner : Enemy
             {
                 gunnerState = GunnerState.Idle;
                 animator.PlayAnimation("Gunner_Idle");
-                NavigationAPI.stopAgent(gameObject);
+                StopNavMeshMovement();
                 return;
             }
             MoveToNavMeshPosition(targetVantagePoint.transform.position);
@@ -290,7 +304,7 @@ class Gunner : Enemy
         {
             gunnerState = GunnerState.PreJump;
             animator.PlayAnimation("Gunner_Jump");
-            NavigationAPI.stopAgent(gameObject);
+            StopNavMeshMovement();
             LookAt(GetTargetJumpPosition());
             return;
         }
@@ -302,13 +316,13 @@ class Gunner : Enemy
         {
             gunnerState = GunnerState.Shoot;
             animator.PlayAnimation("Gunner_Attack");
-            NavigationAPI.stopAgent(gameObject);
+            StopNavMeshMovement();
         }
         else if (Vector3.Distance(vantagePoint, gunnerPos) <= gunnerStats.targetDistanceFromVantagePoint)
         {
             gunnerState = GunnerState.Shoot;
             animator.PlayAnimation("Gunner_Attack");
-            NavigationAPI.stopAgent(gameObject);
+            StopNavMeshMovement();
         }
     }
     private void Update_Shoot()
@@ -322,8 +336,7 @@ class Gunner : Enemy
         }
     }
     private void Update_Stagger(){
-        if (IsCurrentlyJumping() && IsJumpFinished())
-            navMeshAgent.CompleteOffMeshLink();
+    
     }
     private void Update_PreJump() { }
     private void Update_Jump()
