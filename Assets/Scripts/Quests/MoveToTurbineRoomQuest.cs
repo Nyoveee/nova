@@ -6,6 +6,13 @@ using ScriptingAPI;
 class MoveToTurbineRoomQuest : MovementBasedQuest
 {
     [SerializableField]
+    private GameObject goddess;
+    [SerializableField]
+    private GameObject closedRangedexitDoor;
+    [SerializableField]
+    private GameObject goddessTurbineRoomQuestLocation;
+
+    [SerializableField]
     private Door generatorExitDoor;
 
     [SerializableField]
@@ -34,6 +41,11 @@ class MoveToTurbineRoomQuest : MovementBasedQuest
 
     public override void OnEnter()
     {
+        // Set goddess to the other entrance
+        goddess.transform.position = goddessTurbineRoomQuestLocation.transform.position;
+        goddess.transform.rotation = goddessTurbineRoomQuestLocation.transform.rotation;
+        goddess.getScript<GoddessBehaviour>()?.Idle();
+
         generatorExitDoor.UnlockDoor();
         closedRangedToHubDoor.UnlockDoor();
         hubToSewerDoor.UnlockDoor();

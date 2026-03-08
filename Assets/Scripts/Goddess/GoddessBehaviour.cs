@@ -22,8 +22,12 @@ class GoddessBehaviour : Script
     private float risingSlowDownRate;
     [SerializableField]
     private float delayForVoiceOver;
+    [SerializableField]
+    private float rotationTime;
 
+    private Animator_ animator;
     private SkinnedMeshRenderer_ skinnedMeshRenderer_;
+
     // Rising State
     private float currentOscillation;
     private float currentRisingTime;
@@ -40,22 +44,42 @@ class GoddessBehaviour : Script
     private List<string> goddessVoiceOverText;
     private List<float> goddessVoiceOverTime;
     private Audio goddessVoiceOverAudio;
+
     // State
     private delegate void CurrentState();
     private GoddessState goddessState = GoddessState.Idle;
     private Dictionary<GoddessState, CurrentState> updateState = new Dictionary<GoddessState, CurrentState>();
 
-    // This function is invoked once when gameobject is active.
+    // Pointing
+    private Quaternion startRotation;
+    private Quaternion endRotation;
+    private GameObject pointedGameObject;
+    private float timeToStartPointing;
+    private bool b_IsRotatingToPoint;
+    private float currentRotationTime;
     protected override void init()
     {
         voiceoverScript = GameObject.FindWithTag("Game UI Manager")?.getScript<VoiceoverScript>();
         skinnedMeshRenderer_ = getComponent<SkinnedMeshRenderer_>();
+        animator = getComponent<Animator_>();
         updateState.Add(GoddessState.Idle, Update_Idle);
         updateState.Add(GoddessState.Rising, Update_Rising);
         updateState.Add(GoddessState.Floating, Update_Floating);
     }
     protected override void update()
     {
+        // Goddess can point at any state
+        if (b_IsRotatingToPoint)
+        {
+            currentRotationTime += Time.V_DeltaTime();
+            currentRotationTime = Mathf.Min(currentRotationTime, rotationTime);
+            gameObject.transform.rotation = Quaternion.Slerp(startRotation, endRotation, currentRotationTime / rotationTime);
+            if (currentRotationTime == rotationTime)
+            {
+                b_IsRotatingToPoint = false;
+                animator.PlayAnimation("Goddess Point");
+            }
+        }
         updateState[goddessState]();
     }
     private void Update_Idle(){}
@@ -106,10 +130,34 @@ class GoddessBehaviour : Script
             Invoke(() =>
             {
                 voiceoverScript.TriggerVoiceOverSequence("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime, true);
+                if(pointedGameObject!= null)
+                    Invoke(() => { b_IsRotatingToPoint = true; }, timeToStartPointing);
             }, delayForVoiceOver);
            
-        }
-              
+        } 
     }
+    public void Idle()
+    {
+        goddessState = GoddessState.Idle;
+    }
+    // Begin Pointing at this gameobject, at this time
+    public void PointAt(GameObject go, float timeToStartPointing)
+    {
+        pointedGameObject = go;
+        startRotation = gameObject.transform.rotation;
+        Vector3 direction = go.transform.position - gameObject.transform.position;
+        direction.y = 0;
+        direction.Normalize();
+        endRotation = Quaternion.LookRotation(direction) * Quaternion.AngleAxis(180 * Mathf.Deg2Rad, new Vector3(0,1,0));
+        this.timeToStartPointing = timeToStartPointing;
+    }
+    /***********************************************************
+        Animation Events
+    ***********************************************************/
 
+    public void StopPointing()
+    {
+        animator.PlayAnimation("Goddess Idle");
+        pointedGameObject = null;
+    }
 }
