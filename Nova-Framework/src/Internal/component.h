@@ -478,7 +478,8 @@ struct AudioComponent
 	//bool playWhenPaused = false;
 	enum class AudioGroup {
 		SFX,
-		BGM
+		BGM,
+		UI
 	}audioGroup = AudioGroup::SFX;
 	REFLECTABLE(
 		volume,
