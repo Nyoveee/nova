@@ -78,14 +78,20 @@ AudioSystem::AudioSystem(Engine& engine) :
 	fmodSystem->createChannelGroup("Master", &masterChannelGroup);
 	fmodSystem->createChannelGroup("BGM", &bgmChannelGroup);
 	fmodSystem->createChannelGroup("SFX", &sfxChannelGroup);
+	fmodSystem->createChannelGroup("UI", &uiChannelGroup);
 
 	masterChannelGroup->addGroup(bgmChannelGroup);
-	masterChannelGroup->addGroup(sfxChannelGroup);
+	//masterChannelGroup->addGroup(sfxChannelGroup);
+	masterChannelGroup->addGroup(uiChannelGroup);
 
+	uiChannelGroup->addGroup(sfxChannelGroup);
+	
 	// Set initial audio group..
 	masterChannelGroup->setVolume(engine.dataManager.audioConfig.masterVolume);
 	bgmChannelGroup->setVolume(engine.dataManager.audioConfig.bgmVolume);
-	sfxChannelGroup->setVolume(engine.dataManager.audioConfig.sfxVolume);
+	//
+	//sfxChannelGroup->setVolume(engine.dataManager.audioConfig.sfxVolume);
+	uiChannelGroup->setVolume(engine.dataManager.audioConfig.sfxVolume);
 }
 
 AudioSystem::~AudioSystem() {
@@ -509,6 +515,9 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 				positionalAudioGroups[audioInstance.audioId].push_back(audioInstance);
 			break;
 		}
+		case AudioComponent::AudioGroup::UI:
+			channel->setChannelGroup(uiChannelGroup);
+			break;
 		default:
 			channel->setChannelGroup(masterChannelGroup);
 			break;
@@ -586,42 +595,12 @@ void AudioSystem::setBGMVolume(NormalizedFloat volume) {
 }
 
 void AudioSystem::setSFXVolume(NormalizedFloat volume) {
-	sfxChannelGroup->setVolume(volume);
+	uiChannelGroup->setVolume(volume);
 }
 void AudioSystem::onEnginePaused() {
 	sfxChannelGroup->setPaused(true);
-	//for (auto& [instanceId, audioInstance] : audioInstances) {
-	//	if (!audioInstance.channel) continue;
-	//
-	//	// Check if the entity has an AudioComponent with playWhenPaused set
-	//	bool shouldKeepPlaying = false;
-	//	if (audioInstance.entity != entt::null) {
-	//		if (auto* comp = engine.ecs.registry.try_get<AudioComponent>(audioInstance.entity)) {
-	//			shouldKeepPlaying = comp->playWhenPaused;
-	//		}
-	//	}
-	//
-	//	if (!shouldKeepPlaying) {
-	//		audioInstance.channel->setPaused(true);
-	//	}
-	//}
 }
 
 void AudioSystem::onEngineResumed() {
 	sfxChannelGroup->setPaused(false);
-	//for (auto& [instanceId, audioInstance] : audioInstances) {
-	//	if (!audioInstance.channel) continue;
-	//
-	//	bool shouldKeepPlaying = false;
-	//	if (audioInstance.entity != entt::null) {
-	//		if (auto* comp = engine.ecs.registry.try_get<AudioComponent>(audioInstance.entity)) {
-	//			shouldKeepPlaying = comp->playWhenPaused;
-	//		}
-	//	}
-	//
-	//	// Only resume sounds that were paused by the engine pause (not manually paused)
-	//	if (!shouldKeepPlaying) {
-	//		audioInstance.channel->setPaused(false);
-	//	}
-	//}
 }
