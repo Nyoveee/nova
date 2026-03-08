@@ -3,6 +3,7 @@
 // Editor will automatically rename and recompile this file.
 class PlayerRotateController : Script
 {
+    public bool rotationIsEnabled = true;
     public float cameraSensitivity = 0.1f;
     [SerializableField]
     private Transform_? playerOrientation = null; //Movement (XYZ) handled by this script + inheritence. Camera rotation is handled by PlayerRotateController which in unaffected by inheritence 
@@ -36,10 +37,6 @@ class PlayerRotateController : Script
     // This function is invoked every fixed update.
     protected override void update()
     {
-        UpdateCamera();
-
-
-
         MoveToOrientation();
         //Invoke(MoveToOrientation, 0);
         //gameObject.transform.position = playerCameraPos.position;
@@ -102,6 +99,8 @@ class PlayerRotateController : Script
 
     private void CameraMovement(float deltaMouseX, float deltaMouseY)
     {
+        if (rotationIsEnabled == false)
+            return;
         //accumulateDifferenceX += deltaMouseX;
         //accumulateDifferenceY += deltaMouseY;
 

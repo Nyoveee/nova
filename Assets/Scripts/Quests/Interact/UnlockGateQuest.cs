@@ -69,7 +69,7 @@ class UnlockGateQuest : Quest
 
     public override void OnEnter()
     {
-        voiceoverScript.TriggerVoiceOver("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime);
+        voiceoverScript.TriggerVoiceOver("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime, false);
         Invoke(() =>
         {
             if(shadowCasters.Count != 0)

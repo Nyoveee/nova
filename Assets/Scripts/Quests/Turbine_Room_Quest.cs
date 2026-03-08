@@ -55,7 +55,7 @@ class Turbine_Room_Quest : Quest
     }
     public override void OnEnter()
     {
-        voiceoverScript.TriggerVoiceOver("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime);
+        voiceoverScript.TriggerVoiceOver("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime, false);
     }
     public override void UpdateQuest()
     {
@@ -66,7 +66,7 @@ class Turbine_Room_Quest : Quest
             foreach (GameObject spawnLocation in spawnLocations[spawnLocations.Count-1])
                 spawnedEnemies.Add(Instantiate(gunnerPrefab, spawnLocation.transform.position));
             ++weaverVoiceOverIndex;
-            voiceoverScript.TriggerVoiceOver("Weaver", weaverVoiceOverText[weaverVoiceOverIndex], weaverVoiceOverAudio[weaverVoiceOverIndex], weaverVoiceOverTime[weaverVoiceOverIndex]);
+            voiceoverScript.TriggerVoiceOver("Weaver", weaverVoiceOverText[weaverVoiceOverIndex], weaverVoiceOverAudio[weaverVoiceOverIndex], weaverVoiceOverTime[weaverVoiceOverIndex], false);
             spawnLocations.RemoveAt(spawnLocations.Count-1);
             activeSwitches.RemoveAt(i);
         }

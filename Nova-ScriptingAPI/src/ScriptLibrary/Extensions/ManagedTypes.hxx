@@ -104,6 +104,7 @@ static Vector3 One();
 static Vector3 Zero();
 static float Dot(Vector3 a, Vector3 b);
 static Vector3 Lerp(Vector3 a, Vector3 b, float interval);
+static Vector3 Interpolate(Vector3 a, Vector3 b, float interval, float degree);
 static Vector3 Proj(Vector3 vector, Vector3 onNormal);
 static Vector3 Cross(Vector3 lhs, Vector3 rhs);
 static Vector3 Abs(Vector3 vec);

@@ -26,6 +26,8 @@ class DialogueScript : Script
     // -------------------------- 
 
     private PlayerController_V2 playerBody;
+    private PlayerWeaponController playerWeaponController;
+    private PlayerRotateController playerRotateController;
     private CameraComponent_ playerCamera;
     private AudioComponent_ audioComponent_;
 
@@ -84,17 +86,11 @@ class DialogueScript : Script
     [SerializableField]
     private Vector3 newQuestInformationUILocation;
 
-    private enum DialogueState
-    {
-        StartTransition,
-        InDialogue,
-        EndTransition
-    }
-    private DialogueState dialogueState;
-
     protected override void init()
     {
         playerBody = GameObject.FindWithTag("Player")?.getScript<PlayerController_V2>();
+        playerWeaponController = GameObject.FindWithTag("Player")?.getScript<PlayerWeaponController>();
+        playerRotateController = GameObject.FindWithTag("PlayerHead")?.getScript<PlayerRotateController>();
         playerCamera = GameObject.FindWithTag("PlayerCamera")?.getComponent<CameraComponent_>();
 
         audioComponent_ = getComponent<AudioComponent_>();
@@ -175,6 +171,7 @@ class DialogueScript : Script
                 BeginFadeSequence(
                     () =>
                     {
+                        playerWeaponController.EnableShooting();
                         // swap camera..
                         cutsceneCameras[currentCameraIndex - 1].camStatus = false;
                         playerCamera.camStatus = true;
@@ -184,6 +181,7 @@ class DialogueScript : Script
                         cutsceneUI.SetActive(false);
 
                         playerBody.movementIsEnabled = true;
+                        playerRotateController.rotationIsEnabled = true;
                     },
                     () =>
                     {
@@ -195,6 +193,7 @@ class DialogueScript : Script
 
     public void BeginDialogueSequence(string speaker, List<string> text, List<float> times, float finalDialogueTime)
     {
+        playerWeaponController.DisableShooting();
         BeginFadeSequence(
         () =>
         {
@@ -207,12 +206,14 @@ class DialogueScript : Script
             cutsceneUI.SetActive(true);
 
             playerBody.movementIsEnabled = false;
+            playerRotateController.rotationIsEnabled = false;
 
             // swap camera..
             playerCamera.camStatus = false;
 
             // begin cutscene transition effect..
             SetupCutsceneArea();
+ 
         }, 
         () =>
         {
@@ -284,4 +285,5 @@ class DialogueScript : Script
 
         timeElapsed += Time.V_DeltaTime();
     }
+    public float GetFadeTransitionTime() => (fadeTransitionTime);
 }

@@ -16,6 +16,7 @@ Properties{
     float fresnelPower;
     float speedMultiplier;
 
+    float alpha;
     float resultingAlpha;
 
     sampler2D albedoMap;
@@ -72,5 +73,5 @@ Frag{
 
     vec3 pbrColor = PBRCaculation(vec3(albedo), _normal, roughness, metallic, occulusion);
 
-	return mix(fresnelColor + vec4(baseColor, resultingAlpha), vec4(pbrColor, albedo.a), lerpPercentage);
+	return mix(fresnelColor * alpha + vec4(baseColor, resultingAlpha), vec4(pbrColor, albedo.a), lerpPercentage);
 }
