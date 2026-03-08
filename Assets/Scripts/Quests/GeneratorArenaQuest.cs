@@ -75,7 +75,7 @@ public class GeneratorArenaQuest : ArenaQuest
         }
         Invoke(() =>
         {
-            voiceoverScript.TriggerVoiceOver("Goddess", arenaStartVoiceOverText, arenaStartVoiceOverAudio, arenaStartVoiceOverTime);
+            voiceoverScript.TriggerVoiceOver("Goddess", arenaStartVoiceOverText, arenaStartVoiceOverAudio, arenaStartVoiceOverTime, false);
             arenaManager.StartArena(this);
 
             if (shadowCasters.Count > 0)
@@ -89,7 +89,7 @@ public class GeneratorArenaQuest : ArenaQuest
 
     public override void OnSuccess()
     {
-        voiceoverScript.TriggerVoiceOver("Goddess", arenaEndVoiceOverText, arenaEndVoiceOverAudio, arenaEndVoiceOverTime);
+        voiceoverScript.TriggerVoiceOver("Goddess", arenaEndVoiceOverText, arenaEndVoiceOverAudio, arenaEndVoiceOverTime, false);
         // enable door lamp to sewer..
         if (doorLamp != null)
         {
