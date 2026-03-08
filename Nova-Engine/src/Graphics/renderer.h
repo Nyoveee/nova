@@ -253,7 +253,9 @@ private:
 	void renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fog);
 
 	// HDR post-processing functions
-	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
+	void hdrToneMapping(PairFrameBuffer& frameBuffers);
+	void gammaCorrection(PairFrameBuffer& frameBuffers);
+	void hdrAndGammaCorrection(PairFrameBuffer& frameBuffers, bool toToneMap, bool toGammaCorrect);
 
 	// set up the material's chosen shader and supply the proper uniforms..
 	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, BlendConfig blendConfig, std::optional<GLuint> depthTextureId);

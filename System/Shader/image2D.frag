@@ -26,5 +26,12 @@ void main()
         newTextureCoords.y = mod((1 - textureCoords.y), textureCoordinatesRange.y);
     }
 
-    FragColor = texture(image, newTextureCoords) * tintColor;
+    vec4 textureColor = texture(image, newTextureCoords);
+    
+    // reverse premultiply alpha..
+    // if(textureColor.a != 0) {
+    //     textureColor.rgb /= textureColor.a;
+    // }
+
+    FragColor = textureColor * tintColor;
 }  
