@@ -250,9 +250,11 @@ struct SkinnedMeshRenderer {
 struct Animator {
 	// @TODO: Change to animation asset.
 	TypedResourceID<Controller> controllerId{ INVALID_RESOURCE_ID };
+	float speedMultiplier = 1.f;
 
 	REFLECTABLE(
-		controllerId
+		controllerId,
+		speedMultiplier
 	)
 
 	float timeElapsed = 0;
