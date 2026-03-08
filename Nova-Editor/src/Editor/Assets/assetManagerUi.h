@@ -28,6 +28,8 @@ public:
 	void displayAssetFolder(ResourceID id);
 
 	std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "", bool binary = false);
+	
+	bool isHovering;
 
 private:
 	void displayLeftNavigationPanel();

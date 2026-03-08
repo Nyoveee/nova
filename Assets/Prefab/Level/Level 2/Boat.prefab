@@ -1,0 +1,519 @@
+{
+    "RootEntity": 4,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Boat",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 15104440442498695767,
+                "entityGUID": 852377209114329583,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 14.587259292602539,
+                    "y": -416.8475036621094,
+                    "z": 230.9201202392578
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 14.587259292602539,
+                    "y": -416.8475036621094,
+                    "z": 230.9201202392578
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "name": "Boat_Connector",
+                "tag": "Floor",
+                "parent": 4,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 15104440442498695767,
+                "entityGUID": 17569739025913446891,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 21.83681297302246,
+                    "y": -414.4143371582031,
+                    "z": 296.5533142089844
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 7.249553680419922,
+                    "y": 2.43316650390625,
+                    "z": 65.63319396972656
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 2581759466017062913,
+                "materialIds": [
+                    17569739025908334985
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "name": "Boat_End",
+                "tag": "Floor",
+                "parent": 4,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 15104440442498695767,
+                "entityGUID": 15263896016699539933,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 14.587259292602539,
+                    "y": -416.8475036621094,
+                    "z": 230.9201202392578
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 12958053007478685699,
+                "materialIds": [
+                    16416817521302536591,
+                    12381592255178949009
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "id": 6
+        },
+        {
+            "EntityData": {
+                "name": "Boat_Front",
+                "tag": "Floor",
+                "parent": 4,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 15104440442498695767,
+                "entityGUID": 16993278273609728461,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 14.587259292602539,
+                    "y": -416.8475036621094,
+                    "z": 230.9201202392578
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 10652209998264991749,
+                "materialIds": [
+                    12381592255178949009,
+                    17569739025908941195
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "id": 7
+        },
+        {
+            "EntityData": {
+                "name": "Boat_Middle",
+                "tag": "Floor",
+                "parent": 4,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 15104440442498695767,
+                "entityGUID": 6616984732148187607,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 14.587259292602539,
+                    "y": -416.8475036621094,
+                    "z": 230.9201202392578
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 14110974512085549063,
+                "materialIds": [
+                    15263896016695476621
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "id": 8
+        },
+        {
+            "EntityData": {
+                "name": "Boat_Connector",
+                "tag": "Floor",
+                "parent": 4,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 15104440442498695767,
+                "entityGUID": 17569739025913446891,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 21.83681297302246,
+                    "y": -414.4143371582031,
+                    "z": 165.3643341064453
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 7.249553680419922,
+                    "y": 2.43316650390625,
+                    "z": -65.5557861328125
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 2581759466017062913,
+                "materialIds": [
+                    17569739025908334985
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Floor",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "id": 9
+        }
+    ]
+}

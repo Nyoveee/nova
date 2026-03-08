@@ -345,8 +345,10 @@ ManagedComponentEnd()
 // Animator Component
 // ======================================
 ManagedComponentDeclaration(
-	Animator
+	Animator,
+	float, speedMultiplier
 )
+
 void SetBool(System::String^ name, bool value);
 void SetFloat(System::String^ name, float value);
 void SetInteger(System::String^ name, int value);

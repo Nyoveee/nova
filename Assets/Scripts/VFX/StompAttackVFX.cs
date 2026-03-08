@@ -7,6 +7,7 @@ class StompAttackVFX : Script
     [SerializableField] private float speed = 50f;
     [SerializableField] private float sizeIncrease = 2f;
     [SerializableField] private float fadeOut = 0.3f;
+    [SerializableField] private float damage = 20f;
 
     MeshRenderer_ meshRenderer;
 
@@ -15,6 +16,8 @@ class StompAttackVFX : Script
 
     Vector3 initialScale;
     Vector3 finalScale;
+
+    bool hasDamagedPlayer = false;
 
     // This function is invoked once when gameobject is active.
     protected override void awake()
@@ -60,7 +63,7 @@ class StompAttackVFX : Script
         if (timeElapsed > (movingDuration + fadeOut))
         {
             isMoving = false;
-            Destroy(gameObject);
+            Destroy(gameObject.GetParent());
         }
     }
 
@@ -68,5 +71,21 @@ class StompAttackVFX : Script
     {
         timeElapsed = 0f;
         isMoving = true;
+    }
+
+    protected override void onCollisionEnter(GameObject other)
+    {
+        if (hasDamagedPlayer)
+        {
+            return;
+        }
+
+        if (other.tag != "Player")
+        {
+            return;
+        }
+
+        hasDamagedPlayer = true;
+        other.getScript<PlayerController_V2>()?.TakeDamage(damage);
     }
 }

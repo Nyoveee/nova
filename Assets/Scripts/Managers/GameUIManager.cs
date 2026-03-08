@@ -187,13 +187,14 @@ class GameUIManager : Script
         if (deathUI.IsActive())
             return;
 
-        GameObject gameObject = GameObject.FindWithTag("Setting UI");
+        Canvas_ settingsUI = GameObject.FindWithTag("Setting UI")?.getComponent<Canvas_>();
 
-        if (gameObject != null && gameObject.IsActive())
+        if (settingsUI != null && settingsUI.isInteractable)
             return;
 
         isPaused = !isPaused;
         Systems.Pause = isPaused;
+
         pauseUI?.SetActive(isPaused);
 
         if (isPaused)

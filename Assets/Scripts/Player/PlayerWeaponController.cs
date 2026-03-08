@@ -262,8 +262,8 @@ class PlayerWeaponController : Script
 
             // We raycast only to specific physics layers..
             string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall" };
-            RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 500f, mask);
-
+            RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 1000f, mask);
+            
             if (result != null)
             {
                 GameObject ammoTrail = Instantiate(ammoTrailPrefab, muzzle.gameObject.transform.position, muzzle.gameObject.transform.rotation);

@@ -17,6 +17,10 @@ class BossHomingMissile : Enemy
     [SerializableField]
     public float rotationSpeed = 10.0f;
     [SerializableField]
+    public float flightSpeed = 10.0f;
+    [SerializableField]
+    public float flightAcceleration = 20.0f;
+    [SerializableField]
     public float searchAngle = 90f;
 
 
@@ -27,10 +31,7 @@ class BossHomingMissile : Enemy
     public float intialGravityFactor = 0.5f;
     [SerializableField]
     public float homingGravityFactor = 3.0f;
-    [SerializableField]
-    public float flightSpeed = 10.0f;
-    [SerializableField]
-    public float flightAcceleration = 20.0f;
+
 
     /***********************************************************
     Runtime variables..
@@ -61,14 +62,14 @@ class BossHomingMissile : Enemy
     protected override void init()
     {
         enemyStats = getScript<EnemyStats>();
-        player = GameObject.FindWithTag("Player");
-        playerHead = GameObject.FindWithTag("PlayerHead");
+        //player = GameObject.FindWithTag("Player");
+        player = GameObject.FindWithTag("PlayerHead");
   
         missileStats = getScript<MissileStats>();
         rigidbody = getComponent<Rigidbody_>();
         audioComponent = getComponent<AudioComponent_>();
 
-        IntialiseMissileSetting(gameObject.transform.front);
+        InitialiseMissileSetting(gameObject.transform.front);
 
         rigidbody.SetVelocityLimits(flightSpeed);
         //Debug.Log("Now facing");
@@ -219,10 +220,11 @@ class BossHomingMissile : Enemy
     }
 
 
-    public void IntialiseMissileSetting(Vector3 direction)
+    public void InitialiseMissileSetting(Vector3 direction)
     {
         //missile rotates to face that direction.
-        Quaternion lookRotation = Quaternion.LookRotation(gameObject.transform.front);
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        Debug.Log("Now facing " + direction);
         //Quaternion lookRotation = Quaternion.LookRotation(new Vector3( 0,1,0));
         gameObject.transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, lookRotation, 1f);
 
@@ -271,7 +273,7 @@ class BossHomingMissile : Enemy
         if (isOutofRange())
         {
             missileState = MissileState.StraightFlight;
-        
+
         }
 
 
@@ -290,12 +292,12 @@ class BossHomingMissile : Enemy
         playerDirection.Normalize();
 
         Vector3 frontDirection = gameObject.transform.front;
-        frontDirection.y = 0;
+        //frontDirection.y = 0;
         frontDirection.Normalize();
 
         float dot = Vector3.Dot(frontDirection, playerDirection);
-
-        if( Mathf.Rad2Deg * Math.Acos(dot) < searchAngle)
+        Math.Clamp(dot, -1.0f, 1.0f);
+        if ( Mathf.Rad2Deg * Math.Acos(dot) < searchAngle)
         {
             return true;
         }

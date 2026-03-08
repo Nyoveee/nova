@@ -1,6 +1,8 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using Windows.UI.Input.Inking.Analysis;
+
 class UIPopupScript : Script
 {
     private delegate void Callback();
@@ -15,6 +17,8 @@ class UIPopupScript : Script
     private float finalAlpha = 1f;
 
     private Canvas_ canvas;
+    private Canvas_ parentCanvas;
+
     private Callback callback;
 
     // This function is invoked once before init when gameobject is active.
@@ -38,6 +42,11 @@ class UIPopupScript : Script
         timeElapsed += Time.V_DeltaTime();
 
         canvas.alpha = Mathf.Interpolate(initialAlpha, finalAlpha, timeElapsed / popupUIFadeDuration, 1f);
+
+        if(parentCanvas != null)
+        {
+            parentCanvas.alpha = Mathf.Interpolate(finalAlpha, initialAlpha, timeElapsed / popupUIFadeDuration, 1f);
+        }
 
         if (timeElapsed > popupUIFadeDuration) {
             isFading = false;
@@ -63,7 +72,7 @@ class UIPopupScript : Script
     protected override void exit()
     {}
 
-    public void toShowUI(bool toShow, Canvas_ parentCanvas)
+    public void toShowUI(bool toShow, Canvas_ p_parentCanvas, bool toFadeParentCanvas)
     {
         if (isFading)
         {
@@ -73,11 +82,20 @@ class UIPopupScript : Script
         timeElapsed = 0f;
         isFading = true;
 
+        if (toFadeParentCanvas)
+        {
+            parentCanvas = p_parentCanvas;
+        }
+        else
+        {
+            parentCanvas = null;
+        }
+
         if (toShow) 
         {
             gameObject.SetActive(true);
             canvas = getComponent<Canvas_>();
-            parentCanvas.isInteractable = false;
+            p_parentCanvas.isInteractable = false;
 
             canvas.alpha = 0f;
             initialAlpha = 0f;
@@ -89,7 +107,7 @@ class UIPopupScript : Script
             callback = () =>
             {
                 gameObject.SetActive(false);
-                parentCanvas.isInteractable = true;
+                p_parentCanvas.isInteractable = true;
             };
 
             canvas.isInteractable = false;

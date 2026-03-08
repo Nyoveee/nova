@@ -147,6 +147,12 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			/// **** 
 			// get selected resource id, check if its not invalid then save to editor.. INVALID_RESOURCE_ID
 			// copy when mouse is over the asset viewer (isHovering)
+
+			ResourceID selected = assetViewerUi.getCurrentResourceID();
+			if (selected != INVALID_RESOURCE_ID && assetManagerUi.isHovering)
+			{
+				savedResourceIDToCopy = selected;
+			}
 		}
 	);
 
@@ -158,7 +164,11 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 			/// **** 
 			// if not INVALID_RESOURCE_ID..
-			
+			if (savedResourceIDToCopy == INVALID_RESOURCE_ID)
+				return;
+
+			assetManager.createAssetCopy(savedResourceIDToCopy);
+			savedResourceIDToCopy = INVALID_RESOURCE_ID;
 		}
 	);
 

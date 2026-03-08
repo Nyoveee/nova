@@ -19,6 +19,7 @@ struct Particle{
     bool colorOverLifetime;
     bool sizeOverLifetime;
     bool b_Active;
+    int renderAlignment;
 };
 
 struct PointLightData{
@@ -28,12 +29,15 @@ struct PointLightData{
     float radius;
     float intensity;
 };
+
 struct ParticleVertex{
+    mat4 localRotationMatrix;
 	vec4 color;
 	vec3 position;
 	float rotation;
 	float currentSize;
 };
+
 layout(std430, binding = 4) buffer ParticleVertexList {
     ParticleVertex particleVertices[];
 };

@@ -91,112 +91,6 @@ inline void DisplayProperty<ParticleEmissionTypeSelection>(Editor& editor, const
 /******************************************************************************
 	Particles System
 ******************************************************************************/
-#if 0
-struct CubeEmitter {
-	glm::vec3 min = { -5.f,-5.f,-5.f };
-	glm::vec3 max = { 5.f,5.f,5.f };
-};
-
-struct ConeEmitter {
-	float arc = 30.f;
-	float distance = 5.f;
-};
-
-struct RadiusEmitter {
-	float radius = 5.f;
-};
-
-struct ParticleEmissionTypeSelection {
-	enum class EmissionShape {
-		Point,
-		Sphere,
-		Cube,
-		Edge,
-		Circle,
-		Hemisphere,
-		Cone
-	} emissionShape = EmissionShape::Point;
-	RadiusEmitter radiusEmitter;
-	CubeEmitter cubeEmitter;
-	ConeEmitter coneEmitter;
-};
-
-struct ParticleColorSelection {
-	ColorA color{ 1.f, 1.f, 1.f,1.f };
-	glm::vec3 colorOffsetMin{};
-	glm::vec3 colorOffsetMax{};
-	float emissiveMultiplier = 1.f;
-};
-
-struct SizeOverLifetime {
-	bool selected{};
-	InterpolationType interpolationType{ InterpolationType::Linear };
-	float endSize{};
-};
-
-struct ColorOverLifetime {
-	bool selected{};
-	InterpolationType interpolationType{ InterpolationType::Linear };
-	ColorA endColor{};
-};
-
-struct Trails {
-	bool selected{ false };
-	TypedResourceID<Texture> trailTexture;
-	float distancePerEmission{ 0.1f };
-	float trailSize{ 0.1f };
-	ColorA trailColor{ ColorA{1.f,1.f,1.f,1.f} };
-	glm::vec3 trailColorOffsetMin{};
-	glm::vec3 trailColorOffsetMax{};
-	float trailEmissiveMultiplier{ 1.f };
-};
-
-struct ParticleEmitter
-{
-	// Update
-	float currentContinuousTime{};
-	float currentBurstTime{};
-	glm::vec3 prevPosition{};
-	bool b_firstPositionUpdate{ true };
-	// Categories
-	TypedResourceID<Texture> texture{};
-	ParticleEmissionTypeSelection particleEmissionTypeSelection{};
-	ParticleColorSelection particleColorSelection{};
-	SizeOverLifetime sizeOverLifetime{};
-	ColorOverLifetime colorOverLifetime{};
-	Trails trails{};
-	// Core
-	bool looping = true;
-	bool randomizedDirection = false;
-	bool invertMovement = false;
-	float startSize = 1.f;
-	float minStartSizeOffset = 0.f;
-	float maxStartSizeOffset = 0.f;
-	float startSpeed = 1;
-	glm::vec3 force{};
-// Rotation
-	float initialRotation{};
-	bool velocityBasedInitialRotation{};
-	float minInitialRotationOffset;
-	float maxInitialRotationOffset;
-	// Angular Velocity
-	float initialAngularVelocity{};
-	float minAngularVelocityOffset{};
-	float maxAngularVelocityOffset{};
-	// LifeTime
-	float lifeTime = 1;
-	float minLifeTimeOffset;
-	float maxLifeTimeOffset;
-
-	float particleRate = 100;
-	float burstRate = 0;
-	int burstAmount = 30;
-	// Light
-	float lightIntensity{};
-	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
-	float lightRadius{};
-};
-#endif
 
 void displayParticleEmitterComponent(Editor& editor, ParticleEmitter& emitter) {
 	if (ImGui::TreeNode("Basic")) {
@@ -207,7 +101,10 @@ void displayParticleEmitterComponent(Editor& editor, ParticleEmitter& emitter) {
 			Distance
 		} spawnType = emitter.trails.selected ? Distance : Time;
 
+		DisplayProperty<ParticleEmitter::RenderAlignment>(editor, "Render Alignment", emitter.renderAlignment);
 		DisplayProperty<SpawnType>(editor, "Emission Type", spawnType);
+		DisplayProperty<int>(editor, "Render Order", emitter.renderOrder);
+
 		emitter.trails.selected = spawnType == Distance;
 
 		if (emitter.trails.selected) {

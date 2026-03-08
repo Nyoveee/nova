@@ -61,27 +61,37 @@ class ButtonScript : Script
     // used by settings
     public void DisableSettingsUI()
     {
-        ToShowPopUI("Setting UI", false);
+        ToShowPopUI("Setting UI", false, false);
     }
 
     public void EnableSettingsUI()
     {
-        ToShowPopUI("Setting UI", true);
+        ToShowPopUI("Setting UI", true, false);
+    }
+
+    public void EnableSettingsUIWithFade()
+    {
+        ToShowPopUI("Setting UI", true, true);
+    }
+
+    public void DisableSettingsUIWithFade()
+    {
+        ToShowPopUI("Setting UI", false, true);
     }
 
     public void DisableControlsUI()
     {
-        ToShowPopUI("Controls UI", false);
+        ToShowPopUI("Controls UI", false, false);
     }
 
     public void EnableControlsUI()
     {
-        ToShowPopUI("Controls UI", true);
+        ToShowPopUI("Controls UI", true, false);
     }
 
-    private void ToShowPopUI(string tagName, bool value)
+    private void ToShowPopUI(string tagName, bool value, bool toFadeParentCanvas)
     {
-        GameObject.FindWithTag(tagName).getScript<UIPopupScript>().toShowUI(value, parentCanvas);
+        GameObject.FindWithTag(tagName).getScript<UIPopupScript>().toShowUI(value, parentCanvas, toFadeParentCanvas);
     }
 
     public void StartChapter()
