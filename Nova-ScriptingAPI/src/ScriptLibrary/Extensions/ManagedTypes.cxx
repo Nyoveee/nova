@@ -110,6 +110,40 @@ Vector3 Vector3::Abs(Vector3 vec) {
 }
 
 // =================================================================
+// Colour
+// =================================================================
+Colour Colour::Lerp(Colour a, Colour b, float interval)
+{
+	return Colour{ std::lerp(a.r, b.r, interval), std::lerp(a.g, b.g, interval), std::lerp(a.b, b.b, interval) };
+}
+
+Colour Colour::operator-(Colour a, Colour b)	{ return Colour{ a.r - b.r,a.g - b.g,a.b - b.b }; }
+Colour Colour::operator-(Colour a)				{ return Colour{ -a.r, -a.g, -a.b }; }
+Colour Colour::operator+(Colour a, Colour b)	{ return Colour{ a.r + b.r,a.g + b.g,a.b + b.b }; }
+Colour Colour::operator*(Colour a, float d)		{ return Colour{ a.r * d, a.g * d,a.b * d }; }
+Colour Colour::operator*(float d, Colour a)		{ return Colour{ a.r * d, a.g * d,a.b * d }; }
+Colour Colour::operator/(Colour a, float d)		{ return Colour{ a.r / d, a.g / d,a.b / d }; }
+bool Colour::operator!=(Colour a, Colour b)		{ return a.native() != b.native(); }
+bool Colour::operator==(Colour a, Colour b)		{ return a.native() == b.native(); }
+
+// =================================================================
+// ColorAlpha
+// =================================================================
+ColorAlpha ColorAlpha::Lerp(ColorAlpha a, ColorAlpha b, float interval)
+{
+	return ColorAlpha{ std::lerp(a.r, b.r, interval), std::lerp(a.g, b.g, interval), std::lerp(a.b, b.b, interval), std::lerp(a.a, b.a, interval) };
+}
+
+ColorAlpha ColorAlpha::operator-(ColorAlpha a, ColorAlpha b)	{ return ColorAlpha{ a.r - b.r, a.g - b.g, a.b - b.b, a.a - b.a }; }
+ColorAlpha ColorAlpha::operator-(ColorAlpha a)					{ return ColorAlpha{ -a.r, -a.g, -a.b, -a.a }; }
+ColorAlpha ColorAlpha::operator+(ColorAlpha a, ColorAlpha b)	{ return ColorAlpha{ a.r + b.r,a.g + b.g,a.b + b.b, a.a + b.a }; }
+ColorAlpha ColorAlpha::operator*(ColorAlpha a, float d)			{ return ColorAlpha{ a.r * d, a.g * d,a.b * d, a.a * d }; }
+ColorAlpha ColorAlpha::operator*(float d, ColorAlpha a)			{ return ColorAlpha{ a.r * d, a.g * d,a.b * d, a.a * d }; }
+ColorAlpha ColorAlpha::operator/(ColorAlpha a, float d)			{ return ColorAlpha{ a.r / d, a.g / d,a.b / d, a.a / d }; }
+bool ColorAlpha::operator!=(ColorAlpha a, ColorAlpha b)			{ return a.native() != b.native(); }
+bool ColorAlpha::operator==(ColorAlpha a, ColorAlpha b)			{ return a.native() == b.native(); }
+
+// =================================================================
 // QUATERNION
 // =================================================================
 

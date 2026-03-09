@@ -288,9 +288,7 @@ class PlayerController_V2 : Script
                 break;
         }
 
-        if (gameUIManager != null)
-            gameUIManager.SetProgress(GameUIManager.ProgressBarType.DashBar, currentStamina, maxStamina);
-
+        gameUIManager?.SetDashUI(currentStamina, maxStamina);
     }
     void CheckMovementTypeState()
     {
@@ -764,11 +762,14 @@ class PlayerController_V2 : Script
             audioComponent.PlayRandomSound(hurtSFX);
             hitsTaken = 0;
         }
+
+        float previousHealth = currentHealth;
         currentHealth = Mathf.Max(0, currentHealth - damage);
-        gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
-           vignetteController.TriggerVignette(0.07f, 1, new Colour(1.0f, 0.0f, 0.0f));
-        if (gameUIManager != null)
-            gameUIManager.ActivateDamageUI();
+
+        // gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+        gameUIManager?.AnimateHealthLoss(previousHealth, currentHealth, maxHealth);
+
+        vignetteController.TriggerVignette(0.07f, 1, new Colour(1.0f, 0.0f, 0.0f));
 
         // Placeholder for a player death 
         if (currentHealth <= 0f)
@@ -864,11 +865,14 @@ class PlayerController_V2 : Script
 
     public void GainHealth(float heal)
     {
+        heal = Mathf.Min(heal, maxHealth - currentHealth);
         currentHealth += heal;
-        currentHealth = Mathf.Min(maxHealth, currentHealth);
-        gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+
         if (heal > 0)
+        {
+            gameUIManager?.AnimateHealthGain(currentHealth - heal, currentHealth, maxHealth);
             vignetteController.TriggerVignette(0.03f, 1, new Colour(0f, 1.0f, 0.0f));
+        }
     }
 
     public void PositionFreeze(bool value)
@@ -891,8 +895,10 @@ class PlayerController_V2 : Script
     {
         vignetteController.TriggerVignette(0.00f, 0, new Colour(0.0f, 0.0f, 0.0f));
         currentHealth = maxHealth;
-        gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+        
+        // gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
     }
+
     public void ResetWASDMovement()
     {
         isMovingBackward = isMovingForward = isMovingLeft = isMovingRight = false;

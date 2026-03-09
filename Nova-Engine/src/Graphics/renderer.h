@@ -57,7 +57,7 @@ public:
 
 	void renderBloom(PairFrameBuffer& frameBuffers);
 
-	void overlayUIToBuffer(PairFrameBuffer& target);
+	void renderUIToUIFBO();
 
 	// generates shadow maps for each light source..
 	void shadowPass(int viewportWidth, int viewportHeight);

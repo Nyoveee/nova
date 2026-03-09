@@ -6,7 +6,7 @@ using ScriptingAPI;
 
 class PlayerController : Script
 {
-
+#if false
     // Move speed
     public float maximumMoveSpeed = 5f;
     public float accelerationStrength = 20f;
@@ -243,8 +243,9 @@ class PlayerController : Script
             audioComponent.PlayRandomSound(hurtSFX);
             hitsTaken = 0;
         }
+        
         currentHealth = Mathf.Max(0, currentHealth - damage);
-        //Debug.Log("Player health: " + currentHealth);
+
         if (gameUIManager != null)
             gameUIManager.ActivateDamageUI();
 
@@ -490,4 +491,5 @@ class PlayerController : Script
             enemyHitBox.OnPlayerHit();
         }
     }
+#endif
 }

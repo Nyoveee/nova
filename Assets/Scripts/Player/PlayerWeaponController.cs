@@ -245,6 +245,7 @@ class PlayerWeaponController : Script
     {
         if (isShootingDisabled)
             return;
+
         if (weaponControlStates == WeaponControlStates.WeaponFree && currentlyHeldGun.Fire())
         {
             // ---------------------------------------------------------------
@@ -255,10 +256,11 @@ class PlayerWeaponController : Script
             AnimateGunGlow();
             // ---------------------------------------------------------------
 
+            gameUIManager?.AnimateCrossHairFire();
+
             // Emit particles at muzzle position..
             muzzle.emit(30);
             isArmingDisabled = true;
-
 
             // We raycast only to specific physics layers..
             string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall" };
@@ -280,11 +282,7 @@ class PlayerWeaponController : Script
                 Debug.Log("Miss");
                 ammoTrail.getScript<ammoTrails>().startPosition = muzzle.gameObject.transform.position;
                 ammoTrail.getScript<ammoTrails>().endPosition = muzzle.gameObject.transform.position + (muzzle.gameObject.transform.right * 500f);
-
             }
-
-
-
         }
 
         if (weaponControlStates == WeaponControlStates.ThrowReady && currentlyHeldGun.gameObject.IsActive() == true)
