@@ -76,7 +76,6 @@ public class GeneratorArenaQuest : ArenaQuest
         Invoke(() =>
         {
             voiceoverScript.TriggerVoiceOver("Goddess", arenaStartVoiceOverText, arenaStartVoiceOverAudio, arenaStartVoiceOverTime, false);
-
             if (shadowCasters.Count > 0)
             {
                 initialShadowCasterIntensity = shadowCasters[0].intensity;
@@ -86,7 +85,8 @@ public class GeneratorArenaQuest : ArenaQuest
             {
                 arenaManager.StartArena(this);
             }, arenaStartVoiceOverTime);
-        }, 1f);
+        }, 2f);
+ 
     }
 
     public override void OnSuccess()
