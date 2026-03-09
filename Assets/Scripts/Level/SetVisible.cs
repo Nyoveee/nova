@@ -3,11 +3,10 @@
 // Editor will automatically rename and recompile this file.
 class SetVisible : Script
 {
-    [SerializableField]
-    private GameObject ceiling;
+    private Transform_ player;
 
-    [SerializableField]
-    private GameObject playerTrans;
+    private MeshRenderer_ meshRenderer;
+    private Rigidbody_ rigidbody;
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
@@ -15,14 +14,21 @@ class SetVisible : Script
 
     // This function is invoked once when gameobject is active.
     protected override void init()
-    {}
+    {
+        player = GameObject.FindWithTag("Player")?.transform;
+
+        meshRenderer = getComponent<MeshRenderer_>();
+        rigidbody = getComponent<Rigidbody_>();
+    }
 
     // This function is invoked every update.
     protected override void update()
     {
-        if(playerTrans.getComponent<Transform_>().position.z > -500 && playerTrans.getComponent<Transform_>().position.y < -200)
+        // OK NOT BAD ELREY NOT BAD.
+        if(player.position.z > -500 && player.position.y < -200)
         {
-            ceiling.getComponent<MeshRenderer_>().enable = true;
+            meshRenderer.enable = true;
+            rigidbody.enable = true;
         }
     }
 

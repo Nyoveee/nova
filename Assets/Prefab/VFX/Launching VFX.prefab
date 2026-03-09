@@ -1,5 +1,5 @@
 {
-    "RootEntity": 106,
+    "RootEntity": 9,
     "Entities": [
         {
             "EntityData": {
@@ -8,8 +8,8 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    107,
-                    111
+                    10,
+                    14
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -71,28 +71,28 @@
                             {
                                 "name": "landing",
                                 "data": {
-                                    "__variant_value": 107,
+                                    "__variant_value": 10,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "air",
                                 "data": {
-                                    "__variant_value": 111,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "light",
                                 "data": {
-                                    "__variant_value": 108,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "landingFireEmitter",
                                 "data": {
-                                    "__variant_value": 108,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             }
@@ -100,18 +100,18 @@
                     }
                 ]
             },
-            "id": 106
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Landing",
                 "tag": "",
-                "parent": 106,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": [
-                    108,
-                    109,
-                    110
+                    11,
+                    12,
+                    13
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -165,13 +165,13 @@
                     "z": 0.0
                 }
             },
-            "id": 107
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Landing Fire",
                 "tag": "",
-                "parent": 107,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -361,15 +361,17 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 108
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Landing Smoke Ring",
                 "tag": "",
-                "parent": 107,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -536,15 +538,17 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 109
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Landing Smoke",
                 "tag": "",
-                "parent": 107,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -711,20 +715,22 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 110
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Air",
                 "tag": "",
-                "parent": 106,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": [
-                    112,
-                    113,
-                    114
+                    15,
+                    16,
+                    17
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -778,13 +784,13 @@
                     "z": 0.0
                 }
             },
-            "id": 111
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Smoke Trail",
                 "tag": "",
-                "parent": 111,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -951,15 +957,17 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 112
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "Fire Trail",
                 "tag": "",
-                "parent": 111,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1126,15 +1134,17 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 5.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 113
+            "id": 16
         },
         {
             "EntityData": {
                 "name": "Spark",
                 "tag": "",
-                "parent": 111,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1301,9 +1311,11 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 114
+            "id": 17
         }
     ]
 }

@@ -51,7 +51,11 @@ class EnemyCannon : Script
 
     // Shooting Arc Parameters
     private Quaternion targetRotation;
+    private Quaternion targetCannonBarrelRotation;
+
     private Quaternion startRotation;
+    private Quaternion startCannonBarrelRotation;
+
     private Vector3 targetPosition;
     private Vector3 targetVelocity;
 
@@ -154,8 +158,11 @@ class EnemyCannon : Script
     private void RotateCannon() {
         currentTurningTime += Time.V_DeltaTime();
         currentTurningTime = Mathf.Min(currentTurningTime, cannonTurningTime);
+
+        cannonBarrelMeshRenderer.gameObject.transform.rotation = Quaternion.Slerp(startCannonBarrelRotation, targetCannonBarrelRotation, currentTurningTime / cannonTurningTime);
         gameObject.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, currentTurningTime / cannonTurningTime);
     }
+
     private bool IsRotationFinished() {
         return currentTurningTime == cannonTurningTime;
     }
@@ -207,9 +214,21 @@ class EnemyCannon : Script
         // Set the rotation
         Vector3 targetDirection = targetVelocity;
         targetDirection.Normalize();
+
         startRotation = gameObject.transform.rotation;
+        startCannonBarrelRotation = cannonBarrelMeshRenderer.gameObject.transform.rotation;
+
         targetRotation = Quaternion.LookRotation(targetDirection);
         
+        Vector3 eulerAngle = Rotation.ToEuler(targetRotation);  // targetRotation;
+
+        eulerAngle = new Vector3(180f * Mathf.Deg2Rad, eulerAngle.y, eulerAngle.z);
+
+        targetRotation = Rotation.ToQuaternion(eulerAngle);
+        // targetRotation.Normalize();
+
+        targetCannonBarrelRotation = Quaternion.LookRotation(-targetDirection);
+
         // Set the timers
         currentTurningTime = 0;
     }

@@ -4,8 +4,11 @@
 class RaiseEnemBoat : Script
 {
     [SerializableField]
-    private GameObject furthestDistance;
+    private Transform_ furthestDistance;
 
+    [SerializableField]
+    private float distance = -600f;
+    
     [SerializableField] 
     private GameObject waveManager;
     private bool waveStarted = false;
@@ -47,7 +50,7 @@ class RaiseEnemBoat : Script
     // This function is invoked every update.
     protected override void update()
     {
-        if(furthestDistance.getComponent<Transform_>().position.z < -600 && isSinking == false && !hasSunk)
+        if (furthestDistance.position.z < distance && isSinking == false && !hasSunk)
         {
             isRising = true;
         }

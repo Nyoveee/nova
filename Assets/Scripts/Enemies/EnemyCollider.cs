@@ -14,7 +14,7 @@ class EnemyCollider : Script
     {
         if(enemy != null)
         {
-            Debug.Log("Hit");
+            //Debug.Log("Hit");
             enemy.TakeDamage(damage, type, colliderTag);
 
         }

@@ -12,10 +12,10 @@ class ScrollingBG : Script
     private float scrollSpeed = 50f;
 
     [SerializableField]
-    private float recycleZ = -20f;
+    private float recycleZ = -2158.696f;
 
     [SerializableField]
-    private float resetZ = 40f;
+    private float resetZ = 1389.972f;
 
     [SerializableField]
     private GameObject lever; 
