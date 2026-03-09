@@ -26,7 +26,7 @@ class VoiceoverScript : Script
 
     public void TriggerVoiceOver(string speaker, string text, Audio audio, float voiceOverTime, bool shouldDisableWeapon)
     {
-        // audioComponent.PlaySound(audio);
+        audioComponent.PlaySound(audio);
         if (shouldDisableWeapon)
             playerWeaponController.DisableShooting();
 
@@ -47,6 +47,7 @@ class VoiceoverScript : Script
 
     public void TriggerVoiceOverSequence(string speaker, List<string> text, Audio audio, List<float> voiceOverTimes, bool shouldDisableWeapon)
     {
+        audioComponent.PlaySound(audio);
         if (shouldDisableWeapon)
             playerWeaponController.DisableShooting();
 

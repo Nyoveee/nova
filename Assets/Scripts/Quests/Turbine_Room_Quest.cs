@@ -72,6 +72,8 @@ class Turbine_Room_Quest : Quest
         }
         if (activeSwitches.Count > 0)
             return;
+        if (!IsAllEnemiesDead())
+            return;
         // at this point all switches are turned on.
         Invoke(() =>
         {
@@ -99,5 +101,17 @@ class Turbine_Room_Quest : Quest
             activeSwitches.Add(switch_);
            
         }
+    }
+    private bool IsAllEnemiesDead()
+    {
+        foreach (GameObject gunner in spawnedEnemies)
+        {
+            if (gunner == null)
+                continue;
+            Enemy enemy = gunner.getScript<Enemy>();
+            if (!enemy.IsDead())
+                return false;
+        }
+        return true;
     }
 }
