@@ -14,6 +14,13 @@ layout (location = 0) out vec4 FragColor;
 
 void main()
 {
-    vec4 color = texture(image, fsIn.textureUnit);
-    FragColor = color;
+    vec4 textureColor = texture(image, fsIn.textureUnit);
+    
+    // reverse premultiply alpha..
+    if(textureColor.a != 0) {
+        textureColor.rgb /= textureColor.a;
+    }
+
+    // vec4 color = texture(image, fsIn.textureUnit);
+    FragColor = textureColor;
 }

@@ -47,9 +47,11 @@ struct alignas(16) ParticleLifespanData {
 	int colorOverLifetime{};
 	int sizeOverLifetime{};
 	int b_Active{};
+	int renderAlignment;
 };
 
 struct alignas(16) ParticleVertex {
+	glm::mat4 rotationMatrix;
 	glm::vec4 color;
 	alignas(16) glm::vec3 position;
 	float rotation;

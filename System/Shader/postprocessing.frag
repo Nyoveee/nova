@@ -12,6 +12,7 @@ uniform sampler2D depthTexture;
 
 uniform vec3 offset;
 uniform float vignette;
+uniform vec3 vignetteColor;
 
 uniform vec3 fogColor;
 
@@ -63,6 +64,7 @@ void main()
 #else
     float linearDistanceFactor = clamp((linearDepth - near)/ (far - near), 0, 1);
     float fogFactor = clamp(exp(-(linearDistanceFactor * fogDensity * linearDistanceFactor * fogDensity)), 0, 1);
+    float dist = distance(vec2(0.5,0.5), textureCoords);
 #endif
 
     // // Fog
@@ -79,5 +81,7 @@ void main()
     // color += fogDatas[fogIndex].radiance;
 
     // // color = vec3(transmittance);
-    FragColor = vec4(mix(fogColor, color, fogFactor), 1.0);
+
+
+    FragColor = vec4(mix(fogColor, color, fogFactor) + vignetteColor * smoothstep(0,1,dist) * vignette, 1.0);
 }  

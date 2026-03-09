@@ -1,6 +1,7 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
 using static GameUIManager;
 
 class GameUIManager : Script
@@ -11,48 +12,112 @@ class GameUIManager : Script
         DashBar,
         UltimateBar
     }
-    private float currentFadeTime;
-    private Dictionary<ProgressBarType, Image_> progressBars = new ();
 
-    private bool isPaused = false;
-    public event Action RestartFromCheckpointButton;
+    // ========================================================================
+    // References to game objects..
+    [SerializableField]
+    private List<Image_> dashFillBars = null;
 
-    private DialogueScript dialogueScript = null;
+    [SerializableField]
+    private Image_ healthFill = null;
 
-    /***********************************************************
-        Inspector Variables
-    ***********************************************************/
     [SerializableField]
-    private Image_? dashBar = null;
+    private Image_ healthDamageBuffer = null;
+
     [SerializableField]
-    private Image_? healthBar = null;
+    private Transform_ crossHairUi = null;
+
     [SerializableField]
-    private Image_? ultimateBar = null;
+    private Image_? gunUltimateFill = null;
+
+    [SerializableField]
+    private Image_? gunUltimateGlow = null;
 
     [SerializableField]
     private GameObject? tutorialUI = null;
-    [SerializableField]
-    private GameObject? pauseUI = null;
-    [SerializableField]
-    private GameObject? deathUI = null;
 
     [SerializableField]
-    private Image_? damageBackground = null;
+    private GameObject? pauseUI = null;
+
+    [SerializableField]
+    private GameObject? deathUI = null;
 
     [SerializableField]
     private Text_? questText = null;
 
     [SerializableField]
-    private float damageFadeTime = 2.0f;
+    private List<Image_> ammoFills;
 
     [SerializableField]
-    private Text_? maxAmmoText = null;
+    private Texture ammoFillTexture;
 
     [SerializableField]
-    private Text_? currentAmmoText = null;
+    private Texture ammoUsedTexture;
 
+    // ========================================================================
+    // Cross Hair Related Serialized Fields..
+    [SerializableField]
+    private float crossHairExpandScaleRatio = 2f;
 
+    [SerializableField]
+    private float crossHairAnimationDuration = 0.6f;
 
+    [SerializableField]
+    private float crossHairLerpPower = 0.7f;
+
+    // ========================================================================
+    // Health Change Animation Fields..
+    [SerializableField]
+    private float healthLossLerpDuration = 0.7f;
+
+    [SerializableField]
+    private float healthLossLerpPower = 0.7f;
+
+    [SerializableField]
+    private float healthLossBufferTime = 2f;
+
+    [SerializableField]
+    private float healthBufferLerpDuration = 0.7f;
+
+    [SerializableField]
+    private float healthBufferLerpPower = 0.7f;
+
+    // ========================================================================
+    // Health Restoration Animation Fields..
+    [SerializableField]
+    private float healthGainLerpDuration = 0.7f;
+
+    [SerializableField]
+    private float healthGainLerpPower = 0.7f;
+
+    [SerializableField]
+    private ColorAlpha healthGainColor;
+
+    // ========================================================================
+    // Dash UI..
+    [SerializableField]
+    private float readyDashBrightness = 1.2f;
+
+    // ========================================================================
+    // Gun Ultimate Bar Fill Animation..
+    [SerializableField]
+    private float ultimateGunFillLerpDuration = 0.7f;
+
+    [SerializableField]
+    private float ultimateGunFillLerpPower = 0.7f;
+
+    // ========================================================================
+    // Gun Ultimate Bar Glow Vfx..
+    [SerializableField]
+    private float ultimateBarGlowBrightness = 2f;
+
+    [SerializableField]
+    private float ultimateBarGlowBrightnessVariance = 0.5f;
+
+    [SerializableField]
+    private float ultimateBarGlowSpeedFactor = 1.0f;
+
+    // ========================================================================
     // Cutscene related stuff..
     [SerializableField]
     private float blackOverlayLerpDuration = 1f;
@@ -60,67 +125,375 @@ class GameUIManager : Script
     [SerializableField]
     private float blackOverlayLerpPower = 0.4f;
 
-    private bool isAnimatingBlackOverlay = false;
+    // ========================================================================
+    // ========================================================================
+    // Runtime variables
 
-    private float timeElapsed = 0f;
-
+    // ------------------------------------
+    // References
     private PlayerController_V2 playerController = null;
+    private Dictionary<ProgressBarType, Image_> progressBars = new();
+    private DialogueScript dialogueScript = null;
+
+    // ------------------------------------
+    // Animating the cross hair when player fires..
+    private bool isAnimatingCrossHair = false;
+    private float crossHairTimeElasped = 0f;
+
+    private Vector3 initialCrossHairScale;
+    private Vector3 expandedCrossHairScale;
+
+    // ------------------------------------
+    // Animating health change loss when player takes damage..
+    private bool isAnimatingHealthLoss = false;
+    private float healthLossTimeElapsed = 0f;
+
+    private Vector2 initialPlayerHealthPercentage;
+    private Vector2 finalPlayerHealthPercentage;
+
+    private Vector2 initialHeathLossBufferPercentage;
+    private Vector2 finalHeathLossBufferPercentage;
+
+    // this keeps track of the very first initial health loss percentage, when multiple instances of damage is taken..
+    private Vector2 lastHeathLossBufferPercentage;
+
+    // Whenever a player first takes damage, we display the loss amount of health..
+    // After a certain duration, we lerp this health buffer away..
+    private bool isWaitingForHealthRecovery = false;
+    private float healthRecoveryCountdown = 0f;
+
+    private bool isAnimatingHealthBuffer = false;
+    private float healthBufferTimeElapsed = 0f;
+
+    private bool isDamageBufferActive = false;
+
+    // ------------------------------------
+    // Animating health gain
+    private bool isAnimatingHealthGain = false;
+    private float healthGainTimeElapsed = 0f;
+
+    private ColorAlpha originalHealthGainColor;
+
+    // ------------------------------------
+    // Handling dash..
+    private ColorAlpha originalDashFillColor = new ColorAlpha(1, 1, 1, 1);
+    private ColorAlpha readyDashFillColor = new ColorAlpha(1, 1, 1, 1);
+
+    // ------------------------------------
+    // Handling ultimate..
+    private bool gunIsGlowing = false;
+    private float gunGlowTimeElapsed = 0f;
+
+    private ColorAlpha gunUltimateOriginalColor;
+
+    private bool isAnimatingUltimateFill = false;
+    private float ultimateFillTimeElapsed = 0f;
+
+    private Vector2 initialUltimateFillPercentage;
+    private Vector2 finalUltimateFillPercentage;
+
+    // ------------------------------------
+    private int previousAmmoCount = 12;
+
+    private bool isPaused = false;
+    private bool isTutorialPromptActive = false;
+    public event Action RestartFromCheckpointButton;
+
+    // ========================================================================
     protected override void init()
     {
         playerController = GameObject.FindWithTag("Player")?.getScript<PlayerController_V2>();
         dialogueScript = getScript<DialogueScript>();
-
-        progressBars[ProgressBarType.DashBar] = dashBar;
-        progressBars[ProgressBarType.HealthBar] = healthBar;
-        progressBars[ProgressBarType.UltimateBar] = ultimateBar;
-
+        progressBars[ProgressBarType.HealthBar] = healthFill;
         MapKey(Key.P, PauseHandler, true);
+
+        initialCrossHairScale = crossHairUi.scale;
+        expandedCrossHairScale = crossHairUi.scale * crossHairExpandScaleRatio;
+
+        originalHealthGainColor = healthFill.colorTint;
+
+        for (int i = 0; i < dashFillBars.Count; ++i)
+        {
+            Image_ dashFillBar = dashFillBars[i];
+            originalDashFillColor = dashFillBar.colorTint;
+
+            readyDashFillColor = new ColorAlpha(originalDashFillColor.r * readyDashBrightness, originalDashFillColor.b * readyDashBrightness, originalDashFillColor.g * readyDashBrightness, originalDashFillColor.a * readyDashBrightness);
+            break;
+        }
+
+        gunUltimateOriginalColor = gunUltimateGlow.colorTint;
+
+        Restart();
+    }
+
+    public void Restart()
+    {
+        healthFill.textureCoordinatesEnd = new Vector2(1, 1);
+        healthDamageBuffer.textureCoordinatesEnd = new Vector2(1, 1);
+        initialHeathLossBufferPercentage = new Vector2(0, 1);
+        healthDamageBuffer.textureCoordinatesStart = new Vector2(0, 1);
+        lastHeathLossBufferPercentage = new Vector2(1, 1);
+
+        isAnimatingCrossHair = false;
+        isAnimatingHealthBuffer = false;
+        isAnimatingHealthLoss = false;
+        crossHairUi.scale = initialCrossHairScale;
+
+        healthFill.colorTint = originalHealthGainColor;
+
+        foreach (Image_ ammoFill in ammoFills)
+        {
+            ammoFill.SetTexture(ammoFillTexture);
+        }
+
+        gunUltimateGlow.gameObject.SetActive(false);
+        gunUltimateFill.gameObject.SetActive(true);
+
+        gunUltimateFill.textureCoordinatesEnd = new Vector2(0, 1);
     }
 
     protected override void update()
     {
-        if(damageBackground != null && damageBackground.colorTint.a > 0)
-        {
-            currentFadeTime = Mathf.Max(currentFadeTime - Time.V_DeltaTime(), 0);
-            ColorAlpha colora = damageBackground.colorTint;
-            if(damageFadeTime <= 0)
-            {
-                Debug.LogError("Damage Fade Time must be more than zero");
-                return;
-            }
-            colora.a = Mathf.Interpolate(0, 1, currentFadeTime / damageFadeTime, 1);
-            damageBackground.colorTint = colora;
-        }
+        AnimatingCrossHairFire();
+        AnimatingHealthLoss();
+        AnimatingHealthGain();
+        AnimatingHealthLossBufferRecovery();
+        AnimatingGunGlow();
+        AnimatingUltimateFill();
     }
 
     /***********************************************************
-       UI Setters
+       Animations..
     ***********************************************************/
-    public void SetProgress(ProgressBarType progressBarType, float current, float max)
+    private void AnimatingCrossHairFire()
     {
-        if (max == 0){
-            Debug.LogError("Progress bar max cannot be zero");
-            return;
+        if (!isAnimatingCrossHair)
+        { 
+            return; 
         }
 
-        if(progressBars[progressBarType] == null)
+        crossHairUi.scale = Vector3.Lerp(expandedCrossHairScale, initialCrossHairScale, Mathf.Pow(crossHairTimeElasped / crossHairAnimationDuration, crossHairLerpPower));
+        crossHairTimeElasped += Time.V_DeltaTime();
+
+        if (crossHairTimeElasped > crossHairAnimationDuration)
         {
-            return;
+            isAnimatingCrossHair = false;
         }
-
-        Vector2 textureCoordinates = progressBars[progressBarType].textureCoordinatesRange;
-        textureCoordinates.x = Mathf.Interpolate(0, 1f, current / max, 1);
-        progressBars[progressBarType].textureCoordinatesRange = textureCoordinates;
     }
 
-    public void ActivateDamageUI()
+    private void AnimatingHealthLoss()
     {
-        if (damageBackground != null)
+        // Animating health loss..
+        if (!isAnimatingHealthLoss)
         {
-            ColorAlpha colora = damageBackground.colorTint;
-            colora.a = 1;
-            damageBackground.colorTint = colora;
-            currentFadeTime = damageFadeTime;
+            return;
+        }
+
+        healthFill.textureCoordinatesEnd = Vector2.Lerp(initialPlayerHealthPercentage, finalPlayerHealthPercentage, Mathf.Pow(healthLossTimeElapsed / healthLossLerpDuration, healthLossLerpPower));
+        healthDamageBuffer.textureCoordinatesStart = Vector2.Lerp(initialHeathLossBufferPercentage, finalHeathLossBufferPercentage, Mathf.Pow(healthLossTimeElapsed / healthLossLerpDuration, healthLossLerpPower));
+
+        healthLossTimeElapsed += Time.V_DeltaTime();
+        
+        if (healthLossTimeElapsed > healthLossLerpDuration)
+        {
+            isAnimatingHealthLoss = false;
+            isWaitingForHealthRecovery = true;
+            healthRecoveryCountdown = 0f;
+        }
+    }
+
+    private void AnimatingHealthGain()
+    {
+        // Animating health loss..
+        if (!isAnimatingHealthGain)
+        {
+            return;
+        }
+
+        float interval = Mathf.Pow(healthGainTimeElapsed / healthGainLerpDuration, healthGainLerpPower);
+        healthFill.textureCoordinatesEnd = Vector2.Lerp(initialPlayerHealthPercentage, finalPlayerHealthPercentage, interval);
+        healthDamageBuffer.textureCoordinatesStart = Vector2.Lerp(initialHeathLossBufferPercentage, finalHeathLossBufferPercentage, interval);
+
+        healthFill.colorTint = ColorAlpha.Lerp(healthGainColor, originalHealthGainColor, interval);
+
+        healthGainTimeElapsed += Time.V_DeltaTime();
+
+        if (healthGainTimeElapsed > healthGainLerpDuration)
+        {
+            isAnimatingHealthGain = false;
+            isWaitingForHealthRecovery = true;
+            healthRecoveryCountdown = 0f;
+        }
+    }
+
+    private void AnimatingHealthLossBufferRecovery()
+    {
+        // We wait for a while before recovering the health loss buffer..
+        if (isWaitingForHealthRecovery)
+        {
+            healthRecoveryCountdown += Time.V_DeltaTime();
+
+            if (healthRecoveryCountdown > healthLossBufferTime)
+            {
+                healthBufferTimeElapsed = 0f;
+                isWaitingForHealthRecovery = false;
+                isAnimatingHealthBuffer = true;
+
+                initialHeathLossBufferPercentage = new Vector2(1, initialHeathLossBufferPercentage.y);
+                finalHeathLossBufferPercentage = new Vector2(1, finalHeathLossBufferPercentage.y);
+            }
+        }
+
+        if (!isAnimatingHealthBuffer)
+        {
+            return;
+        }
+
+        // Recover health loss buffer..
+        healthDamageBuffer.textureCoordinatesEnd = Vector2.Lerp(lastHeathLossBufferPercentage, finalHeathLossBufferPercentage, Mathf.Pow(healthBufferTimeElapsed / healthBufferLerpDuration, healthBufferLerpPower));
+
+        healthBufferTimeElapsed += Time.V_DeltaTime();
+
+        if (healthBufferTimeElapsed > healthBufferLerpDuration)
+        {
+            isAnimatingHealthBuffer = false;
+        }
+    }
+
+    private void AnimatingUltimateFill()
+    { 
+        if(!isAnimatingUltimateFill)
+        {
+            return;
+        }
+
+        float interval = Mathf.Pow(ultimateFillTimeElapsed / ultimateGunFillLerpDuration, ultimateGunFillLerpPower);
+        gunUltimateFill.textureCoordinatesEnd = Vector2.Lerp(initialUltimateFillPercentage, finalUltimateFillPercentage, interval);
+
+        ultimateFillTimeElapsed += Time.V_DeltaTime();
+
+        if (ultimateFillTimeElapsed > ultimateGunFillLerpDuration)
+        {
+            isAnimatingUltimateFill = false;
+
+            // Fully filled.
+            if(finalUltimateFillPercentage.x == 1)
+            {
+                gunIsGlowing = true;
+                gunGlowTimeElapsed = 0f;
+                gunUltimateGlow.gameObject.SetActive(true);
+                gunUltimateFill.gameObject.SetActive(false);
+            }
+        }
+    }
+    private void AnimatingGunGlow()
+    { 
+        if(!gunIsGlowing)
+        {
+            return;
+        }
+
+        gunGlowTimeElapsed += Time.V_DeltaTime() * ultimateBarGlowSpeedFactor;
+        gunGlowTimeElapsed = gunGlowTimeElapsed % (Mathf.Deg2Rad * 360f);
+
+        float interval = Mathf.Sin(gunGlowTimeElapsed);
+        gunUltimateGlow.colorTint = gunUltimateOriginalColor * (ultimateBarGlowBrightness + interval * ultimateBarGlowBrightnessVariance);
+    }
+
+    /***********************************************************
+       Interface to issue animations reqest..
+    ***********************************************************/
+    public void AnimateCrossHairFire()
+    {
+        isAnimatingCrossHair = true;
+        crossHairTimeElasped = 0f;
+        crossHairUi.scale = expandedCrossHairScale;
+    }
+
+    public void AnimateHealthLoss(float previousHealth, float currentHealth, float maxHealth)
+    {
+        float initialPercentage = previousHealth / maxHealth;
+        float finalPercentage = currentHealth / maxHealth;
+
+        // We are dealing with texture coordinates..
+        initialPlayerHealthPercentage = new Vector2(1, initialPercentage);
+        finalPlayerHealthPercentage = new Vector2(1, finalPercentage);
+
+        initialHeathLossBufferPercentage = new Vector2(0, initialPercentage);
+        finalHeathLossBufferPercentage = new Vector2(0, finalPercentage);
+
+        if(healthDamageBuffer.textureCoordinatesStart.y > healthDamageBuffer.textureCoordinatesEnd.y)
+        {   
+            healthDamageBuffer.textureCoordinatesEnd = new Vector2(1, healthDamageBuffer.textureCoordinatesStart.y);
+        }
+
+        // We keep track of the first health loss..
+        if (!isAnimatingHealthLoss)
+        {
+            lastHeathLossBufferPercentage = healthDamageBuffer.textureCoordinatesEnd;
+        }
+
+        isAnimatingHealthLoss = true;
+        healthLossTimeElapsed = 0f;
+
+        isWaitingForHealthRecovery = false;
+
+        // Stop animating health gain..
+        isAnimatingHealthGain = false;
+        healthFill.colorTint = originalHealthGainColor;
+
+        // Stop animating health buffer recovery..
+        isAnimatingHealthBuffer = false;
+    }
+
+    public void AnimateHealthGain(float previousHealth, float currentHealth, float maxHealth)
+    {
+        float initialPercentage = previousHealth / maxHealth;
+        float finalPercentage = currentHealth / maxHealth;
+
+        // We are dealing with texture coordinates..
+        initialPlayerHealthPercentage = new Vector2(1, initialPercentage);
+        finalPlayerHealthPercentage = new Vector2(1, finalPercentage);
+
+        initialHeathLossBufferPercentage = new Vector2(0, initialPercentage);
+        finalHeathLossBufferPercentage = new Vector2(0, finalPercentage);
+
+        // We keep track of the first health loss..
+        if (!isAnimatingHealthGain)
+        {
+            lastHeathLossBufferPercentage = healthDamageBuffer.textureCoordinatesEnd;
+        }
+
+        isAnimatingHealthGain = true;
+        healthGainTimeElapsed = 0f;
+
+        // Stop animating health loss..
+        isAnimatingHealthLoss = false;
+        isWaitingForHealthRecovery = false;
+
+        // Stop animating health buffer recovery..
+        isAnimatingHealthBuffer = false;
+    }
+
+    public void SetDashUI(float currentDashStamina, float maxDashStamina)
+    {
+        float interval = (currentDashStamina / maxDashStamina) * 3f;
+
+        for (int i = 0; i < dashFillBars.Count; ++i)
+        {
+            Image_ dashFillBar = dashFillBars[i];
+
+            if (interval >= (i + 1))
+            {
+                dashFillBar.textureCoordinatesEnd = new Vector2(1, 1);
+                dashFillBar.colorTint = readyDashFillColor;
+            }
+            else
+            {
+                float dashBarInterval = interval - i;
+                dashFillBar.colorTint = originalDashFillColor;
+                dashFillBar.textureCoordinatesEnd = new Vector2(dashBarInterval, 1);
+            }
         }
     }
 
@@ -130,36 +503,57 @@ class GameUIManager : Script
             questText.SetText(text);
     }
 
-    public void SetAmmoText(int currentAmmo, int maxAmmo)
-    {
-        SetCurrentAmmoText(currentAmmo);
+    //public void SetAmmoText(int currentAmmo, int maxAmmo)
+    //{
+    //    SetCurrentAmmoText(currentAmmo);
 
-        if (maxAmmoText != null)
-            maxAmmoText.SetText("/ " + currentAmmo);
-    }
+    //    if (maxAmmoText != null)
+    //        maxAmmoText.SetText("/ " + currentAmmo);
+    //}
 
-    public void SetCurrentAmmoText(int currentAmmo)
+    public void SetCurrentAmmo(int currentAmmo)
     {
-        if (currentAmmoText != null)
-            currentAmmoText.SetText(currentAmmo.ToString());
-    }
-
-    public void SetUltimateBarUI(int currentSp, int maxSp)
-    {
-        if (maxSp == 0)
+        int difference = currentAmmo - previousAmmoCount;
+    
+        if (difference > 0)
         {
-            Debug.LogError("Progress bar max cannot be zero");
+            for(int i = previousAmmoCount; i < currentAmmo; ++i)
+            {
+                ammoFills[i].SetTexture(ammoFillTexture);
+            } 
+        }
+        else if (difference < 0)
+        {
+            for (int i = currentAmmo; i < previousAmmoCount; ++i)
+            {
+                ammoFills[i].SetTexture(ammoUsedTexture);
+            }
+        }
+
+        previousAmmoCount = currentAmmo;
+    }
+
+    public void SetUltimateBar(int previousSp, int currentSp, int maxSp)
+    {
+        if(previousSp == currentSp)
+        {
             return;
         }
 
-        if (ultimateBar == null)
-        {
-            return;
-        }
-        Vector2 textureCoordinates = ultimateBar.textureCoordinatesRange;
-        textureCoordinates.x = Mathf.Interpolate(0, 1f, (float)currentSp / maxSp, 1);
-        ultimateBar.textureCoordinatesRange = textureCoordinates;
+        float previousPercentage = (float) previousSp / (float) maxSp;
+        float percentage = (float) currentSp / (float) maxSp;
+
+        gunIsGlowing = false;
+        gunUltimateGlow.gameObject.SetActive(false);
+        gunUltimateFill.gameObject.SetActive(true);
+
+        isAnimatingUltimateFill = true;
+        initialUltimateFillPercentage = new Vector2(previousPercentage, 1);
+        finalUltimateFillPercentage = new Vector2(percentage, 1);
+        ultimateFillTimeElapsed = 0f;
+        
     }
+
     /***********************************************************
        Tutorial Prompt
     ***********************************************************/
@@ -168,17 +562,21 @@ class GameUIManager : Script
         isPaused = !isPaused;
         Systems.Pause = isPaused;
         tutorialUI?.SetActive(isPaused);
+
         if (isPaused)
         {
             tutorialUI?.getScript<TutorialPrompt>()?.BeginNextTutorial();
             CameraAPI.UnlockMouse();
-        } 
+            isTutorialPromptActive = true;
+        }
         else
         {
             playerController.ResetWASDMovement();
             CameraAPI.LockMouse();
+            isTutorialPromptActive = false;
         }
     }
+
     /***********************************************************
        Pause handler..
     ***********************************************************/
@@ -187,13 +585,19 @@ class GameUIManager : Script
         if (deathUI.IsActive())
             return;
 
-        GameObject gameObject = GameObject.FindWithTag("Setting UI");
+        if (isTutorialPromptActive)
+        {
+            return;
+        }
 
-        if (gameObject != null && gameObject.IsActive())
+        Canvas_ settingsUI = GameObject.FindWithTag("Setting UI")?.getComponent<Canvas_>();
+
+        if (settingsUI != null && settingsUI.isInteractable)
             return;
 
         isPaused = !isPaused;
         Systems.Pause = isPaused;
+
         pauseUI?.SetActive(isPaused);
 
         if (isPaused)
@@ -205,6 +609,7 @@ class GameUIManager : Script
             CameraAPI.LockMouse();
         }
     }
+    
     /***********************************************************
        Dialogue 
     ***********************************************************/
@@ -212,6 +617,7 @@ class GameUIManager : Script
     {
         dialogueScript.BeginDialogueSequence(speaker, text, times, finalDialogueTime);
     }
+
     /***********************************************************
        Death 
     ***********************************************************/
@@ -235,6 +641,7 @@ class GameUIManager : Script
             deathUI.SetActive(false);
             CameraAPI.LockMouse();
         }
+
         RestartFromCheckpointButton?.Invoke();
     }
 }

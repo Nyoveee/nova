@@ -23,6 +23,10 @@ class Ichor : Script
     [SerializableField]
     private float maxForce = 10f;
     [SerializableField]
+    private Vector3 positiveLaunchDirection = new Vector3(1f, 1f, 1f);
+    [SerializableField]
+    private Vector3 negativeLaunchDirection = new Vector3(-1f, -1f, -1f);
+    [SerializableField]
     private float rapidSlowTime = 1f;
     [SerializableField]
     private float minGravityFactor = 1f;
@@ -30,6 +34,7 @@ class Ichor : Script
     private float maxGravityFactor = 1f;
     [SerializableField]
     private float damping = 1f;
+
 
     [SerializableField]
     private Vector3 idlePositionVariance = new Vector3(1f, 1f, 1f);
@@ -56,6 +61,7 @@ class Ichor : Script
 
     private float elapsedTime = 0;
     private float pullElapsedTime = 0;
+    private Vector3 choosenDirection;
 
     private Vector3 idlePosition;
 
@@ -74,9 +80,11 @@ class Ichor : Script
     {
         rigidbody = getComponent<Rigidbody_>();
         startSize = gameObject.transform.scale;
-        Vector3 direction = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        Vector3 direction = new Vector3(Random.Range(negativeLaunchDirection.x, positiveLaunchDirection.x), Random.Range(negativeLaunchDirection.y, positiveLaunchDirection.y), Random.Range(negativeLaunchDirection.z, positiveLaunchDirection.z));
         direction.Normalize();
+        choosenDirection = direction;
         Vector3 force =  direction * Random.Range(minForce, maxForce);
+        Debug.Log("Force: " + force);
         rigidbody.AddForce(force);
         rigidbody.SetGravityFactor(Random.Range(minGravityFactor, maxGravityFactor));
 
@@ -209,5 +217,26 @@ class Ichor : Script
         //    || other.getComponent<Rigidbody_>().GetLayerName() == "Wall")
         //   rigidbody.SetVelocity(Vector3.Zero());
 
+    }
+
+    //For more managed controls over ichor spawning
+    //public void IchorSetting(Vector3 postiveLaunchDistance, Vector3 negativeLaunchDistance, float minForce, float maxForce, float minGravityFactor, float maxGravityFactor, float rapidSlowTime, float damping)
+    //{ 
+    //    this.positiveLaunchDirection = postiveLaunchDistance;
+    //    this.negativeLaunchDirection = negativeLaunchDistance;
+    //    this.minForce = minForce;
+    //    this.maxForce = maxForce;
+    //    this.minGravityFactor = minGravityFactor;
+    //    this.maxGravityFactor = maxGravityFactor;
+    //    this.rapidSlowTime = rapidSlowTime;
+    //    this.damping = damping;
+
+    //    //rigidbody.SetVelocity(Vector3.Zero());
+    //    //init();
+    //}
+
+    public Vector3 GetDirection()
+    { 
+        return choosenDirection;
     }
 }

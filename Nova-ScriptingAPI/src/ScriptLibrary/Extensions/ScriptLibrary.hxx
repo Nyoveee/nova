@@ -103,6 +103,9 @@ public:
 	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance, GameObject^ entityToIgnore);
 	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end);
 	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end, array<System::String^>^ layermask);
+
+	static System::Collections::Generic::List<SphereCollideResult>^ SphereCollide(Vector3 origin, float radius);
+	static System::Collections::Generic::List<SphereCollideResult>^ SphereCollide(Vector3 origin, float radius, array<System::String^>^ layermask);
 };
 
 // ======================================
@@ -145,6 +148,7 @@ public:
 	static float Atan2(float y, float x);
 	static float Clamp(float value, float min, float max);
 	static float Interpolate(float a, float b, float t, float degree);
+	static Colour Interpolate(Colour a, Colour b, float t);
 	static float Min(float a, float b);
 	static float Max(float a, float b);
 	static float Pow(float base, float exponent);
@@ -229,7 +233,10 @@ public:
 		float get() { return Interface::engine->renderer.hdrExposure; };
 		void set(float value) { Interface::engine->renderer.hdrExposure = value; };
 	};
-
+	static property Colour vignetteColor {
+		Colour get() { return Colour(Interface::engine->renderer.vignetteColor); };
+		void set(Colour value) { Interface::engine->renderer.vignetteColor = value.native(); };
+	}
 	static property float vignette {
 		float get() { return Interface::engine->renderer.vignette; };
 		void set(float value) { Interface::engine->renderer.vignette = value; };

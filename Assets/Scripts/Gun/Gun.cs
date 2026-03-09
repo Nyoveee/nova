@@ -40,7 +40,7 @@ public abstract class Gun : Script
         set
         {
             currentAmmo = value;
-            gameUIManager?.SetCurrentAmmoText(currentAmmo);
+            gameUIManager?.SetCurrentAmmo(currentAmmo);
         }
     }
 
@@ -57,7 +57,7 @@ public abstract class Gun : Script
         set
         {
             maxAmmo = value;
-            gameUIManager?.SetAmmoText(currentAmmo, maxAmmo);
+            // gameUIManager?.SetAmmoText(currentAmmo, maxAmmo);
         }
     }
 
@@ -73,8 +73,10 @@ public abstract class Gun : Script
         }
         set
         {
+            int previousSp = currentSp;
             currentSp = value;
-            gameUIManager?.SetUltimateBarUI(currentSp, maxSp);
+            currentSp = Math.Min(currentSp, maxSp);
+            gameUIManager?.SetUltimateBar(previousSp, currentSp, maxSp);
         }
     }
 
@@ -88,11 +90,11 @@ public abstract class Gun : Script
         {
             return maxSp;
         }
-        set
-        {
-            maxSp = value;
-            gameUIManager?.SetUltimateBarUI(currentSp, maxSp);
-        }
+        //set
+        //{
+        //    maxSp = value;
+        //    gameUIManager?.SetUltimateBar(currentSp, maxSp);
+        //}
     }
 
     private GameObject player;
@@ -105,8 +107,8 @@ public abstract class Gun : Script
 
         player = GameObject.FindWithTag("Player");
         gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
-        gameUIManager?.SetAmmoText(currentAmmo, maxAmmo);
-        gameUIManager?.SetUltimateBarUI(currentSp, maxSp);
+
+        gameUIManager?.SetUltimateBar(currentSp, currentSp, maxSp);
 
     }
 
@@ -127,7 +129,7 @@ public abstract class Gun : Script
 
         GameObject collidedEntity = new GameObject(result.Value.entity);
 
-        if (collidedEntity.tag != "Wall" && collidedEntity.tag != "Enemy_ArmouredSpot" && collidedEntity.tag != "Enemy_WeakSpot" && collidedEntity.tag != "Enemy")
+        if (collidedEntity.tag != "Wall" && collidedEntity.tag != "Enemy_ArmouredSpot" && collidedEntity.tag != "Enemy_WeakSpot" && collidedEntity.tag != "Enemy" )
         {
             return false;
         }

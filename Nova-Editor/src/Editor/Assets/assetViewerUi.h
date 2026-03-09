@@ -17,6 +17,10 @@ public:
 	template <ValidResource T>
 	void displayAssetUI(BasicAssetInfo& descriptor);
 
+	/// ****
+	// getter for resource id..
+	ResourceID getCurrentResourceID();
+
 	//template<typename ...Components>
 	//void updateComponents(entt::registry& ecsRegistry, entt::registry& prefabRegistry, entt::entity entity, entt::entity prefabEntity);
 
@@ -51,6 +55,7 @@ private:
 	void displayNavigationHistory();
 
 	void handleRecompilation();
+
 
 public:
 	bool isHovering = false;

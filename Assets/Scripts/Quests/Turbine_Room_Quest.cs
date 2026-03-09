@@ -26,16 +26,37 @@ class Turbine_Room_Quest : Quest
     [SerializableField]
     private float questCompleteDelay = 1f;
 
+    [SerializableField]
+    private string goddessVoiceOverText;
+    [SerializableField]
+    private float goddessVoiceOverTime;
+    [SerializableField]
+    private Audio goddessVoiceOverAudio;
+
+    [SerializableField]
+    private List<string> weaverVoiceOverText;
+    [SerializableField]
+    private List<float> weaverVoiceOverTime;
+    [SerializableField]
+    private List<Audio> weaverVoiceOverAudio;
+
+
     private List<List<GameObject>> spawnLocations = new List<List<GameObject>>();
     private List<GameObject> spawnedEnemies = new List<GameObject>();
     private List<Switch> activeSwitches = new List<Switch>();
+    private VoiceoverScript voiceoverScript;
+    private int weaverVoiceOverIndex = -1;
 
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
+        voiceoverScript = GameObject.FindWithTag("Game UI Manager")?.getScript<VoiceoverScript>();
         OnRestart();
     }
-
+    public override void OnEnter()
+    {
+        voiceoverScript.TriggerVoiceOver("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime, false);
+    }
     public override void UpdateQuest()
     {
         for (int i = activeSwitches.Count - 1; i >= 0; --i)
@@ -44,6 +65,8 @@ class Turbine_Room_Quest : Quest
                 continue;
             foreach (GameObject spawnLocation in spawnLocations[spawnLocations.Count-1])
                 spawnedEnemies.Add(Instantiate(gunnerPrefab, spawnLocation.transform.position));
+            ++weaverVoiceOverIndex;
+            voiceoverScript.TriggerVoiceOver("Weaver", weaverVoiceOverText[weaverVoiceOverIndex], weaverVoiceOverAudio[weaverVoiceOverIndex], weaverVoiceOverTime[weaverVoiceOverIndex], false);
             spawnLocations.RemoveAt(spawnLocations.Count-1);
             activeSwitches.RemoveAt(i);
         }

@@ -77,6 +77,7 @@ AssetManagerUI::AssetManagerUI(Editor& editor, AssetViewerUI& assetViewerUi) :
 
 void AssetManagerUI::update() {
 	ImGui::Begin(ICON_FA_BOXES_PACKING " Content Browser");
+	isHovering = false;
 
 	displayLeftNavigationPanel();
 	ImGui::SameLine(); 
@@ -226,7 +227,6 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 void AssetManagerUI::displayFolderContent(FolderID folderId) {
 	// This displays a table of asset content
 	// We need to calculate the number of columns based on a fixed size of the asset thumbnail.
-	
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. attempting to display invalid folder id.");
 
@@ -497,6 +497,8 @@ void AssetManagerUI::displayThumbnail(std::size_t resourceOrFolderId, ImTextureI
 
 	ImGui::PushID(static_cast<int>(resourceOrFolderId));
 	ImGui::BeginChild("Thumbnail", ImVec2{ columnWidth, columnWidth + textHeight + 2 * padding.y }, ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar);
+
+	isHovering |= ImGui::IsWindowHovered();
 
 	ImVec2 buttonSize = ImVec2{ columnWidth - 2 * padding.x, columnWidth - 2 * padding.x };
 

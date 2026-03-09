@@ -26,6 +26,8 @@ class DialogueScript : Script
     // -------------------------- 
 
     private PlayerController_V2 playerBody;
+    private PlayerWeaponController playerWeaponController;
+    private PlayerRotateController playerRotateController;
     private CameraComponent_ playerCamera;
     private AudioComponent_ audioComponent_;
 
@@ -57,6 +59,12 @@ class DialogueScript : Script
     private GameObject playerContainerUI;
 
     [SerializableField]
+    private Canvas_ dialogueUI;
+
+    [SerializableField]
+    private GameObject missionObjectiveUI;
+
+    [SerializableField]
     private Text_ dialogueText;
     
     [SerializableField]
@@ -74,27 +82,21 @@ class DialogueScript : Script
     [SerializableField]
     private Audio elevatorSpeechAudio;
 
-    [SerializableField]
-    private GameObject missionObjectiveContainer;
-    [SerializableField]
-    private GameObject questInformationContainer;
+    //[SerializableField]
+    //private GameObject missionObjectiveContainer;
+    //[SerializableField]
+    //private GameObject questInformationContainer;
 
-    [SerializableField]
-    private Vector3 newMissionObjectiveUILocation;
-    [SerializableField]
-    private Vector3 newQuestInformationUILocation;
-
-    private enum DialogueState
-    {
-        StartTransition,
-        InDialogue,
-        EndTransition
-    }
-    private DialogueState dialogueState;
+    //[SerializableField]
+    //private Vector3 newMissionObjectiveUILocation;
+    //[SerializableField]
+    //private Vector3 newQuestInformationUILocation;
 
     protected override void init()
     {
         playerBody = GameObject.FindWithTag("Player")?.getScript<PlayerController_V2>();
+        playerWeaponController = GameObject.FindWithTag("Player")?.getScript<PlayerWeaponController>();
+        playerRotateController = GameObject.FindWithTag("PlayerHead")?.getScript<PlayerRotateController>();
         playerCamera = GameObject.FindWithTag("PlayerCamera")?.getComponent<CameraComponent_>();
 
         audioComponent_ = getComponent<AudioComponent_>();
@@ -175,15 +177,19 @@ class DialogueScript : Script
                 BeginFadeSequence(
                     () =>
                     {
+                        playerWeaponController.EnableShooting();
                         // swap camera..
                         cutsceneCameras[currentCameraIndex - 1].camStatus = false;
                         playerCamera.camStatus = true;
 
                         // swap visible UI..
                         playerContainerUI.SetActive(true);
+                        missionObjectiveUI.SetActive(true);
                         cutsceneUI.SetActive(false);
+                        dialogueUI.alpha = 0f;
 
                         playerBody.movementIsEnabled = true;
+                        playerRotateController.rotationIsEnabled = true;
                     },
                     () =>
                     {
@@ -195,29 +201,34 @@ class DialogueScript : Script
 
     public void BeginDialogueSequence(string speaker, List<string> text, List<float> times, float finalDialogueTime)
     {
+        playerWeaponController.DisableShooting();
         BeginFadeSequence(
         () =>
         {
             // Reposition mission objective UI..
-            missionObjectiveContainer.transform.position = newMissionObjectiveUILocation;
-            questInformationContainer.transform.position = newQuestInformationUILocation;
+            //missionObjectiveContainer.transform.position = newMissionObjectiveUILocation;
+            //questInformationContainer.transform.position = newQuestInformationUILocation;
 
             // swap visible UI..
             playerContainerUI.SetActive(false);
+            missionObjectiveUI.SetActive(false);
             cutsceneUI.SetActive(true);
 
             playerBody.movementIsEnabled = false;
+            playerRotateController.rotationIsEnabled = false;
 
             // swap camera..
             playerCamera.camStatus = false;
 
             // begin cutscene transition effect..
             SetupCutsceneArea();
+ 
         }, 
         () =>
         {
             // begin chaining of dialogue..
             audioComponent_.PlaySound(elevatorSpeechAudio);
+            dialogueUI.alpha = 1f;
 
             speakerText.SetText(speaker);
             currentIndex = 0;
@@ -284,4 +295,5 @@ class DialogueScript : Script
 
         timeElapsed += Time.V_DeltaTime();
     }
+    public float GetFadeTransitionTime() => (fadeTransitionTime);
 }

@@ -13,3 +13,9 @@ struct PhysicsRayCastResult {
 	glm::vec3 point;
 	glm::vec3 hitSurfaceNormal;
 };
+
+struct PhysicsSphereCollideResult {
+	entt::entity entity;
+	glm::vec3 point;
+	float penetrationDepth;
+};

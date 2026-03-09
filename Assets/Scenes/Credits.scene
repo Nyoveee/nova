@@ -62,7 +62,8 @@
                 }
             },
             "Canvas": {
-                "placeholder": ""
+                "alpha": 1.0,
+                "isInteractable": true
             },
             "id": 42991779
         },
@@ -170,7 +171,7 @@
                 ]
             },
             "Image": {
-                "texture": 1309598116772916699,
+                "texture": 13135619731514327041,
                 "colorTint": {
                     "r": 1.0,
                     "g": 1.0,
@@ -179,11 +180,14 @@
                 },
                 "anchorMode": "Center",
                 "toFlip": false,
-                "textureCoordinatesRange": {
+                "textureCoordinatesStart": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "textureCoordinatesEnd": {
                     "x": 1.0,
                     "y": 1.0
-                },
-                "toTile": false
+                }
             },
             "id": 0
         },
@@ -340,7 +344,7 @@
                 "position": {
                     "x": 3.039850344066508e-05,
                     "y": 0.0,
-                    "z": 4.488068944263901e-11
+                    "z": 4.4880699850979866e-11
                 },
                 "scale": {
                     "x": 1.0000215768814087,
@@ -361,7 +365,7 @@
                 "localPosition": {
                     "x": 1.5139579772949219e-05,
                     "y": 0.0,
-                    "z": 9.26342336171615e-16
+                    "z": 9.367506770274758e-16
                 },
                 "localScale": {
                     "x": 1.0000126361846924,
@@ -411,5 +415,7 @@
         {
             "name": "Settings Text"
         }
-    ]
+    ],
+    "iblDiffuseStrength": 1.0,
+    "iblSpecularStrength": 1.0
 }

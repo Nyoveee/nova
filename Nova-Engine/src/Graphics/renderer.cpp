@@ -563,24 +563,24 @@ void Renderer::renderMain(RenderMode renderMode) {
 	case RenderMode::Editor:
 		// Main game render function
 		if (isGameScreenShown) {
-			render(gameMainFrameBuffer, gameCamera, gameHistoryTexture,false);
-
-			// Apply HDR tone mapping + gamma correction post-processing
-			renderHDRTonemapping(gameMainFrameBuffer);
+			render(gameMainFrameBuffer, gameCamera, gameHistoryTexture, false);
+			hdrToneMapping(gameMainFrameBuffer);
 
 			renderUI();
-			overlayUIToBuffer(gameMainFrameBuffer);
+			gammaCorrection(gameMainFrameBuffer);
 		}
-		else if (isUIScreenShown) {
-			renderUI();
+
+		if (isUIScreenShown) {
+			renderUIToUIFBO();
+			gammaCorrection(uiMainFrameBuffer);
 		}
 
 		// Main editor render function
 		if (isEditorScreenShown) {
-			render(editorMainFrameBuffer, editorCamera, editorHistoryTexture,true);
+			render(editorMainFrameBuffer, editorCamera, editorHistoryTexture, true);
 
 			// Apply HDR tone mapping + gamma correction post-processing
-			renderHDRTonemapping(editorMainFrameBuffer);
+			hdrAndGammaCorrection(editorMainFrameBuffer, true, toGammaCorrect);
 			
 			// render debug information..
 			debugRender();
@@ -594,13 +594,11 @@ void Renderer::renderMain(RenderMode renderMode) {
 	// ===============================================
 	case RenderMode::Game:
 		// Main render function
-		render(gameMainFrameBuffer, gameCamera, gameHistoryTexture,false);
-
-		// Apply HDR tone mapping + gamma correction post-processing
-		renderHDRTonemapping(gameMainFrameBuffer);
+		render(gameMainFrameBuffer, gameCamera, gameHistoryTexture, false);
+		hdrToneMapping(gameMainFrameBuffer);
 
 		renderUI();
-		overlayUIToBuffer(gameMainFrameBuffer);
+		gammaCorrection(gameMainFrameBuffer);
 
 		// render to default FBO.
 		renderToDefaultFBO();
@@ -647,17 +645,21 @@ void Renderer::renderMain(RenderMode renderMode) {
 
 void Renderer::renderUI()
 {
+#if 0
 	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.getActiveFrameBuffer().fboId());
 	glViewport(0, 0, uiMainFrameBuffer.getActiveFrameBuffer().getWidth(), uiMainFrameBuffer.getActiveFrameBuffer().getHeight());
 
-	glClearColor(0, 0, 0, 0);
+	glClearColor(1, 1, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	setDepthMode(DepthTestingMethod::NoDepthWriteTest);
 
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 	glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
+#endif
+
+	setDepthMode(DepthTestingMethod::NoDepthWriteTest);
+	setBlendMode(BlendingConfig::AlphaBlending);
 
 	glBindVertexArray(textVAO);
 
@@ -793,15 +795,11 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 
 	renderTranslucentModels(frameBuffers.getActiveFrameBuffer());
 
-	// Original depth test..
-	glDepthFunc(GL_LESS);
-
 	// Render particles
 	renderParticles();
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
 
 	setBlendMode(BlendingConfig::Disabled);
 
@@ -990,17 +988,12 @@ void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Renderer::overlayUIToBuffer(PairFrameBuffer& target) {
-	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
-	
-	setBlendMode(BlendingConfig::AlphaBlending);
+void Renderer::renderUIToUIFBO() {
+	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.getActiveFrameBuffer().fboId());
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	overlayShader.use();
-	overlayShader.setImageUniform("overlay", 0);
-	glBindTextureUnit(0, getUIFrameBufferTexture());
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	glDisable(GL_BLEND);
+	renderUI();
 }
 
 void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
@@ -1354,7 +1347,8 @@ void Renderer::recompileShaders() {
 	bakeDiffuseIrradianceMapShader.recompile();
 
 	TAAResolveShader.recompile();
-
+	texture2dShader.recompile();
+	
 	auto [defaultPBRShader, _] = resourceManager.getResource<CustomShader>(DEFAULT_PBR_SHADER_ID);
 
 	if (defaultPBRShader) {
@@ -2369,11 +2363,12 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 	texture2dShader.setMatrix("model", transform.modelMatrix);
 	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
 
-	texture2dShader.setVec2("textureCoordinatesRange", image.textureCoordinatesRange);
+	texture2dShader.setVec2("textureCoordinatesStart", image.textureCoordinatesStart);
+	texture2dShader.setVec2("textureCoordinatesEnd", image.textureCoordinatesEnd);
+
 	texture2dShader.setMatrix("uiProjection", UIProjection);
 	texture2dShader.setInt("image", 0);
 	texture2dShader.setBool("toFlip", image.toFlip);
-	texture2dShader.setBool("toTile", image.toTile);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureId);
@@ -2413,8 +2408,13 @@ void Renderer::renderOutline() {
 
 void Renderer::renderParticles()
 {
+	// Original depth test..
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glDisable(GL_CULL_FACE);
+
 	glBindVertexArray(particleVAO);
-	setBlendMode(BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::PremultipliedAlpha);
 	particleShader.use();
 	particleShader.setUInt("maxParticlesPerTexture", engine.particleSystem.MAX_PARTICLES_PER_TEXTURE);
 	
@@ -2424,10 +2424,17 @@ void Renderer::renderParticles()
 	EBO.uploadData(squareIndices);
 
 	// render texture by texture
-	for (int textureIndex{}; textureIndex < engine.particleSystem.usedTextures.size(); ++textureIndex) {
-		auto&& [texture, result] = resourceManager.getResource<Texture>(engine.particleSystem.usedTextures[textureIndex]);
+	std::sort(engine.particleSystem.usedTextures.begin(), engine.particleSystem.usedTextures.end(), [&](auto const& lhs, auto const& rhs) {
+		return lhs.layer < rhs.layer;
+	});
+
+	for (auto const& textureLayer : engine.particleSystem.usedTextures) {
+		auto&& [renderOrder, textureId, textureIndex, _] = textureLayer;
+		auto&& [texture, result] = resourceManager.getResource<Texture>(textureId);
+
 		if (!texture)
 			continue;
+
 		glBindTextureUnit(0, texture->getTextureId());
 		particleShader.setUInt("textureIndex", textureIndex);
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, engine.particleSystem.MAX_PARTICLES_PER_TEXTURE);
@@ -2482,7 +2489,7 @@ void Renderer::frustumCullModels(glm::mat4 const& viewProjectionMatrix) {
 
 	for (auto&& [entityID, entityData, transform, skinnedMeshRenderer] : registry.view<EntityData, Transform, SkinnedMeshRenderer>().each()) {
 		// pointless to do frustum culling on disabled objects.
-		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entityID) || !skinnedMeshRenderer.toFrustumCull) {
 			continue;
 		}
 
@@ -3478,7 +3485,15 @@ void Renderer::renderUiObjectIds() {
 	}
 }
 
-void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
+void Renderer::hdrToneMapping(PairFrameBuffer& frameBuffers) {
+	hdrAndGammaCorrection(frameBuffers, true, false);
+}
+
+void Renderer::gammaCorrection(PairFrameBuffer& frameBuffers) {
+	if(toGammaCorrect) hdrAndGammaCorrection(frameBuffers, false, true);
+}
+
+void Renderer::hdrAndGammaCorrection(PairFrameBuffer& frameBuffers, bool toToneMap, bool p_toGammaCorrect) {
 #if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
@@ -3491,8 +3506,8 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	// Set up tone mapping shader
 	toneMappingShader.use();
 	toneMappingShader.setFloat("exposure", hdrExposure);
-	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(engine.gameConfig.toneMappingMethod));
-	toneMappingShader.setBool("toGammaCorrect", toGammaCorrect);
+	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(toToneMap ? engine.gameConfig.toneMappingMethod : ToneMappingMethod::None));
+	toneMappingShader.setBool("toGammaCorrect", p_toGammaCorrect);
 	toneMappingShader.setFloat("gamma", renderConfig.gamma);
 
 	// Bind the HDR texture from main framebuffer
@@ -3550,9 +3565,13 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fo
 	postprocessingShader.setImageUniform("depthTexture", 1);
 
 	postprocessingShader.setVec3("fogColor", fog.fogInscatteringColor);
+
 	postprocessingShader.setFloat("fogNear", fog.startDistance);
 	postprocessingShader.setFloat("fogFar", fog.endDistance);
 	postprocessingShader.setFloat("fogDensity", fog.inscatteringDensity);
+
+	postprocessingShader.setFloat("vignette", vignette);
+	postprocessingShader.setVec3("vignetteColor", vignetteColor);
 
 	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);

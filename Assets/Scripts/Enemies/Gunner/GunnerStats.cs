@@ -4,6 +4,7 @@
 class GunnerStats : EnemyStats
 {
     public float shootingRange = 100f;
+    public float safeVantageRange = 40f;
     public float escapeRange = 20f;
     // Movement
     public float targetDistanceFromVantagePoint = 3f;

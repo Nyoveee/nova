@@ -226,13 +226,16 @@ struct SkinnedMeshRenderer {
 
 	bool castShadow = true;
 	bool shadowCullFrontFace = true;
-
+	
+	bool toFrustumCull = true;
+	
 	REFLECTABLE(
 		modelId,
 		materialIds,
 		socketConnections,
 		castShadow,
-		shadowCullFrontFace
+		shadowCullFrontFace,
+		toFrustumCull
 	)
 
 	std::unordered_set<int>					isMaterialInstanced;
@@ -250,9 +253,11 @@ struct SkinnedMeshRenderer {
 struct Animator {
 	// @TODO: Change to animation asset.
 	TypedResourceID<Controller> controllerId{ INVALID_RESOURCE_ID };
+	float speedMultiplier = 1.f;
 
 	REFLECTABLE(
-		controllerId
+		controllerId,
+		speedMultiplier
 	)
 
 	float timeElapsed = 0;
@@ -390,6 +395,8 @@ struct MeshCollider {
 	)
 };
 
+
+
 struct SkyBox {
 	TypedResourceID<EquirectangularMap> equirectangularMap{ INVALID_RESOURCE_ID };
 	
@@ -420,16 +427,16 @@ struct Image {
 
 	bool toFlip = false;
 	
-	glm::vec2 textureCoordinatesRange { 1.f, 1.f };
-	bool toTile = false;
+	glm::vec2 textureCoordinatesStart	{ 0.f, 0.f };
+	glm::vec2 textureCoordinatesEnd		{ 1.f, 1.f };
 
 	REFLECTABLE(
 		texture,
 		colorTint,
 		anchorMode,
 		toFlip,
-		textureCoordinatesRange,
-		toTile
+		textureCoordinatesStart,
+		textureCoordinatesEnd
 	)
 
 	float canvasAlphaMultiplier = 1.f;
@@ -476,7 +483,8 @@ struct AudioComponent
 	//bool playWhenPaused = false;
 	enum class AudioGroup {
 		SFX,
-		BGM
+		BGM,
+		UI
 	}audioGroup = AudioGroup::SFX;
 	REFLECTABLE(
 		volume,
@@ -696,15 +704,20 @@ struct ColorOverLifetime {
 		endColor
 	)
 };
+
 struct Trails {
 	bool selected{false};
 	TypedResourceID<Texture> trailTexture;
-	float distancePerEmission{0.1f};
+	float distancePerEmission { 0.1f };
+	float minDistanceOffset = 0.f;
+	float maxDistanceOffset = 0.f;
+
 	float trailSize{ 0.1f };
 	ColorA trailColor{ ColorA{1.f,1.f,1.f,1.f} };
 	glm::vec3 trailColorOffsetMin{};
 	glm::vec3 trailColorOffsetMax{};
 	float trailEmissiveMultiplier{ 1.f };
+
 	REFLECTABLE(
 		selected,
 		trailTexture,
@@ -715,15 +728,13 @@ struct Trails {
 		trailColorOffsetMax,
 		trailEmissiveMultiplier
 	)
+
+	// runtime value..
+	float nextDistancePerEmission;
 };
 
 struct ParticleEmitter
 {
-	// Update
-	float currentContinuousTime{};
-	float currentBurstTime{};
-	glm::vec3 prevPosition{};
-	bool b_firstPositionUpdate{ true };
 	// Categories
 	TypedResourceID<Texture> texture{};
 	ParticleEmissionTypeSelection particleEmissionTypeSelection{};
@@ -731,6 +742,7 @@ struct ParticleEmitter
 	SizeOverLifetime sizeOverLifetime{};
 	ColorOverLifetime colorOverLifetime{};
 	Trails trails{};
+
 	// Core
 	bool looping = true;
 	bool randomizedDirection = false;
@@ -761,6 +773,13 @@ struct ParticleEmitter
 	float lightIntensity{};
 	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
 	float lightRadius{};
+
+	enum class RenderAlignment {
+		View,
+		Local
+	} renderAlignment = RenderAlignment::View;
+
+	int renderOrder = 0;
 
 	REFLECTABLE
 	(
@@ -793,8 +812,16 @@ struct ParticleEmitter
 		particleColorSelection,
 		sizeOverLifetime,
 		colorOverLifetime,
-		trails
+		trails,
+		renderAlignment,
+		renderOrder
 	)
+
+	// Update
+	float currentContinuousTime{};
+	float currentBurstTime{};
+	glm::vec3 prevPosition{};
+	bool b_firstPositionUpdate{ true };
 };
 
 struct Text {

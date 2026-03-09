@@ -16,6 +16,7 @@ public:
 
 public:
 	static GameObject^ Find(System::String^ name);
+	static GameObject^ FindWithID(System::UInt32 p_entityID);
 	static array<GameObject^>^ FindGameObjectsWithTag(System::String^ tag);
 	static GameObject^ FindWithTag(System::String^ tag);
 

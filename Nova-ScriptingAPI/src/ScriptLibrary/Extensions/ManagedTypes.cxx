@@ -83,6 +83,13 @@ float Vector3::Dot(Vector3 a, Vector3 b){ return a.x * b.x + a.y * b.y + a.z * b
 Vector3 Vector3::Lerp(Vector3 a, Vector3 b, float interval) {
 	return Vector3{ std::lerp(a.x, b.x, interval), std::lerp(a.y, b.y, interval), std::lerp(a.z, b.z, interval) };
 }
+Vector3 Vector3::Interpolate(Vector3 a, Vector3 b, float interval, float degree)
+{
+	return Vector3{ Interpolation::Interpolation(a.x, b.x, interval,degree),
+					Interpolation::Interpolation(a.y, b.y, interval, degree),
+					Interpolation::Interpolation(a.z, b.z, interval, degree) };
+}
+
 
 Vector3 Vector3::Proj(Vector3 vector, Vector3 onNormal)
 {
@@ -101,6 +108,40 @@ Vector3 Vector3::Cross(Vector3 lhs, Vector3 rhs)
 Vector3 Vector3::Abs(Vector3 vec) {
 	return Vector3{ std::abs(vec.x), std::abs(vec.y), std::abs(vec.z) };
 }
+
+// =================================================================
+// Colour
+// =================================================================
+Colour Colour::Lerp(Colour a, Colour b, float interval)
+{
+	return Colour{ std::lerp(a.r, b.r, interval), std::lerp(a.g, b.g, interval), std::lerp(a.b, b.b, interval) };
+}
+
+Colour Colour::operator-(Colour a, Colour b)	{ return Colour{ a.r - b.r,a.g - b.g,a.b - b.b }; }
+Colour Colour::operator-(Colour a)				{ return Colour{ -a.r, -a.g, -a.b }; }
+Colour Colour::operator+(Colour a, Colour b)	{ return Colour{ a.r + b.r,a.g + b.g,a.b + b.b }; }
+Colour Colour::operator*(Colour a, float d)		{ return Colour{ a.r * d, a.g * d,a.b * d }; }
+Colour Colour::operator*(float d, Colour a)		{ return Colour{ a.r * d, a.g * d,a.b * d }; }
+Colour Colour::operator/(Colour a, float d)		{ return Colour{ a.r / d, a.g / d,a.b / d }; }
+bool Colour::operator!=(Colour a, Colour b)		{ return a.native() != b.native(); }
+bool Colour::operator==(Colour a, Colour b)		{ return a.native() == b.native(); }
+
+// =================================================================
+// ColorAlpha
+// =================================================================
+ColorAlpha ColorAlpha::Lerp(ColorAlpha a, ColorAlpha b, float interval)
+{
+	return ColorAlpha{ std::lerp(a.r, b.r, interval), std::lerp(a.g, b.g, interval), std::lerp(a.b, b.b, interval), std::lerp(a.a, b.a, interval) };
+}
+
+ColorAlpha ColorAlpha::operator-(ColorAlpha a, ColorAlpha b)	{ return ColorAlpha{ a.r - b.r, a.g - b.g, a.b - b.b, a.a - b.a }; }
+ColorAlpha ColorAlpha::operator-(ColorAlpha a)					{ return ColorAlpha{ -a.r, -a.g, -a.b, -a.a }; }
+ColorAlpha ColorAlpha::operator+(ColorAlpha a, ColorAlpha b)	{ return ColorAlpha{ a.r + b.r,a.g + b.g,a.b + b.b, a.a + b.a }; }
+ColorAlpha ColorAlpha::operator*(ColorAlpha a, float d)			{ return ColorAlpha{ a.r * d, a.g * d,a.b * d, a.a * d }; }
+ColorAlpha ColorAlpha::operator*(float d, ColorAlpha a)			{ return ColorAlpha{ a.r * d, a.g * d,a.b * d, a.a * d }; }
+ColorAlpha ColorAlpha::operator/(ColorAlpha a, float d)			{ return ColorAlpha{ a.r / d, a.g / d,a.b / d, a.a / d }; }
+bool ColorAlpha::operator!=(ColorAlpha a, ColorAlpha b)			{ return a.native() != b.native(); }
+bool ColorAlpha::operator==(ColorAlpha a, ColorAlpha b)			{ return a.native() == b.native(); }
 
 // =================================================================
 // QUATERNION
@@ -141,6 +182,44 @@ Quaternion Quaternion::LookRotation(Vector3 directionTOLook) {
 Quaternion Quaternion::AngleAxis(float angle, Vector3 axis){ return Quaternion{ glm::angleAxis(angle, axis.native()) }; }
 Quaternion Quaternion::operator*(Quaternion lhs, Quaternion rhs){ return Quaternion(lhs.native() * rhs.native());}
 
+
+//A extention of slerp to ensure a object rotates towards a target without overshooting
+Quaternion Quaternion::RotateTowards(Quaternion current, Quaternion target, float angleDegrees)
+{
+	// 1. Find the dot product to get the angle
+	float dot = glm::dot(current.native(), target.native());
+
+	// Quaternions represent the same rotation as their negative
+	// This ensures we take the shortest path
+	if (dot < 0.0f) {
+		target.native() = -target.native();
+		dot = -dot;
+	}
+
+	// 2. Calculate the actual angle between them
+	// Clamp to avoid float precision errors leading to NaN
+	float angle = std::acos(std::min(1.0f, dot));
+	angle = glm::degrees(angle);
+
+	// 3. If the angle is very small, just return the target
+	if (angle < 0.0001f ||angleDegrees >= angle) {
+		return target;
+	}
+
+	// 4. Calculate the interpolation factor (0 to 1)
+	float t = angleDegrees / angle;
+
+	// 5. Slerp towards the target
+	return Quaternion{ glm::slerp(current.native(), target.native(), t) };
+}
+
+float Quaternion::Angle(Quaternion a, Quaternion b)
+{
+	// This calculates the shortest angular difference in radians
+	float angleRadians = glm::angle(glm::conjugate(a.native()) * b.native());
+
+	return glm::degrees(angleRadians);
+}
 
 
 //Quaternion Quaternion::Slerp(Quaternion a, Quaternion b, float t) {

@@ -75,6 +75,7 @@ const int BOTTOM_RIGHT_ANCHOR = 2;
 const int TOP_LEFT_ANCHOR = 3;
 const int TOP_RIGHT_ANCHOR = 4;
 
+
 void main() {
     int index = indices[gl_VertexID];
 

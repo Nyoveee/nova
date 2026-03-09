@@ -125,6 +125,9 @@ void DebugUI::renderHDRSection() {
 
 	ImGui::SliderFloat("Vignette", &renderer.vignette, 0.f, 1.0f, "%.2f");
 
+	std::string label = std::string{ "##" } + "Vignette Color";
+	ImGui::ColorEdit3(label.c_str(), glm::value_ptr(renderer.vignetteColor));
+
 
 
 #if 0

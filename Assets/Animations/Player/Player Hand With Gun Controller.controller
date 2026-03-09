@@ -1,0 +1,43 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "id": 1000,
+            "animation": 18446744073709551615,
+            "transitions": [
+                {
+                    "nextNode": 10091661378307688387,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Entry Node",
+            "animationEvents": null
+        },
+        "4327053855273437121": {
+            "id": 4327053855273437121,
+            "animation": 7785818369076920323,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "PlayerHandFiringAnimation_Gun",
+            "animationEvents": null
+        },
+        "10091661378307688387": {
+            "id": 10091661378307688387,
+            "animation": 15856268901324865541,
+            "transitions": [
+                {
+                    "nextNode": 4327053855273437121,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "PlayerHandIdleAnimation_Gun",
+            "animationEvents": null
+        }
+    },
+    "parameters": null
+}

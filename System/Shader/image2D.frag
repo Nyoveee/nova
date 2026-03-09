@@ -9,22 +9,22 @@ uniform vec4 tintColor;
 uniform vec2 textureCoordinatesRange;
 uniform bool toTile;
 
+uniform vec2 textureCoordinatesStart;
+uniform vec2 textureCoordinatesEnd;
+
 void main()
 {   
-    vec2 newTextureCoords = textureCoords;
-
-    if(!toTile) {
-        if(
-                textureCoords.x > textureCoordinatesRange.x
-            ||  (1 - textureCoords.y) > textureCoordinatesRange.y
-        ){
-            discard;
-        }
-    }
-    else {
-        newTextureCoords.x = mod(textureCoords.x, textureCoordinatesRange.x);
-        newTextureCoords.y = mod((1 - textureCoords.y), textureCoordinatesRange.y);
+    if(
+            textureCoords.x > textureCoordinatesEnd.x
+        ||  textureCoords.x < textureCoordinatesStart.x
+        ||  (1 - textureCoords.y) > textureCoordinatesEnd.y
+        ||  (1 - textureCoords.y) < textureCoordinatesStart.y
+    ) {
+        discard;
     }
 
-    FragColor = texture(image, newTextureCoords) * tintColor;
+    vec4 textureColor = texture(image, textureCoords);
+
+
+    FragColor = textureColor * tintColor;
 }  

@@ -45,8 +45,6 @@ void ParticleSystem::reset() {
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	// Reset the texture array
 	usedTextures.clear();
-	
-	counterInEachTextures.resize(MAX_PARTICLE_TEXTURE_TYPES, 0);
 }
 
 void ParticleSystem::update(float dt)
@@ -56,8 +54,9 @@ void ParticleSystem::update(float dt)
 		if (!entityData.isActive || !engine.ecs.isComponentActive<ParticleEmitter>(entity))
 			continue;
 		continuousGeneration(transform, emitter, dt);
-		burstGeneration(transform, emitter, dt);
 		trailGeneration(transform, emitter);
+		
+		burstGeneration(transform, emitter, dt);
 	}
 	particleUpdateComputeShader.use();
 	particleUpdateComputeShader.setFloat("dt", dt);
@@ -76,7 +75,7 @@ int ParticleSystem::getMaxParticles()
 
 void ParticleSystem::continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt)
 {
-	if (emitter.particleRate <= 0 || !emitter.looping)
+	if (emitter.trails.selected || emitter.particleRate <= 0 || !emitter.looping)
 		return;
 	emitter.currentContinuousTime -= dt;
 	while (emitter.currentContinuousTime <= 0) {
@@ -100,18 +99,23 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 {
 	if (!emitter.trails.selected || emitter.trails.distancePerEmission <= 0)
 		return;
-	float distancePerEmission{ std::max(emitter.trails.distancePerEmission,0.00001f) }; // Hard limit to distance
-	if (glm::distance(emitter.prevPosition, transform.position) > distancePerEmission) {
+
+	if (glm::distance(emitter.prevPosition, transform.position) > emitter.trails.nextDistancePerEmission) {
 		if (emitter.b_firstPositionUpdate) {
 			emitter.prevPosition = transform.position;
 			emitter.b_firstPositionUpdate = false;
+			emitter.trails.nextDistancePerEmission = std::max(emitter.trails.distancePerEmission + RandomRange::Float(emitter.trails.minDistanceOffset, emitter.trails.maxDistanceOffset), 0.0001f);
 			return;
 		}
+
 		float maxDistance{ glm::distance(emitter.prevPosition,transform.position) };
 		glm::vec3 startPosition{ emitter.prevPosition };
 		glm::vec3 direction{ glm::normalize(transform.position - emitter.prevPosition) };
-		int index{};
+		// int index{};
+
 		while (maxDistance > 0.f) {
+			spawnParticle(transform, emitter);
+#if 0
 			ParticleLifespanData particleLifeSpanData{};
 			ParticleVertex particleVertex{};
 			determineParticleSpawnDetails(
@@ -146,8 +150,12 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 			addParticleToList(particleLifeSpanData, particleVertex,emitter.trails.trailTexture);
 			// Update the loop
 			++index;
-			maxDistance -= distancePerEmission;
+#endif
+
+			maxDistance -= emitter.trails.nextDistancePerEmission;
+			emitter.trails.nextDistancePerEmission = std::max(emitter.trails.distancePerEmission + RandomRange::Float(emitter.trails.minDistanceOffset, emitter.trails.maxDistanceOffset), 0.0001f);
 		}
+
 		emitter.prevPosition = transform.position;
 	}
 }
@@ -155,7 +163,7 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 void ParticleSystem::determineParticleSpawnDetails(
 	ParticleLifespanData& particleLifeSpanData, 
 	ParticleVertex& particleVertex,
-	glm::vec3 position,
+	Transform const& transform,
 	ParticleEmitter& emitter, 
 	ParticleEmissionTypeSelection::EmissionShape emissionShape)
 {
@@ -172,7 +180,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 		{
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
-			particleVertex.position = position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
+			particleVertex.position = transform.position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
 			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * emitter.startSpeed);
 			break;
 		}
@@ -181,21 +189,21 @@ void ParticleSystem::determineParticleSpawnDetails(
 			glm::vec3 randomVelocity = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
 			randomVelocity = glm::normalize(randomVelocity);
 			randomVelocity *= emitter.startSpeed;
-			particleVertex.position = position;
+			particleVertex.position = transform.position;
 			particleLifeSpanData.velocity = randomVelocity;
 			break;
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Cube:
 		{
 			glm::vec3 min{ emitter.particleEmissionTypeSelection.cubeEmitter.min }, max{ emitter.particleEmissionTypeSelection.cubeEmitter.max };
-			glm::vec3 randomSpawnPoint = position + glm::vec3{ RandomRange::Float(min.x,max.x),RandomRange::Float(min.y,max.y),RandomRange::Float(min.z,max.z) };
+			glm::vec3 randomSpawnPoint = transform.position + glm::vec3{ RandomRange::Float(min.x,max.x),RandomRange::Float(min.y,max.y),RandomRange::Float(min.z,max.z) };
 			particleVertex.position = randomSpawnPoint;
-			particleLifeSpanData.velocity = determineParticleVelocity(emitter, glm::normalize(randomSpawnPoint - position) * emitter.startSpeed);
+			particleLifeSpanData.velocity = determineParticleVelocity(emitter, glm::normalize(randomSpawnPoint - transform.position) * emitter.startSpeed);
 			break;
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Edge:
 		{
-			glm::vec3 randomSpawnPoint = position;
+			glm::vec3 randomSpawnPoint = transform.position;
 			randomSpawnPoint -= glm::vec3{ 1,0,0 } *emitter.particleEmissionTypeSelection.radiusEmitter.radius / 2.f;
 			randomSpawnPoint += glm::vec3{ 1,0,0 } *RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
 			particleVertex.position = randomSpawnPoint;
@@ -206,7 +214,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 		{
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), 0, RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
-			particleVertex.position = position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
+			particleVertex.position = transform.position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
 			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * emitter.startSpeed);
 			break;
 		}
@@ -214,7 +222,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 		{
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(0, 1), RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
-			particleVertex.position = position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
+			particleVertex.position = transform.position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
 			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * emitter.startSpeed);
 			break;
 		}
@@ -231,8 +239,8 @@ void ParticleSystem::determineParticleSpawnDetails(
 			// Calculate the spawn to target Position
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), 0, RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
-			glm::vec3 spawnPosition = position + randomSpawnDirection * spawnRadius;
-			glm::vec3 targetPosition = position + glm::vec3{ 0,distance,0 } + randomSpawnDirection * spawnRadius / radius * outerRadius;
+			glm::vec3 spawnPosition = transform.position + randomSpawnDirection * spawnRadius;
+			glm::vec3 targetPosition = transform.position + glm::vec3{ 0,distance,0 } + randomSpawnDirection * spawnRadius / radius * outerRadius;
 			glm::vec3 velocity = glm::normalize(targetPosition - spawnPosition) * emitter.startSpeed;
 			// Set the new Particle details
 			particleVertex.position = spawnPosition;
@@ -240,12 +248,22 @@ void ParticleSystem::determineParticleSpawnDetails(
 			break;
 		}
 	}
+
 	// Other Particle Details
 	particleLifeSpanData.force = emitter.force;
 	particleLifeSpanData.angularVelocity = emitter.initialAngularVelocity + RandomRange::Float(emitter.minAngularVelocityOffset, emitter.maxAngularVelocityOffset);
 	particleLifeSpanData.lightIntensity = emitter.lightIntensity;
 	particleLifeSpanData.lightattenuation = emitter.lightattenuation;
 	particleLifeSpanData.lightRadius = emitter.lightRadius;
+
+	particleLifeSpanData.renderAlignment = static_cast<int>(emitter.renderAlignment);
+
+	if (emitter.renderAlignment == ParticleEmitter::RenderAlignment::Local) {
+		particleVertex.rotationMatrix = glm::mat4_cast(transform.rotation);
+	}
+	else {
+		particleVertex.rotationMatrix = glm::mat4{ 1.f };
+	}
 }
 
 void ParticleSystem::determineParticleColor(
@@ -319,25 +337,30 @@ void ParticleSystem::rotateParticle(ParticleLifespanData& particleLifeSpanData, 
 	particleLifeSpanData.force = rotatedForce;
 }
 
-void ParticleSystem::addParticleToList(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, TypedResourceID<Texture> texture)
+void ParticleSystem::addParticleToList(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, TypedResourceID<Texture> texture, int renderOrder)
 {
 	particleLifeSpanData.b_Active = true;
-	std::vector<TypedResourceID<Texture>>::iterator iter = std::find(std::begin(usedTextures), std::end(usedTextures), texture);
-	int textureIndex;
+	auto iter = std::find_if(std::begin(usedTextures), std::end(usedTextures), [&](auto const& textureLayer) {
+		return textureLayer.layer == renderOrder && textureLayer.texture == texture;
+	});
+	
+	int textureIndex = 0;
+	
 	if (iter == std::end(usedTextures)) {
-		usedTextures.push_back(texture);
-		textureIndex = static_cast<int>(usedTextures.size() - 1);
+		textureIndex = static_cast<int>(usedTextures.size());
+		usedTextures.push_back(TextureLayer{ renderOrder, texture, textureIndex, 0 });
 	}
-	else
+	else {
 		textureIndex = static_cast<int>(iter - std::begin(usedTextures));
+	}
 
-	int offset = (textureIndex * MAX_PARTICLES_PER_TEXTURE + counterInEachTextures[textureIndex]);
+	int offset = (textureIndex * MAX_PARTICLES_PER_TEXTURE + usedTextures[textureIndex].counter);
 	glNamedBufferSubData(particleVerticesBO.id(), offset * sizeof(ParticleVertex), sizeof(ParticleVertex), &particleVertex);
 	glNamedBufferSubData(particlesSSBO.id(), offset * sizeof(ParticleLifespanData) + alignof(ParticleLifespanData), sizeof(ParticleLifespanData), &particleLifeSpanData);
-	counterInEachTextures[textureIndex]++;
+	usedTextures[textureIndex].counter++;
 
-	if (counterInEachTextures[textureIndex] >= MAX_PARTICLES_PER_TEXTURE) {
-		counterInEachTextures[textureIndex] = 0;
+	if (usedTextures[textureIndex].counter >= MAX_PARTICLES_PER_TEXTURE) {
+		usedTextures[textureIndex].counter = 0;
 	}
 }
 
@@ -368,13 +391,15 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 {
 	ParticleLifespanData particleLifeSpanData{};
 	ParticleVertex particleVertex{};
+
 	determineParticleSpawnDetails(
 		particleLifeSpanData,
 		particleVertex,
-		transform.position, 
+		transform, 
 		emitter, 
 		emitter.particleEmissionTypeSelection.emissionShape
 	);
+
 	determineParticleColor(
 		particleLifeSpanData,
 		particleVertex,
@@ -385,6 +410,7 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		emitter.particleColorSelection.colorOffsetMin,
 		emitter.particleColorSelection.colorOffsetMax
 	);
+
 	determineParticleSize(	
 		particleLifeSpanData,
 		particleVertex,
@@ -394,13 +420,16 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		emitter.minStartSizeOffset,
 		emitter.maxStartSizeOffset
 	);
+
 	rotateParticle(particleLifeSpanData,particleVertex,transform);
+	
 	if (emitter.invertMovement) {
 		particleVertex.position += particleLifeSpanData.lifeTime * particleLifeSpanData.velocity;
 		particleLifeSpanData.velocity = -particleLifeSpanData.velocity;
 	}
+	
 	determineParticleRotation(particleLifeSpanData, particleVertex, emitter);
-	addParticleToList(particleLifeSpanData, particleVertex,emitter.texture);
+	addParticleToList(particleLifeSpanData, particleVertex, emitter.texture, emitter.renderOrder);
 }
 
 

@@ -57,7 +57,7 @@ public:
 
 	void renderBloom(PairFrameBuffer& frameBuffers);
 
-	void overlayUIToBuffer(PairFrameBuffer& target);
+	void renderUIToUIFBO();
 
 	// generates shadow maps for each light source..
 	void shadowPass(int viewportWidth, int viewportHeight);
@@ -179,6 +179,7 @@ public:
 	float bloomCompositePercentage = 0.04f;
 
 	float vignette = 0.f;
+	glm::vec3 vignetteColor;
 
 	glm::vec3 chromaticAberration;
 
@@ -252,7 +253,9 @@ private:
 	void renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fog);
 
 	// HDR post-processing functions
-	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
+	void hdrToneMapping(PairFrameBuffer& frameBuffers);
+	void gammaCorrection(PairFrameBuffer& frameBuffers);
+	void hdrAndGammaCorrection(PairFrameBuffer& frameBuffers, bool toToneMap, bool toGammaCorrect);
 
 	// set up the material's chosen shader and supply the proper uniforms..
 	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, BlendConfig blendConfig, std::optional<GLuint> depthTextureId);

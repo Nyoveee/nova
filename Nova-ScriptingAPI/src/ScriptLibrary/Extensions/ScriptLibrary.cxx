@@ -125,7 +125,31 @@ System::Nullable<RayCastResult> PhysicsAPI::Raycast(Vector3 origin, Vector3 dire
 	auto opt = Interface::engine->physicsManager.rayCast(Ray{origin,directionVector}.native(), maxDistance, layerIds);
 	if (!opt)
 		return {};
+
 	return System::Nullable<RayCastResult>(RayCastResult{ opt.value() });
+}
+
+System::Collections::Generic::List<SphereCollideResult>^ PhysicsAPI::SphereCollide(Vector3 origin, float radius)
+{
+	return SphereCollide(origin, radius, {});
+}
+
+System::Collections::Generic::List<SphereCollideResult>^ PhysicsAPI::SphereCollide(Vector3 origin, float radius, array<System::String^>^ layermask)
+{
+	System::Collections::Generic::List<SphereCollideResult>^ results = gcnew System::Collections::Generic::List<SphereCollideResult>();
+	std::vector<uint8_t> layerIds;
+
+	for each (System::String ^ layer in layermask) {
+		std::string layerName = Convert(layer);
+		layerIds.push_back(static_cast<uint8_t>(magic_enum::enum_cast<Rigidbody::Layer>(layerName.c_str()).value()));
+	}
+	
+	for (auto const& nativeResult : Interface::engine->physicsManager.sphereCollide(origin.native(), radius, layerIds)) {
+		Vector3^ point = gcnew Vector3{ nativeResult.point };
+		results->Add(SphereCollideResult{ nativeResult.entity, point, nativeResult.penetrationDepth });
+	}
+
+	return results;
 }
 
 System::Nullable<RayCastResult> PhysicsAPI::Raycast(Vector3 origin, Vector3 directionVector, float maxDistance, GameObject^ entityToIgnore) {
@@ -245,6 +269,7 @@ float Mathf::Sin		(float radian)								{ return std::sin(radian); }
 float Mathf::Atan2		(float y, float x)							{ return std::tan(y / x); }
 float Mathf::Clamp		(float value, float min, float max)			{ return std::clamp(value, min, max); }
 float Mathf::Interpolate(float a, float b, float t, float degree)	{ return Interpolation::Interpolation(a, b, t, degree); }
+Colour Mathf::Interpolate(Colour a, Colour b, float t){ return Colour(Interpolation::Interpolation(a.native(), b.native(), t, 1)); }
 float Mathf::Min		(float a, float b)							{ return std::min(a, b); }
 float Mathf::Max		(float a, float b)							{ return std::max(a, b); }
 float Mathf::Pow		(float base, float exponent)				{ return std::powf(base, exponent); }

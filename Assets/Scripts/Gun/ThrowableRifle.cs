@@ -348,7 +348,7 @@ class ThrowableRifle : Script
         Vector3 localFront = gameObject.transform.rotation * Vector3.Front();
 
         Vector3 currentVelocity = localFront * weaponReturnSpeed;
-
+        
         weaponRB.SetVelocity(currentVelocity);
     }
 
@@ -510,7 +510,7 @@ class ThrowableRifle : Script
         //update player health
         if (playerGameobject.getScript<PlayerController_V2>() != null)
         {
-            int heal = (int)( totalIchorGained * healthGainedPerIchor);
+            int heal = (int)(totalIchorGained * healthGainedPerIchor);
             int sp = (int)(totalIchorGained * spGainPerIchor);
 
             playerGameobject.getScript<PlayerController_V2>().GainHealth(heal);

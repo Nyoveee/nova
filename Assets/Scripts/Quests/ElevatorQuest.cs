@@ -31,11 +31,16 @@ class ElevatorQuest : Quest
     [SerializableField]
     private float delayForDialogue = 3;
 
-    private GameUIManager gameUIManager;
+    private DialogueScript dialogueScript;
+
+    private GameObject playerBody;
+    private GameObject playerHead;
 
     protected override void init()
     {
-        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
+        dialogueScript = GameObject.FindWithTag("Game UI Manager")?.getScript<DialogueScript>();
+        playerBody = GameObject.FindWithTag("Player");
+        playerHead = GameObject.FindWithTag("PlayerHead");
     }
 
     public override void OnEnter()
@@ -67,8 +72,14 @@ class ElevatorQuest : Quest
 
         Invoke(() =>
         {
-            gameUIManager?.ActivateDialogue(speaker, dialogues, timings, finalDialogueTime);
+            dialogueScript?.BeginDialogueSequence(speaker, dialogues, timings, finalDialogueTime);
         }, delayForDialogue);
+        Invoke(() =>
+        {
+            Vector3 elevatorCenter = new Vector3(elevator.gameObject.transform.position.x, playerBody.transform.position.y, elevator.gameObject.transform.position.z);
+            playerBody.transform.position = elevatorCenter;
+            playerHead.transform.localRotation = Quaternion.LookRotation(elevator.gameObject.transform.front);
+        }, delayForDialogue + dialogueScript.GetFadeTransitionTime());
     }
 
 

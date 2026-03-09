@@ -1,5 +1,5 @@
 {
-    "RootEntity": 45,
+    "RootEntity": 264,
     "Entities": [
         {
             "EntityData": {
@@ -130,6 +130,28 @@
                                 "data": {
                                     "__variant_value": 500.0,
                                     "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "positiveLaunchDirection",
+                                "data": {
+                                    "__variant_value": {
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    },
+                                    "__variant_type": 1
+                                }
+                            },
+                            {
+                                "name": "negativeLaunchDirection",
+                                "data": {
+                                    "__variant_value": {
+                                        "x": -1.0,
+                                        "y": -1.0,
+                                        "z": -1.0
+                                    },
+                                    "__variant_type": 1
                                 }
                             },
                             {
@@ -306,9 +328,11 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 45
+            "id": 264
         }
     ]
 }

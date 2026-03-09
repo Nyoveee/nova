@@ -137,4 +137,9 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 	// Display others..
 	ImGui::Checkbox("Casts Shadow?", &rendererComponent.castShadow);
 	ImGui::Checkbox("Cull front face for shadow pass?", &rendererComponent.shadowCullFrontFace);
+	
+	if constexpr (std::same_as<T, SkinnedMeshRenderer>) {
+		ImGui::TextWrapped("On certain animations, because the actual model is displaced so far from origin, frustum culling heuristic fails, and the model is incorrectly culled.");
+		ImGui::Checkbox("To Frustum Cull?", &rendererComponent.toFrustumCull);
+	}
 }

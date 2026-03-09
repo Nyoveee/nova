@@ -121,6 +121,7 @@ private:
 	FMOD::ChannelGroup* masterChannelGroup;
 	FMOD::ChannelGroup* bgmChannelGroup;
 	FMOD::ChannelGroup* sfxChannelGroup;
+	FMOD::ChannelGroup* uiChannelGroup;
 
 	std::unordered_map<ResourceID, std::vector<AudioInstance>> positionalAudioGroups;
 private:

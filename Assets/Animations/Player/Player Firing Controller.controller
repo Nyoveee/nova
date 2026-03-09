@@ -1,0 +1,29 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "id": 1000,
+            "animation": 18446744073709551615,
+            "transitions": [
+                {
+                    "nextNode": 6056436112169140845,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Entry Node",
+            "animationEvents": null
+        },
+        "6056436112169140845": {
+            "id": 6056436112169140845,
+            "animation": 7209357616773480449,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "PlayerFullWalkAnimtion",
+            "animationEvents": null
+        }
+    },
+    "parameters": null
+}

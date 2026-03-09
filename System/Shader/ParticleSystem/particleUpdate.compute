@@ -2,11 +2,13 @@
 layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
 struct ParticleVertex{
+    mat4 localRotationMatrix;
 	vec4 color;
 	vec3 position;
 	float rotation;
 	float currentSize;
 };
+
 struct Particle{
     vec4 startColor;
     vec4 endColor;
@@ -25,6 +27,7 @@ struct Particle{
     bool colorOverLifetime;
     bool sizeOverLifetime;
     bool b_Active;
+    int renderAlignment;
 };
 
 layout(std430, binding = 4) buffer ParticleVertexList {

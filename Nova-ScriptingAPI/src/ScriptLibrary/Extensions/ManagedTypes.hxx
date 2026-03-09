@@ -104,12 +104,19 @@ static Vector3 One();
 static Vector3 Zero();
 static float Dot(Vector3 a, Vector3 b);
 static Vector3 Lerp(Vector3 a, Vector3 b, float interval);
+static Vector3 Interpolate(Vector3 a, Vector3 b, float interval, float degree);
 static Vector3 Proj(Vector3 vector, Vector3 onNormal);
 static Vector3 Cross(Vector3 lhs, Vector3 rhs);
 static Vector3 Abs(Vector3 vec);
 
-
 ManagedStructEnd(Vector3, glm::vec3)
+
+public value struct SphereCollideResult {
+	entt::entity entity;
+	Vector3^ point;
+	float penetrationDepth;
+};
+
 // ======================================
 // This struct is responsible for ColorA Types
 // ======================================
@@ -119,6 +126,17 @@ ManagedStruct(
 	float, g,
 	float, b
 )
+
+static Colour Lerp(Colour a, Colour b, float interval);
+static Colour operator-(Colour a, Colour b);
+static Colour operator-(Colour a);
+static Colour operator+(Colour a, Colour b);
+static Colour operator*(Colour a, float d);
+static Colour operator*(float d, Colour a);
+static Colour operator/(Colour a, float d);
+static bool operator!=(Colour a, Colour b);
+static bool operator==(Colour a, Colour b);
+
 ManagedStructEnd(Colour, glm::vec3)
 
 ManagedStruct(
@@ -128,6 +146,17 @@ ManagedStruct(
 	float, b,
 	float, a
 )
+
+static ColorAlpha Lerp(ColorAlpha a, ColorAlpha b, float interval);
+static ColorAlpha operator - (ColorAlpha a, ColorAlpha b);
+static ColorAlpha operator - (ColorAlpha a);
+static ColorAlpha operator + (ColorAlpha a, ColorAlpha b);
+static ColorAlpha operator * (ColorAlpha a, float d);
+static ColorAlpha operator * (float d, ColorAlpha a);
+static ColorAlpha operator/(ColorAlpha a, float d);
+static bool operator!=(ColorAlpha a, ColorAlpha b);
+static bool operator==(ColorAlpha a, ColorAlpha b);
+
 ManagedStructEnd(ColorAlpha, glm::vec4)
 // ======================================
 // This struct is responsible for Quartenion Types
@@ -147,6 +176,8 @@ static Quaternion Identity();
 static Quaternion Slerp(Quaternion a, Quaternion b, float t);
 static Quaternion LookRotation(Vector3 directionToLook);
 static Quaternion AngleAxis(float angle, Vector3 axis);
+static Quaternion RotateTowards(Quaternion current, Quaternion target, float angleDegrees);
+static float Angle(Quaternion a, Quaternion b);
 static Quaternion operator*(Quaternion lhs,Quaternion rhs);
 ManagedStructEnd(Quaternion, glm::quat)
 
@@ -336,8 +367,10 @@ ManagedComponentEnd()
 // Animator Component
 // ======================================
 ManagedComponentDeclaration(
-	Animator
+	Animator,
+	float, speedMultiplier
 )
+
 void SetBool(System::String^ name, bool value);
 void SetFloat(System::String^ name, float value);
 void SetInteger(System::String^ name, int value);
@@ -352,7 +385,8 @@ ManagedComponentEnd()
 ManagedComponentDeclaration(
 	Image,
 	ColorAlpha, colorTint,
-	Vector2, textureCoordinatesRange
+	Vector2, textureCoordinatesStart,
+	Vector2, textureCoordinatesEnd
 )
 
 void SetTexture(ScriptingAPI::Texture^ texture);

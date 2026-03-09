@@ -1,0 +1,337 @@
+{
+    "RootEntity": 0,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Cave Wall",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    1,
+                    2,
+                    3
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 11069215176374092365,
+                "entityGUID": 275916456824816157,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 14.191902160644531,
+                    "y": -496.2533264160156,
+                    "z": 250.52877807617188
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 14.191902160644531,
+                    "y": -496.2533264160156,
+                    "z": 250.52877807617188
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Cave Right Side Wall",
+                "tag": "Wall",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 11069215176374092365,
+                "entityGUID": 1428837961424601601,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 322.85223388671875,
+                    "y": -683.049560546875,
+                    "z": 275.2996826171875
+                },
+                "scale": {
+                    "x": 0.9999826550483704,
+                    "y": 0.9999999403953552,
+                    "z": 0.9999998807907104
+                },
+                "rotation": {
+                    "w": 6.63108394860501e-08,
+                    "x": 0.7072288990020752,
+                    "y": 0.7069846391677856,
+                    "z": 8.120574790382307e-08
+                },
+                "eulerAngles": {
+                    "x": 3.141592502593994,
+                    "y": -2.1100611036217742e-08,
+                    "z": 1.5704509019851685
+                },
+                "localPosition": {
+                    "x": 308.66033935546875,
+                    "y": -186.79623413085938,
+                    "z": 24.770904541015625
+                },
+                "localScale": {
+                    "x": 0.9999826550483704,
+                    "y": 0.9999999403953552,
+                    "z": 0.9999998807907104
+                },
+                "localRotation": {
+                    "w": 6.63108394860501e-08,
+                    "x": 0.7072288990020752,
+                    "y": 0.7069846391677856,
+                    "z": 8.120574790382307e-08
+                },
+                "localEulerAngles": {
+                    "x": 3.141592502593994,
+                    "y": -2.1100611036217742e-08,
+                    "z": 1.5704509019851685
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 852377209106808843,
+                "materialIds": [
+                    275916456804712839
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Wall",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "name": "Cave Ceiling Wall",
+                "tag": "Wall",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 11069215176374092365,
+                "entityGUID": 1428837961424601601,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 11.541010856628418,
+                    "y": -371.79534912109375,
+                    "z": 275.2996826171875
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -2.6508913040161133,
+                    "y": 124.45797729492188,
+                    "z": 24.770904541015625
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 852377209106808843,
+                "materialIds": [
+                    275916456804712839
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Wall",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "name": "Cave Right Side Wall",
+                "tag": "Wall",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 11069215176374092365,
+                "entityGUID": 1428837961424601601,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -301.14776611328125,
+                    "y": -683.049560546875,
+                    "z": 275.2996826171875
+                },
+                "scale": {
+                    "x": 0.9999999403953552,
+                    "y": 0.9999999403953552,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 0.7069846987724304,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.7072288393974304
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 1.5711416006088257
+                },
+                "localPosition": {
+                    "x": -315.33966064453125,
+                    "y": -186.79623413085938,
+                    "z": 24.770904541015625
+                },
+                "localScale": {
+                    "x": 0.9999999403953552,
+                    "y": 0.9999999403953552,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 0.7069846987724304,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.7072288393974304
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 1.5711416006088257
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 852377209106808843,
+                "materialIds": [
+                    275916456804712839
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "Wall",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "id": 3
+        }
+    ]
+}

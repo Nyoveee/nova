@@ -272,7 +272,7 @@ void AnimationSystem::updateAnimator(float dt) {
 		}
 		else {
 			// advance time..
-			animator.timeElapsed += dt;
+			animator.timeElapsed += dt * std::max(0.f, animator.speedMultiplier);
 
 			// trigger animation event if possible..
 			int frameIndex = static_cast<int>(animator.timeElapsed * animation->animations[0].ticksPerSecond);

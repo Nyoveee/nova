@@ -1,0 +1,739 @@
+// Make sure the class name matches the filepath, without space!!.
+// If you want to change class name, change the asset name in the editor!
+// Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+using System; 
+using System.Collections.Generic; 
+
+public class Boss : Enemy
+{
+
+
+    /***********************************************************
+    Inspector Variables
+    ***********************************************************/
+    [SerializableField]
+    private EnemyStats bossStats = null;
+    [SerializableField]
+    private float abilityCoolDownTime = 2f; //boss will spam abilities until exausted or no more abilities to spam then it will refresh its currentdeck based on condition such as hp state
+    [SerializableField]
+    private int maxStamina = 5;
+    [SerializableField]
+    private float spawningDuration = 8f;
+    [SerializableField]
+    private float rotationSpeed = 120f;
+    [SerializableField]
+    private float lookAngle = 30f;
+
+    /***********************************************************
+    Position Variables
+    ***********************************************************/
+    [SerializableField]
+    private GameObject mainLauncher = null;
+    [SerializableField]
+    private List<GameObject> sideLauncher;
+    [SerializableField]
+    private GameObject meleeAttackPosition = null;
+
+    /***********************************************************
+    Ability Prefabs
+    ***********************************************************/
+    [SerializableField]
+    private Prefab shockwavePrefab = null;
+    [SerializableField]
+    private Prefab missilePrefab = null;
+    [SerializableField]
+    private Prefab meleeWavePrefab = null;
+
+    /***********************************************************
+    Private Variables (made public cause of ability sequencer)
+    ***********************************************************/
+    //private float accumulatedDamageInstance = 0;
+    public BossState currentState = BossState.Spawning;
+    public int currentStamina;
+    public bool terminateExecution = false;
+    public int sequenceIndexer = -1;
+    public int abilityIndexer = -1;
+    private float abilitytimeElapsed = 0;
+    private float cooldowntimeElapsed = 0;
+    Blackboard blackboard = new Blackboard(); //a blackboard helper class since i realised we gonna need to pass a lot of data around and i dont feel like creating 100 variables
+
+    Vector3 halfExtent; //based on scaling values
+
+    // the current moveset that is going to be carried out by the boss
+    // AbilitySequence currentMoveSequence;
+
+    //The idea is that the boss can have a deck of abilities like a card game, which he can use. 
+    //WHen he uses an ability, he will remove it from the deck. it cannot be used until deck is exhausted or he chooses to refresh it.
+    //This allows us to shuffle the moveset also to make it less predictable
+    //Each ability has a condition check for example if the boss is in melee range only then he will use melee attack
+    //Weavere also has a stamina cost as a way to control pacing (a concept i took from ultrakill). If he get exhausted he will stop spaming abilites for awhile
+    //The weaver can have multiple ability decks such as one for 50> hp and 50< hp. 
+
+    List<AbilitySequence> AbilityDeckStart = new List<AbilitySequence>();
+
+    //current set of abilities
+    List<AbilitySequence> currentAbilityDeck = new List<AbilitySequence>(); 
+    
+
+
+    public enum BossState
+    {
+        Spawning,
+        Idle,
+        Walking,
+        SelectAbility,
+        AbilityCarryOut,
+        Dead
+
+    }
+
+
+    protected override void  awake()
+    {
+        //lets create our own ability deck :D
+
+
+
+
+        AbilitySequence[] abilitySequences = {
+            //new MeleeAttack(this),
+            //new BasicGroundSlam(this),
+            //new BasicGroundSlam(this),
+            new MissileBarrage(this)
+            };
+
+        AbilityDeckStart.AddRange(abilitySequences);
+    }
+
+    protected override void init()
+    {
+        base.enemyStats = getScript<EnemyStats>();
+        player = GameObject.FindWithTag("Player");
+        playerHead = GameObject.FindWithTag("PlayerHead");
+        navMeshAgent.setAutomateNavMeshOfflinksState(false);
+        bossStats = getScript<EnemyStats>();
+        player = GameObject.FindWithTag("Player");
+        navMeshAgent.setIsUpdateRotation(false);
+        halfExtent = new Vector3(gameObject.transform.scale.x, gameObject.transform.scale.y, gameObject.transform.scale.z);
+
+        currentStamina = maxStamina;
+
+        //Create an ability deck
+        currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart);
+
+        BossState currentState = BossState.Spawning;
+    }
+
+    // This function is invoked every update.
+    protected override void update()
+    {
+        FlushDamageEnemy();
+        //Debug.Log(bossStats.health);
+
+        //make the boss look at the player
+
+
+    
+        switch (currentState)
+        {
+            case BossState.Spawning:
+                {
+                    cooldowntimeElapsed += Time.V_DeltaTime();
+
+                    if (cooldowntimeElapsed > spawningDuration)
+                    { 
+                        cooldowntimeElapsed = 0;
+                        currentState = BossState.Idle;
+                    }
+
+                }
+                break;
+            case BossState.Idle:
+                {
+                    if (currentAbilityDeck.Count() == 0 || currentStamina == 0)
+                    {
+                        cooldowntimeElapsed += Time.V_DeltaTime();
+                        if (cooldowntimeElapsed > abilityCoolDownTime)
+                        {
+                            currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart); //referesh list
+                            cooldowntimeElapsed = 0;
+                            currentStamina = maxStamina;
+                            currentState = BossState.SelectAbility;
+                            //Debug.Log("Select Ability");
+                        }
+                    }
+                    else
+                    {
+                        currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart); //referesh list
+                        cooldowntimeElapsed = 0;
+                        currentStamina = maxStamina;
+                        currentState = BossState.SelectAbility;
+                    }
+                
+                }
+                break;
+            case BossState.Walking:
+                { 
+                    
+                
+                }
+                break;
+            case BossState.SelectAbility:
+                {
+                    //Shuffle current deck and pick a squence. Then carry it out.
+                    if (currentAbilityDeck.Count() > 0 && currentStamina > 0 )
+                    {
+                        terminateExecution = false;
+
+                        //shuffle deck
+                        currentAbilityDeck.Shuffle();
+                        //Debug.Log("Shuffle");
+                        //System.Random.Shared.Shuffle<AbilitySequence>(currentAbilityDeck);
+                        bool noAbilityFound = true;
+
+                        for(int i = 0; i < currentAbilityDeck.Count(); i++)
+                        {
+                            if (currentAbilityDeck[i].CheckConditions())
+                            {
+                                //reinitialise mixup
+                                currentAbilityDeck[i].ApplyCost();
+                                currentState = BossState.AbilityCarryOut;
+                                abilitytimeElapsed = 0;
+                                abilityIndexer = i;
+                                sequenceIndexer = 0;
+                                noAbilityFound = false;
+                                break;
+                            }
+                        }
+
+                        if (noAbilityFound == true)
+                        {
+                            Debug.Log("No ability found");
+                            //no ability found go back to idle
+                            currentState = BossState.Idle;
+                        }
+
+                    }
+                    else
+                    { 
+                        currentState = BossState.Idle;
+                    }
+                }
+                break;
+            case BossState.AbilityCarryOut:
+                {
+                    abilitytimeElapsed += Time.V_DeltaTime();
+                    if (terminateExecution || currentAbilityDeck[abilityIndexer].sequence.Count() == sequenceIndexer)
+                    {
+                        Debug.Log("ability cancelled");
+                        currentAbilityDeck.RemoveAt(abilityIndexer);
+                        currentState = BossState.SelectAbility;
+                        return;
+                    }
+
+                    //Debug.Log("update sequencer");
+                    //carry out the abili sequence
+                    currentAbilityDeck[abilityIndexer].sequence[sequenceIndexer]();
+
+                }
+                break;
+            case BossState.Dead:
+                { 
+                
+                }
+                break;
+        }
+
+    }
+
+    // This function is invoked every update.
+    protected override void fixedUpdate()
+    { 
+    }
+
+
+    public override bool IsEngagedInBattle()
+    {
+        return true;
+    }
+
+    void Idle()
+    { 
+        currentState = BossState.Walking;
+    
+    }
+
+
+    //Rotate Whenever
+    public void RotateToPlayer()
+    {
+        Vector3 direction = player.transform.position - gameObject.transform.position;
+
+
+        direction.y = 0;
+
+        //above or below the player
+        if (direction.Length() > 1f)
+        {
+            direction.Normalize();
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            float angleRemaining = Quaternion.Angle(gameObject.transform.rotation, targetRotation);
+
+            if (angleRemaining > lookAngle)
+            {
+                gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, targetRotation, rotationSpeed * Time.V_DeltaTime());
+            }
+        }
+    }
+
+    /***********************************************************
+    Weaver Actions
+    ***********************************************************/
+    public void StarStationaryJump()
+    {
+        AdvanceToNextSequence();
+
+        abilitytimeElapsed = 0;
+        navMeshAgent.enable = false;
+
+        blackboard.SetValue("Jump Height", 20.0f);
+        blackboard.SetValue("Jump Time",   1.0f);
+        blackboard.SetValue("InitialPosition", gameObject.transform.position);
+        blackboard.SetValue("EndPosition", gameObject.transform.position);
+
+    }
+
+    public void Jumping()
+    {
+        blackboard.TryGetValue("Jump Height", out float jumpHeight);
+        blackboard.TryGetValue("InitialPosition", out Vector3 initialPosition);
+        blackboard.TryGetValue("EndPosition", out Vector3 endPosition);
+        blackboard.TryGetValue("Jump Time", out float jumpTime);
+
+        if (abilitytimeElapsed < jumpTime)
+        {
+            float t = abilitytimeElapsed / jumpTime;
+
+            Vector3 currentPos = Vector3.Lerp(initialPosition, endPosition, t);
+
+
+            float heightOffset = jumpHeight * 4 * t * (1 - t);
+
+            currentPos.y += heightOffset;
+
+            gameObject.transform.position = currentPos;
+        }
+        else
+        {
+            AdvanceToNextSequence();
+        }
+    }
+
+    public void CreateShockWave()
+    {
+        //Debug.Log("Shockwave");
+        AdvanceToNextSequence();
+        Instantiate(shockwavePrefab, gameObject.transform.position, gameObject.transform.rotation);
+    }
+
+
+
+    public void FireMissileCombination()
+    { 
+        //launch interval
+        float launchInterval = 0.5f;
+
+       // int count = launchInterval / abilitytimeElapsed;
+
+        if (abilitytimeElapsed > launchInterval)
+        {
+            //Launch from all three side
+
+            //Top
+            GameObject topMissile = Instantiate(missilePrefab, mainLauncher.transform.position, mainLauncher.transform.rotation);
+
+            //Left
+            GameObject leftMissile = Instantiate(missilePrefab, sideLauncher[0].transform.position, sideLauncher[0].transform.rotation);
+
+            GameObject rightMissile = Instantiate(missilePrefab, sideLauncher[1].transform.position, sideLauncher[1].transform.rotation);
+
+            topMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(mainLauncher.transform.front);
+            leftMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(sideLauncher[0].transform.front);
+            rightMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(sideLauncher[1].transform.front);
+
+
+            AdvanceToNextSequence();
+        }
+
+
+
+
+
+
+    }
+
+    public void FireMissileMain()
+    {
+        //launch interval
+        float launchInterval = 0.5f;
+        if (abilitytimeElapsed > launchInterval)
+        {
+            //Top
+            GameObject topMissile = Instantiate(missilePrefab, mainLauncher.transform.position, Quaternion.Identity());
+            topMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(mainLauncher.transform.front);
+            AdvanceToNextSequence();
+        }
+    }
+
+    public void FannedMeleeAttack()
+    {
+
+        float angle = 60;
+        int count = 3;
+
+        float angleStep = (count > 1) ? angle / (count - 1) : 0;
+        float minimalAngle = -(angle / 2.0f);
+
+
+
+        for (int i = 0; i < count; i++)
+        {
+
+            float currentAngle = minimalAngle + (angleStep * i);
+
+            Quaternion offset = Quaternion.AngleAxis(Mathf.Deg2Rad * currentAngle, meleeAttackPosition.transform.up);
+
+            Quaternion finalRotation =  Quaternion.LookRotation(-meleeAttackPosition.transform.front) * offset ;
+
+            GameObject meleeWave = Instantiate(meleeWavePrefab, meleeAttackPosition.transform.position, Quaternion.Identity());
+
+            meleeWave.transform.rotation = finalRotation;
+        }
+
+        AdvanceToNextSequence();
+    }
+
+
+    //Use with a lambda to delay action
+    public void DelayedSequence( float delayTime)
+    { 
+
+        if (abilitytimeElapsed > delayTime)
+        {
+            AdvanceToNextSequence();
+        }
+    }
+
+
+    public void RestoreDefaultSettings()
+    {
+        navMeshAgent.enable = true;
+        Vector3? position  = NavigationAPI.SampleNavMeshPosition("Boss", gameObject.transform.position, halfExtent);
+
+        if (position != null)
+        {
+            gameObject.transform.position = position.Value;
+            navMeshAgent.Warp(gameObject.transform.position);
+        }
+    }
+
+    public void RotateToPlayerFully()
+    {
+        Vector3 direction = player.transform.position - gameObject.transform.position;
+
+       direction.y = 0;
+
+        //above or below the player
+        if (direction.Length() > 1f)
+        {
+            direction.Normalize();
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            float angleRemaining = Quaternion.Angle(gameObject.transform.rotation, targetRotation);
+            //Debug.Log( (float) (rotationSpeed * Time.V_DeltaTime()));
+
+            if (angleRemaining > lookAngle)
+            {
+                gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation,targetRotation,rotationSpeed * Time.V_DeltaTime());
+            }
+            else
+            {
+                sequenceIndexer++;
+
+            }
+        }
+        else {  sequenceIndexer++; }
+
+        
+
+    }
+
+
+    /******************End of Weaver Action*******************/
+
+
+    /***********************************************************
+    Ability List (Create our Mix Ups in here :D)
+    ***********************************************************/
+    public class BasicGroundSlam : AbilitySequence
+    {
+
+        public BasicGroundSlam(Boss boss) : base(boss)
+        {
+            this.boss = boss;
+
+            sequence.Add(boss.RotateToPlayerFully);
+            sequence.Add(boss.StarStationaryJump);
+            sequence.Add(boss.Jumping);
+            sequence.Add(boss.CreateShockWave);
+        }
+
+
+        public override bool CheckConditions()
+        {
+            if (boss != null && boss.currentStamina > 1)
+            {
+                //TBH can apply cost here lmao but i want to keep it clean
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 1;
+        }
+    }
+
+
+    public class MissileBarrage : AbilitySequence
+    {
+
+        public MissileBarrage(Boss boss) : base(boss)
+        {
+            this.boss = boss;
+
+            sequence.Add(boss.FireMissileCombination);
+            sequence.Add(boss.FireMissileMain);
+            sequence.Add(boss.FireMissileMain);
+        }
+
+
+        public override bool CheckConditions()
+        {
+            if (boss != null && boss.currentStamina > 2)
+            {
+               
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 2;
+        }
+    }
+
+    public class MeleeAttack : AbilitySequence
+    {
+
+        public MeleeAttack(Boss boss) : base(boss)
+        {
+            this.boss = boss;
+
+            sequence.Add(boss.RotateToPlayerFully);
+            sequence.Add(boss.FannedMeleeAttack);
+            sequence.Add( () => { boss.DelayedSequence(0.5f); }); //quick way to delay action
+        }
+
+
+        public override bool CheckConditions()
+        {
+            Vector3 direction = boss.meleeAttackPosition.transform.position  - boss.player.transform.position;
+
+
+            if (boss != null && boss.currentStamina > 1 && direction.Length() < 300)
+            {
+
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 1;
+        }
+    }
+
+
+    /***************End of Ability List *****************/
+
+
+
+    //Helper function to advance to the next sequence in the ability
+    public void AdvanceToNextSequence()
+    {
+        sequenceIndexer++;
+        abilitytimeElapsed = 0;
+    
+    }
+
+
+    public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
+    {
+        if (damageType == Enemy.EnemydamageType.WeaponShot)
+        {
+
+
+            if (colliderTag == "Enemy_ArmouredSpot")
+            {
+                damage *= bossStats.enemyArmouredMultiplier;
+
+            }
+            if (colliderTag == "Enemy_WeakSpot")
+            {
+                damage *= bossStats.enemyWeakSpotMultiplier;
+
+            }
+
+            accumulatedDamageInstance += damage;
+
+
+        }
+
+        if (damageType == Enemy.EnemydamageType.ThrownWeapon)
+        {
+            if (bossStats.health <= bossStats.enemyExecuteThreshold)
+            {
+                //Explode();
+                ////animator.PlayAnimation("Grunt Death");
+                ////NavigationAPI.stopAgent(gameObject);
+                ////rigidbody.enable = false;
+                //bossStats = bos;
+                //if (gameObject != null)
+                //    Destroy(gameObject);
+
+            }
+            else
+            {
+                accumulatedDamageInstance += damage;
+            }
+
+        }
+
+        if (damageType == Enemy.EnemydamageType.Ultimate)
+        {
+
+            accumulatedDamageInstance += damage;
+
+        }
+
+    }
+
+    void FlushDamageEnemy()
+    {
+        if (accumulatedDamageInstance > 0)
+        {
+            //SpawnIchorFrame(new Vector3(1f,1f,1f), new Vector3(-1f, 0f, -1f), 500f, 500f, 0f,0f, 3f, 10f );
+            SpawnIchorFrame();
+            bossStats.health -= accumulatedDamageInstance;
+           // UpdateExecutableMaterialState();
+            if (bossStats.health <= 0)
+            {
+                if (currentState != BossState.Dead)
+                {
+                    currentState = BossState.Dead;
+                    //audioComponent.PlayRandomSound(deathSFX);
+                    //animator.PlayAnimation("Grunt Death");
+                    DisablePhysicalInteraction();
+                }
+            }
+            else
+            {
+                TriggerRecentlyDamageCountdown();
+                if (currentState != BossState.Dead && !WasRecentlyDamaged())
+                {
+
+                    //renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
+                    //renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
+                    Invoke(() =>
+                    {
+                        //renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
+                        //renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
+                    }, bossStats.hurtDuration); //bug here is this object dies this frame
+                }
+            }
+            accumulatedDamageInstance = 0;
+        }
+    }
+
+    public override void SetSpawningDuration(float seconds)
+    {
+        
+    }
+
+
+
+
+
+}
+
+public abstract class AbilitySequence
+{
+    public Boss boss;
+   // public int sequenceIndex;
+    public List<Action> sequence = new List<Action>();
+
+    // A shared constructor to set the boss
+    public AbilitySequence(Boss bossInstance)
+    {
+        this.boss = bossInstance;
+    }
+
+    public abstract bool CheckConditions();
+    public abstract void ApplyCost();
+}
+
+
+
+public static class ListExtensions
+{
+    public static void Shuffle<T>(this IList<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = System.Random.Shared.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+}
+
+public class Blackboard
+{
+    private readonly Dictionary<string, object> entries = new();
+
+    public void SetValue<T>(string key, T value)
+    {
+        entries[key] = value;
+    }
+
+    public bool TryGetValue<T>(string key, out T value)
+    {
+
+        if (entries.TryGetValue(key, out var obj) && obj is T typedValue)
+        {
+            value = typedValue;
+            return true;
+        }
+
+        Debug.LogError("Blackboard does not contain key: " + key);
+        value = default;
+        return false;
+    }
+}
+

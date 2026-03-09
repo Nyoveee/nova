@@ -7,6 +7,9 @@ using ScriptingAPI;
 class UnlockGateQuest : Quest
 {
     [SerializableField]
+    private GameObject goddess;
+
+    [SerializableField]
     private Door vaultDoor;
 
     [SerializableField]
@@ -27,6 +30,13 @@ class UnlockGateQuest : Quest
     [SerializableField]
     private float lightOffduration = 0.3f;
 
+    [SerializableField]
+    private string goddessVoiceOverText;
+    [SerializableField]
+    private float goddessVoiceOverTime;
+    [SerializableField]
+    private Audio goddessVoiceOverAudio;
+
     private float timeElapsed = 0f;
 
     private float initialIntensity = 0f;
@@ -34,7 +44,12 @@ class UnlockGateQuest : Quest
     private bool hasSucceeded = false;
     private bool isAnimating = false;
 
+    private VoiceoverScript voiceoverScript;
     // This function is first invoked when game starts.
+    protected override void init()
+    {
+        voiceoverScript = GameObject.FindWithTag("Game UI Manager")?.getScript<VoiceoverScript>();
+    }
     protected override void update()
     {
         if(isAnimating)
@@ -57,6 +72,8 @@ class UnlockGateQuest : Quest
 
     public override void OnEnter()
     {
+        
+        voiceoverScript.TriggerVoiceOver("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime, false);
         Invoke(() =>
         {
             if(shadowCasters.Count != 0)
@@ -68,6 +85,8 @@ class UnlockGateQuest : Quest
             hubSwitch.enableSwitch();
             switchSpotlight.SetActive(true);
         }, 0f);
+        if (goddess != null)
+            Destroy(goddess);
     }
    
     public override void OnSuccess()

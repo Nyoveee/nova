@@ -7,7 +7,7 @@ using Windows.Devices.SerialCommunication;
 public abstract class Enemy : Script
 {
     public enum EnemydamageType
-    { 
+    {
         WeaponShot,
         ThrownWeapon,
         Ultimate,
@@ -33,7 +33,9 @@ public abstract class Enemy : Script
     public List<GameObject> enemyColliders;
     // 1f = 100% 
     [SerializableField]
-    public float spotCallSFXChance =  0.5f;
+    public float spotCallSFXChance = 0.5f;
+    [SerializableField]
+    protected float movementStaggerTime = 0.1f;
     [SerializableField]
     protected Rigidbody_ physicsRigidbody;
     [SerializableField]
@@ -48,18 +50,21 @@ public abstract class Enemy : Script
     private float deathFlickerMinSpeedOffset;
     [SerializableField]
     private float deathFlickerMaxSpeedOffset;
-    
+    [SerializableField]
+    private float ichorSpawnPositionVarianceMax = 1.5f;
+    [SerializableField]
+    private float ichorSpawnPositionVarianceMin = 0f;
 
     /***********************************************************
         Local Variables
     ***********************************************************/
     protected GameObject? player = null;
     protected GameObject? playerHead = null;
-    private EnemyStats? enemyStats = null;
+    protected EnemyStats? enemyStats = null;
     private bool wasRecentlyDamaged = false;
-    private float ichorSpawnPositionVariance = 1.5f;
+
+    private Vector3? navigationTargetPosition = null;
     protected float accumulatedDamageInstance = 0f;
-    private Vector3 navigationTargetPosition;
     // Jump
     private float currentJumpDuration = 0f;
     private NavMeshOfflinkData offlinkData;
@@ -76,29 +81,48 @@ public abstract class Enemy : Script
     // when invoked, this function puts the enemy into idle state without chasing capability for `seconds` duration.
     public abstract void SetSpawningDuration(float seconds);
     /***********************************************************
+        Enemy Types cam inherit from this
+    ***********************************************************/
+    public virtual void StaggerMovement()
+    {
+        if (gameObject == null || navigationTargetPosition == null)
+            return;
+        NavigationAPI.stopAgent(gameObject);
+        animator.speedMultiplier = 0;
+        Invoke(() =>
+        {
+            if (gameObject != null)
+            {
+                MoveToNavMeshPosition(navigationTargetPosition.Value);
+                animator.speedMultiplier = 1;
+            }
+        }, movementStaggerTime);
+    }
+    /***********************************************************
        Public Functions
     ***********************************************************/
     public bool IsDead() => (enemyStats.health <= 0);
     public bool IsExecutable() => (enemyStats.health <= enemyStats.enemyExecuteThreshold && enemyStats.health > 0);
     public bool WasRecentlyDamaged() => wasRecentlyDamaged;
     public void UpdateExecutableMaterialState() { renderer.setMaterialBool(1, "isActive", IsExecutable()); }
+   
     public void Explode()
     {
         for (int i = 0; i < enemyStats.ichorExplodeSpawnAmount; ++i)
         {
             Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
             direction.Normalize();
-            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
+            float spawnDistance = Random.Range(ichorSpawnPositionVarianceMin, ichorSpawnPositionVarianceMax);
             Instantiate(ichorPrefab, ichorSpawnPoint.transform.position + direction * spawnDistance);
         }
         // Explode VFX
-        GameObject explodeVFX = Instantiate(explodeVFXPrefab,ichorSpawnPoint.transform.position);
+        GameObject explodeVFX = Instantiate(explodeVFXPrefab, ichorSpawnPoint.transform.position);
         foreach (GameObject emitter in explodeVFX.GetChildren())
         {
             ParticleEmitter_? particleEmitter_ = emitter.getComponent<ParticleEmitter_>();
             if (particleEmitter_ != null)
                 particleEmitter_.emit();
-        } 
+        }
     }
     public bool IsTouchingGround()
     {
@@ -118,12 +142,14 @@ public abstract class Enemy : Script
     }
     public bool IsTargetNavigationPositionReached()
     {
+        if (navigationTargetPosition == null)
+            return false;
         string[] mask = { "Floor" };
         var result = PhysicsAPI.Raycast(gameObject.transform.position, Vector3.Down(), 1000, mask);
         if (result == null)
             return false;
         Vector3 positionOnGround = result.Value.point;
-        return (navigationTargetPosition - positionOnGround).Length() <= 1f;
+        return (navigationTargetPosition.Value - positionOnGround).Length() <= 1f;
     }
     //Yo btw .enable/disable does not actually work???, so just set object inactive better
 
@@ -201,30 +227,19 @@ public abstract class Enemy : Script
     }
 
     protected void SpawnIchorFrame()
-    { 
+    {
         int currentSpawnAmount = (int)(accumulatedDamageInstance / enemyStats.ichorPerDamage);
 
         for (int i = 0; i < currentSpawnAmount; ++i)
         {
-            Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
-            direction.Normalize();
-            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
+            //Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
+            //direction.Normalize();
+            float spawnDistance = Random.Range(ichorSpawnPositionVarianceMin, ichorSpawnPositionVarianceMax);
             GameObject ichor = Instantiate(ichorPrefab);
-            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
+            ichor.transform.position = ichorSpawnPoint.transform.position + ichor.getScript<Ichor>().GetDirection() * spawnDistance;
         }
 
     }
-    protected void SpawnIchor()
-    {
-        for (int i = 0; i < enemyStats.ichorPerDamage; ++i){
-            Vector3 direction = new Vector3(0, Random.Range(-1f,1f), 0);
-            direction.Normalize();
-            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
-            GameObject ichor = Instantiate(ichorPrefab);
-            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
-        }
-    }
-
 
     protected void MoveToNavMeshPosition(Vector3 position)
     {
@@ -234,9 +249,15 @@ public abstract class Enemy : Script
         {
             navigationTargetPosition = result.Value.point;
             NavigationAPI.setDestination(gameObject, result.Value.point);
-        }
-
-            
+        }       
+    }
+    protected void StopNavMeshMovement()
+    {
+        string[] layerMask = { "Floor" };
+        RayCastResult? result = PhysicsAPI.Raycast(gameObject.transform.position, Vector3.Down(), 1000f, layerMask);
+        if (result != null)
+            navigationTargetPosition = result.Value.point;
+        NavigationAPI.stopAgent(gameObject);
     }
     protected void TriggerRecentlyDamageCountdown()
     {
@@ -300,6 +321,10 @@ public abstract class Enemy : Script
     {
         physicsRigidbody.SetLinearDamping(0);
         physicsRigidbody.SetAngularDamping(0);
+    }
+
+    protected override void onCollisionEnter(GameObject other)
+    {
     }
 
 

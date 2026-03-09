@@ -1,0 +1,71 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "9515200625994285709": {
+            "id": 9515200625994285709,
+            "animation": 3174132350649565195,
+            "transitions": [
+                {
+                    "nextNode": 11244582882904867471,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "PlayerHandRetrieveAnimation_NoGun",
+            "animationEvents": null
+        },
+        "1000": {
+            "id": 1000,
+            "animation": 18446744073709551615,
+            "transitions": [
+                {
+                    "nextNode": 17009190405938184841,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Entry Node",
+            "animationEvents": null
+        },
+        "11244582882904867471": {
+            "id": 11244582882904867471,
+            "animation": 4327053855256428557,
+            "transitions": null,
+            "toLoop": false,
+            "blendFactor": 0.20000000298023224,
+            "name": "PlayerHandThrowAnimation_NoGun",
+            "animationEvents": null
+        },
+        "17009190405938184841": {
+            "id": 17009190405938184841,
+            "animation": 7785818369076936711,
+            "transitions": [
+                {
+                    "nextNode": 7785818369083720331,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "PlayerHandFiringAnimation_NoGun",
+            "animationEvents": null
+        },
+        "7785818369083720331": {
+            "id": 7785818369083720331,
+            "animation": 10668122130594070537,
+            "transitions": [
+                {
+                    "nextNode": 9515200625994285709,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "PlayerHandIdleAnimation_NoGun",
+            "animationEvents": null
+        }
+    },
+    "parameters": null
+}
