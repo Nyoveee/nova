@@ -76,14 +76,16 @@ public class GeneratorArenaQuest : ArenaQuest
         Invoke(() =>
         {
             voiceoverScript.TriggerVoiceOver("Goddess", arenaStartVoiceOverText, arenaStartVoiceOverAudio, arenaStartVoiceOverTime, false);
-            arenaManager.StartArena(this);
 
             if (shadowCasters.Count > 0)
             {
                 initialShadowCasterIntensity = shadowCasters[0].intensity;
             }
-
             isAnimating = true;
+            Invoke(() =>
+            {
+                arenaManager.StartArena(this);
+            }, arenaStartVoiceOverTime);
         }, 1f);
     }
 
