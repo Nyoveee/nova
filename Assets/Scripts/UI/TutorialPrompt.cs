@@ -30,30 +30,41 @@ class TutorialPrompt : Script
         foreach (GameObject tutorialImage in tutorialImages.GetChildren())
             tutorials.Add(tutorialImage.getComponent<Image_>());
     }
+
     protected override void update()
     {
+        if(currentIndex == -1)
+        {
+            return;
+        }
+
         currentFadeTime += Time.V_DeltaTime();
         float alpha = 0;
+
         switch (currentState)
         {
             case TutorialState.Fadein:
                 alpha = Mathf.Interpolate(0, 1, currentFadeTime / fadeTime, 1);
                 alpha = Mathf.Min(alpha, 1f);
-                tutorials[currentIndex].colorTint = notedButtonImage.colorTint =  new ColorAlpha(1f, 1f, 1f, alpha);
-                if(alpha == 1f)
+                tutorials[currentIndex].colorTint = notedButtonImage.colorTint = new ColorAlpha(1f, 1f, 1f, alpha);
+
+                if (alpha == 1f)
                 {
                     currentState = TutorialState.Waiting;
                     notedButton.enable = true;
                 }
                 break;
+
             case TutorialState.Fadeout:
                 alpha = Mathf.Interpolate(1, 0, currentFadeTime / fadeTime, 1);
                 alpha = Mathf.Max(alpha, 0);
                 tutorials[currentIndex].colorTint = notedButtonImage.colorTint = new ColorAlpha(1f, 1f, 1f, alpha);
+
                 if (alpha == 0f)
                     gameUIManager.ToggleTutorial();
                 break;
         }
+
     }
     public void BeginNextTutorial()
     {

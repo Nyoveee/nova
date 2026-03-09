@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 190,
     "Entities": [
         {
             "EntityData": {
@@ -8,16 +8,16 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1048643,
-                    1048642,
-                    1048603,
-                    1048604,
-                    1048605,
-                    1048591,
-                    68,
-                    69,
-                    70,
-                    71
+                    191,
+                    192,
+                    230,
+                    231,
+                    232,
+                    247,
+                    258,
+                    259,
+                    260,
+                    261
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -73,13 +73,13 @@
                     "z": 0.0
                 }
             },
-            "id": 0
+            "id": 190
         },
         {
             "EntityData": {
                 "name": "Game BGM Manager",
                 "tag": "",
-                "parent": 0,
+                "parent": 190,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -179,25 +179,25 @@
                     }
                 ]
             },
-            "id": 1048643
+            "id": 191
         },
         {
             "EntityData": {
                 "name": "Quest Manager",
                 "tag": "",
-                "parent": 0,
+                "parent": 190,
                 "attachedSocket": 65535,
                 "children": [
-                    1048641,
-                    1048638,
-                    1048634,
-                    1048623,
-                    1048622,
-                    1048618,
-                    1048617,
-                    1048614,
-                    1048612,
-                    1048607
+                    193,
+                    197,
+                    201,
+                    213,
+                    214,
+                    218,
+                    219,
+                    220,
+                    223,
+                    229
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -270,16 +270,16 @@
                     }
                 ]
             },
-            "id": 1048642
+            "id": 192
         },
         {
             "EntityData": {
                 "name": "Quest 1",
                 "tag": "",
-                "parent": 1048642,
+                "parent": 192,
                 "attachedSocket": 65535,
                 "children": [
-                    1048630
+                    194
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -343,7 +343,7 @@
                             {
                                 "name": "checkPointIndicator",
                                 "data": {
-                                    "__variant_value": 1048630,
+                                    "__variant_value": 194,
                                     "__variant_type": 4
                                 }
                             },
@@ -357,7 +357,7 @@
                             {
                                 "name": "playerCheckpoint",
                                 "data": {
-                                    "__variant_value": 1048590,
+                                    "__variant_value": 248,
                                     "__variant_type": 4
                                 }
                             }
@@ -365,17 +365,17 @@
                     }
                 ]
             },
-            "id": 1048641
+            "id": 193
         },
         {
             "EntityData": {
                 "name": "Indicator 1",
                 "tag": "",
-                "parent": 1048641,
+                "parent": 193,
                 "attachedSocket": 65535,
                 "children": [
-                    1048640,
-                    1048639
+                    195,
+                    196
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -429,13 +429,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048630
+            "id": 194
         },
         {
             "EntityData": {
                 "name": "Quest Location Trigger 1",
                 "tag": "",
-                "parent": 1048630,
+                "parent": 194,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -532,7 +532,7 @@
                             {
                                 "name": "quest",
                                 "data": {
-                                    "__variant_value": 1048641,
+                                    "__variant_value": 193,
                                     "__variant_type": 4
                                 }
                             }
@@ -540,13 +540,13 @@
                     }
                 ]
             },
-            "id": 1048640
+            "id": 195
         },
         {
             "EntityData": {
                 "name": "Check Point Marker 1",
                 "tag": "",
-                "parent": 1048630,
+                "parent": 194,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -614,16 +614,16 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 1048639
+            "id": 196
         },
         {
             "EntityData": {
                 "name": "Quest 2",
                 "tag": "",
-                "parent": 1048642,
+                "parent": 192,
                 "attachedSocket": 65535,
                 "children": [
-                    1048637
+                    198
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -687,7 +687,7 @@
                             {
                                 "name": "checkPointIndicator",
                                 "data": {
-                                    "__variant_value": 1048637,
+                                    "__variant_value": 198,
                                     "__variant_type": 4
                                 }
                             },
@@ -701,7 +701,7 @@
                             {
                                 "name": "playerCheckpoint",
                                 "data": {
-                                    "__variant_value": 1048583,
+                                    "__variant_value": 249,
                                     "__variant_type": 4
                                 }
                             }
@@ -709,17 +709,17 @@
                     }
                 ]
             },
-            "id": 1048638
+            "id": 197
         },
         {
             "EntityData": {
                 "name": "Indicator 2",
                 "tag": "",
-                "parent": 1048638,
+                "parent": 197,
                 "attachedSocket": 65535,
                 "children": [
-                    1048636,
-                    1048635
+                    199,
+                    200
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -773,13 +773,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048637
+            "id": 198
         },
         {
             "EntityData": {
                 "name": "Quest Location Trigger 2",
                 "tag": "",
-                "parent": 1048637,
+                "parent": 198,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -872,7 +872,7 @@
                             {
                                 "name": "quest",
                                 "data": {
-                                    "__variant_value": 1048638,
+                                    "__variant_value": 197,
                                     "__variant_type": 4
                                 }
                             }
@@ -880,13 +880,13 @@
                     }
                 ]
             },
-            "id": 1048636
+            "id": 199
         },
         {
             "EntityData": {
                 "name": "Check Point Marker 2",
                 "tag": "",
-                "parent": 1048637,
+                "parent": 198,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -951,16 +951,16 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 1048635
+            "id": 200
         },
         {
             "EntityData": {
                 "name": "Quest 3",
                 "tag": "",
-                "parent": 1048642,
+                "parent": 192,
                 "attachedSocket": 65535,
                 "children": [
-                    1048633
+                    202
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1024,7 +1024,7 @@
                             {
                                 "name": "grunt",
                                 "data": {
-                                    "__variant_value": 1048633,
+                                    "__variant_value": 202,
                                     "__variant_type": 4
                                 }
                             },
@@ -1059,7 +1059,7 @@
                             {
                                 "name": "playerCheckpoint",
                                 "data": {
-                                    "__variant_value": 1048584,
+                                    "__variant_value": 250,
                                     "__variant_type": 4
                                 }
                             }
@@ -1067,52 +1067,52 @@
                     }
                 ]
             },
-            "id": 1048634
+            "id": 201
         },
         {
             "EntityData": {
                 "name": "Tutorial Grunt",
                 "tag": "Enemy",
-                "parent": 1048634,
+                "parent": 201,
                 "attachedSocket": 65535,
                 "children": [
-                    1048632,
-                    1048631,
-                    1048615,
-                    1048628,
-                    1048620
+                    203,
+                    204,
+                    205,
+                    208,
+                    212
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 11626130960333963315,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true,
+                    "11935986701403193153": false,
                     "16652763906952685383": false,
                     "15908289914940614865": false,
-                    "11935986701403193153": false,
+                    "17237801994024849853": true,
                     "452538415452204233": false,
                     "9059764703561530457": false,
                     "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "6152912775364972041": false,
                     "13953638462837156301": false,
-                    "394579324703252227": false,
+                    "6152912775364972041": false,
                     "10106385962890515953": false,
-                    "8055902242766887362": false,
+                    "394579324703252227": false,
                     "17464486586416021590": false,
+                    "8055902242766887362": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
-                    "2785545264285399722": false,
                     "16533173024327387273": false,
+                    "2785545264285399722": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "8302729333555196098": false,
                     "13437837940854190620": false,
-                    "7111564935354361005": false,
+                    "8302729333555196098": false,
                     "13484132868097894827": false,
+                    "7111564935354361005": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false,
@@ -1212,21 +1212,21 @@
                             {
                                 "name": "emitter",
                                 "data": {
-                                    "__variant_value": 1048632,
+                                    "__variant_value": 203,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "headPosition",
                                 "data": {
-                                    "__variant_value": 1048627,
+                                    "__variant_value": 209,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "attackHitbox",
                                 "data": {
-                                    "__variant_value": 1048626,
+                                    "__variant_value": 210,
                                     "__variant_type": 4
                                 }
                             },
@@ -1429,28 +1429,28 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 1048620,
+                                    "__variant_value": 212,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "animator",
                                 "data": {
-                                    "__variant_value": 1048628,
+                                    "__variant_value": 208,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "renderer",
                                 "data": {
-                                    "__variant_value": 1048628,
+                                    "__variant_value": 208,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshAgent",
                                 "data": {
-                                    "__variant_value": 1048633,
+                                    "__variant_value": 202,
                                     "__variant_type": 4
                                 }
                             },
@@ -1460,11 +1460,11 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 1048625,
+                                                "__variant_value": 211,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 1048626,
+                                                "__variant_value": 210,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -1484,14 +1484,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 1048633,
+                                    "__variant_value": 202,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 1048625,
+                                    "__variant_value": 211,
                                     "__variant_type": 4
                                 }
                             },
@@ -1527,6 +1527,20 @@
                                 "name": "deathFlickerMaxSpeedOffset",
                                 "data": {
                                     "__variant_value": 0.10000000149011612,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ichorSpawnPositionVarianceMax",
+                                "data": {
+                                    "__variant_value": 1.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ichorSpawnPositionVarianceMin",
+                                "data": {
+                                    "__variant_value": 0.0,
                                     "__variant_type": 18
                                 }
                             }
@@ -1641,7 +1655,7 @@
                             {
                                 "name": "skinnedMeshRenderer_",
                                 "data": {
-                                    "__variant_value": 1048628,
+                                    "__variant_value": 208,
                                     "__variant_type": 4
                                 }
                             },
@@ -1670,47 +1684,47 @@
                 "agentRotationSpeed": 100.0,
                 "separationWeight": 0.0
             },
-            "id": 1048633
+            "id": 202
         },
         {
             "EntityData": {
                 "name": "Emitter",
                 "tag": "",
-                "parent": 1048633,
+                "parent": 202,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 2979219675782610999,
                 "overridenProperties": null,
                 "overridenComponents": {
+                    "6919815292445452220": false,
                     "10106385962890515953": false,
                     "394579324703252227": false,
-                    "6919815292445452220": false,
-                    "11935986701403193153": false,
                     "16652763906952685383": false,
                     "15908289914940614865": false,
+                    "11935986701403193153": false,
                     "452538415452204233": false,
                     "9059764703561530457": false,
-                    "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": false,
                     "6152912775364972041": false,
-                    "17464486586416021590": false,
+                    "13953638462837156301": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -1875,49 +1889,51 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 1048632
+            "id": 203
         },
         {
             "EntityData": {
                 "name": "Hitbox Position",
                 "tag": "",
-                "parent": 1048633,
+                "parent": 202,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 12202591712637386809,
                 "overridenProperties": null,
                 "overridenComponents": {
+                    "6919815292445452220": false,
                     "10106385962890515953": false,
                     "394579324703252227": false,
-                    "6919815292445452220": false,
-                    "11935986701403193153": false,
                     "16652763906952685383": false,
                     "15908289914940614865": false,
+                    "11935986701403193153": false,
                     "452538415452204233": false,
                     "9059764703561530457": false,
-                    "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": false,
                     "6152912775364972041": false,
-                    "17464486586416021590": false,
+                    "13953638462837156301": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -1968,21 +1984,21 @@
                     "z": -3.141592502593994
                 }
             },
-            "id": 1048631
+            "id": 204
         },
         {
             "EntityData": {
                 "name": "Broken Emitter",
                 "tag": "",
-                "parent": 1048633,
+                "parent": 202,
                 "attachedSocket": 65535,
                 "children": [
-                    1048624,
-                    1048629
+                    206,
+                    207
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 4297674894358280235,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2032,18 +2048,18 @@
                     "z": 3.1415927410125732
                 }
             },
-            "id": 1048615
+            "id": 205
         },
         {
             "EntityData": {
                 "name": "Fumes",
                 "tag": "",
-                "parent": 1048615,
+                "parent": 205,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 12665433370672732531,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2205,20 +2221,22 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 1048624
+            "id": 206
         },
         {
             "EntityData": {
                 "name": "Electricity",
                 "tag": "",
-                "parent": 1048615,
+                "parent": 205,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 9783129609157712245,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2380,53 +2398,55 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 1048629
+            "id": 207
         },
         {
             "EntityData": {
                 "name": "Tutorial Grunt Model",
                 "tag": "Enemy",
-                "parent": 1048633,
+                "parent": 202,
                 "attachedSocket": 65535,
                 "children": [
-                    1048627,
-                    1048626,
-                    1048625
+                    209,
+                    210,
+                    211
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 7590905694209998901,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "17421316227555880647": false,
                     "10599230719904143524": true,
-                    "13953638462837156301": false,
-                    "6152912775364972041": false,
                     "13437837940854190620": true,
                     "8302729333555196098": false,
+                    "13953638462837156301": false,
+                    "6152912775364972041": false,
                     "6919815292445452220": true,
                     "11935986701403193153": false,
-                    "16652763906952685383": false,
                     "15908289914940614865": false,
-                    "9059764703561530457": false,
+                    "16652763906952685383": false,
                     "452538415452204233": false,
-                    "10106385962890515953": false,
+                    "9059764703561530457": false,
                     "394579324703252227": false,
-                    "17464486586416021590": false,
+                    "10106385962890515953": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": true,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13484132868097894827": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -2557,49 +2577,50 @@
                 "shadowCullFrontFace": true
             },
             "Animator": {
-                "controllerId": 9597505658141999105
+                "controllerId": 9597505658141999105,
+                "speedMultiplier": 1.0
             },
-            "id": 1048628
+            "id": 208
         },
         {
             "EntityData": {
                 "name": "Grunt WeakSpot",
                 "tag": "Enemy_WeakSpot",
-                "parent": 1048628,
+                "parent": 208,
                 "attachedSocket": 1,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 9896748703423692863,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "13953638462837156301": true,
                     "6152912775364972041": false,
+                    "6919815292445452220": false,
                     "10106385962890515953": false,
                     "394579324703252227": false,
-                    "6919815292445452220": false,
-                    "11935986701403193153": false,
                     "16652763906952685383": false,
                     "15908289914940614865": false,
-                    "452538415452204233": false,
+                    "11935986701403193153": false,
                     "9059764703561530457": false,
-                    "17421316227555880647": false,
+                    "452538415452204233": false,
                     "10599230719904143524": false,
-                    "17464486586416021590": false,
+                    "17421316227555880647": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -2683,7 +2704,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 1048633,
+                                    "__variant_value": 202,
                                     "__variant_type": 4
                                 }
                             }
@@ -2691,47 +2712,47 @@
                     }
                 ]
             },
-            "id": 1048627
+            "id": 209
         },
         {
             "EntityData": {
                 "name": "Grunt AttackCollider",
                 "tag": "EnemyHitBox",
-                "parent": 1048628,
+                "parent": 208,
                 "attachedSocket": 10,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 14805434811175297219,
                 "overridenProperties": null,
                 "overridenComponents": {
+                    "6919815292445452220": false,
                     "10106385962890515953": false,
                     "394579324703252227": false,
-                    "6919815292445452220": false,
-                    "11935986701403193153": false,
                     "16652763906952685383": false,
                     "15908289914940614865": false,
+                    "11935986701403193153": false,
                     "452538415452204233": false,
                     "9059764703561530457": false,
-                    "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": false,
                     "6152912775364972041": false,
-                    "17464486586416021590": false,
+                    "13953638462837156301": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -2820,47 +2841,47 @@
                     }
                 ]
             },
-            "id": 1048626
+            "id": 210
         },
         {
             "EntityData": {
                 "name": "Navmesh Collider",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 1048628,
+                "parent": 208,
                 "attachedSocket": 13,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 6437984189603151931,
                 "overridenProperties": null,
                 "overridenComponents": {
+                    "6919815292445452220": false,
                     "10106385962890515953": false,
                     "394579324703252227": false,
-                    "6919815292445452220": false,
-                    "11935986701403193153": false,
                     "16652763906952685383": false,
                     "15908289914940614865": false,
+                    "11935986701403193153": false,
                     "452538415452204233": false,
                     "9059764703561530457": false,
-                    "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": false,
                     "6152912775364972041": false,
-                    "17464486586416021590": false,
+                    "13953638462837156301": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -2949,7 +2970,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 1048633,
+                                    "__variant_value": 202,
                                     "__variant_type": 4
                                 }
                             }
@@ -2957,46 +2978,46 @@
                     }
                 ]
             },
-            "id": 1048625
+            "id": 211
         },
         {
             "EntityData": {
                 "name": "Ichor Spawn Point",
                 "tag": "",
-                "parent": 1048633,
+                "parent": 202,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 13709124992250648641,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 17967199235671621693,
                 "overridenProperties": null,
                 "overridenComponents": {
+                    "11935986701403193153": false,
                     "16652763906952685383": false,
                     "15908289914940614865": false,
-                    "11935986701403193153": false,
                     "452538415452204233": false,
                     "9059764703561530457": false,
                     "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "6152912775364972041": false,
                     "13953638462837156301": false,
-                    "394579324703252227": false,
+                    "6152912775364972041": false,
                     "10106385962890515953": false,
-                    "17464486586416021590": false,
+                    "394579324703252227": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "2785545264285399722": false,
                     "16533173024327387273": false,
+                    "2785545264285399722": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "8302729333555196098": false,
                     "13437837940854190620": false,
-                    "7111564935354361005": false,
+                    "8302729333555196098": false,
                     "13484132868097894827": false,
+                    "7111564935354361005": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false,
@@ -3048,13 +3069,13 @@
                     "z": 0.11054651439189911
                 }
             },
-            "id": 1048620
+            "id": 212
         },
         {
             "EntityData": {
                 "name": "Quest 4",
                 "tag": "",
-                "parent": 1048642,
+                "parent": 192,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3145,7 +3166,7 @@
                             {
                                 "name": "playerCheckpoint",
                                 "data": {
-                                    "__variant_value": 1048586,
+                                    "__variant_value": 251,
                                     "__variant_type": 4
                                 }
                             }
@@ -3153,16 +3174,16 @@
                     }
                 ]
             },
-            "id": 1048623
+            "id": 213
         },
         {
             "EntityData": {
                 "name": "Quest 5",
                 "tag": "",
-                "parent": 1048642,
+                "parent": 192,
                 "attachedSocket": 65535,
                 "children": [
-                    1048621
+                    215
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -3231,7 +3252,7 @@
                             {
                                 "name": "checkPointIndicator",
                                 "data": {
-                                    "__variant_value": 1048585,
+                                    "__variant_value": 252,
                                     "__variant_type": 4
                                 }
                             },
@@ -3418,7 +3439,7 @@
                             {
                                 "name": "playerCheckpoint",
                                 "data": {
-                                    "__variant_value": 1048585,
+                                    "__variant_value": 252,
                                     "__variant_type": 4
                                 }
                             }
@@ -3426,17 +3447,17 @@
                     }
                 ]
             },
-            "id": 1048622
+            "id": 214
         },
         {
             "EntityData": {
                 "name": "Indicator 3",
                 "tag": "",
-                "parent": 1048622,
+                "parent": 214,
                 "attachedSocket": 65535,
                 "children": [
-                    1048616,
-                    1048619
+                    216,
+                    217
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -3490,13 +3511,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048621
+            "id": 215
         },
         {
             "EntityData": {
                 "name": "Quest Location Trigger 3",
                 "tag": "",
-                "parent": 1048621,
+                "parent": 215,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3589,7 +3610,7 @@
                             {
                                 "name": "quest",
                                 "data": {
-                                    "__variant_value": 1048622,
+                                    "__variant_value": 214,
                                     "__variant_type": 4
                                 }
                             }
@@ -3597,13 +3618,13 @@
                     }
                 ]
             },
-            "id": 1048616
+            "id": 216
         },
         {
             "EntityData": {
                 "name": "Check Point Marker 3",
                 "tag": "",
-                "parent": 1048621,
+                "parent": 215,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3668,13 +3689,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 1048619
+            "id": 217
         },
         {
             "EntityData": {
                 "name": "Quest 6",
                 "tag": "",
-                "parent": 1048642,
+                "parent": 192,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3765,7 +3786,7 @@
                             {
                                 "name": "playerCheckpoint",
                                 "data": {
-                                    "__variant_value": 1048579,
+                                    "__variant_value": 253,
                                     "__variant_type": 4
                                 }
                             }
@@ -3773,13 +3794,13 @@
                     }
                 ]
             },
-            "id": 1048618
+            "id": 218
         },
         {
             "EntityData": {
                 "name": "Quest 7",
                 "tag": "",
-                "parent": 1048642,
+                "parent": 192,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3844,7 +3865,7 @@
                             {
                                 "name": "arenaManager",
                                 "data": {
-                                    "__variant_value": 1048605,
+                                    "__variant_value": 232,
                                     "__variant_type": 4
                                 }
                             },
@@ -3925,9 +3946,51 @@
                                 }
                             },
                             {
+                                "name": "arenaStartVoiceOverText",
+                                "data": {
+                                    "__variant_value": "",
+                                    "__variant_type": 7
+                                }
+                            },
+                            {
+                                "name": "arenaStartVoiceOverTime",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "arenaStartVoiceOverAudio",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "arenaEndVoiceOverText",
+                                "data": {
+                                    "__variant_value": "",
+                                    "__variant_type": 7
+                                }
+                            },
+                            {
+                                "name": "arenaEndVoiceOverTime",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "arenaEndVoiceOverAudio",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
                                 "name": "arenaManager",
                                 "data": {
-                                    "__variant_value": 1048605,
+                                    "__variant_value": 232,
                                     "__variant_type": 4
                                 }
                             },
@@ -3941,7 +4004,7 @@
                             {
                                 "name": "playerCheckpoint",
                                 "data": {
-                                    "__variant_value": 1048582,
+                                    "__variant_value": 255,
                                     "__variant_type": 4
                                 }
                             }
@@ -3949,16 +4012,16 @@
                     }
                 ]
             },
-            "id": 1048617
+            "id": 219
         },
         {
             "EntityData": {
                 "name": "Quest 8",
                 "tag": "",
-                "parent": 1048642,
+                "parent": 192,
                 "attachedSocket": 65535,
                 "children": [
-                    1048613
+                    221
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -4019,6 +4082,27 @@
                     {
                         "scriptId": 9416059818340368589,
                         "fields": [
+                            {
+                                "name": "goddess",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "closedRangedexitDoor",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "goddessTurbineRoomQuestLocation",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
                             {
                                 "name": "generatorExitDoor",
                                 "data": {
@@ -4085,7 +4169,7 @@
                             {
                                 "name": "checkPointIndicator",
                                 "data": {
-                                    "__variant_value": 1048582,
+                                    "__variant_value": 255,
                                     "__variant_type": 4
                                 }
                             },
@@ -4099,7 +4183,7 @@
                             {
                                 "name": "playerCheckpoint",
                                 "data": {
-                                    "__variant_value": 1048582,
+                                    "__variant_value": 255,
                                     "__variant_type": 4
                                 }
                             }
@@ -4107,16 +4191,16 @@
                     }
                 ]
             },
-            "id": 1048614
+            "id": 220
         },
         {
             "EntityData": {
                 "name": "Indicator 4",
                 "tag": "",
-                "parent": 1048614,
+                "parent": 220,
                 "attachedSocket": 65535,
                 "children": [
-                    1048578
+                    222
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -4170,13 +4254,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048613
+            "id": 221
         },
         {
             "EntityData": {
                 "name": "Quest Location Trigger 4",
                 "tag": "",
-                "parent": 1048613,
+                "parent": 221,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4269,7 +4353,7 @@
                             {
                                 "name": "quest",
                                 "data": {
-                                    "__variant_value": 1048614,
+                                    "__variant_value": 220,
                                     "__variant_type": 4
                                 }
                             }
@@ -4277,20 +4361,20 @@
                     }
                 ]
             },
-            "id": 1048578
+            "id": 222
         },
         {
             "EntityData": {
                 "name": "Quest 9",
                 "tag": "",
-                "parent": 1048642,
+                "parent": 192,
                 "attachedSocket": 65535,
                 "children": [
-                    1048606,
-                    1048611,
-                    1048610,
-                    1048609,
-                    1048608
+                    224,
+                    225,
+                    226,
+                    227,
+                    228
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -4388,11 +4472,11 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 1048608,
+                                                "__variant_value": 228,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 1048608,
+                                                "__variant_value": 228,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -4408,15 +4492,15 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 1048608,
+                                                "__variant_value": 228,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 1048608,
+                                                "__variant_value": 228,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 1048608,
+                                                "__variant_value": 228,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -4432,11 +4516,11 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 1048608,
+                                                "__variant_value": 228,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 1048608,
+                                                "__variant_value": 228,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -4461,6 +4545,60 @@
                                 }
                             },
                             {
+                                "name": "goddessVoiceOverText",
+                                "data": {
+                                    "__variant_value": "",
+                                    "__variant_type": 7
+                                }
+                            },
+                            {
+                                "name": "goddessVoiceOverTime",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "goddessVoiceOverAudio",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "weaverVoiceOverText",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 7
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "weaverVoiceOverTime",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 18
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "weaverVoiceOverAudio",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
                                 "name": "questText",
                                 "data": {
                                     "__variant_value": "Activate all 3 switches!",
@@ -4470,7 +4608,7 @@
                             {
                                 "name": "playerCheckpoint",
                                 "data": {
-                                    "__variant_value": 1048581,
+                                    "__variant_value": 256,
                                     "__variant_type": 4
                                 }
                             }
@@ -4478,13 +4616,13 @@
                     }
                 ]
             },
-            "id": 1048612
+            "id": 223
         },
         {
             "EntityData": {
                 "name": "Gunner Spawn Location",
                 "tag": "",
-                "parent": 1048612,
+                "parent": 223,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4539,13 +4677,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048606
+            "id": 224
         },
         {
             "EntityData": {
                 "name": "Gunner Spawn Location",
                 "tag": "",
-                "parent": 1048612,
+                "parent": 223,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4600,13 +4738,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048611
+            "id": 225
         },
         {
             "EntityData": {
                 "name": "Gunner Spawn Location",
                 "tag": "",
-                "parent": 1048612,
+                "parent": 223,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4661,13 +4799,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048610
+            "id": 226
         },
         {
             "EntityData": {
                 "name": "Gunner Spawn Location",
                 "tag": "",
-                "parent": 1048612,
+                "parent": 223,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4722,13 +4860,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048609
+            "id": 227
         },
         {
             "EntityData": {
                 "name": "Gunner Spawn Location",
                 "tag": "",
-                "parent": 1048612,
+                "parent": 223,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4783,13 +4921,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048608
+            "id": 228
         },
         {
             "EntityData": {
                 "name": "Quest 10",
                 "tag": "",
-                "parent": 1048642,
+                "parent": 192,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4851,6 +4989,13 @@
                     {
                         "scriptId": 13759579251392692231,
                         "fields": [
+                            {
+                                "name": "goddess",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
                             {
                                 "name": "vaultDoor",
                                 "data": {
@@ -4918,6 +5063,27 @@
                                 }
                             },
                             {
+                                "name": "goddessVoiceOverText",
+                                "data": {
+                                    "__variant_value": "",
+                                    "__variant_type": 7
+                                }
+                            },
+                            {
+                                "name": "goddessVoiceOverTime",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "goddessVoiceOverAudio",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
                                 "name": "questText",
                                 "data": {
                                     "__variant_value": "Unlock the Gate.",
@@ -4927,7 +5093,7 @@
                             {
                                 "name": "playerCheckpoint",
                                 "data": {
-                                    "__variant_value": 1048577,
+                                    "__variant_value": 257,
                                     "__variant_type": 4
                                 }
                             }
@@ -4935,13 +5101,13 @@
                     }
                 ]
             },
-            "id": 1048607
+            "id": 229
         },
         {
             "EntityData": {
                 "name": "Game UI Manager",
                 "tag": "Game UI Manager",
-                "parent": 0,
+                "parent": 190,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5010,23 +5176,48 @@
                         "scriptId": 11697264835426484225,
                         "fields": [
                             {
-                                "name": "dashBar",
+                                "name": "dashFillBars",
                                 "data": {
-                                    "__variant_value": 2097259,
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 4
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "healthFill",
+                                "data": {
+                                    "__variant_value": 4294967295,
                                     "__variant_type": 4
                                 }
                             },
                             {
-                                "name": "healthBar",
+                                "name": "healthDamageBuffer",
                                 "data": {
-                                    "__variant_value": 2097277,
+                                    "__variant_value": 4294967295,
                                     "__variant_type": 4
                                 }
                             },
                             {
-                                "name": "ultimateBar",
+                                "name": "crossHairUi",
                                 "data": {
-                                    "__variant_value": 2097273,
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "gunUltimateFill",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "gunUltimateGlow",
+                                "data": {
+                                    "__variant_value": 4294967295,
                                     "__variant_type": 4
                                 }
                             },
@@ -5052,13 +5243,6 @@
                                 }
                             },
                             {
-                                "name": "damageBackground",
-                                "data": {
-                                    "__variant_value": 2097228,
-                                    "__variant_type": 4
-                                }
-                            },
-                            {
                                 "name": "questText",
                                 "data": {
                                     "__variant_value": 2097235,
@@ -5066,24 +5250,152 @@
                                 }
                             },
                             {
-                                "name": "damageFadeTime",
+                                "name": "ammoFills",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 4
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "ammoFillTexture",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 12
+                                }
+                            },
+                            {
+                                "name": "ammoUsedTexture",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 12
+                                }
+                            },
+                            {
+                                "name": "crossHairExpandScaleRatio",
                                 "data": {
                                     "__variant_value": 2.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
-                                "name": "maxAmmoText",
+                                "name": "crossHairAnimationDuration",
                                 "data": {
-                                    "__variant_value": 2097251,
-                                    "__variant_type": 4
+                                    "__variant_value": 0.6000000238418579,
+                                    "__variant_type": 18
                                 }
                             },
                             {
-                                "name": "currentAmmoText",
+                                "name": "crossHairLerpPower",
                                 "data": {
-                                    "__variant_value": 2097274,
-                                    "__variant_type": 4
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "healthLossLerpDuration",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "healthLossLerpPower",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "healthLossBufferTime",
+                                "data": {
+                                    "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "healthBufferLerpDuration",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "healthBufferLerpPower",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "healthGainLerpDuration",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "healthGainLerpPower",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "healthGainColor",
+                                "data": {
+                                    "__variant_value": {
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0,
+                                        "w": 0.0
+                                    },
+                                    "__variant_type": 2
+                                }
+                            },
+                            {
+                                "name": "readyDashBrightness",
+                                "data": {
+                                    "__variant_value": 1.2000000476837158,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ultimateGunFillLerpDuration",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ultimateGunFillLerpPower",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ultimateBarGlowBrightness",
+                                "data": {
+                                    "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ultimateBarGlowBrightnessVariance",
+                                "data": {
+                                    "__variant_value": 0.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ultimateBarGlowSpeedFactor",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
                                 }
                             },
                             {
@@ -5225,6 +5537,20 @@
                                 }
                             },
                             {
+                                "name": "dialogueUI",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "missionObjectiveUI",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
                                 "name": "dialogueText",
                                 "data": {
                                     "__variant_value": 2097815,
@@ -5265,54 +5591,18 @@
                                     "__variant_value": 13835331206658113537,
                                     "__variant_type": 15
                                 }
-                            },
-                            {
-                                "name": "missionObjectiveContainer",
-                                "data": {
-                                    "__variant_value": 2097226,
-                                    "__variant_type": 4
-                                }
-                            },
-                            {
-                                "name": "questInformationContainer",
-                                "data": {
-                                    "__variant_value": 2097230,
-                                    "__variant_type": 4
-                                }
-                            },
-                            {
-                                "name": "newMissionObjectiveUILocation",
-                                "data": {
-                                    "__variant_value": {
-                                        "x": 52.194000244140625,
-                                        "y": 935.7670288085938,
-                                        "z": 0.0
-                                    },
-                                    "__variant_type": 1
-                                }
-                            },
-                            {
-                                "name": "newQuestInformationUILocation",
-                                "data": {
-                                    "__variant_value": {
-                                        "x": 425.010009765625,
-                                        "y": 1012.1939697265625,
-                                        "z": 0.0
-                                    },
-                                    "__variant_type": 1
-                                }
                             }
                         ]
                     }
                 ]
             },
-            "id": 1048603
+            "id": 230
         },
         {
             "EntityData": {
                 "name": "Game Global Reference Manager",
                 "tag": "Game Global Reference Manager",
-                "parent": 0,
+                "parent": 190,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5389,18 +5679,18 @@
                     }
                 ]
             },
-            "id": 1048604
+            "id": 231
         },
         {
             "EntityData": {
                 "name": "Arena Manager",
                 "tag": "",
-                "parent": 0,
+                "parent": 190,
                 "attachedSocket": 65535,
                 "children": [
-                    1048602,
-                    1048600,
-                    1048588
+                    233,
+                    237,
+                    241
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -5479,18 +5769,18 @@
                     }
                 ]
             },
-            "id": 1048605
+            "id": 232
         },
         {
             "EntityData": {
                 "name": "Wave 1",
                 "tag": "",
-                "parent": 1048605,
+                "parent": 232,
                 "attachedSocket": 65535,
                 "children": [
-                    1048601,
-                    1048597,
-                    1048598
+                    234,
+                    235,
+                    236
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -5554,13 +5844,13 @@
                     }
                 ]
             },
-            "id": 1048602
+            "id": 233
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048602,
+                "parent": 233,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5634,13 +5924,13 @@
                     }
                 ]
             },
-            "id": 1048601
+            "id": 234
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048602,
+                "parent": 233,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5714,13 +6004,13 @@
                     }
                 ]
             },
-            "id": 1048597
+            "id": 235
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048602,
+                "parent": 233,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5793,18 +6083,18 @@
                     }
                 ]
             },
-            "id": 1048598
+            "id": 236
         },
         {
             "EntityData": {
                 "name": "Wave 2",
                 "tag": "",
-                "parent": 1048605,
+                "parent": 232,
                 "attachedSocket": 65535,
                 "children": [
-                    1048599,
-                    1048596,
-                    1048587
+                    238,
+                    239,
+                    240
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -5868,13 +6158,13 @@
                     }
                 ]
             },
-            "id": 1048600
+            "id": 237
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048600,
+                "parent": 237,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5948,13 +6238,13 @@
                     }
                 ]
             },
-            "id": 1048599
+            "id": 238
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048600,
+                "parent": 237,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6028,13 +6318,13 @@
                     }
                 ]
             },
-            "id": 1048596
+            "id": 239
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048600,
+                "parent": 237,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6108,20 +6398,20 @@
                     }
                 ]
             },
-            "id": 1048587
+            "id": 240
         },
         {
             "EntityData": {
                 "name": "Wave 3",
                 "tag": "",
-                "parent": 1048605,
+                "parent": 232,
                 "attachedSocket": 65535,
                 "children": [
-                    1048595,
-                    1048594,
-                    1048593,
-                    1048589,
-                    1048592
+                    242,
+                    243,
+                    244,
+                    245,
+                    246
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -6185,13 +6475,13 @@
                     }
                 ]
             },
-            "id": 1048588
+            "id": 241
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048588,
+                "parent": 241,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6265,13 +6555,13 @@
                     }
                 ]
             },
-            "id": 1048595
+            "id": 242
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048588,
+                "parent": 241,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6345,13 +6635,13 @@
                     }
                 ]
             },
-            "id": 1048594
+            "id": 243
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048588,
+                "parent": 241,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6425,13 +6715,13 @@
                     }
                 ]
             },
-            "id": 1048593
+            "id": 244
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048588,
+                "parent": 241,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6505,13 +6795,13 @@
                     }
                 ]
             },
-            "id": 1048589
+            "id": 245
         },
         {
             "EntityData": {
                 "name": "Grunt Position",
                 "tag": "",
-                "parent": 1048588,
+                "parent": 241,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6585,25 +6875,25 @@
                     }
                 ]
             },
-            "id": 1048592
+            "id": 246
         },
         {
             "EntityData": {
                 "name": "Quest Checkpoints",
                 "tag": "",
-                "parent": 0,
+                "parent": 190,
                 "attachedSocket": 65535,
                 "children": [
-                    1048590,
-                    1048583,
-                    1048584,
-                    1048586,
-                    1048585,
-                    1048579,
-                    1048580,
-                    1048582,
-                    1048581,
-                    1048577
+                    248,
+                    249,
+                    250,
+                    251,
+                    252,
+                    253,
+                    254,
+                    255,
+                    256,
+                    257
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -6657,13 +6947,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048591
+            "id": 247
         },
         {
             "EntityData": {
                 "name": "Player Checkpoint 1",
                 "tag": "",
-                "parent": 1048591,
+                "parent": 247,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6718,13 +7008,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048590
+            "id": 248
         },
         {
             "EntityData": {
                 "name": "Player Checkpoint 2",
                 "tag": "",
-                "parent": 1048591,
+                "parent": 247,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6779,13 +7069,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048583
+            "id": 249
         },
         {
             "EntityData": {
                 "name": "Player Checkpoint 3",
                 "tag": "",
-                "parent": 1048591,
+                "parent": 247,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6840,13 +7130,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048584
+            "id": 250
         },
         {
             "EntityData": {
                 "name": "Player Checkpoint 4",
                 "tag": "",
-                "parent": 1048591,
+                "parent": 247,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6901,13 +7191,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048586
+            "id": 251
         },
         {
             "EntityData": {
                 "name": "Player Checkpoint 5",
                 "tag": "",
-                "parent": 1048591,
+                "parent": 247,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6962,13 +7252,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048585
+            "id": 252
         },
         {
             "EntityData": {
                 "name": "Player Checkpoint 6",
                 "tag": "",
-                "parent": 1048591,
+                "parent": 247,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -7023,13 +7313,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048579
+            "id": 253
         },
         {
             "EntityData": {
                 "name": "Player Checkpoint 7",
                 "tag": "",
-                "parent": 1048591,
+                "parent": 247,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -7084,13 +7374,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048580
+            "id": 254
         },
         {
             "EntityData": {
                 "name": "Player Checkpoint 8",
                 "tag": "",
-                "parent": 1048591,
+                "parent": 247,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -7145,13 +7435,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048582
+            "id": 255
         },
         {
             "EntityData": {
                 "name": "Player Checkpoint 9",
                 "tag": "",
-                "parent": 1048591,
+                "parent": 247,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -7206,13 +7496,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048581
+            "id": 256
         },
         {
             "EntityData": {
                 "name": "Player Checkpoint 10",
                 "tag": "",
-                "parent": 1048591,
+                "parent": 247,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -7267,13 +7557,13 @@
                     "z": 0.0
                 }
             },
-            "id": 1048577
+            "id": 257
         },
         {
             "EntityData": {
                 "name": "NavMeshSurface_Humanoid",
                 "tag": "",
-                "parent": 0,
+                "parent": 190,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -7334,13 +7624,13 @@
                 "label": "Humanoid",
                 "navMeshId": 8901972190797027621
             },
-            "id": 68
+            "id": 258
         },
         {
             "EntityData": {
                 "name": "TriggerToNextLevel",
                 "tag": "",
-                "parent": 0,
+                "parent": 190,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -7443,13 +7733,13 @@
                     }
                 ]
             },
-            "id": 69
+            "id": 259
         },
         {
             "EntityData": {
                 "name": "Admin Manager",
                 "tag": "",
-                "parent": 0,
+                "parent": 190,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -7508,22 +7798,30 @@
                 "scriptDatas": [
                     {
                         "scriptId": 13809620329935700787,
-                        "fields": null
+                        "fields": [
+                            {
+                                "name": "questManager",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
                     }
                 ]
             },
-            "id": 70
+            "id": 260
         },
         {
             "EntityData": {
                 "name": "Gameplay Statistics Manager",
                 "tag": "Gameplay Statistics Manager",
-                "parent": 0,
+                "parent": 190,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 18446744073709551615,
+                "prefabID": 1928456031049099139,
                 "entityGUID": 4777273071560972365,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -7592,7 +7890,7 @@
                     }
                 ]
             },
-            "id": 71
+            "id": 261
         }
     ]
 }

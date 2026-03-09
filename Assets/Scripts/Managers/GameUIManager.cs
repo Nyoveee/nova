@@ -35,6 +35,7 @@ class GameUIManager : Script
 
     [SerializableField]
     private GameObject? tutorialUI = null;
+
     [SerializableField]
     private GameObject? pauseUI = null;
 
@@ -195,6 +196,7 @@ class GameUIManager : Script
     private int previousAmmoCount = 12;
 
     private bool isPaused = false;
+    private bool isTutorialPromptActive = false;
     public event Action RestartFromCheckpointButton;
 
     // ========================================================================
@@ -565,11 +567,13 @@ class GameUIManager : Script
         {
             tutorialUI?.getScript<TutorialPrompt>()?.BeginNextTutorial();
             CameraAPI.UnlockMouse();
-        } 
+            isTutorialPromptActive = true;
+        }
         else
         {
             playerController.ResetWASDMovement();
             CameraAPI.LockMouse();
+            isTutorialPromptActive = false;
         }
     }
 
@@ -580,6 +584,11 @@ class GameUIManager : Script
     {
         if (deathUI.IsActive())
             return;
+
+        if (isTutorialPromptActive)
+        {
+            return;
+        }
 
         Canvas_ settingsUI = GameObject.FindWithTag("Setting UI")?.getComponent<Canvas_>();
 
