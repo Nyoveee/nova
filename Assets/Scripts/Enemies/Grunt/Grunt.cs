@@ -57,6 +57,7 @@ class Grunt : Enemy
         Attacking,
         PreJump,
         Jump,
+        Stagger,
         Death
     }
     // State machine
@@ -80,6 +81,7 @@ class Grunt : Enemy
         updateState.Add(GruntState.Death, Update_Death);
         updateState.Add(GruntState.PreJump, Update_PreJump);
         updateState.Add(GruntState.Jump, Update_Jump);
+        updateState.Add(GruntState.Stagger, Update_Stagger);
 
         // animator.PlayAnimation("Grunt Idle (Base)");
 
@@ -101,6 +103,19 @@ class Grunt : Enemy
     /**********************************************************************
         Inheritted Functions
     **********************************************************************/
+    public override void StaggerMovement()
+    {
+        if (navMeshAgent.enable && gruntState != GruntState.Stagger)
+        {
+            base.StaggerMovement();
+            GruntState originalState = gruntState;
+            gruntState = GruntState.Stagger;
+            Invoke(() => { 
+                if(gruntState != GruntState.Death)
+                    gruntState = originalState; 
+            }, movementStaggerTime);
+        }
+    }
     public override bool IsEngagedInBattle()
     {
         return gruntState != GruntState.Idle;
@@ -112,8 +127,6 @@ class Grunt : Enemy
         {
             return;
         }
-
-        Debug.Log("Grunt took damage: " + damage);
 
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
@@ -131,18 +144,6 @@ class Grunt : Enemy
             }
 
             accumulatedDamageInstance += damage;
-            //gruntStats.health -= damage;
-            //if (gruntStats.health <= 0)
-            //{
-            //    if (gruntState != GruntState.Death && !WasRecentlyDamaged())
-            //        SpawnIchor();
-            //    gruntState = GruntState.Death;
-            //    animator.PlayAnimation("Grunt Death");
-            //    NavigationAPI.stopAgent(gameObject);
-            //    rigidbody.enable = false;
-            //}
-
-
         }
 
         if (damageType == Enemy.EnemydamageType.ThrownWeapon)
@@ -161,15 +162,6 @@ class Grunt : Enemy
             else
             {
                 accumulatedDamageInstance += damage;
-                //if (gruntStats.health <= 0)
-                //{
-                //    if (gruntState != GruntState.Death && !WasRecentlyDamaged())
-                //        SpawnIchor();
-                //    gruntState = GruntState.Death;
-                //    animator.PlayAnimation("Grunt Death");
-                //    NavigationAPI.stopAgent(gameObject);
-                //    rigidbody.enable = false;
-                //}
             }
 
         }
@@ -178,35 +170,7 @@ class Grunt : Enemy
         {
 
             accumulatedDamageInstance += damage;
-            //gruntStats.health -= damage;
-            //if (gruntStats.health <= 0)
-            //{
-            //    if (gruntState != GruntState.Death && !WasRecentlyDamaged())
-            //        SpawnIchor();
-            //    gruntState = GruntState.Death;
-            //    animator.PlayAnimation("Grunt Death");
-            //    NavigationAPI.stopAgent(gameObject);
-            //    rigidbody.enable = false;
-            //}
-
         }
-        //    // blud already died let him die in peace dont take anymore damage..
-        //    if (gruntState == GruntState.Death || WasRecentlyDamaged())
-        //    return;
-        //SpawnIchor();
-        //TriggerRecentlyDamageCountdown();
-
-        //if (gruntState != GruntState.Death)
-        //{
-        //    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-        //    renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
-        //    renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
-        //    Invoke(() =>
-        //    {
-        //        renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
-        //        renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
-        //    }, gruntStats.hurtDuration); //bug here is this object dies this frame
-        //}
     }
 
 
@@ -231,6 +195,7 @@ class Grunt : Enemy
             }
             else
             {
+                StaggerMovement();
                 TriggerRecentlyDamageCountdown();
                 if (gruntState != GruntState.Death && !WasRecentlyDamaged())
                 {
@@ -309,7 +274,7 @@ class Grunt : Enemy
         {
             animator.PlayAnimation("Grunt Idle (Base)");
             gruntState = GruntState.Idle;
-            NavigationAPI.stopAgent(gameObject);
+            StopNavMeshMovement();
         }
     }
     private void Update_ChasingState()
@@ -320,7 +285,7 @@ class Grunt : Enemy
         {
             gruntState = GruntState.PreJump;
             animator.PlayAnimation("Grunt Jump");
-            NavigationAPI.stopAgent(gameObject);
+            StopNavMeshMovement();
             LookAt(GetTargetJumpPosition());
             return;
         }
@@ -335,7 +300,7 @@ class Grunt : Enemy
         {
             animator.PlayAnimation("Grunt Attack");
             gruntState = GruntState.Attacking;
-            NavigationAPI.stopAgent(gameObject);
+            StopNavMeshMovement();
             return;
         }
         LookAt(player);
@@ -364,6 +329,7 @@ class Grunt : Enemy
             navMeshAgent.enable = true;
         }
     }
+    private void Update_Stagger() { }
     private void Update_Death(){
         if (IsCurrentlyJumping() && IsJumpFinished())
         {

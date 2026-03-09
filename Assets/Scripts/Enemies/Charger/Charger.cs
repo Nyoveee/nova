@@ -63,7 +63,8 @@ class Charger : Enemy
         Patrol,
         Charging,
         Attack,
-        Stagger,
+        StaggerStrong,
+        StaggerWeak,
         Stomp,
         Jump,
         Death
@@ -84,7 +85,8 @@ class Charger : Enemy
         updateState.Add(ChargerState.Walk, Update_Walk);
         updateState.Add(ChargerState.Charging, Update_Charging);
         updateState.Add(ChargerState.Attack, Update_Attack);
-        updateState.Add(ChargerState.Stagger, Update_Stagger);
+        updateState.Add(ChargerState.StaggerStrong, Update_StaggerStrong);
+        updateState.Add(ChargerState.StaggerWeak, Update_StaggerWeak);
         updateState.Add(ChargerState.Stomp, Update_Stomp);
         updateState.Add(ChargerState.Jump, Update_Jump);
         updateState.Add(ChargerState.Death, Update_Death);
@@ -110,6 +112,20 @@ class Charger : Enemy
     /***********************************************************
         Inherited Functions
     ***********************************************************/
+    public override void StaggerMovement()
+    {
+        if (navMeshAgent.enable && (chargerState != ChargerState.StaggerWeak || chargerState != ChargerState.StaggerStrong))
+        {
+            base.StaggerMovement();
+            ChargerState originalState = chargerState;
+            chargerState = ChargerState.StaggerWeak;
+            Invoke(() => { 
+                if(chargerState != ChargerState.Death)
+                    chargerState = originalState; 
+            }, movementStaggerTime);
+        }
+     
+    }
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
 
@@ -235,6 +251,7 @@ class Charger : Enemy
             }
             else
             {
+                StaggerMovement();
                 TriggerRecentlyDamageCountdown();
                 if (chargerState == ChargerState.Death && !WasRecentlyDamaged())
                 {
@@ -302,7 +319,7 @@ class Charger : Enemy
         {
             chargerState = ChargerState.Idle;
             animator.PlayAnimation("ChargerIdle");
-            NavigationAPI.stopAgent(gameObject);
+            StopNavMeshMovement();
         }
     }
     private void Update_Walk() {
@@ -317,7 +334,7 @@ class Charger : Enemy
         currentStompCooldown -= Time.V_DeltaTime();
         if (IsOnNavMeshOfflink())
         {
-            NavigationAPI.stopAgent(gameObject);
+            StopNavMeshMovement();
             LookAt(GetTargetJumpPosition());
             chargerState = ChargerState.Jump;
             navMeshAgent.enable = false;
@@ -392,7 +409,8 @@ class Charger : Enemy
             navMeshAgent.enable = true;
         }
     }
-    private void Update_Stagger() { }
+    private void Update_StaggerStrong() { }
+    private void Update_StaggerWeak() { }
     private void Update_Stomp() { }
     private void Update_Death()
     {
@@ -495,7 +513,7 @@ class Charger : Enemy
 
         if ((other.getComponent<Rigidbody_>().GetLayerName() == "Wall" || other.getComponent<Rigidbody_>().GetLayerName() == "Props") && chargerState == ChargerState.Charging)
         {
-            chargerState = ChargerState.Stagger;
+            chargerState = ChargerState.StaggerStrong;
             animator.PlayAnimation("ChargerStagger");
             audioComponent.PlayRandomSound(hurtSFX);
             ActivateNavMeshAgent();
