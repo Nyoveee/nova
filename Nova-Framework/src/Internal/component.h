@@ -226,13 +226,16 @@ struct SkinnedMeshRenderer {
 
 	bool castShadow = true;
 	bool shadowCullFrontFace = true;
-
+	
+	bool toFrustumCull = true;
+	
 	REFLECTABLE(
 		modelId,
 		materialIds,
 		socketConnections,
 		castShadow,
-		shadowCullFrontFace
+		shadowCullFrontFace,
+		toFrustumCull
 	)
 
 	std::unordered_set<int>					isMaterialInstanced;

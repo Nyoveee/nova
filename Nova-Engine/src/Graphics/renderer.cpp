@@ -2489,7 +2489,7 @@ void Renderer::frustumCullModels(glm::mat4 const& viewProjectionMatrix) {
 
 	for (auto&& [entityID, entityData, transform, skinnedMeshRenderer] : registry.view<EntityData, Transform, SkinnedMeshRenderer>().each()) {
 		// pointless to do frustum culling on disabled objects.
-		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entityID) || !skinnedMeshRenderer.toFrustumCull) {
 			continue;
 		}
 
