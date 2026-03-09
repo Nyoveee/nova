@@ -99,7 +99,8 @@ class Gunner : Enemy
         {
             if (!HasLineOfSight(vantagePoint))
                 continue;
-            if (Vector3.Distance(vantagePoint.transform.position, playerHead.transform.position) <= gunnerStats.escapeRange)
+            // Vantage point must be at a safe distance from the player that the gunner can shoot from
+            if (Vector3.Distance(vantagePoint.transform.position, playerHead.transform.position) <= gunnerStats.safeVantageRange)
                 continue;
             float distance = Vector3.Distance(vantagePoint.transform.position, gunnerHead.transform.position);
             if (distance < closestVantagePoint)

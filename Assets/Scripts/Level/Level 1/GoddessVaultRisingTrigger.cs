@@ -12,6 +12,10 @@ class GoddessVaultRisingTrigger : Script
     private Vector3 startPoint;
     [SerializableField]
     private Vector3 endPoint;
+    [SerializableField]
+    private GameObject gameObjectToPoint;
+    [SerializableField]
+    private float timeToStartPointing;
 
     [SerializableField]
     private List<string> goddessVoiceOverText;
@@ -23,8 +27,11 @@ class GoddessVaultRisingTrigger : Script
     {
         if(other.tag == "Player")
         {
-            goddessGameObject.getScript<GoddessBehaviour>()?.BeginRising(startPoint, endPoint);
-            goddessGameObject.getScript<GoddessBehaviour>()?.SetFloatingSpeech(goddessVoiceOverText, goddessVoiceOverTime, goddessVoiceOverAudio);
+            GoddessBehaviour goddessBehaviour = goddessGameObject.getScript<GoddessBehaviour>();
+            goddessBehaviour?.BeginRising(startPoint, endPoint);
+            goddessBehaviour?.SetFloatingSpeech(goddessVoiceOverText, goddessVoiceOverTime, goddessVoiceOverAudio);
+            if(gameObjectToPoint!= null)
+                goddessBehaviour?.PointAt(gameObjectToPoint, timeToStartPointing);
             Destroy(gameObject);
         }
             
