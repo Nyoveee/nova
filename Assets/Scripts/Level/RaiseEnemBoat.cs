@@ -85,6 +85,10 @@ class RaiseEnemBoat : Script
             waveManager.getScript<CannonWaveManager>().StartWave();
             waveStarted = true;
         }
+        else if(reachedTarget && waveManager.getScript<CannonWaveManager>().useWave == false)
+        {
+        
+        }
 
         if (isSinking)
         {
