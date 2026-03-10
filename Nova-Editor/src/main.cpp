@@ -13,7 +13,7 @@
 constexpr int			windowWidth		= 1200;
 constexpr int			windowHeight	= 900;
 
-int main() {
+int main(int argc, char* argv[]) {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
@@ -39,28 +39,41 @@ int main() {
 
 	Editor			editor			{ window, engine, inputManager, assetManager, resourceManager };
 
-	window.run(
-		// Fixed update loop
-		[&](float fixedDt) {
-			engine.fixedUpdate(fixedDt);
-		},
-
-		// Update loop.
-		[&](float dt) {
-			engine.update(dt);
-			engine.render(RenderMode::Editor);
-			
-			// we update the editor the simulation mode of the engine. this is because simulation may stop abruptly outside of
-			// the editor's control. during simulation setup, it may fail too.
-			if (!engine.isInSimulationMode() && editor.isInSimulationMode()) {
-				editor.stopSimulation();
-			}
-
-			editor.update(dt);
-
-			// every frame, check if there is a need to change simulation and initialise / clear systems.
-			// this will set the simulation mode of the engine accordingly.
-			engine.setupSimulation();
+	// Check for command line argument
+	bool skipRun = false;
+	if (argc > 1) {
+		std::string arg = argv[1];
+		if (arg == "--no-run") {
+			skipRun = true;
 		}
-	);
+	}
+
+	if (!skipRun) {
+		window.run(
+			// Fixed update loop
+			[&](float fixedDt) {
+				engine.fixedUpdate(fixedDt);
+			},
+
+			// Update loop.
+			[&](float dt) {
+				engine.update(dt);
+				engine.render(RenderMode::Editor);
+
+				// we update the editor the simulation mode of the engine. this is because simulation may stop abruptly outside of
+				// the editor's control. during simulation setup, it may fail too.
+				if (!engine.isInSimulationMode() && editor.isInSimulationMode()) {
+					editor.stopSimulation();
+				}
+
+				editor.update(dt);
+
+				// every frame, check if there is a need to change simulation and initialise / clear systems.
+				// this will set the simulation mode of the engine accordingly.
+				engine.setupSimulation();
+			}
+		);
+	} else {
+		std::cout << "Skipping window.run().\n";
+	}
 }
