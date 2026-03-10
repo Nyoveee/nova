@@ -48,14 +48,15 @@ private:
 	void continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
 	void burstGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
 	void trailGeneration(Transform& transform, ParticleEmitter& emitter);
-	void spawnParticle(Transform const& transform, ParticleEmitter& emitter);
+	void spawnParticle(Transform const& transform, glm::vec3 const& particlePosition, ParticleEmitter& emitter);
+
 	// Setup everything the particle needs to work
-	void determineParticleSpawnDetails(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform, ParticleEmitter& emitter ,ParticleEmissionTypeSelection::EmissionShape emissionShape);
+	void determineParticleSpawnDetails(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform, glm::vec3 const& particlePosition, ParticleEmitter& emitter, ParticleEmissionTypeSelection::EmissionShape emissionShape);
 	void determineParticleColor(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, ParticleEmitter& emitter, float emissiveMultiplier, ColorA startcolor, ColorA endColor, glm::vec3 colorOffsetMin, glm::vec3 colorOffsetMax);
 	void determineParticleSize(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, ParticleEmitter& emitter, float startSize, float endSize, float minStartSizeOffset, float maxStartSizeOffset);
 	void determineParticleRotation(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, ParticleEmitter& emitter);
 	// Rotate Particle's position, velocity and force values based on transform
-	void rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform);
+	void rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform, glm::vec3 const& particlePosition);
 	
 	// Add to compute Shader
 	void addParticleToList(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, TypedResourceID<Texture> texture, int renderOrder);

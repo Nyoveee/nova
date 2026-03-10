@@ -1,5 +1,5 @@
 {
-    "RootEntity": 203,
+    "RootEntity": 2,
     "Entities": [
         {
             "EntityData": {
@@ -18,9 +18,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -0.448708176612854,
-                    "y": -8.479623794555664,
-                    "z": 12.418126106262207
+                    "x": 20.870643615722656,
+                    "y": -5.0029520988464355,
+                    "z": 126.60584259033203
                 },
                 "scale": {
                     "x": 0.2000015825033188,
@@ -39,9 +39,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.448708176612854,
-                    "y": -8.479623794555664,
-                    "z": 12.418126106262207
+                    "x": 20.870643615722656,
+                    "y": -5.0029520988464355,
+                    "z": 126.60584259033203
                 },
                 "localScale": {
                     "x": 0.2000015825033188,
@@ -114,7 +114,7 @@
                             {
                                 "name": "pullTime",
                                 "data": {
-                                    "__variant_value": 0.7699999809265137,
+                                    "__variant_value": 0.3499999940395355,
                                     "__variant_type": 18
                                 }
                             },
@@ -220,15 +220,15 @@
                 "texture": 8,
                 "startSize": 0.10000000149011612,
                 "minStartSizeOffset": 0.0,
-                "maxStartSizeOffset": 0.0,
-                "startSpeed": 0.0010000000474974513,
-                "initialRotation": 90.0,
+                "maxStartSizeOffset": 0.10000000149011612,
+                "startSpeed": 0.0,
+                "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.7386145465020012e-37,
                 "maxInitialRotationOffset": 6.58610278232664e-43,
-                "initialAngularVelocity": 9.0,
+                "initialAngularVelocity": 3.1203694343566895,
                 "minAngularVelocityOffset": 0.0,
-                "maxAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 5.837410926818848,
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -307,9 +307,9 @@
                     }
                 },
                 "trails": {
-                    "selected": false,
+                    "selected": true,
                     "trailTexture": 0,
-                    "distancePerEmission": 0.10000000149011612,
+                    "distancePerEmission": 0.07999999821186066,
                     "trailSize": 0.10000000149011612,
                     "trailColor": {
                         "r": 1.0,
@@ -332,7 +332,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 203
+            "id": 2
         }
     ]
 }

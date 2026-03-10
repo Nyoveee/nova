@@ -3,6 +3,8 @@
 #include "RandomRange.h"
 #include "Interpolation.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/io.hpp> 
 #include <algorithm>
 
 #undef max
@@ -80,7 +82,7 @@ void ParticleSystem::continuousGeneration(Transform const& transform, ParticleEm
 	emitter.currentContinuousTime -= dt;
 	while (emitter.currentContinuousTime <= 0) {
 		emitter.currentContinuousTime += 1.f / emitter.particleRate;
-		spawnParticle(transform, emitter);
+		spawnParticle(transform, transform.position, emitter);
 	}
 }
 
@@ -100,7 +102,9 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 	if (!emitter.trails.selected || emitter.trails.distancePerEmission <= 0)
 		return;
 
-	if (glm::distance(emitter.prevPosition, transform.position) > emitter.trails.nextDistancePerEmission) {
+	float distance = glm::distance(emitter.prevPosition, transform.position);
+
+	if (distance > emitter.trails.nextDistancePerEmission) {
 		if (emitter.b_firstPositionUpdate) {
 			emitter.prevPosition = transform.position;
 			emitter.b_firstPositionUpdate = false;
@@ -108,52 +112,20 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 			return;
 		}
 
-		float maxDistance{ glm::distance(emitter.prevPosition,transform.position) };
-		glm::vec3 startPosition{ emitter.prevPosition };
+		if (emitter.prevPosition == glm::vec3{}) {
+			emitter.prevPosition = transform.position;
+			return;
+		}
+
+		glm::vec3 position = emitter.prevPosition;
 		glm::vec3 direction{ glm::normalize(transform.position - emitter.prevPosition) };
-		// int index{};
 
-		while (maxDistance > 0.f) {
-			spawnParticle(transform, emitter);
-#if 0
-			ParticleLifespanData particleLifeSpanData{};
-			ParticleVertex particleVertex{};
-			determineParticleSpawnDetails(
-				particleLifeSpanData,
-				particleVertex,
-				startPosition + direction * (distancePerEmission * index), 
-				emitter, 
-				ParticleEmissionTypeSelection::EmissionShape::Point
-			);
-			determineParticleColor(
-				particleLifeSpanData,
-				particleVertex,
-				emitter,
-				emitter.trails.trailEmissiveMultiplier,
-				emitter.trails.trailColor,
-				emitter.colorOverLifetime.endColor,
-				emitter.trails.trailColorOffsetMin,
-				emitter.trails.trailColorOffsetMax
-			);
-			determineParticleSize(
-				particleLifeSpanData,
-				particleVertex,
-				emitter,
-				emitter.trails.trailSize,
-				emitter.sizeOverLifetime.endSize,
-				0,
-				0
-			);
-			// Ignore the set velocity and force
-			particleLifeSpanData.velocity = glm::vec3{ 0,0,0 };
-			particleLifeSpanData.force = glm::vec3{ 0,0,0 };
-			addParticleToList(particleLifeSpanData, particleVertex,emitter.trails.trailTexture);
-			// Update the loop
-			++index;
-#endif
-
-			maxDistance -= emitter.trails.nextDistancePerEmission;
+		while (distance > emitter.trails.nextDistancePerEmission) {
+			spawnParticle(transform, position, emitter);
 			emitter.trails.nextDistancePerEmission = std::max(emitter.trails.distancePerEmission + RandomRange::Float(emitter.trails.minDistanceOffset, emitter.trails.maxDistanceOffset), 0.0001f);
+			
+			distance -= emitter.trails.nextDistancePerEmission;
+			position += emitter.trails.nextDistancePerEmission * direction;
 		}
 
 		emitter.prevPosition = transform.position;
@@ -164,6 +136,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 	ParticleLifespanData& particleLifeSpanData, 
 	ParticleVertex& particleVertex,
 	Transform const& transform,
+	glm::vec3 const& particlePosition,
 	ParticleEmitter& emitter, 
 	ParticleEmissionTypeSelection::EmissionShape emissionShape)
 {
@@ -173,6 +146,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 			return nonRandomizedDirection;
 		return glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1)) * emitter.startSpeed;
 	};
+
 	// Lifetime
 	particleLifeSpanData.currentLifeTime = particleLifeSpanData.lifeTime = emitter.lifeTime + RandomRange::Float(emitter.minLifeTimeOffset, emitter.maxLifeTimeOffset);
 	switch (emissionShape) {
@@ -180,7 +154,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 		{
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
-			particleVertex.position = transform.position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
+			particleVertex.position = particlePosition + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
 			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * emitter.startSpeed);
 			break;
 		}
@@ -189,21 +163,21 @@ void ParticleSystem::determineParticleSpawnDetails(
 			glm::vec3 randomVelocity = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
 			randomVelocity = glm::normalize(randomVelocity);
 			randomVelocity *= emitter.startSpeed;
-			particleVertex.position = transform.position;
+			particleVertex.position = particlePosition;
 			particleLifeSpanData.velocity = randomVelocity;
 			break;
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Cube:
 		{
 			glm::vec3 min{ emitter.particleEmissionTypeSelection.cubeEmitter.min }, max{ emitter.particleEmissionTypeSelection.cubeEmitter.max };
-			glm::vec3 randomSpawnPoint = transform.position + glm::vec3{ RandomRange::Float(min.x,max.x),RandomRange::Float(min.y,max.y),RandomRange::Float(min.z,max.z) };
+			glm::vec3 randomSpawnPoint = particlePosition + glm::vec3{ RandomRange::Float(min.x,max.x),RandomRange::Float(min.y,max.y),RandomRange::Float(min.z,max.z) };
 			particleVertex.position = randomSpawnPoint;
-			particleLifeSpanData.velocity = determineParticleVelocity(emitter, glm::normalize(randomSpawnPoint - transform.position) * emitter.startSpeed);
+			particleLifeSpanData.velocity = determineParticleVelocity(emitter, glm::normalize(randomSpawnPoint - particlePosition) * emitter.startSpeed);
 			break;
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Edge:
 		{
-			glm::vec3 randomSpawnPoint = transform.position;
+			glm::vec3 randomSpawnPoint = particlePosition;
 			randomSpawnPoint -= glm::vec3{ 1,0,0 } *emitter.particleEmissionTypeSelection.radiusEmitter.radius / 2.f;
 			randomSpawnPoint += glm::vec3{ 1,0,0 } *RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
 			particleVertex.position = randomSpawnPoint;
@@ -214,7 +188,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 		{
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), 0, RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
-			particleVertex.position = transform.position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
+			particleVertex.position = particlePosition + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
 			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * emitter.startSpeed);
 			break;
 		}
@@ -222,7 +196,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 		{
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(0, 1), RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
-			particleVertex.position = transform.position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
+			particleVertex.position = particlePosition + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
 			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * emitter.startSpeed);
 			break;
 		}
@@ -239,8 +213,8 @@ void ParticleSystem::determineParticleSpawnDetails(
 			// Calculate the spawn to target Position
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), 0, RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
-			glm::vec3 spawnPosition = transform.position + randomSpawnDirection * spawnRadius;
-			glm::vec3 targetPosition = transform.position + glm::vec3{ 0,distance,0 } + randomSpawnDirection * spawnRadius / radius * outerRadius;
+			glm::vec3 spawnPosition = particlePosition + randomSpawnDirection * spawnRadius;
+			glm::vec3 targetPosition = particlePosition + glm::vec3{ 0,distance,0 } + randomSpawnDirection * spawnRadius / radius * outerRadius;
 			glm::vec3 velocity = glm::normalize(targetPosition - spawnPosition) * emitter.startSpeed;
 			// Set the new Particle details
 			particleVertex.position = spawnPosition;
@@ -318,15 +292,15 @@ void ParticleSystem::determineParticleRotation(ParticleLifespanData& particleLif
 	particleVertex.rotation += RandomRange::Float(emitter.minInitialRotationOffset, emitter.maxInitialRotationOffset);
 }
 
-void ParticleSystem::rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform)
+void ParticleSystem::rotateParticle(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, Transform const& transform, glm::vec3 const& particlePosition)
 {
 	// Position
 	glm::mat4 model = glm::identity<glm::mat4>();
-	model = glm::translate(model, -transform.position);
+	model = glm::translate(model, -particlePosition);
 	model = glm::mat4_cast(transform.rotation) * model;
 	glm::vec4 rotatedPosFromOrigin = glm::vec4(particleVertex.position, 1.0);
 	rotatedPosFromOrigin = model * rotatedPosFromOrigin;
-	particleVertex.position = glm::vec3{ rotatedPosFromOrigin.x,rotatedPosFromOrigin.y,rotatedPosFromOrigin.z } + transform.position;
+	particleVertex.position = glm::vec3{ rotatedPosFromOrigin.x,rotatedPosFromOrigin.y,rotatedPosFromOrigin.z } + particlePosition;
 	// Velocity
 	glm::vec4 rotatedVelocity = glm::vec4(particleLifeSpanData.velocity, 1.0);
 	rotatedVelocity = glm::mat4_cast(transform.rotation) * rotatedVelocity;
@@ -387,7 +361,7 @@ BufferObject const& ParticleSystem::getParticeVerticesBO()
 	return particleVerticesBO;
 }
 
-void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& emitter)
+void ParticleSystem::spawnParticle(Transform const& transform, glm::vec3 const& particlePosition, ParticleEmitter& emitter)
 {
 	ParticleLifespanData particleLifeSpanData{};
 	ParticleVertex particleVertex{};
@@ -395,7 +369,8 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 	determineParticleSpawnDetails(
 		particleLifeSpanData,
 		particleVertex,
-		transform, 
+		transform,
+		particlePosition,
 		emitter, 
 		emitter.particleEmissionTypeSelection.emissionShape
 	);
@@ -421,7 +396,7 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		emitter.maxStartSizeOffset
 	);
 
-	rotateParticle(particleLifeSpanData,particleVertex,transform);
+	rotateParticle(particleLifeSpanData, particleVertex, transform, particlePosition);
 	
 	if (emitter.invertMovement) {
 		particleVertex.position += particleLifeSpanData.lifeTime * particleLifeSpanData.velocity;
@@ -440,5 +415,5 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 void ParticleSystem::emit(Transform const& transform, ParticleEmitter& emitter, int count)
 {
 	while (count--)
-		spawnParticle(transform, emitter);
+		spawnParticle(transform, transform.position, emitter);
 }

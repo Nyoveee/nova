@@ -820,8 +820,9 @@ struct ParticleEmitter
 	// Update
 	float currentContinuousTime{};
 	float currentBurstTime{};
+
 	glm::vec3 prevPosition{};
-	bool b_firstPositionUpdate{ true };
+	bool b_firstPositionUpdate{ false };
 };
 
 struct Text {
