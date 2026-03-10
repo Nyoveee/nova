@@ -503,7 +503,7 @@ void ScriptingAPIManager::onCollisionEnter(entt::entity entityOne, entt::entity 
 }
 
 void ScriptingAPIManager::onCollisionExit(entt::entity entityOne, entt::entity entityTwo) {
-	handleOnCollisionExit_(static_cast<unsigned>(entityOne), static_cast<unsigned>(entityTwo));
+ 	handleOnCollisionExit_(static_cast<unsigned>(entityOne), static_cast<unsigned>(entityTwo));
 }
 
 void ScriptingAPIManager::executeFunction(entt::entity entityOne, ResourceID scriptID, std::string const& functionName) {
