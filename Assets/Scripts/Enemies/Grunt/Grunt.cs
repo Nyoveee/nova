@@ -303,7 +303,6 @@ class Grunt : Enemy
             StopNavMeshMovement();
             return;
         }
-        LookAt(player);
         // Move Enemy 
         MoveToNavMeshPosition(player.transform.position);
     }

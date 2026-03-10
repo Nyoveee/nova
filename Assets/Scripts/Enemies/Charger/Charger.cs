@@ -329,7 +329,6 @@ class Charger : Enemy
             MoveToNavMeshPosition(player.transform.position);
             return;
         }
-        LookAt(player);
         currentChargeCooldown -= Time.V_DeltaTime();
         currentStompCooldown -= Time.V_DeltaTime();
         if (IsOnNavMeshOfflink())
