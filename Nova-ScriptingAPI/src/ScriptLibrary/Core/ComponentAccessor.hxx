@@ -23,6 +23,7 @@ public:
 
 public:
 	void Invoke(Callback^ callback, float duration);
+	void Interval(Callback^ callback, float interval, float totalDuration);
 
 	GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab);
 	GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent);

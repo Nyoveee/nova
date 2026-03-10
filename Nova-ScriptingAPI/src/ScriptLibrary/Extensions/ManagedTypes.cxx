@@ -941,3 +941,9 @@ void Image_::SetTexture(ScriptingAPI::Texture^ texture)
 {
 	nativeComponent()->texture = texture->getId();
 }
+
+void CameraComponent_::ResetUp() {
+	if (nativeComponent()->camStatus) {
+		Interface::engine->renderer.getGameCamera().setUp(glm::vec3{ 0.f, 1.f, 0.f });
+	}
+}

@@ -22,8 +22,10 @@ class PlayerController_V2 : Script
     // ==================================
     [SerializableField]
     private float groundAcceleration = 2f; //rate of change of player speed
+
     [SerializableField]
     private float groundMaxMoveSpeed = 10f; //the max speed/ the desirable speed of the player on ground
+
     [SerializableField]
     private float groundDrag = 20.0f; //deceleration
     [SerializableField]
@@ -55,7 +57,8 @@ class PlayerController_V2 : Script
     [SerializableField]
     private float baseGravityFactor = 1f; //gravity factor for groundbased movements
 
-
+    [SerializableField]
+    private PlayerRotateController rotateController;
 
     // ==================================
     // Events
@@ -188,6 +191,7 @@ class PlayerController_V2 : Script
         isIFrames = false;
     }
 
+    
     // This function is invoked every update.
     protected override void update()
     {
@@ -774,13 +778,31 @@ class PlayerController_V2 : Script
         // Placeholder for a player death 
         if (currentHealth <= 0f)
         {
-            audioComponent.PlayRandomSound(deathSFX);
-            OnPlayerDeath?.Invoke(this, EventArgs.Empty);
-
+            OnPlayerDead();
         }
     }
 
+    public void OnPlayerDead()
+    {
+        gameUIManager?.TriggerDeathScreen();
 
+        playerMoveStates = PlayerMoveStates.Disabled;
+        movementIsEnabled = false;
+
+        audioComponent.PlayRandomSound(deathSFX);
+        OnPlayerDeath?.Invoke(this, EventArgs.Empty);
+
+        getScript<PlayerWeaponController>()?.DisableShooting();
+
+        // We disable player camera.. let UI manager handle the death sequence..
+        rotateController.rotationIsEnabled = false;
+
+        endWalkingForward();
+        endWalkingBackward();
+        endWalkingLeft();
+        endWalkingRight();
+    }
+    
     /****************************************************************
     Helper Functions
     ****************************************************************/
@@ -890,13 +912,17 @@ class PlayerController_V2 : Script
         }
     }
 
-
-    public void ResetHealth()
+    public void Reset()
     {
-        vignetteController.TriggerVignette(0.00f, 0, new Colour(0.0f, 0.0f, 0.0f));
         currentHealth = maxHealth;
+        getScript<PlayerWeaponController>()?.Reset();
         
-        // gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+        rotateController.rotationIsEnabled = true;
+
+        playerMoveStates = PlayerMoveStates.InitState;
+        movementIsEnabled = true;
+
+        getScript<PlayerWeaponController>()?.EnableShooting();
     }
 
     public void ResetWASDMovement()

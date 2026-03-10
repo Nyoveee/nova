@@ -17,7 +17,7 @@ glm::vec2 RandomRange::Vec2(glm::vec2 min, glm::vec2 max)
 
  glm::vec3 RandomRange::Vec3(glm::vec3 min, glm::vec3 max)
 {
-    return glm::vec3{ Float(min.x,max.x),Float(min.y,max.y), Float(min.z,max.z)};
+    return glm::vec3{ Float(min.x,max.x), Float(min.y,max.y), Float(min.z,max.z)};
 }
 
 glm::vec4 RandomRange::Vec4(glm::vec4 min, glm::vec4 max)

@@ -20,6 +20,7 @@ class GameBGMManager : Script
     private float currentTransitionTimer = 0f;
     private float currentBufferTime;
     private AudioComponent_ audioComponent;
+
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -161,4 +162,9 @@ class GameBGMManager : Script
         else
             currentBufferTime = bufferTime;
     }
+
+    //private void PauseBGM()
+    //{
+        
+    //}
 }

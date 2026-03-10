@@ -46,6 +46,7 @@ public class QuestManager : Script
         }
 
         GameObject playerGO = GameObject.FindWithTag("Player");
+
         if (playerGO != null)
         {
             player = playerGO.getScript<PlayerController_V2>();
@@ -125,16 +126,7 @@ public class QuestManager : Script
 
     private void HandlePlayerDeath(object sender, EventArgs e)
     {
-        if (gameUIManager != null)
-        {
-            currentQuest.SetQuestState(Quest.QuestState.Fail);
-            gameUIManager.TriggerDeathScreen(); 
-            if (player != null)
-            {
-                player.playerMoveStates = PlayerMoveStates.Disabled;
-            }
-            // Disable player keys
-        }
+        currentQuest.SetQuestState(Quest.QuestState.Fail);
     }
 
     private void RestartQuest()
@@ -144,16 +136,13 @@ public class QuestManager : Script
             currentQuest.OnRestart();
             currentQuest.SetQuestState(Quest.QuestState.InProgress);
         }
+
         if (player != null)
         {
             TeleportToCheckPoint();
-            player.getScript<PlayerWeaponController>()?.Reset();
-            player.ResetHealth();
 
             foreach (GameObject hitbox in GameObject.FindGameObjectsWithTag("EnemyHitBox"))
                 Destroy(hitbox);
-
-            gameUIManager?.Restart();
         }
         
     }

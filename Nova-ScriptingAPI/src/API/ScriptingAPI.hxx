@@ -75,6 +75,8 @@ internal:
 
 	static void addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate);
 
+	static void addIntervalDelegate(IntervalDelegate^ intervalDelegate);
+
 	static std::unordered_set<ResourceID> GetHierarchyModifiedScripts(ScriptID scriptId);
 
 	static std::vector<std::string> getEnumNames(System::String^ type);
@@ -131,6 +133,11 @@ private:
 
 	// Temporary container to execute and remove it from the main container..
 	static System::Collections::Generic::List<TimeoutDelegate^>^ executeTimeoutDelegates;
+
+	// We store set timeout request in a separate container..
+	static System::Collections::Generic::List<IntervalDelegate^>^ intervalDelegates;
+
+	static System::Collections::Generic::List<IntervalDelegate^>^ finishedIntervalDelegates;
 
 	// We delay change scene request, by storing it in a variable first.
 	static ScriptingAPI::Scene^ newSceneToChangeTo;

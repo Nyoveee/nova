@@ -426,7 +426,8 @@ struct Image {
 	} anchorMode = AnchorMode::Center;
 
 	bool toFlip = false;
-	
+	bool isAlphaMap = false;
+
 	glm::vec2 textureCoordinatesStart	{ 0.f, 0.f };
 	glm::vec2 textureCoordinatesEnd		{ 1.f, 1.f };
 
@@ -435,6 +436,7 @@ struct Image {
 		colorTint,
 		anchorMode,
 		toFlip,
+		isAlphaMap,
 		textureCoordinatesStart,
 		textureCoordinatesEnd
 	)
@@ -508,6 +510,7 @@ struct PositionalAudio
 
 struct CameraComponent {
 	bool camStatus = true;
+	bool toRotateSideWays = false;
 
 	Degree fov = { 45.f };
 
@@ -516,6 +519,7 @@ struct CameraComponent {
 
 	REFLECTABLE(
 		camStatus,
+		toRotateSideWays,
 		fov,
 		nearPlane,
 		farPlane

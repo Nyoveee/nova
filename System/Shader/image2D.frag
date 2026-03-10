@@ -8,6 +8,7 @@ uniform vec4 tintColor;
 
 uniform vec2 textureCoordinatesRange;
 uniform bool toTile;
+uniform bool isAlphaMap;
 
 uniform vec2 textureCoordinatesStart;
 uniform vec2 textureCoordinatesEnd;
@@ -25,6 +26,10 @@ void main()
 
     vec4 textureColor = texture(image, textureCoords);
 
-
-    FragColor = textureColor * tintColor;
+    if(isAlphaMap) {
+        FragColor = vec4(tintColor.rgb, tintColor.a * textureColor.r);
+    }
+    else {
+        FragColor = textureColor * tintColor;
+    }
 }  

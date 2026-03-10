@@ -22,6 +22,9 @@ class GameUIManager : Script
     private Image_ healthFill = null;
 
     [SerializableField]
+    private Image_ fadeToBlackBackground = null;
+
+    [SerializableField]
     private Image_ healthDamageBuffer = null;
 
     [SerializableField]
@@ -40,7 +43,10 @@ class GameUIManager : Script
     private GameObject? pauseUI = null;
 
     [SerializableField]
-    private GameObject? deathUI = null;
+    private GameObject? deathOverlay = null;
+
+    [SerializableField]
+    private Image_? deathScreenEffectUi= null;
 
     [SerializableField]
     private Text_? questText = null;
@@ -53,6 +59,12 @@ class GameUIManager : Script
 
     [SerializableField]
     private Texture ammoUsedTexture;
+
+    [SerializableField]
+    private GameObject playerUI;
+
+    [SerializableField]
+    private GameObject missionObjectiveUI;
 
     // ========================================================================
     // Cross Hair Related Serialized Fields..
@@ -124,6 +136,32 @@ class GameUIManager : Script
 
     [SerializableField]
     private float blackOverlayLerpPower = 0.4f;
+
+    // ========================================================================
+    // Death sequence stuff..
+    [SerializableField]
+    private Texture glassCrackTextureOne;
+
+    [SerializableField]
+    private Texture glassCrackTextureTwo;
+
+    [SerializableField]
+    private float deathRotationDuration = 0.8f;
+
+    [SerializableField]
+    private float deathRotationPower = 1.6f;
+
+    [SerializableField]
+    private float totalDeathDuration = 4f;
+
+    [SerializableField]
+    private float chromaticAberrationInterval = 0.2f;
+
+    [SerializableField]
+    private float blinkingEffectDelay = 0.5f;
+
+    [SerializableField]
+    private float blinkingEffectDuration = 2f;
 
     // ========================================================================
     // ========================================================================
@@ -199,6 +237,21 @@ class GameUIManager : Script
     private bool isTutorialPromptActive = false;
     public event Action RestartFromCheckpointButton;
 
+    // ------------------------------------
+    // Death sequence..
+    private CameraComponent_ camera;
+
+    private bool isAnimatingDeathSequenceRotation = false;
+    private float deathSequencetimeElapsed = 0f;
+
+    private Quaternion initialDeathRotation;
+    private Quaternion finalDeathRotation;
+
+    private bool isAnimatingBlinkingEffect = false;
+    private float blinkingEffectTimeElapsed = 0f;
+
+    private bool playerIsDying = false;
+
     // ========================================================================
     protected override void init()
     {
@@ -222,6 +275,7 @@ class GameUIManager : Script
         }
 
         gunUltimateOriginalColor = gunUltimateGlow.colorTint;
+        camera = GameObject.FindWithTag("PlayerCamera")?.getComponent<CameraComponent_>();
 
         Restart();
     }
@@ -250,6 +304,26 @@ class GameUIManager : Script
         gunUltimateFill.gameObject.SetActive(true);
 
         gunUltimateFill.textureCoordinatesEnd = new Vector2(0, 1);
+
+        camera.toRotateSideWays = false;
+        camera.ResetUp();
+        playerIsDying = false;
+        
+        isPaused = false;
+        
+        CameraAPI.LockMouse();
+
+        deathOverlay.gameObject.SetActive(false);
+        deathScreenEffectUi.gameObject.SetActive(false);
+        
+        playerUI.SetActive(true);
+        missionObjectiveUI.SetActive(true);
+        
+        Systems.Pause = false;
+        camera.ResetUp();
+
+        playerController.Reset();
+        getScript<VignetteController>().TriggerVignette(0.00f, 0, new Colour(0.0f, 0.0f, 0.0f));
     }
 
     protected override void update()
@@ -260,6 +334,8 @@ class GameUIManager : Script
         AnimatingHealthLossBufferRecovery();
         AnimatingGunGlow();
         AnimatingUltimateFill();
+        AnimatingDeathSequence();
+        AnimatingBlinkingEffect();
     }
 
     /***********************************************************
@@ -400,6 +476,54 @@ class GameUIManager : Script
         gunUltimateGlow.colorTint = gunUltimateOriginalColor * (ultimateBarGlowBrightness + interval * ultimateBarGlowBrightnessVariance);
     }
 
+    private void AnimatingDeathSequence()
+    {
+        if (!isAnimatingDeathSequenceRotation)
+        {
+            return;
+        }
+
+        float interval = Mathf.Pow(deathSequencetimeElapsed / deathRotationDuration, deathRotationPower);
+        
+        camera.gameObject.transform.rotation = Quaternion.Slerp(initialDeathRotation, finalDeathRotation, interval);
+
+        deathSequencetimeElapsed += Time.V_DeltaTime();
+
+        if (deathSequencetimeElapsed > deathRotationDuration)
+        {
+            isAnimatingDeathSequenceRotation = false;
+            camera.gameObject.transform.rotation = finalDeathRotation;
+
+            CameraAPI.shakeCamera(0.7f, 3f);
+            deathScreenEffectUi.SetTexture(glassCrackTextureTwo);
+            RendererAPI.blur = true;
+
+            Invoke(() =>
+            {
+                isAnimatingBlinkingEffect = true;
+                blinkingEffectTimeElapsed = 0f;
+                RendererAPI.vignetteColor = new Colour(0, 0, 0);
+
+            }, blinkingEffectDelay);
+        }
+    }
+
+    private void AnimatingBlinkingEffect()
+    {
+        if (!isAnimatingBlinkingEffect)
+        {
+            return;
+        }
+
+        fadeToBlackBackground.colorTint = new ColorAlpha(0, 0, 0, blinkingEffectTimeElapsed / blinkingEffectDuration);
+        blinkingEffectTimeElapsed += Time.V_DeltaTime();
+        
+        if (blinkingEffectTimeElapsed > blinkingEffectDuration)
+        {
+            isAnimatingBlinkingEffect = false;
+        }
+    }
+
     /***********************************************************
        Interface to issue animations reqest..
     ***********************************************************/
@@ -422,7 +546,7 @@ class GameUIManager : Script
         initialHeathLossBufferPercentage = new Vector2(0, initialPercentage);
         finalHeathLossBufferPercentage = new Vector2(0, finalPercentage);
 
-        if(healthDamageBuffer.textureCoordinatesStart.y > healthDamageBuffer.textureCoordinatesEnd.y)
+        if (healthDamageBuffer.textureCoordinatesStart.y > healthDamageBuffer.textureCoordinatesEnd.y)
         {   
             healthDamageBuffer.textureCoordinatesEnd = new Vector2(1, healthDamageBuffer.textureCoordinatesStart.y);
         }
@@ -503,14 +627,6 @@ class GameUIManager : Script
             questText.SetText(text);
     }
 
-    //public void SetAmmoText(int currentAmmo, int maxAmmo)
-    //{
-    //    SetCurrentAmmoText(currentAmmo);
-
-    //    if (maxAmmoText != null)
-    //        maxAmmoText.SetText("/ " + currentAmmo);
-    //}
-
     public void SetCurrentAmmo(int currentAmmo)
     {
         int difference = currentAmmo - previousAmmoCount;
@@ -582,8 +698,10 @@ class GameUIManager : Script
     ***********************************************************/
     public void PauseHandler()
     {
-        if (deathUI.IsActive())
+        if (playerIsDying)
+        {
             return;
+        }
 
         if (isTutorialPromptActive)
         {
@@ -623,25 +741,67 @@ class GameUIManager : Script
     ***********************************************************/
     public void TriggerDeathScreen()
     {
-        if (deathUI != null)
+        if (playerIsDying)
         {
-            isPaused = true;
-            Systems.Pause = isPaused;
-            deathUI.SetActive(true);
-            CameraAPI.UnlockMouse();
+            return;
         }
+        
+        playerIsDying = true;
+        CameraAPI.shakeCamera(0.5f, 1f);
+
+        // Disable player UI..
+        playerUI.SetActive(false);
+        missionObjectiveUI.SetActive(false);
+
+        // Show the screen crack overlay..
+        deathScreenEffectUi.gameObject.SetActive(true);
+        deathScreenEffectUi.SetTexture(glassCrackTextureOne);
+
+        isAnimatingDeathSequenceRotation = true;
+        deathSequencetimeElapsed = 0f;
+
+        camera.toRotateSideWays = true;
+
+        initialDeathRotation = camera.gameObject.transform.rotation;
+
+        Vector3 eulerAngles = Rotation.ToEuler(initialDeathRotation);
+
+        System.Random random = new System.Random();
+        float angle = random.Next(0, 2) == 0 ? 90f * Mathf.Deg2Rad : 90f * Mathf.Deg2Rad;
+
+        eulerAngles = new Vector3(eulerAngles.x, eulerAngles.y, angle);
+
+        finalDeathRotation = Rotation.ToQuaternion(eulerAngles);
+
+        RendererAPI.chromaticAberration = true;
+
+        float chromaticAberrationDuration = totalDeathDuration;
+
+        Interval(() =>
+        {
+            const float chromaticAberrationStrength = 0.01f;
+            chromaticAberrationDuration -= chromaticAberrationInterval;
+
+            RendererAPI.chromaticAberrationStrength = chromaticAberrationStrength * Mathf.Pow((chromaticAberrationDuration / totalDeathDuration), 2f);
+            RendererAPI.randomiseChromaticAberrationOffset();
+        }, chromaticAberrationInterval, totalDeathDuration);
+
+        Invoke(() =>
+        {
+            fadeToBlackBackground.colorTint = new ColorAlpha(0, 0, 0, 0);
+            RendererAPI.chromaticAberration = false;
+            RendererAPI.blur = false;
+            deathOverlay.SetActive(true);
+            deathScreenEffectUi.gameObject.SetActive(false);
+
+            Systems.Pause = true;
+            CameraAPI.UnlockMouse();
+        }, totalDeathDuration);
     }
 
     public void OnRestartButtonPressed()
     {
-        if (deathUI != null)
-        {
-            isPaused = false;
-            Systems.Pause = isPaused;
-            deathUI.SetActive(false);
-            CameraAPI.LockMouse();
-        }
-
+        Restart();
         RestartFromCheckpointButton?.Invoke();
     }
 }

@@ -289,6 +289,10 @@ void Engine::SystemsUnload() {
 	renderer.vignette = 0.f;
 	renderer.vignetteColor = glm::vec3(0.0, 0.0, 0.0);
 	renderer.resetLoadedReflectionProbes();
+	renderer.enableChromaticAberration = false;
+	renderer.isBlurEnabled = false;
+	
+	renderer.getGameCamera().setUp(glm::vec3{ 0.f, 1.f, 0.f });
 
 	scriptingAPIManager.cleanPreviousSceneScriptState();
 }

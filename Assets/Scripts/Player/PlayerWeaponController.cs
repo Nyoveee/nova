@@ -78,17 +78,20 @@ class PlayerWeaponController : Script
 
     // private SetWeaponActive setWeaponActiveDelegate;
 
-    protected override void init()
+    protected override void awake()
     {
         gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
+        currentlyHeldGun = sniper;
+        weaponControlStates = WeaponControlStates.WeaponFree;
+        audioComponent = getComponent<AudioComponent_>();
+    }
+
+    protected override void init()
+    {
         MapKey(Key.MouseLeft, Fire);
         MapKey(Key.MouseRight, Arming, Disarming);
 
         //ScrollCallback(SwapWeaponHandler);
-        weaponControlStates = WeaponControlStates.WeaponFree;
-        currentlyHeldGun = sniper;
-
-        audioComponent = getComponent<AudioComponent_>();
     }
 
     // This function is invoked every update.

@@ -84,3 +84,7 @@ void ComponentAccessor::Destroy(GameObject^ gameObject) {
 void ComponentAccessor::Invoke(Callback^ callback, float duration) {
 	Interface::addTimeoutDelegate(gcnew TimeoutDelegate(callback, duration));
 }
+
+void ComponentAccessor::Interval(Callback^ callback, float interval, float totalDuration) {
+	Interface::addIntervalDelegate(gcnew IntervalDelegate(callback, interval, totalDuration));
+}

@@ -310,7 +310,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	spotlightShadowMaps				{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT32F, MAX_SPOTLIGHT_SHADOW_CASTER },
 	loadedReflectionProbesMap		{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, MAX_REFLECTION_PROBES, 5 },
 	toGammaCorrect					{ true },
-	toPostProcess					{ false },
 	UIProjection					{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
 	// Setup baking camera once.. this camera is used for baking cubemaps..
@@ -728,7 +727,7 @@ void Renderer::renderUI()
 	glBindVertexArray(mainVAO);
 }
 
-void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint historyTexture, bool isRenderingEditor) {
+void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint historyTexture, [[maybe_unused]] bool isRenderingEditor) {
 	// Set up initial state..
 	glBindVertexArray(mainVAO);
 	glDepthMask(GL_TRUE);
@@ -806,18 +805,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	// Resolve TAA for anti-aliasing..
 	if (renderConfig.toEnableAntiAliasing) resolveTAA(frameBuffers, historyTexture);
 
-	// @TODO : Custom post processing stack. (Temp: Fog only..)
-	if (renderConfig.toEnableFog && !isRenderingEditor) {
-		for (auto&& [entityId, entityData, fog] : registry.view<EntityData, Fog>().each()) {
-			if (!entityData.isActive || !engine.ecs.isComponentActive<Fog>(entityId)) {
-				continue;
-			}
-
-			//computeFog(frameBuffers, fog, camera);
-			renderPostProcessing(frameBuffers, fog);
-			break;
-		}
-	}
+	renderPostProcessing(frameBuffers);
 
 	// Apply bloom post processing via multi down and up samples.
 	renderBloom(frameBuffers);
@@ -2369,6 +2357,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 	texture2dShader.setMatrix("uiProjection", UIProjection);
 	texture2dShader.setInt("image", 0);
 	texture2dShader.setBool("toFlip", image.toFlip);
+	texture2dShader.setBool("isAlphaMap", image.isAlphaMap);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureId);
@@ -3544,7 +3533,7 @@ void Renderer::computeFog(PairFrameBuffer& frameBuffers, Fog const& fog, Camera 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
-void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fog) {
+void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
 #if !defined(NOVA_INSTALLER)
 	ZoneScoped;
 #endif
@@ -3564,14 +3553,36 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fo
 	postprocessingShader.setImageUniform("scene", 0);
 	postprocessingShader.setImageUniform("depthTexture", 1);
 
-	postprocessingShader.setVec3("fogColor", fog.fogInscatteringColor);
+	// Set up fog..
+	[&]() {
+		if (renderConfig.toEnableFog) {
+			for (auto&& [entityId, entityData, fog] : registry.view<EntityData, Fog>().each()) {
+				if (!entityData.isActive || !engine.ecs.isComponentActive<Fog>(entityId)) {
+					continue;
+				}
 
-	postprocessingShader.setFloat("fogNear", fog.startDistance);
-	postprocessingShader.setFloat("fogFar", fog.endDistance);
-	postprocessingShader.setFloat("fogDensity", fog.inscatteringDensity);
+				postprocessingShader.setBool("isFogEnabled", true);
+				postprocessingShader.setVec3("fogColor", fog.fogInscatteringColor);
+				postprocessingShader.setFloat("fogNear", fog.startDistance);
+				postprocessingShader.setFloat("fogFar", fog.endDistance);
+				postprocessingShader.setFloat("fogDensity", fog.inscatteringDensity);
 
+				return;
+			}
+		}
+
+		postprocessingShader.setBool("isFogEnabled", false);
+	}();
+
+	// Vignette
 	postprocessingShader.setFloat("vignette", vignette);
 	postprocessingShader.setVec3("vignetteColor", vignetteColor);
+
+	// Chromatic Abberation
+	postprocessingShader.setBool("chromaticAberration", enableChromaticAberration);
+	postprocessingShader.setVec3("chromaticAberrationOffset", chromaticAberration);
+
+	postprocessingShader.setBool("isBlurEnabled", isBlurEnabled);
 
 	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -3859,7 +3870,19 @@ glm::mat4 const& Renderer::getUIProjection() const {
 }
 
 void Renderer::randomiseChromaticAberrationoffset() {
-	chromaticAberration = RandomRange::Vec3(glm::vec3{ -0.01f, -0.01f, -0.01f }, glm::vec3{ 0.01f, 0.01f, 0.01f });
+	chromaticAberration = 
+		RandomRange::Vec3(
+			glm::vec3{ 
+				-chromaticAberrationStrength , 
+				-chromaticAberrationStrength , 
+				-chromaticAberrationStrength 
+			}, 
+			glm::vec3{ 
+				chromaticAberrationStrength, 
+				chromaticAberrationStrength, 
+				chromaticAberrationStrength 
+			}
+		);
 }
 
 void Renderer::debugRender() {

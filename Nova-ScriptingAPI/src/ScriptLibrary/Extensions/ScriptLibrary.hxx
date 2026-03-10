@@ -230,9 +230,23 @@ public:
 	};
 
 #endif
-	static property bool toPostProcess {
-		bool get() { return Interface::engine->renderer.toPostProcess; };
-		void set(bool value) { Interface::engine->renderer.toPostProcess = value; };
+	static void randomiseChromaticAberrationOffset() {
+		Interface::engine->renderer.randomiseChromaticAberrationoffset();
+	};
+
+	static property bool blur {
+		bool get() { return Interface::engine->renderer.isBlurEnabled; };
+		void set(bool value) { Interface::engine->renderer.isBlurEnabled = value; };
+	};
+
+	static property bool chromaticAberration {
+		bool get() { return Interface::engine->renderer.enableChromaticAberration; };
+		void set(bool value) { Interface::engine->renderer.enableChromaticAberration = value; };
+	};
+
+	static property float chromaticAberrationStrength {
+		float get() { return Interface::engine->renderer.chromaticAberrationStrength; };
+		void set(float value) { Interface::engine->renderer.chromaticAberrationStrength = value; };
 	};
 
 	static property float exposure {
@@ -243,6 +257,7 @@ public:
 		Colour get() { return Colour(Interface::engine->renderer.vignetteColor); };
 		void set(Colour value) { Interface::engine->renderer.vignetteColor = value.native(); };
 	}
+
 	static property float vignette {
 		float get() { return Interface::engine->renderer.vignette; };
 		void set(float value) { Interface::engine->renderer.vignette = value; };

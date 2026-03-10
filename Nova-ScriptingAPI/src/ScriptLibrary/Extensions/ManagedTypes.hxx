@@ -536,8 +536,11 @@ ManagedComponentEnd()
 ManagedComponentDeclaration(
 	CameraComponent,
 	bool, camStatus,
+	bool, toRotateSideWays,
 	float, fov
 )
+
+void ResetUp();
 
 ManagedComponentEnd()
 

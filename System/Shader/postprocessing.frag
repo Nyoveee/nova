@@ -10,7 +10,6 @@ out vec4 FragColor;
 uniform sampler2D scene;
 uniform sampler2D depthTexture;
 
-uniform vec3 offset;
 uniform float vignette;
 uniform vec3 vignetteColor;
 
@@ -19,6 +18,13 @@ uniform vec3 fogColor;
 uniform float fogNear;
 uniform float fogFar;
 uniform float fogDensity;
+
+uniform bool isFogEnabled;
+
+uniform bool isBlurEnabled;
+
+uniform bool chromaticAberration;
+uniform vec3 chromaticAberrationOffset;
 
 layout(std140, binding = 8) buffer VolumetricFogBuffer {
     FogData[] fogDatas;
@@ -50,38 +56,66 @@ float linearizeDepth(float depth) {
     return viewZ;
 }
 
+const float blurKernel[9] = float[](
+    1.0 / 16, 2.0 / 16, 1.0 / 16,
+    2.0 / 16, 4.0 / 16, 2.0 / 16,
+    1.0 / 16, 2.0 / 16, 1.0 / 16  
+);
+
+const float offset = 1.0 / 300.0;  
+
+const vec2 offsets[9] = vec2[](
+    vec2(-offset,  offset), // top-left
+    vec2( 0.0f,    offset), // top-center
+    vec2( offset,  offset), // top-right
+    vec2(-offset,  0.0f),   // center-left
+    vec2( 0.0f,    0.0f),   // center-center
+    vec2( offset,  0.0f),   // center-right
+    vec2(-offset, -offset), // bottom-left
+    vec2( 0.0f,   -offset), // bottom-center
+    vec2( offset, -offset)  // bottom-right    
+);
+
 void main()
-{             
-    vec3 color = texture2D(scene, textureCoords).rgb; 
-    float linearDepth = linearizeDepth(texture2D(depthTexture, textureCoords).r);
+{   
+    vec3 color = vec3(0.0);;
 
-    float near = max(zNear, fogNear);
-    float far = min(zFar, fogFar);
+    // BLUR..
+    if (isBlurEnabled) {
+        vec3 sampleTex[9];
 
-#if 0
-    // Linear fog.
-    float fogFactor = clamp((linearDepth - near)/ (far - near), 0, 1);
-#else
-    float linearDistanceFactor = clamp((linearDepth - near)/ (far - near), 0, 1);
-    float fogFactor = clamp(exp(-(linearDistanceFactor * fogDensity * linearDistanceFactor * fogDensity)), 0, 1);
-    float dist = distance(vec2(0.5,0.5), textureCoords);
-#endif
+        for(int i = 0; i < 9; i++)
+        {
+            sampleTex[i] = vec3(texture(scene, textureCoords + offsets[i]));
+        }
+        
+        for(int i = 0; i < 9; i++) {
+            color += sampleTex[i] * blurKernel[i];
+        }
+    }
+    // Chromatic Aberration..
+    else if (chromaticAberration) {
+        color.r = texture2D(scene, textureCoords + chromaticAberrationOffset.x).r;
+        color.g = texture2D(scene, textureCoords + chromaticAberrationOffset.y).g;
+        color.b = texture2D(scene, textureCoords + chromaticAberrationOffset.z).b;
+    }
+    else {
+        color = texture2D(scene, textureCoords).rgb; 
+    }
 
-    // // Fog
-    // uvec2 pixelPos = uvec2(textureCoords.x * screenResolution.x, textureCoords.y * screenResolution.y);
-    // uint fogIndex = pixelPos.x + pixelPos.y * screenResolution.x;
-    
-    // float transmittance = clamp(fogDatas[fogIndex].transmittance, 0, 1);
+    if (isFogEnabled) {
+        float linearDepth = linearizeDepth(texture2D(depthTexture, textureCoords).r);
 
-    // // blend scene color with fog color.. based on transmittance value..
-    // color = (color * transmittance) + (fogColor * (1 - transmittance));
-    // // color = (color * transmittance);
-    // // color = (fogColor * (1 - transmittance));
+        float near = max(zNear, fogNear);
+        float far = min(zFar, fogFar);
 
-    // color += fogDatas[fogIndex].radiance;
+        float linearDistanceFactor = clamp((linearDepth - near)/ (far - near), 0, 1);
+        float fogFactor = clamp(exp(-(linearDistanceFactor * fogDensity * linearDistanceFactor * fogDensity)), 0, 1);
 
-    // // color = vec3(transmittance);
+        color = mix(fogColor, color, fogFactor);
+    }
 
+    float dist = distance(vec2(0.5, 0.5), textureCoords);
 
-    FragColor = vec4(mix(fogColor, color, fogFactor) + vignetteColor * smoothstep(0,1,dist) * vignette, 1.0);
+    FragColor = vec4(mix(color, vignetteColor, clamp(smoothstep(0, 1, dist) * vignette, 0, 1)), 1.0);
 }  

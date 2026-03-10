@@ -112,8 +112,9 @@ void DebugUI::renderHDRSection() {
 
 	ImGui::SliderFloat("Gamma", &engine.dataManager.renderConfig.gamma, 1.f, 3.0f, "%.2f");
 
-	ImGui::Checkbox("Post Processing", &renderer.toPostProcess);
-	
+	ImGui::Checkbox("Chromatic Aberration", &renderer.enableChromaticAberration);
+	ImGui::Checkbox("Blur", &renderer.isBlurEnabled);
+
 	if (ImGui::Button("Randomize Offset")) {
 		renderer.randomiseChromaticAberrationoffset();
 	}

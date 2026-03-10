@@ -13,6 +13,7 @@ Camera::Camera() :
 	cameraPos			{},
 	cameraFront			{ defaultCameraFront },
 	cameraRight			{ glm::normalize(glm::cross(cameraFront, Up)) },
+	cameraUp			{ Up },
 	viewMatrix			{},
 	fovAngle			{ defaultFovAngle },
 	nearPlaneDistance	{ defaultNearPlaneDistance },
@@ -61,12 +62,16 @@ glm::vec3 const& Camera::getFront() const {
 
 void Camera::setFront(glm::vec3 front) {
 	cameraFront = front;
-	cameraRight = glm::normalize(glm::cross(cameraFront, Up));
-	cameraUp = glm::normalize(glm::cross(cameraFront, cameraRight));
+	cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
 }
 
 glm::vec3 const& Camera::getRight() const {
 	return cameraRight;
+}
+
+void Camera::setUp(glm::vec3 up) {
+	cameraUp = up;
+	cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
 }
 
 glm::vec3 const& Camera::getUp() const {
@@ -157,7 +162,7 @@ void Camera::setCameraShake(float duration, float amplification) {
 
 void Camera::recalculateViewMatrix() {
 	glm::vec3 pos = cameraPos + cameraShake.positionOffset;
-	viewMatrix = glm::lookAt(pos, pos + cameraFront, Up);
+	viewMatrix = glm::lookAt(pos, pos + cameraFront, cameraUp);
 	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
 

@@ -26,6 +26,9 @@ public:
 	ENGINE_DLL_API void	updateCameraShake(float deltaTime);
 	ENGINE_DLL_API void	setCameraShake(float duration, float amplification);
 
+	ENGINE_DLL_API void				setUp(glm::vec3 up);
+	ENGINE_DLL_API glm::vec3 const& getUp() const;
+
 public:
 	// position related
 	glm::vec3 const&	getPos() const;
@@ -37,8 +40,7 @@ public:
 	void				setFront(glm::vec3 front);
 
 	glm::vec3 const&	getRight() const;
-	glm::vec3 const&	getUp() const;
-
+	
 	void				setFov(Radian angle);
 	Radian				getFov() const;
 

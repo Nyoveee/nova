@@ -47,17 +47,23 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	// Get the reference to the engine
 	engine = &p_engine;
 	runtimePath = p_runtimePath;
-	// Instantiate the containers
-	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64,Script^>^>();
-	availableScripts = gcnew System::Collections::Generic::Dictionary<ScriptID, Script^>();
-	createdGameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64, Script^>^>();
-	timeoutDelegates = gcnew System::Collections::Generic::List<TimeoutDelegate^>();
-	executeTimeoutDelegates = gcnew System::Collections::Generic::List<TimeoutDelegate^>();
-	abstractScriptTypes = gcnew System::Collections::Generic::Dictionary<ScriptID, System::Type^>();
-	enumTypeNamesToValues = gcnew System::Collections::Generic::Dictionary<System::String^, array<System::String^>^>();
-	enumTypes = gcnew System::Collections::Generic::Dictionary<System::String^, System::Type^>();
 
-	assemblyLoadContext = nullptr;
+	// Instantiate the containers
+	gameObjectScripts			= gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64,Script^>^>();
+	availableScripts			= gcnew System::Collections::Generic::Dictionary<ScriptID, Script^>();
+	createdGameObjectScripts	= gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64, Script^>^>();
+	
+	timeoutDelegates			= gcnew System::Collections::Generic::List<TimeoutDelegate^>();
+	executeTimeoutDelegates		= gcnew System::Collections::Generic::List<TimeoutDelegate^>();
+
+	intervalDelegates			= gcnew System::Collections::Generic::List<IntervalDelegate^>();
+	finishedIntervalDelegates	= gcnew System::Collections::Generic::List<IntervalDelegate^>();
+
+	abstractScriptTypes			= gcnew System::Collections::Generic::Dictionary<ScriptID, System::Type^>();
+	enumTypeNamesToValues		= gcnew System::Collections::Generic::Dictionary<System::String^, array<System::String^>^>();
+	enumTypes					= gcnew System::Collections::Generic::Dictionary<System::String^, System::Type^>();
+
+	assemblyLoadContext			= nullptr;
 }
 
 void Interface::intializeAllScripts()
@@ -570,6 +576,10 @@ void Interface::addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate) {
 	timeoutDelegates->Add(timeoutDelegate);
 }
 
+void Interface::addIntervalDelegate(IntervalDelegate^ intervalDelegate) {
+	intervalDelegates->Add(intervalDelegate);
+}
+
 std::unordered_set<ResourceID> Interface::GetHierarchyModifiedScripts(ScriptID scriptId)
 {
 	std::unordered_set<ResourceID> results{};
@@ -643,6 +653,26 @@ void Interface::update() {
 			}
 
 			executeTimeoutDelegates->Clear();
+
+			// Handle interval delegates..
+			for each (IntervalDelegate ^ delegate in intervalDelegates) {
+				if (delegate->totalTimeElapsed >= delegate->totalDuration) {
+					finishedIntervalDelegates->Add(delegate);
+				}
+
+				if (delegate->intervalTimeElapsed >= delegate->interval) {
+					delegate->intervalTimeElapsed -= delegate->interval;
+					delegate->callback();
+				}
+
+				delegate->totalTimeElapsed += Time::V_DeltaTime();
+				delegate->intervalTimeElapsed += Time::V_DeltaTime();
+			}
+
+			// Delete expired intervals..
+			for each (IntervalDelegate ^ delegate in finishedIntervalDelegates) {
+				intervalDelegates->Remove(delegate);
+			}
 
 			// Check the create game object queue to handle any game object request at the end of the frame..
 			for each (System::Collections::Generic::KeyValuePair<EntityID, ScriptDictionary^> ^ kvp1 in createdGameObjectScripts) {
@@ -872,8 +902,13 @@ void Interface::clearCurrentScriptingState()
 
 	if (timeoutDelegates)
 		timeoutDelegates->Clear();
+
+	if (intervalDelegates)
+		intervalDelegates->Clear();
+
 	if (executeTimeoutDelegates)
 		executeTimeoutDelegates->Clear();
+
 	if (createdGameObjectScripts)
 		createdGameObjectScripts->Clear();
 

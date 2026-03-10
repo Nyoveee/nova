@@ -88,6 +88,10 @@ void CameraSystem::update(float dt) {
 		gameCamera.setNearPlaneDistance(cameraComponent.nearPlane);
 		gameCamera.setFarPlaneDistance(cameraComponent.farPlane);
 
+		if (cameraComponent.toRotateSideWays) {
+			gameCamera.setUp(transform.up);
+		}
+
 		gameCamera.updateCameraShake(dt);
 
 		gameCamera.recalculateViewMatrix();

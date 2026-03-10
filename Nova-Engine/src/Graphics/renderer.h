@@ -173,7 +173,7 @@ public:
 	bool isGameScreenShown;
 	bool isUIScreenShown;
 	bool toGammaCorrect;
-	bool toPostProcess;
+	bool isBlurEnabled = false;
 
 	float bloomFilterRadius = 0.005f;
 	float bloomCompositePercentage = 0.04f;
@@ -181,7 +181,9 @@ public:
 	float vignette = 0.f;
 	glm::vec3 vignetteColor;
 
+	bool enableChromaticAberration;
 	glm::vec3 chromaticAberration;
+	float chromaticAberrationStrength = 0.01f;
 
 private:
 	// =============================================
@@ -250,7 +252,7 @@ private:
 	void computeFog(PairFrameBuffer& frameBuffers, Fog const& fog, Camera const& camera);
 
 	// renders post processing effect on the pair framebuffer
-	void renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fog);
+	void renderPostProcessing(PairFrameBuffer& frameBuffers);
 
 	// HDR post-processing functions
 	void hdrToneMapping(PairFrameBuffer& frameBuffers);

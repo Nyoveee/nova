@@ -55,7 +55,7 @@ class UltimateController : Script
     {
         MapKey(Key.F, BeginUltimateSequence);
         rigidbody = getComponent<Rigidbody_>();
-        RendererAPI.toPostProcess = true;
+        // RendererAPI.toPostProcess = true;
         RendererAPI.vignette = 0f;
     }
 

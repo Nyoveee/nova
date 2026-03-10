@@ -4,6 +4,7 @@
 class PlayerRotateController : Script
 {
     public bool rotationIsEnabled = true;
+
     public float cameraSensitivity = 0.1f;
     [SerializableField]
     private Transform_? playerOrientation = null; //Movement (XYZ) handled by this script + inheritence. Camera rotation is handled by PlayerRotateController which in unaffected by inheritence 
