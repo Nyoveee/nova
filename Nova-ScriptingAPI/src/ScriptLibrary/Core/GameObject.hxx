@@ -49,8 +49,5 @@ public:
 public:
 	static bool operator==(GameObject^ lhs, GameObject^ rhs);
 	static bool operator!=(GameObject^ lhs, GameObject^ rhs);
-
-internal:
-	Transform_^ transformReference;
 };
 

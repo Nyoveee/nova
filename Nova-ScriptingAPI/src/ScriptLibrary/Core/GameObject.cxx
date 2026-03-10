@@ -12,7 +12,6 @@ GameObject::GameObject() {}
 GameObject::GameObject(System::UInt32 p_entityID) {
 	entityID = p_entityID;
 	_gameObject = this; //need to reference itself
-	transformReference = getComponent<Transform_^>();
 }
 
 GameObject^ GameObject::GetReference(System::UInt32 p_entityID)
@@ -110,7 +109,8 @@ std::string GameObject::GetNameID() {
 	return Convert("(" + name + " " + entityID.ToString() + ")"); 
 }
 
-Transform_^ GameObject::transform::get() { return transformReference; };
+Transform_^ GameObject::transform::get() { return getComponent<Transform_^>(); };
+
 System::String^ GameObject::name::get() { 
 	EntityData* entityData = Interface::getNativeComponent<EntityData>(entityID);
 	if (!entityData) {
