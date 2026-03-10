@@ -1,5 +1,5 @@
 {
-    "RootEntity": 1,
+    "RootEntity": 12,
     "Entities": [
         {
             "EntityData": {
@@ -8,9 +8,9 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    2,
-                    3,
-                    4
+                    13,
+                    14,
+                    15
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -106,35 +106,35 @@
                             {
                                 "name": "initialiseTime",
                                 "data": {
-                                    "__variant_value": 0.05000000074505806,
+                                    "__variant_value": 0.009999999776482582,
                                     "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "maxFlightTime",
                                 "data": {
-                                    "__variant_value": 30.0,
+                                    "__variant_value": 10.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "rotationSpeed",
                                 "data": {
-                                    "__variant_value": 90.0,
+                                    "__variant_value": 220.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "flightSpeed",
                                 "data": {
-                                    "__variant_value": 60.0,
+                                    "__variant_value": 45.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "flightAcceleration",
                                 "data": {
-                                    "__variant_value": 120.0,
+                                    "__variant_value": 145.0,
                                     "__variant_type": 18
                                 }
                             },
@@ -176,7 +176,7 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 2,
+                                    "__variant_value": 13,
                                     "__variant_type": 4
                                 }
                             },
@@ -222,14 +222,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
@@ -361,13 +361,13 @@
                     }
                 ]
             },
-            "id": 1
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "IchorSpawnPoint",
                 "tag": "",
-                "parent": 1,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -452,13 +452,13 @@
                     "z": -1.5707964897155762
                 }
             },
-            "id": 2
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "MissleHitBox",
                 "tag": "Enemy_WeakSpot",
-                "parent": 1,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -576,7 +576,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             }
@@ -584,13 +584,13 @@
                     }
                 ]
             },
-            "id": 3
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "MissileMesh",
                 "tag": "",
-                "parent": 1,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -683,7 +683,7 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 4
+            "id": 15
         }
     ]
 }

@@ -60,9 +60,6 @@ public class Boss : Enemy
 
     Vector3 halfExtent; //based on scaling values
 
-    // the current moveset that is going to be carried out by the boss
-    // AbilitySequence currentMoveSequence;
-
     //The idea is that the boss can have a deck of abilities like a card game, which he can use. 
     //WHen he uses an ability, he will remove it from the deck. it cannot be used until deck is exhausted or he chooses to refresh it.
     //This allows us to shuffle the moveset also to make it less predictable
@@ -97,9 +94,9 @@ public class Boss : Enemy
 
 
         AbilitySequence[] abilitySequences = {
-            //new MeleeAttack(this),
-            //new BasicGroundSlam(this),
-            //new BasicGroundSlam(this),
+            new MeleeAttack(this),
+            new BasicGroundSlam(this),
+            new BasicGroundSlam(this),
             new MissileBarrage(this)
             };
 
@@ -517,6 +514,7 @@ public class Boss : Enemy
             sequence.Add(boss.FireMissileCombination);
             sequence.Add(boss.FireMissileMain);
             sequence.Add(boss.FireMissileMain);
+            sequence.Add(() => { boss.DelayedSequence(2.0f); }); //quick way to delay action
         }
 
 
