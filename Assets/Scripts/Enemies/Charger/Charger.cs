@@ -124,7 +124,6 @@ class Charger : Enemy
                     chargerState = originalState; 
             }, movementStaggerTime);
         }
-     
     }
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
@@ -294,7 +293,7 @@ class Charger : Enemy
     }
     private void Update_Idle(){
         currentChargeCooldown -= Time.V_DeltaTime();
-        if (GetDistanceFromPlayer() < chargerstats.chasingRange && HasLineOfSight(gameObject))
+        if (GetDistanceFromPlayer() < chargerstats.chasingRange && HasLineOfSight(player))
         {
             audioComponent.PlayRandomSound(spotSFX);
             chargerState = ChargerState.Walk;
@@ -304,7 +303,7 @@ class Charger : Enemy
     }
     private void Update_Patrol()
     {
-        if (GetDistanceFromPlayer() <= chargerstats.chasingRange && HasLineOfSight(gameObject))
+        if (GetDistanceFromPlayer() <= chargerstats.chasingRange && HasLineOfSight(player))
         {
             //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
             if (Random.Range(0, 1) <= this.spotCallSFXChance)
@@ -315,7 +314,7 @@ class Charger : Enemy
             chargerState = ChargerState.Walk;
             return;
         }
-        if (IsTargetNavigationPositionReached() && !HasLineOfSight(gameObject))
+        if (IsTargetNavigationPositionReached() && !HasLineOfSight(player))
         {
             chargerState = ChargerState.Idle;
             animator.PlayAnimation("ChargerIdle");
@@ -323,7 +322,7 @@ class Charger : Enemy
         }
     }
     private void Update_Walk() {
-        if(GetDistanceFromPlayer() > chargerstats.chasingRange || !HasLineOfSight(gameObject))
+        if(GetDistanceFromPlayer() > chargerstats.chasingRange || !HasLineOfSight(player))
         {
             chargerState = ChargerState.Patrol;
             MoveToNavMeshPosition(player.transform.position);
