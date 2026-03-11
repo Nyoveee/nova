@@ -284,6 +284,7 @@ class Charger : Enemy
     ***********************************************************/
     private void Update_Spawning()
     {
+        physicsRigidbody.SetLinearDamping(0);
         if (IsTouchingGround())
         {
             ActivateNavMeshAgent();

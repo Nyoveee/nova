@@ -1,33 +1,28 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+using Windows.Security.Cryptography.Core;
 class CannonWaveManager : Script
 {
-    [SerializableField] 
-    private GameObject[] cannons;
-    [SerializableField] 
-    private int enemiesPerWave = 2;
-    [SerializableField] 
-    private int totalWaves = 3;
+    [SerializableField]
+    private List<Prefab> cannon1Prefabs;
+    [SerializableField]
+    private List<Prefab> cannon2Prefabs;
+    [SerializableField]
+    private List<Prefab> cannon3Prefabs;
+    [SerializableField]
+    private List<Prefab> cannon4Prefabs;
     [SerializableField]
     private GameObject endofLevel;
     [SerializableField]
     private GameObject boat;
     [SerializableField]
-    private GameObject boat2;
-    [SerializableField]
-    public bool useWave = true;
-    [SerializableField]
-    private float timeCount = 180f;
+    private float timeCount = 120f;
 
-    private int currentWave = 0;
+    private float currentTime;
     private bool waveActive = false;
-    private int pendingEnemies = 0;
-    private List<GameObject> activeEnemies = new List<GameObject>();
-
-    // This function is invoked once before init when gameobject is active.
-    protected override void awake()
-    {}
+    private GameObject[] cannons;
 
     // This function is invoked once when gameobject is active.
     protected override void init()
@@ -38,95 +33,30 @@ class CannonWaveManager : Script
     // This function is invoked every update.
     protected override void update()
     {
-        if(useWave)
+        currentTime += Time.V_DeltaTime();
+        if (currentTime >= timeCount)
         {
-            activeEnemies.RemoveAll(e => e == null || e.getScript<Enemy>().IsDead());
-            //if (!waveActive && currentWave < totalWaves)
-            //{
-            //    waveActive = true;
-            //    FireWave();
-            //}
-
-            // If wave is active, check if all enemies are dead
-            if (waveActive && pendingEnemies == 0 && activeEnemies.Count == 0)
-            {
-                waveActive = false;
-                currentWave++;
-                //Debug.Log($"Wave {currentWave} finished");
-
-                if (currentWave < totalWaves)
-                {
-                    waveActive = true;
-                    FireWave();
-                    //Debug.Log($"Wave {currentWave + 1} started");
-                }
-                else
-                {
-                    //Debug.Log("All waves completed");
-                    endofLevel.getScript<EndOfLevel2>().StartScroll();
-                    boat.getScript<RaiseEnemBoat>().Sink();
-                    boat2.getScript<RaiseEnemBoat>().Sink();
-                }
-            }
+            waveActive = false;
+            endofLevel.getScript<EndOfLevel2>().StartScroll();
+            boat.getScript<RaiseEnemBoat>().Sink();
         }
-        else
+        else if(waveActive)
         {
-            timeCount -= Time.V_DeltaTime();
-            if (timeCount <= 0)
-            {
-                endofLevel.getScript<EndOfLevel2>().StartScroll();
-                boat.getScript<RaiseEnemBoat>().Sink();
-                boat2.getScript<RaiseEnemBoat>().Sink();
-            }
+            SetCannonPrefab(cannons[0], cannon1Prefabs);
+            SetCannonPrefab(cannons[1], cannon2Prefabs);
+            SetCannonPrefab(cannons[2], cannon3Prefabs);
+            SetCannonPrefab(cannons[3], cannon4Prefabs);
         }
     }
-
-    // This function is invoked every update.
-    protected override void fixedUpdate()
-    {}
-
-    // This function is invoked when destroyed.
-    protected override void exit()
-    {}
-
-    private void FireWave()
+    private void SetCannonPrefab(GameObject cannon, List<Prefab> prefabs)
     {
-        int cannonIndex = 0;
-        for (int i = 0; i < enemiesPerWave; i++)
-        {
-            pendingEnemies++;
-            cannons[cannonIndex].getScript<EnemyCannon>().FireNextShot();
-            cannonIndex = (cannonIndex + 1) % cannons.Length; // round-robin across cannons
-        }
+        float slice = timeCount / prefabs.Count;
+        int index = (int)(currentTime / slice);
+        cannon.getScript<EnemyCannon>().enemyPrefab = prefabs[index];
     }
-
     public void StartWave()
     {
-        if (currentWave == 0 && !waveActive)
-        {
-            waveActive = true;
-            FireWave();
-        }
+        waveActive = true;
     }
-
-    public void RegisterEnemy(GameObject enemy)
-    {
-        pendingEnemies--;
-        activeEnemies.Add(enemy);
-    }
-
-    public void RemoveEnemy(GameObject enemy)
-    {
-        activeEnemies.Remove(enemy);
-    }
-
-    public int ActiveEnemyCount()
-    {
-        return activeEnemies.Count;
-    }
-
-    public bool HasActiveEnemies()
-    {
-        return activeEnemies.Count > 0;
-    }
+    public bool IsWaveActive() => (waveActive);
 }

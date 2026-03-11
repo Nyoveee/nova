@@ -317,11 +317,6 @@ public abstract class Enemy : Script
                 renderer.setMaterialFloat(0, "emissiveStrength", 0);
         }
     }
-    protected override void fixedUpdate()
-    {
-        physicsRigidbody.SetLinearDamping(0);
-        physicsRigidbody.SetAngularDamping(0);
-    }
 
     protected override void onCollisionEnter(GameObject other)
     {
