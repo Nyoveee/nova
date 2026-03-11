@@ -104,9 +104,9 @@ public class Boss : Enemy
 
         AbilitySequence[] abilitySequences = {
             new MeleeAttack(this),
+            new StationaryGroundSlam(this),
             //new BasicGroundSlam(this),
-            //new BasicGroundSlam(this),
-            //new MissileBarrage(this)
+            new MissileBarrage(this)
         };
 
         AbilityDeckStart.AddRange(abilitySequences);
@@ -242,8 +242,8 @@ public class Boss : Enemy
                         return;
                     }
 
-                    //Debug.Log("update sequencer");
-                    //carry out the abili sequence
+                    //Debug.Log("current squence name: " + currentAbilityDeck[abilityIndexer].sequence[sequenceIndexer].ToString());
+                    //carry out the ability sequence
                     currentAbilityDeck[abilityIndexer].sequence[sequenceIndexer]();
 
                 }
@@ -301,7 +301,7 @@ public class Boss : Enemy
     /***********************************************************
     Weaver Actions
     ***********************************************************/
-    public void StarStationaryJump()
+    public void StarStationaryJumpKinematic()
     {
         AdvanceToNextSequence();
 
@@ -315,7 +315,7 @@ public class Boss : Enemy
 
     }
 
-    public void Jumping()
+    public void JumpingKinematic()
     {
         blackboard.TryGetValue("Jump Height", out float jumpHeight);
         blackboard.TryGetValue("InitialPosition", out Vector3 initialPosition);
@@ -341,6 +341,14 @@ public class Boss : Enemy
         }
     }
 
+
+    public void TriggerJumpAnimation()
+    {
+        animator.PlayAnimation("Boss_Jump");
+        AdvanceToNextSequence();
+    }
+
+
     public void CreateShockWave()
     {
         //Debug.Log("Shockwave");
@@ -348,12 +356,16 @@ public class Boss : Enemy
         Instantiate(shockwavePrefab, gameObject.transform.position, gameObject.transform.rotation);
     }
 
-
+    public void TriggerMissileAnimation()
+    {
+        animator.PlayAnimation("Boss_Missile");
+        AdvanceToNextSequence();
+    }
 
     public void FireMissileCombination()
     { 
         //launch interval
-        float launchInterval = 0.5f;
+        float launchInterval = 0.0f;
 
        // int count = launchInterval / abilitytimeElapsed;
 
@@ -373,7 +385,7 @@ public class Boss : Enemy
             leftMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(sideLauncher[0].transform.front);
             rightMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(sideLauncher[1].transform.front);
 
-
+            AnimationSpeedAdjustment(0.8f);
             AdvanceToNextSequence();
         }
 
@@ -387,7 +399,7 @@ public class Boss : Enemy
     public void FireMissileMain()
     {
         //launch interval
-        float launchInterval = 0.5f;
+        float launchInterval = 0.0f;
         if (abilitytimeElapsed > launchInterval)
         {
             //Top
@@ -407,7 +419,6 @@ public class Boss : Enemy
         float minimalAngle = -(angle / 2.0f);
 
 
-        animator.SetBool("TriggerAttack", false);
         for (int i = 0; i < count; i++)
         {
 
@@ -441,6 +452,14 @@ public class Boss : Enemy
         animator.PlayAnimation("Boss_Idle");
     }
 
+    //return to idle without animations controller
+    public void ForcedReturnToIdle()
+    {
+        AdvanceToNextSequence();
+        animator.speedMultiplier = 1.0f;
+        animator.PlayAnimation("Boss_Idle");
+    }
+
 
     public void AwaitAnimation()
     { 
@@ -458,10 +477,15 @@ public class Boss : Enemy
         }
     }
 
-    public void AnimationSpeedAdjustment(float value)
+    public void AnimationSpeedAdjustmentGoNext(float value)
     {
         animator.speedMultiplier = value;
         AdvanceToNextSequence();
+    }
+
+    public void AnimationSpeedAdjustment(float value)
+    {
+        animator.speedMultiplier = value;
     }
 
 
@@ -515,17 +539,21 @@ public class Boss : Enemy
     /***********************************************************
     Ability List (Create our Mix Ups in here :D)
     ***********************************************************/
-    public class BasicGroundSlam : AbilitySequence
+    public class StationaryGroundSlam : AbilitySequence
     {
 
-        public BasicGroundSlam(Boss boss) : base(boss)
+        public StationaryGroundSlam(Boss boss) : base(boss)
         {
             this.boss = boss;
 
-            sequence.Add(boss.RotateToPlayerFully);
-            sequence.Add(boss.StarStationaryJump);
-            sequence.Add(boss.Jumping);
+            //sequence.Add(boss.RotateToPlayerFully);
+            sequence.Add(boss.TriggerJumpAnimation);
+            sequence.Add(boss.AwaitAnimation); //jump has two triggers
+            sequence.Add(boss.AwaitAnimation); //jump has two triggers
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
             sequence.Add(boss.CreateShockWave);
+            sequence.Add(() => { boss.DelayedSequence(0.5f); });
+            sequence.Add(() => { boss.DelayedSequence(2.0f); });
         }
 
 
@@ -551,10 +579,18 @@ public class Boss : Enemy
         public MissileBarrage(Boss boss) : base(boss)
         {
             this.boss = boss;
-
+            sequence.Add(boss.TriggerMissileAnimation);
+            sequence.Add(boss.AwaitAnimation); //await for missile
+            sequence.Add(boss.AwaitAnimation); //await to skip opening animation
             sequence.Add(boss.FireMissileCombination);
-            sequence.Add(boss.FireMissileMain);
-            sequence.Add(boss.FireMissileMain);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(105.0f); boss.TriggerMissileAnimation();  } ); //retrigger animation
+            sequence.Add(boss.AwaitAnimation);
+            //sequence.Add(() => { boss.AnimationSpeedAdjustment(52.0f); }); //sync to animation //skip opening squence
+            //sequence.Add(() => { boss.AnimationSpeedAdjustment(1.0f); });
+            sequence.Add(boss.FireMissileCombination);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.ForcedReturnToIdle);
             sequence.Add(() => { boss.DelayedSequence(2.0f); }); //quick way to delay action
         }
 
@@ -585,8 +621,9 @@ public class Boss : Enemy
             sequence.Add(boss.TriggerMeleeAttackAnimation);
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.FannedMeleeAttack);
-            sequence.Add(() => { boss.AnimationSpeedAdjustment(1.5f); });
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.5f); });
             sequence.Add( () => { boss.DelayedSequence(0.5f); }); //quick way to delay action
+            //sequence.Add(() => { boss.DelayedSequence(2.0f); });
         }
 
 

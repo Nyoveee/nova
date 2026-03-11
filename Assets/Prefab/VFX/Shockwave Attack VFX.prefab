@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 4,
     "Entities": [
         {
             "EntityData": {
@@ -8,14 +8,14 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    2,
-                    3,
-                    4,
                     5,
                     6,
                     7,
-                    8
+                    8,
+                    9,
+                    10,
+                    11,
+                    12
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -184,13 +184,13 @@
                     }
                 ]
             },
-            "id": 0
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -391,13 +391,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 1
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -598,13 +598,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 2
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -805,13 +805,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 3
+            "id": 7
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1012,13 +1012,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 4
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1219,13 +1219,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 5
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1426,13 +1426,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 6
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1633,13 +1633,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 7
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1840,7 +1840,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 8
+            "id": 12
         }
     ]
 }
