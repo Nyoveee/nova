@@ -5,20 +5,14 @@ using ScriptingAPI;
 class VoiceoverScript : Script
 {
     [SerializableField]
-    private GameObject cutSceneUI;
-    [SerializableField]
-    private GameObject blackBarUI;
-    [SerializableField]
-    private GameObject voiceOverSpeakerUI;
-    [SerializableField]
-    private GameObject voiceOverTextUI;
-    [SerializableField]
-    private GameObject sceneTextUI;
-    [SerializableField]
-    private Vector3 voiceOverSpeakerTempPosition;
-    [SerializableField]
-    private Vector3 voiceOverTextTempPosition;
+    private Canvas_ dialogueUI;
 
+    [SerializableField]
+    private Text_ voiceOverSpeakerUI;
+
+    [SerializableField]
+    private Text_ voiceOverTextUI;
+    
     private AudioComponent_ audioComponent;
 
     private PlayerWeaponController playerWeaponController;
@@ -29,59 +23,61 @@ class VoiceoverScript : Script
         audioComponent = getComponent<AudioComponent_>();
         playerWeaponController = GameObject.FindWithTag("Player")?.getScript<PlayerWeaponController>();
     }
+
     public void TriggerVoiceOver(string speaker, string text, Audio audio, float voiceOverTime, bool shouldDisableWeapon)
     {
         // audioComponent.PlaySound(audio);
         if (shouldDisableWeapon)
             playerWeaponController.DisableShooting();
-        cutSceneUI.SetActive(true);
-        blackBarUI.SetActive(false);
-        sceneTextUI.SetActive(false);
-        // Temperory
-        voiceOverSpeakerUI.transform.position = voiceOverSpeakerTempPosition;
-        voiceOverTextUI.transform.position = voiceOverTextTempPosition;
+
         // Set Text
-        voiceOverSpeakerUI.getComponent<Text_>()?.SetText(speaker);
-        voiceOverTextUI.getComponent<Text_>()?.SetText(text);
+        voiceOverSpeakerUI?.SetText(speaker);
+        voiceOverTextUI?.SetText(text);
+        dialogueUI.alpha = 1f;
 
         // Trigger fade out once done 
         Invoke(() =>
         {
-            cutSceneUI.SetActive(false);
             if (shouldDisableWeapon)
                 playerWeaponController.EnableShooting();
+
+            dialogueUI.alpha = 0f;
         }, voiceOverTime);
     }
+
     public void TriggerVoiceOverSequence(string speaker, List<string> text, Audio audio, List<float> voiceOverTimes, bool shouldDisableWeapon)
     {
-        // audioComponent.PlaySound(audio);
-        cutSceneUI.SetActive(true);
-        blackBarUI.SetActive(false);
-        sceneTextUI.SetActive(false);
         if (shouldDisableWeapon)
             playerWeaponController.DisableShooting();
-        // Temperory
-        voiceOverSpeakerUI.transform.position = voiceOverSpeakerTempPosition;
-        voiceOverTextUI.transform.position = voiceOverTextTempPosition;
+
         // Set Text
-        voiceOverSpeakerUI.getComponent<Text_>()?.SetText(speaker);
+        voiceOverSpeakerUI?.SetText(speaker);
+        dialogueUI.alpha = 1f;
+
         // Set Text Sequence
         int index = -1;
         Callback callbackRecursive = null;
+        
         Callback callback = () => {
             if (index == text.Count - 1)
             {
                 if (shouldDisableWeapon)
+                {
                     playerWeaponController.EnableShooting();
-                cutSceneUI.SetActive(false);
+                    dialogueUI.alpha = 0f;
+                }
+
                 return;
             }
-            voiceOverTextUI.getComponent<Text_>()?.SetText(text[++index]);
+
+            voiceOverTextUI?.SetText(text[++index]);
             callbackRecursive();
         };
+        
         callbackRecursive = () => { 
             Invoke(() => { callback(); }, voiceOverTimes[index]); 
         };
+
         callback();
     }
 }

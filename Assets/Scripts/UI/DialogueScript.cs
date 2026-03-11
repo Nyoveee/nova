@@ -59,6 +59,12 @@ class DialogueScript : Script
     private GameObject playerContainerUI;
 
     [SerializableField]
+    private Canvas_ dialogueUI;
+
+    [SerializableField]
+    private GameObject missionObjectiveUI;
+
+    [SerializableField]
     private Text_ dialogueText;
     
     [SerializableField]
@@ -76,15 +82,15 @@ class DialogueScript : Script
     [SerializableField]
     private Audio elevatorSpeechAudio;
 
-    [SerializableField]
-    private GameObject missionObjectiveContainer;
-    [SerializableField]
-    private GameObject questInformationContainer;
+    //[SerializableField]
+    //private GameObject missionObjectiveContainer;
+    //[SerializableField]
+    //private GameObject questInformationContainer;
 
-    [SerializableField]
-    private Vector3 newMissionObjectiveUILocation;
-    [SerializableField]
-    private Vector3 newQuestInformationUILocation;
+    //[SerializableField]
+    //private Vector3 newMissionObjectiveUILocation;
+    //[SerializableField]
+    //private Vector3 newQuestInformationUILocation;
 
     protected override void init()
     {
@@ -178,7 +184,9 @@ class DialogueScript : Script
 
                         // swap visible UI..
                         playerContainerUI.SetActive(true);
+                        missionObjectiveUI.SetActive(true);
                         cutsceneUI.SetActive(false);
+                        dialogueUI.alpha = 0f;
 
                         playerBody.movementIsEnabled = true;
                         playerRotateController.rotationIsEnabled = true;
@@ -198,11 +206,12 @@ class DialogueScript : Script
         () =>
         {
             // Reposition mission objective UI..
-            missionObjectiveContainer.transform.position = newMissionObjectiveUILocation;
-            questInformationContainer.transform.position = newQuestInformationUILocation;
+            //missionObjectiveContainer.transform.position = newMissionObjectiveUILocation;
+            //questInformationContainer.transform.position = newQuestInformationUILocation;
 
             // swap visible UI..
             playerContainerUI.SetActive(false);
+            missionObjectiveUI.SetActive(false);
             cutsceneUI.SetActive(true);
 
             playerBody.movementIsEnabled = false;
@@ -219,6 +228,7 @@ class DialogueScript : Script
         {
             // begin chaining of dialogue..
             audioComponent_.PlaySound(elevatorSpeechAudio);
+            dialogueUI.alpha = 1f;
 
             speakerText.SetText(speaker);
             currentIndex = 0;

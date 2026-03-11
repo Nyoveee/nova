@@ -126,6 +126,17 @@ ManagedStruct(
 	float, g,
 	float, b
 )
+
+static Colour Lerp(Colour a, Colour b, float interval);
+static Colour operator-(Colour a, Colour b);
+static Colour operator-(Colour a);
+static Colour operator+(Colour a, Colour b);
+static Colour operator*(Colour a, float d);
+static Colour operator*(float d, Colour a);
+static Colour operator/(Colour a, float d);
+static bool operator!=(Colour a, Colour b);
+static bool operator==(Colour a, Colour b);
+
 ManagedStructEnd(Colour, glm::vec3)
 
 ManagedStruct(
@@ -135,6 +146,17 @@ ManagedStruct(
 	float, b,
 	float, a
 )
+
+static ColorAlpha Lerp(ColorAlpha a, ColorAlpha b, float interval);
+static ColorAlpha operator - (ColorAlpha a, ColorAlpha b);
+static ColorAlpha operator - (ColorAlpha a);
+static ColorAlpha operator + (ColorAlpha a, ColorAlpha b);
+static ColorAlpha operator * (ColorAlpha a, float d);
+static ColorAlpha operator * (float d, ColorAlpha a);
+static ColorAlpha operator/(ColorAlpha a, float d);
+static bool operator!=(ColorAlpha a, ColorAlpha b);
+static bool operator==(ColorAlpha a, ColorAlpha b);
+
 ManagedStructEnd(ColorAlpha, glm::vec4)
 // ======================================
 // This struct is responsible for Quartenion Types
@@ -363,7 +385,8 @@ ManagedComponentEnd()
 ManagedComponentDeclaration(
 	Image,
 	ColorAlpha, colorTint,
-	Vector2, textureCoordinatesRange
+	Vector2, textureCoordinatesStart,
+	Vector2, textureCoordinatesEnd
 )
 
 void SetTexture(ScriptingAPI::Texture^ texture);

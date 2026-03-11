@@ -32,6 +32,7 @@ class ShootTutorialQuest : Quest
                 gameUIManager.ToggleTutorial();
             }, tutorialDelayTime);
         }
+
         if(!executeTutorialShown && grunt.getScript<Grunt>().IsExecutable())
         {
             executeTutorialShown = true;
@@ -40,6 +41,7 @@ class ShootTutorialQuest : Quest
                 gameUIManager.ToggleTutorial();
             }, tutorialDelayTime);
         }
+
         if (!succeeded && grunt != null && grunt.getScript<Grunt>().IsDead())
         {
             succeeded = true;

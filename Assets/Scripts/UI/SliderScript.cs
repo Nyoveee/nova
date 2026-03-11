@@ -189,7 +189,7 @@ class SliderScript : Script
         if (sliderFill != null)
         {
             float valuePercentage = (currentValue - minValue) / (maxValue - minValue);
-            sliderFill.textureCoordinatesRange = new Vector2(valuePercentage, 1.0f);
+            sliderFill.textureCoordinatesEnd = new Vector2(valuePercentage, 1.0f);
         }
     }
 }

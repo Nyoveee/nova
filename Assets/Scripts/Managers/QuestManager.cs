@@ -149,9 +149,11 @@ public class QuestManager : Script
             TeleportToCheckPoint();
             player.getScript<PlayerWeaponController>()?.Reset();
             player.ResetHealth();
+
             foreach (GameObject hitbox in GameObject.FindGameObjectsWithTag("EnemyHitBox"))
                 Destroy(hitbox);
 
+            gameUIManager?.Restart();
         }
         
     }

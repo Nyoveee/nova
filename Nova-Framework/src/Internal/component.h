@@ -226,13 +226,16 @@ struct SkinnedMeshRenderer {
 
 	bool castShadow = true;
 	bool shadowCullFrontFace = true;
-
+	
+	bool toFrustumCull = true;
+	
 	REFLECTABLE(
 		modelId,
 		materialIds,
 		socketConnections,
 		castShadow,
-		shadowCullFrontFace
+		shadowCullFrontFace,
+		toFrustumCull
 	)
 
 	std::unordered_set<int>					isMaterialInstanced;
@@ -424,16 +427,16 @@ struct Image {
 
 	bool toFlip = false;
 	
-	glm::vec2 textureCoordinatesRange { 1.f, 1.f };
-	bool toTile = false;
+	glm::vec2 textureCoordinatesStart	{ 0.f, 0.f };
+	glm::vec2 textureCoordinatesEnd		{ 1.f, 1.f };
 
 	REFLECTABLE(
 		texture,
 		colorTint,
 		anchorMode,
 		toFlip,
-		textureCoordinatesRange,
-		toTile
+		textureCoordinatesStart,
+		textureCoordinatesEnd
 	)
 
 	float canvasAlphaMultiplier = 1.f;

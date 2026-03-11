@@ -173,6 +173,13 @@
                         "scriptId": 9603601217457553409,
                         "fields": [
                             {
+                                "name": "rotationIsEnabled",
+                                "data": {
+                                    "__variant_value": true,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
                                 "name": "cameraSensitivity",
                                 "data": {
                                     "__variant_value": 0.10000000149011612,
@@ -396,7 +403,7 @@
         {
             "EntityData": {
                 "name": "Sniper Holder",
-                "tag": "",
+                "tag": "Sniper",
                 "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
@@ -414,10 +421,10 @@
                     "16652763906952685383": false,
                     "17237801994024849853": true,
                     "6919815292445452220": true,
-                    "9059764703561530457": false,
                     "452538415452204233": false,
-                    "13484132868097894827": true,
+                    "9059764703561530457": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": true,
                     "10599230719904143524": false,
                     "17421316227555880647": false,
                     "6152912775364972041": false,
@@ -940,7 +947,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 6
         },
@@ -1744,7 +1753,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 13
         },
@@ -1949,7 +1960,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 14
         },
@@ -2154,7 +2167,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 15
         },
@@ -2359,7 +2374,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 16
         },
@@ -2670,7 +2687,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 18
         },
@@ -2875,7 +2894,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 19
         },
@@ -3080,7 +3101,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 20
         },
@@ -3285,7 +3308,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 21
         },
@@ -3490,7 +3515,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 22
         },
@@ -3695,7 +3722,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 23
         },
@@ -3900,7 +3929,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 24
         },
@@ -4105,7 +4136,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 25
         },
@@ -4310,7 +4343,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 26
         },
@@ -4515,7 +4550,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 27
         },
@@ -4720,7 +4757,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 28
         },
@@ -4925,7 +4964,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 29
         },
@@ -5130,7 +5171,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 30
         },
@@ -5335,7 +5378,9 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
             "id": 31
         },

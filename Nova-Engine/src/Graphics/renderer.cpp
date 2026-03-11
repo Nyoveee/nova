@@ -568,11 +568,11 @@ void Renderer::renderMain(RenderMode renderMode) {
 
 			renderUI();
 			gammaCorrection(gameMainFrameBuffer);
-
-			// overlayUIToBuffer(gameMainFrameBuffer);
 		}
-		else if (isUIScreenShown) {
-			renderUI();
+
+		if (isUIScreenShown) {
+			renderUIToUIFBO();
+			gammaCorrection(uiMainFrameBuffer);
 		}
 
 		// Main editor render function
@@ -988,17 +988,12 @@ void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Renderer::overlayUIToBuffer(PairFrameBuffer& target) {
-	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
-	
-	setBlendMode(BlendingConfig::AlphaBlending);
+void Renderer::renderUIToUIFBO() {
+	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.getActiveFrameBuffer().fboId());
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	overlayShader.use();
-	overlayShader.setImageUniform("overlay", 0);
-	glBindTextureUnit(0, getUIFrameBufferTexture());
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	glDisable(GL_BLEND);
+	renderUI();
 }
 
 void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
@@ -2368,11 +2363,12 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 	texture2dShader.setMatrix("model", transform.modelMatrix);
 	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
 
-	texture2dShader.setVec2("textureCoordinatesRange", image.textureCoordinatesRange);
+	texture2dShader.setVec2("textureCoordinatesStart", image.textureCoordinatesStart);
+	texture2dShader.setVec2("textureCoordinatesEnd", image.textureCoordinatesEnd);
+
 	texture2dShader.setMatrix("uiProjection", UIProjection);
 	texture2dShader.setInt("image", 0);
 	texture2dShader.setBool("toFlip", image.toFlip);
-	texture2dShader.setBool("toTile", image.toTile);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureId);
@@ -2493,7 +2489,7 @@ void Renderer::frustumCullModels(glm::mat4 const& viewProjectionMatrix) {
 
 	for (auto&& [entityID, entityData, transform, skinnedMeshRenderer] : registry.view<EntityData, Transform, SkinnedMeshRenderer>().each()) {
 		// pointless to do frustum culling on disabled objects.
-		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entityID) || !skinnedMeshRenderer.toFrustumCull) {
 			continue;
 		}
 

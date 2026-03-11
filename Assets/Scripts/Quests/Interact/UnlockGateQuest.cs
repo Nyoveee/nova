@@ -7,6 +7,9 @@ using ScriptingAPI;
 class UnlockGateQuest : Quest
 {
     [SerializableField]
+    private GameObject goddess;
+
+    [SerializableField]
     private Door vaultDoor;
 
     [SerializableField]
@@ -69,6 +72,7 @@ class UnlockGateQuest : Quest
 
     public override void OnEnter()
     {
+        
         voiceoverScript.TriggerVoiceOver("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime, false);
         Invoke(() =>
         {
@@ -81,6 +85,8 @@ class UnlockGateQuest : Quest
             hubSwitch.enableSwitch();
             switchSpotlight.SetActive(true);
         }, 0f);
+        if (goddess != null)
+            Destroy(goddess);
     }
    
     public override void OnSuccess()

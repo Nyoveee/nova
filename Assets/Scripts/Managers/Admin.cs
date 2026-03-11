@@ -4,6 +4,9 @@
 class Admin : Script
 {
     private PlayerController_V2 playerBody;
+
+    private Sniper sniper;
+
     [SerializableField]
     private QuestManager questManager;
     // This function is invoked once before init when gameobject is active.
@@ -14,13 +17,13 @@ class Admin : Script
     protected override void init()
     {
         playerBody = GameObject.FindWithTag("Player").getScript<PlayerController_V2>();
+        sniper = GameObject.FindWithTag("Sniper").getScript<Sniper>();
 
         // instant death.
         MapKey(Key.K, () =>
         {
             playerBody?.TakeDamage(1000);
         });
-
 
         // closure..
         bool isSpedUp = false;
@@ -47,18 +50,22 @@ class Admin : Script
             questManager?.SkipCurrentQuest();
         });
 
+        // Take 30 damage..
+        MapKey(Key.I, () =>
+        {
+            playerBody?.TakeDamage(30);
+        });
+
+        // Heal 10 damage..
+        MapKey(Key.U, () =>
+        {
+            playerBody?.GainHealth(10f);
+        });
+
+        MapKey(Key.Y, () =>
+        {
+            // playerBody?.GainHealth(10f);
+            sniper.CurrentSp += 17;
+        });
     }
-
-    // This function is invoked every update.
-    protected override void update()
-    {}
-
-    // This function is invoked every update.
-    protected override void fixedUpdate()
-    {}
-
-    // This function is invoked when destroyed.
-    protected override void exit()
-    {}
-
 }
