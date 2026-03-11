@@ -51,6 +51,7 @@ class EndOfLevel2 : Script
     protected override void exit()
     {}
 
+    public bool IsEndOfLevel() => (start);
     public void StartScroll()
     {
         start = true;

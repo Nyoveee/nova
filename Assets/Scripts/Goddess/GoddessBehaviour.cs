@@ -10,7 +10,8 @@ class GoddessBehaviour : Script
     {
         Idle,
         Rising,
-        Floating
+        Floating,
+        Disappear,
     }
     [SerializableField]
     private float floatingDistance;
@@ -24,6 +25,8 @@ class GoddessBehaviour : Script
     private float delayForVoiceOver;
     [SerializableField]
     private float rotationTime;
+    [SerializableField]
+    private float disappearTime;
 
     private Animator_ animator;
     private SkinnedMeshRenderer_ skinnedMeshRenderer_;
@@ -57,6 +60,9 @@ class GoddessBehaviour : Script
     private float timeToStartPointing;
     private bool b_IsRotatingToPoint;
     private float currentRotationTime;
+
+    // Disappear
+    private float currentDisappearTime;
     protected override void init()
     {
         voiceoverScript = GameObject.FindWithTag("Game UI Manager")?.getScript<VoiceoverScript>();
@@ -65,6 +71,7 @@ class GoddessBehaviour : Script
         updateState.Add(GoddessState.Idle, Update_Idle);
         updateState.Add(GoddessState.Rising, Update_Rising);
         updateState.Add(GoddessState.Floating, Update_Floating);
+        updateState.Add(GoddessState.Disappear, Update_Disappear);
     }
     protected override void update()
     {
@@ -106,6 +113,16 @@ class GoddessBehaviour : Script
         float yOffset = Mathf.Sin(currentFloatingTime) * floatingDistance;
         gameObject.transform.position = floatingPosition + new Vector3(0, yOffset, 0);
     }
+    
+    private void Update_Disappear()
+    {
+        currentDisappearTime -= Time.V_DeltaTime();
+        if (currentDisappearTime <= 0)
+            Destroy(gameObject);
+        for (int i = 0; i < 6; ++i)
+            skinnedMeshRenderer_.setMaterialFloat(i, "alpha", currentDisappearTime / disappearTime);
+
+    }
     public void SetFloatingSpeech(List<string> voiceOverText, List<float> voiceOverTime, Audio voiceOverAudio)
     {
         goddessVoiceOverText = voiceOverText;
@@ -130,11 +147,14 @@ class GoddessBehaviour : Script
             Invoke(() =>
             {
                 voiceoverScript.TriggerVoiceOverSequence("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime, true);
-                if(pointedGameObject!= null)
-                    Invoke(() => { b_IsRotatingToPoint = true; }, timeToStartPointing);
             }, delayForVoiceOver);
            
         } 
+    }
+    public void BeginDisappearing()
+    {
+        goddessState = GoddessState.Disappear;
+        currentDisappearTime = disappearTime;
     }
     public void Idle()
     {
@@ -150,7 +170,10 @@ class GoddessBehaviour : Script
         direction.Normalize();
         endRotation = Quaternion.LookRotation(direction) * Quaternion.AngleAxis(180 * Mathf.Deg2Rad, new Vector3(0,1,0));
         this.timeToStartPointing = timeToStartPointing;
+        if (pointedGameObject != null)
+            Invoke(() => { b_IsRotatingToPoint = true; }, timeToStartPointing);
     }
+    public bool IsDisappearing() => (goddessState == GoddessState.Disappear);
     /***********************************************************
         Animation Events
     ***********************************************************/
@@ -160,4 +183,5 @@ class GoddessBehaviour : Script
         animator.PlayAnimation("Goddess Idle");
         pointedGameObject = null;
     }
+   
 }
