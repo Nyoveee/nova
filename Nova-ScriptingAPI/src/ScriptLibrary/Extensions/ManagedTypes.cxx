@@ -587,6 +587,15 @@ void Animator_::SetInteger(System::String^ name, int value){
 void Animator_::PlayAnimation(System::String^ name) {
 	Interface::engine->animationSystem.playAnimation(*nativeComponent(), Convert(name));
 }
+
+void Animator_::ClearExecutedAnimationEvents() {
+	Interface::engine->animationSystem.clearExecutedAnimationEvents(*nativeComponent());
+}
+
+void Animator_::SetFrame(int frame) {
+	Interface::engine->animationSystem.setAnimationFrame(*nativeComponent(), frame);
+}
+
 // =================================================================
 // Text
 // =================================================================
