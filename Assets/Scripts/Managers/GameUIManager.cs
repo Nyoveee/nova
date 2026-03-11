@@ -1,4 +1,4 @@
-// Make sure the class name matches the asset name.
+    // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
@@ -317,7 +317,7 @@ class GameUIManager : Script
         deathScreenEffectUi.gameObject.SetActive(false);
         
         playerUI.SetActive(true);
-        missionObjectiveUI.SetActive(true);
+        //missionObjectiveUI.SetActive(true);
         
         Systems.Pause = false;
         camera.ResetUp();
@@ -801,7 +801,9 @@ class GameUIManager : Script
 
     public void OnRestartButtonPressed()
     {
-        Restart();
-        RestartFromCheckpointButton?.Invoke();
+        Systems.Restart();
+
+        // Restart();
+        // RestartFromCheckpointButton?.Invoke();
     }
 }

@@ -845,7 +845,7 @@ class PlayerController_V2 : Script
         else 
         {
             isIFrames = value;
-            rigidbody.SetPhysicsLayer("Moving");
+            rigidbody.SetPhysicsLayer("Player");
         }
     }
 

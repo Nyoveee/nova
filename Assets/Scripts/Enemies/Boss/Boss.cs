@@ -60,6 +60,9 @@ public class Boss : Enemy
 
     Vector3 halfExtent; //based on scaling values
 
+    private BossUI bossUI;
+    private float maxHealth;
+
     //The idea is that the boss can have a deck of abilities like a card game, which he can use. 
     //WHen he uses an ability, he will remove it from the deck. it cannot be used until deck is exhausted or he chooses to refresh it.
     //This allows us to shuffle the moveset also to make it less predictable
@@ -95,10 +98,10 @@ public class Boss : Enemy
 
         AbilitySequence[] abilitySequences = {
             new MeleeAttack(this),
-            new BasicGroundSlam(this),
-            new BasicGroundSlam(this),
-            new MissileBarrage(this)
-            };
+            //new BasicGroundSlam(this),
+            //new BasicGroundSlam(this),
+            //new MissileBarrage(this)
+        };
 
         AbilityDeckStart.AddRange(abilitySequences);
     }
@@ -114,12 +117,16 @@ public class Boss : Enemy
         navMeshAgent.setIsUpdateRotation(false);
         halfExtent = new Vector3(gameObject.transform.scale.x, gameObject.transform.scale.y, gameObject.transform.scale.z);
 
+        bossUI = GameObject.FindWithTag("Game UI Manager")?.getScript<BossUI>();
+
         currentStamina = maxStamina;
 
         //Create an ability deck
         currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart);
 
         BossState currentState = BossState.Spawning;
+
+        maxHealth = enemyStats.health;
     }
 
     // This function is invoked every update.
@@ -633,18 +640,22 @@ public class Boss : Enemy
     {
         if (accumulatedDamageInstance > 0)
         {
-            //SpawnIchorFrame(new Vector3(1f,1f,1f), new Vector3(-1f, 0f, -1f), 500f, 500f, 0f,0f, 3f, 10f );
             SpawnIchorFrame();
             bossStats.health -= accumulatedDamageInstance;
-           // UpdateExecutableMaterialState();
+
+            bossUI?.SetBossHealth(bossStats.health + accumulatedDamageInstance, bossStats.health, maxHealth);
+
             if (bossStats.health <= 0)
             {
                 if (currentState != BossState.Dead)
                 {
                     currentState = BossState.Dead;
+
                     //audioComponent.PlayRandomSound(deathSFX);
                     //animator.PlayAnimation("Grunt Death");
                     DisablePhysicalInteraction();
+
+                    animator.PlayAnimation("Boss_Death");
                 }
             }
             else

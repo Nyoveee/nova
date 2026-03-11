@@ -48,7 +48,7 @@ namespace {
 					EntityData* const entityData{ registry.try_get<EntityData>(entity) };
 
 					if (entityData) {
-						bool b_Active{ editor.engine.ecs.isComponentActive<Component>(entity)};
+						bool b_Active{ editor.engine.ecs.isComponentActive<Component>(registry, entity)};
 						// Display Checkbox
 						ImGui::SameLine();
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.5f);

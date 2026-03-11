@@ -313,6 +313,8 @@ struct Rigidbody {
 		Props,
 		PlayerGhost,
 		Attack_Colliders,
+		Player,
+		Interact_Only_With_Player
 	} layer							= Layer::NonMoving;
 
 	enum class MotionQuality {

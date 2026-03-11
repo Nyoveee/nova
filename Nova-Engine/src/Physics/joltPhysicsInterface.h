@@ -29,17 +29,19 @@
 // layers if you want. E.g. you could have a layer for high detail collision (which is not used by the physics simulation
 // but only if you do collision testing).
 namespace Layers {
-	static constexpr JPH::ObjectLayer NON_MOVING = 0;
-	static constexpr JPH::ObjectLayer MOVING = 1;
-	static constexpr JPH::ObjectLayer WALL = 2;
-	static constexpr JPH::ObjectLayer ITEM = 3;
-	static constexpr JPH::ObjectLayer ENEMY_HURTSPOT = 4;
-	static constexpr JPH::ObjectLayer ITEM_INTERACTOR = 5;
-	static constexpr JPH::ObjectLayer FLOOR = 6;
-	static constexpr JPH::ObjectLayer PROPS = 7;
-	static constexpr JPH::ObjectLayer PLAYERGHOST = 8;
-	static constexpr JPH::ObjectLayer ATTACK_COLLIDERS = 9;
-	static constexpr JPH::ObjectLayer NUM_LAYERS = 10;
+	static constexpr JPH::ObjectLayer NON_MOVING				= 0;
+	static constexpr JPH::ObjectLayer MOVING					= 1;
+	static constexpr JPH::ObjectLayer WALL						= 2;
+	static constexpr JPH::ObjectLayer ITEM						= 3;
+	static constexpr JPH::ObjectLayer ENEMY_HURTSPOT			= 4;
+	static constexpr JPH::ObjectLayer ITEM_INTERACTOR			= 5;
+	static constexpr JPH::ObjectLayer FLOOR						= 6;
+	static constexpr JPH::ObjectLayer PROPS						= 7;
+	static constexpr JPH::ObjectLayer PLAYERGHOST				= 8;
+	static constexpr JPH::ObjectLayer ATTACK_COLLIDERS			= 9;
+	static constexpr JPH::ObjectLayer PLAYER					= 10;
+	static constexpr JPH::ObjectLayer INTERACT_ONLY_WITH_PLAYER = 11;
+	static constexpr JPH::ObjectLayer NUM_LAYERS				= 12;
 };
 
 // Each broadphase layer results in a separate bounding volume tree in the broad phase. You at least want to have
@@ -49,17 +51,19 @@ namespace Layers {
 // your broadphase layers define JPH_TRACK_BROADPHASE_STATS and look at the stats reported on the TTY.
 namespace BroadPhaseLayers
 {
-	static constexpr JPH::BroadPhaseLayer NON_MOVING(0);
-	static constexpr JPH::BroadPhaseLayer MOVING(1);
-	static constexpr JPH::BroadPhaseLayer WALL(2);
-	static constexpr JPH::BroadPhaseLayer ITEM(3);
-	static constexpr JPH::BroadPhaseLayer ENEMY_HURTSPOT(4);
-	static constexpr JPH::BroadPhaseLayer ITEM_INTERACTOR(5);
-	static constexpr JPH::BroadPhaseLayer FLOOR(6);
-	static constexpr JPH::BroadPhaseLayer PROPS(7);
-	static constexpr JPH::BroadPhaseLayer PLAYERGHOST(8);
-	static constexpr JPH::BroadPhaseLayer ATTACK_COLLIDERS(9);
-	static constexpr JPH::uint NUM_LAYERS(10);
+	static constexpr JPH::BroadPhaseLayer NON_MOVING				(0);
+	static constexpr JPH::BroadPhaseLayer MOVING					(1);
+	static constexpr JPH::BroadPhaseLayer WALL						(2);
+	static constexpr JPH::BroadPhaseLayer ITEM						(3);
+	static constexpr JPH::BroadPhaseLayer ENEMY_HURTSPOT			(4);
+	static constexpr JPH::BroadPhaseLayer ITEM_INTERACTOR			(5);
+	static constexpr JPH::BroadPhaseLayer FLOOR						(6);
+	static constexpr JPH::BroadPhaseLayer PROPS						(7);
+	static constexpr JPH::BroadPhaseLayer PLAYERGHOST				(8);
+	static constexpr JPH::BroadPhaseLayer ATTACK_COLLIDERS			(9);
+	static constexpr JPH::BroadPhaseLayer PLAYER					(10);
+	static constexpr JPH::BroadPhaseLayer INTERACT_ONLY_WITH_PLAYER (11);
+	static constexpr JPH::uint			  NUM_LAYERS				(12);
 };
 
 // BroadPhaseLayerInterface implementation
@@ -69,16 +73,18 @@ class BPLayerInterfaceImpl final : public JPH::BroadPhaseLayerInterface
 public:
 	BPLayerInterfaceImpl() {
 		// Create a mapping table from object to broad phase layer
-		mObjectToBroadPhase[Layers::NON_MOVING] = BroadPhaseLayers::NON_MOVING;
-		mObjectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
-		mObjectToBroadPhase[Layers::WALL] = BroadPhaseLayers::WALL;
-		mObjectToBroadPhase[Layers::ITEM] = BroadPhaseLayers::ITEM;
-		mObjectToBroadPhase[Layers::ENEMY_HURTSPOT] = BroadPhaseLayers::ENEMY_HURTSPOT;
-		mObjectToBroadPhase[Layers::ITEM_INTERACTOR] = BroadPhaseLayers::ITEM_INTERACTOR;
-		mObjectToBroadPhase[Layers::FLOOR] = BroadPhaseLayers::FLOOR;
-		mObjectToBroadPhase[Layers::PROPS] = BroadPhaseLayers::PROPS;
-		mObjectToBroadPhase[Layers::PLAYERGHOST] = BroadPhaseLayers::PLAYERGHOST;
-		mObjectToBroadPhase[Layers::ATTACK_COLLIDERS] = BroadPhaseLayers::ATTACK_COLLIDERS;
+		mObjectToBroadPhase[Layers::NON_MOVING]					= BroadPhaseLayers::NON_MOVING;
+		mObjectToBroadPhase[Layers::MOVING]						= BroadPhaseLayers::MOVING;
+		mObjectToBroadPhase[Layers::WALL]						= BroadPhaseLayers::WALL;
+		mObjectToBroadPhase[Layers::ITEM]						= BroadPhaseLayers::ITEM;
+		mObjectToBroadPhase[Layers::ENEMY_HURTSPOT]				= BroadPhaseLayers::ENEMY_HURTSPOT;
+		mObjectToBroadPhase[Layers::ITEM_INTERACTOR]			= BroadPhaseLayers::ITEM_INTERACTOR;
+		mObjectToBroadPhase[Layers::FLOOR]						= BroadPhaseLayers::FLOOR;
+		mObjectToBroadPhase[Layers::PROPS]						= BroadPhaseLayers::PROPS;
+		mObjectToBroadPhase[Layers::PLAYERGHOST]				= BroadPhaseLayers::PLAYERGHOST;
+		mObjectToBroadPhase[Layers::ATTACK_COLLIDERS]			= BroadPhaseLayers::ATTACK_COLLIDERS;
+		mObjectToBroadPhase[Layers::PLAYER]						= BroadPhaseLayers::PLAYER;
+		mObjectToBroadPhase[Layers::INTERACT_ONLY_WITH_PLAYER]	= BroadPhaseLayers::INTERACT_ONLY_WITH_PLAYER;
 	}
 
 	JPH::uint GetNumBroadPhaseLayers() const final {
@@ -95,17 +101,19 @@ public:
 	const char* GetBroadPhaseLayerName(JPH::BroadPhaseLayer inLayer) const final {
 		switch ((JPH::BroadPhaseLayer::Type)inLayer)
 		{
-		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::NON_MOVING:			return "NON_MOVING";
-		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::MOVING:				return "MOVING";
-		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::WALL:				return "WALL";
-		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::ITEM:				return "ITEM";
-		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::ENEMY_HURTSPOT:		return "ENEMY_HURTSPOT";
-		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::ITEM_INTERACTOR:     return "ITEM_INTERACTOR";
-		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::FLOOR:				return "FLOOR";
-		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::PROPS:				return "PROPS";
-		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::PLAYERGHOST:		    return "PLAYERGHOST";
-		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::ATTACK_COLLIDERS:    return "ATTACK_COLLIDERS";
-		default:														JPH_ASSERT(false); return "INVALID";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::NON_MOVING:					return "NON_MOVING";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::MOVING:						return "MOVING";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::WALL:						return "WALL";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::ITEM:						return "ITEM";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::ENEMY_HURTSPOT:				return "ENEMY_HURTSPOT";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::ITEM_INTERACTOR:			return "ITEM_INTERACTOR";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::FLOOR:						return "FLOOR";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::PROPS:						return "PROPS";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::PLAYERGHOST:				return "PLAYERGHOST";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::ATTACK_COLLIDERS:			return "ATTACK_COLLIDERS";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::PLAYER:						return "PLAYER";
+		case (JPH::BroadPhaseLayer::Type) BroadPhaseLayers::INTERACT_ONLY_WITH_PLAYER:  return "INTERACT_ONLY_WITH_PLAYER";
+		default:																		JPH_ASSERT(false); return "INVALID";
 		}
 	}
 #endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
@@ -166,6 +174,26 @@ public:
 				|| inLayer2 == BroadPhaseLayers::ENEMY_HURTSPOT
 				|| inLayer2 == BroadPhaseLayers::MOVING
 				|| inLayer2 == BroadPhaseLayers::PLAYERGHOST;
+		case Layers::PLAYER:								// Player is basically moving but in another layer.. so that other layers can specifically interact with player only.
+			return inLayer2 == BroadPhaseLayers::PROPS
+				|| inLayer2 == BroadPhaseLayers::WALL
+				|| inLayer2 == BroadPhaseLayers::FLOOR
+				|| inLayer2 == BroadPhaseLayers::NON_MOVING
+				|| inLayer2 == BroadPhaseLayers::MOVING
+				|| inLayer2 == BroadPhaseLayers::ATTACK_COLLIDERS	 // Moving collides with everything except item
+				|| inLayer2 == BroadPhaseLayers::INTERACT_ONLY_WITH_PLAYER;
+		case Layers::INTERACT_ONLY_WITH_PLAYER:						 // Interacts with player only
+			return inLayer2 == BroadPhaseLayers::PLAYER
+				|| inLayer2 == BroadPhaseLayers::PLAYERGHOST;
+
+			//return inLayer2 == BroadPhaseLayers::PROPS
+			//	|| inLayer2 == BroadPhaseLayers::WALL
+			//	|| inLayer2 == BroadPhaseLayers::FLOOR
+			//	|| inLayer2 == BroadPhaseLayers::NON_MOVING
+			//	|| inLayer2 == BroadPhaseLayers::MOVING
+			//	|| inLayer2 == BroadPhaseLayers::ATTACK_COLLIDERS	 // Moving collides with everything except item
+			//	|| inLayer2 == BroadPhaseLayers::PLAYER;			
+
 		default:
 			JPH_ASSERT(false);
 			return false;
@@ -227,6 +255,25 @@ public:
 				|| inObject2 == Layers::ENEMY_HURTSPOT
 				|| inObject2 == Layers::MOVING
 				|| inObject2 == Layers::PLAYERGHOST;
+		case Layers::PLAYER:								// Player is basically moving but in another layer.. so that other layers can specifically interact with player only.
+			return inObject2 == Layers::PROPS
+				|| inObject2 == Layers::WALL
+				|| inObject2 == Layers::FLOOR
+				|| inObject2 == Layers::NON_MOVING
+				|| inObject2 == Layers::MOVING
+				|| inObject2 == Layers::ATTACK_COLLIDERS	// Moving collides with everything except item
+				|| inObject2 == Layers::INTERACT_ONLY_WITH_PLAYER;
+		case Layers::INTERACT_ONLY_WITH_PLAYER:				// Interacts with player only
+			return inObject2 == Layers::PLAYER
+				|| inObject2 == Layers::PLAYERGHOST;
+
+			//return inObject2 == Layers::PROPS
+			//	|| inObject2 == Layers::WALL
+			//	|| inObject2 == Layers::FLOOR
+			//	|| inObject2 == Layers::NON_MOVING
+			//	|| inObject2 == Layers::MOVING
+			//	|| inObject2 == Layers::ATTACK_COLLIDERS	 // Moving collides with everything except item
+			//	|| inObject2 == Layers::PLAYER;
 		default:
 			JPH_ASSERT(false);
 			return false;

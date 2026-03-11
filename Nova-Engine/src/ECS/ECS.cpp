@@ -195,10 +195,16 @@ void ECS::restoreOriginalScene() {
 	sceneManager.loadScene(originalScene);
 }
 
-bool ECS::isComponentActive(entt::entity entity, ComponentID componentID)
+bool ECS::isComponentActive(entt::registry& p_registry, entt::entity entity, ComponentID componentID)
 {
-	EntityData& entityData{ registry.get<EntityData>(entity) };
-	return !entityData.inactiveComponents.count(componentID);
+	EntityData* entityData = p_registry.try_get<EntityData>(entity);
+
+	if (!entityData) {
+		Logger::warn("When checking for component active, prefab has invalid entity of {}", static_cast<unsigned int>(entity));
+		return false;
+	}
+
+	return !entityData->inactiveComponents.count(componentID);
 }
 
 void ECS::setComponentActive(entt::entity entity, ComponentID componentID, bool isActive)

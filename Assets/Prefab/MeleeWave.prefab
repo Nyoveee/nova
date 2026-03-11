@@ -1,5 +1,5 @@
 {
-    "RootEntity": 16,
+    "RootEntity": 10,
     "Entities": [
         {
             "EntityData": {
@@ -8,7 +8,7 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    17
+                    11
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -129,13 +129,13 @@
                     }
                 ]
             },
-            "id": 16
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "WaveMesh",
                 "tag": "",
-                "parent": 16,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -198,7 +198,7 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 17
+            "id": 11
         }
     ]
 }

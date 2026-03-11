@@ -68,7 +68,11 @@ public:
 
 	template<typename Component>
 	bool isComponentActive(entt::entity entity);
-	ENGINE_DLL_API bool isComponentActive(entt::entity entity, ComponentID componentID);
+
+	template<typename Component>
+	bool isComponentActive(entt::registry& registry, entt::entity entity);
+
+	ENGINE_DLL_API bool isComponentActive(entt::registry& registry, entt::entity entity, ComponentID componentID);
 
 	template<typename Component>
 	void setComponentActive(entt::entity entity, bool isActive);
@@ -173,6 +177,10 @@ entt::entity ECS::copyEntityRecursively(entt::entity en, std::unordered_map<entt
 }
 // Eseentially a proxy function since engine.h can't be included in this file
 template<typename Component>
-bool ECS::isComponentActive(entt::entity entity) { return isComponentActive(entity, typeid(Component).hash_code()); }
+bool ECS::isComponentActive(entt::entity entity) { return isComponentActive(registry, entity, typeid(Component).hash_code()); }
+
+template<typename Component>
+bool ECS::isComponentActive(entt::registry& p_registry, entt::entity entity) { return isComponentActive(p_registry, entity, typeid(Component).hash_code()); }
+
 template<typename Component>
 void ECS::setComponentActive(entt::entity entity, bool isActive) { setComponentActive(entity, typeid(Component).hash_code(), isActive);}

@@ -63,7 +63,7 @@ class StompAttackVFX : Script
         if (timeElapsed > (movingDuration + fadeOut))
         {
             isMoving = false;
-            Destroy(gameObject.GetParent());
+            Destroy(gameObject);
         }
     }
 

@@ -90,6 +90,8 @@ class Shockwave : Script
 
     protected override void onCollisionEnter(GameObject other)
     {
+        Debug.Log(other + " shockwave");
+
         if (hasDamagedPlayer)
         {
             return;
