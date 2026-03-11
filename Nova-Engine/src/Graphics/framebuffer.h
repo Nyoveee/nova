@@ -13,7 +13,7 @@ public:
 	// where N = size of vector `colorAttachments`
 	// Multiple color attachments are used for MRT.
 	// each element specifies the internal format of the color attachment. 
-	FrameBuffer(int width, int height, std::vector<TextureInternalFormat> colorAttachments = { GL_RGBA16 });
+	FrameBuffer(int width, int height, int internalFormat);
 
 	~FrameBuffer();
 	FrameBuffer(FrameBuffer const& other) = delete;
@@ -23,25 +23,23 @@ public:
 
 	void swap(FrameBuffer& rhs);
 
-	// sets a following number of color attachment as active.
-	void setColorAttachmentActive(int number) const;
+	// disable all other color attachments, only allowing rendering to the main color attachment.
+	void disableOtherColorAttachments() const;
 
 	void clear();
 
 public:
-	GLuint						fboId()			 const;
-	std::vector<GLuint> const&	textureIds()	 const;
-	GLuint						depthStencilId() const;
-	int							getWidth()		 const;
-	int							getHeight()		 const;
+	GLuint	fboId()			 const;
+	GLuint	textureId()		 const;
+	GLuint	depthStencilId() const;
+	int		getWidth()		 const;
+	int		getHeight()		 const;
 
 private:
 	GLuint FBO_id;
-	std::vector<GLuint> texture_ids; // holds the texture of the respective color attachments
+	GLuint texture_id; // holds the texture of the respective color attachments
 	GLuint depthStencilTextureId;
 
 	int width;
 	int height;
-
-	std::vector<GLuint> colorAttachments;
 };

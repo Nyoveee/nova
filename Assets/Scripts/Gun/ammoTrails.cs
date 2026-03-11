@@ -17,16 +17,11 @@ class ammoTrails: Script
     private float timeElapsed = 0;
     // This function is first invoked when game starts.
     protected override void init()
-    {
-
-
-
-    }
+    {}
 
     // This function is invoked every update.
     protected override void update()
     {
-
         timeElapsed += Time.V_DeltaTime();
 
         if (timeElapsed > totalDuration && awaitDeath == false)
@@ -35,33 +30,26 @@ class ammoTrails: Script
             awaitDeath = true;
         }
 
-
         float t = timeElapsed / totalDuration;
+        
         if (t <= 1)
         {
-
-            gameObject.transform.position  = Vector3.Lerp(endPosition ,startPosition, t);
+            gameObject.transform.position  = Vector3.Lerp(endPosition, startPosition, t);
         }
-
-
-
     }
-
-
 
     // This function is invoked every update.
     protected override void fixedUpdate()
-    { }
-
+    {}
 
     void Kill()
     {
-        if(gameObject!= null)
+        if(gameObject != null)
             Destroy(gameObject);
     }
 
 
     // This function is invoked when destroyed.
     protected override void exit()
-    { }
+    {}
 }

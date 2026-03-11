@@ -55,6 +55,7 @@ DataManager::DataManager(Engine& engine, GameConfig gameConfig) :
 
 		// The data manager is responsible for loading a player preferences file.
 		std::ifstream playerPreferenceFile{ playerPreferenceFilePath };
+		playerPreferenceFile >> playerPreferenceData;
 	}
 	catch (std::exception const& ex) {
 		Logger::error("Failed to load player preference data. {}", ex.what());

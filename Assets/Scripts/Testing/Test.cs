@@ -33,16 +33,40 @@ class Test : Script
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
+#if false
+
         initialPosition = gameObject.transform.position;
         slamPosition = new Vector3(initialPosition.x, initialPosition.y - slamDistance, initialPosition.z);
         slamRecoilPosition = new Vector3(slamPosition.x, slamPosition.y + recoilDistance, slamPosition.z);
 
         nextInterval = Random.Range(minInterval, maxInterval);
+#endif
+        bool toggle = true; 
+
+        MapKey(Key.I, () => {
+            if(toggle)
+            {
+                getComponent<Animator_>().speedMultiplier = -1;
+                getComponent<Animator_>().ClearExecutedAnimationEvents();
+            }
+            else
+            {
+                getComponent<Animator_>().speedMultiplier = 1;
+            }
+
+            toggle = !toggle;
+        });
+    }
+
+    public void animationCallback() 
+    {
+        Debug.Log("hi");
     }
 
     // This function is invoked every update.
     protected override void update()
     {
+#if false
         if(animatingSlam)
         {
             slamTimeElapsed += Time.V_DeltaTime();
@@ -86,7 +110,7 @@ class Test : Script
                 hasSlamed = false;
             }
         }
-
+#endif
     }
 
     // This function is invoked every update.

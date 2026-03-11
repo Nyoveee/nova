@@ -29,40 +29,27 @@ namespace {
 // Creates a frame buffer with 2 color attachments, with COLOR_ATTACHMENT0 as GL_RGBA16 and COLOR_ATTACHMENT1 as GLR32UI.
 // =============================================
 
-FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachmentProperties) :
+FrameBuffer::FrameBuffer(int width, int height, int internalFormat) :
 	FBO_id					{ INVALID_ID },
-	texture_ids				{},
+	texture_id				{ INVALID_ID },
 	depthStencilTextureId	{ INVALID_ID },
 	width					{ width },
 	height					{ height }
 {
-	if (colorAttachmentProperties.size() > 8) {
-		Logger::error("Too many render targets specified.");
-		return;
-	}
-
-	texture_ids.resize(colorAttachmentProperties.size(), INVALID_ID);
 	glCreateFramebuffers(1, &FBO_id);
 
-	unsigned int i = 0;
-
 	// Create texture for each color attachments
-	for (TextureInternalFormat textureFormat : colorAttachmentProperties) {
-		GLuint& texture_id = texture_ids[i];
-		glCreateTextures(GL_TEXTURE_2D, 1, &texture_id);
+	glCreateTextures(GL_TEXTURE_2D, 1, &texture_id);
 
-		glTextureStorage2D(texture_id, 1, textureFormat, width, height);
+	glTextureStorage2D(texture_id, 1, internalFormat, width, height);
 
-		glTextureParameteri(texture_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTextureParameteri(texture_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTextureParameteri(texture_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTextureParameteri(texture_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(texture_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTextureParameteri(texture_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTextureParameteri(texture_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(texture_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-		GLuint colorAttachment = GL_COLOR_ATTACHMENT0 + i;
-		colorAttachments.push_back(colorAttachment);
-		glNamedFramebufferTexture(FBO_id, colorAttachment, texture_id, 0);
-		++i;
-	}
+	GLuint colorAttachment = GL_COLOR_ATTACHMENT0;
+	glNamedFramebufferTexture(FBO_id, colorAttachment, texture_id, 0);
 
 	// Generating a texture object for depth / stencil testing
 	glCreateTextures(GL_TEXTURE_2D, 1, &depthStencilTextureId);
@@ -79,23 +66,19 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 FrameBuffer::~FrameBuffer() {
 	if(FBO_id != INVALID_ID)					glDeleteFramebuffers(1, &FBO_id);
 	if(depthStencilTextureId != INVALID_ID)		glDeleteTextures(1, &depthStencilTextureId);
-
-	for (GLuint texture_id : texture_ids) {
-		glDeleteTextures(1, &texture_id);
-	}
+	if (texture_id != INVALID_ID)				glDeleteTextures(1, &texture_id);
 }
 
 FrameBuffer::FrameBuffer(FrameBuffer&& other) noexcept :
 	FBO_id					{ other.FBO_id },
-	texture_ids				{ std::move(other.texture_ids) },
+	texture_id				{ other.texture_id },
 	depthStencilTextureId	{ other.depthStencilTextureId },
 	width					{ other.width },
 	height					{ other.height }
 {
-	other.FBO_id		= INVALID_ID;
+	other.FBO_id				= INVALID_ID;
 	other.depthStencilTextureId = INVALID_ID;
-
-	other.texture_ids.clear();
+	other.texture_id			= INVALID_ID;
 }
 
 FrameBuffer& FrameBuffer::operator=(FrameBuffer&& other) noexcept {
@@ -106,23 +89,30 @@ FrameBuffer& FrameBuffer::operator=(FrameBuffer&& other) noexcept {
 
 void FrameBuffer::swap(FrameBuffer& rhs) {
 	std::swap(FBO_id,					rhs.FBO_id);
-	std::swap(texture_ids,				rhs.texture_ids);
+	std::swap(texture_id,				rhs.texture_id);
 	std::swap(depthStencilTextureId,	rhs.depthStencilTextureId);
 	std::swap(width,					rhs.width);
 	std::swap(height,					rhs.height);
 }
 
+#if 0
 void FrameBuffer::setColorAttachmentActive(int number) const {
 	// link respective color attachments to draw buffers in a multi render target framebuffer..
 	glNamedFramebufferDrawBuffers(FBO_id, static_cast<GLsizei>(number), colorAttachments.data());
 }
+#endif
 
 GLuint FrameBuffer::fboId() const {
 	return FBO_id;
 }
 
-std::vector<GLuint> const& FrameBuffer::textureIds() const {
-	return texture_ids;
+GLuint FrameBuffer::textureId() const {
+	return texture_id;
+}
+
+void FrameBuffer::disableOtherColorAttachments() const {
+	static constexpr GLuint colorAttachments[] = { GL_COLOR_ATTACHMENT0 };
+	glNamedFramebufferDrawBuffers(FBO_id, 1, colorAttachments);
 }
 
 GLuint FrameBuffer::depthStencilId() const {
@@ -140,16 +130,10 @@ int FrameBuffer::getHeight() const {
 void FrameBuffer::clear() {
 	// https://stackoverflow.com/questions/44756898/opengl-different-clear-color-for-individual-color-attachments
 	constexpr float defaultColor[4] = { 0.05f, 0.05f, 0.05f, 1.f };
-	constexpr float color[4] = { 0.f, 0.f, 0.f, 1.f };
 
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO_id);
 	
-	glClearTexImage(textureIds().front(), 0, GL_RGBA, GL_FLOAT, defaultColor);
-
-	for (int i = 1; i < textureIds().size(); ++i) {
-		GLuint textureId = textureIds()[i];
-		glClearTexImage(textureId, 0, GL_RGBA, GL_FLOAT, color);
-	}
+	glClearTexImage(texture_id, 0, GL_RGBA, GL_FLOAT, defaultColor);
 
 	// Clear depth to 1.0, stencil to 0
 	glClearBufferfi(GL_DEPTH_STENCIL, 0, 1.0f, 0); 

@@ -33,14 +33,13 @@ class VoiceoverScript : Script
         // Set Text
         voiceOverSpeakerUI?.SetText(speaker);
         voiceOverTextUI?.SetText(text);
-        dialogueUI.alpha = 1f;
 
+        dialogueUI.alpha = 1f;
         // Trigger fade out once done 
         Invoke(() =>
         {
             if (shouldDisableWeapon)
                 playerWeaponController.EnableShooting();
-
             dialogueUI.alpha = 0f;
         }, voiceOverTime);
     }
@@ -53,7 +52,7 @@ class VoiceoverScript : Script
 
         // Set Text
         voiceOverSpeakerUI?.SetText(speaker);
-        dialogueUI.alpha = 1f;
+
 
         // Set Text Sequence
         int index = -1;
@@ -63,14 +62,11 @@ class VoiceoverScript : Script
             if (index == text.Count - 1)
             {
                 if (shouldDisableWeapon)
-                {
                     playerWeaponController.EnableShooting();
-                    dialogueUI.alpha = 0f;
-                }
-
+                dialogueUI.alpha = 0f;
                 return;
             }
-
+            dialogueUI.alpha = 1f;
             voiceOverTextUI?.SetText(text[++index]);
             callbackRecursive();
         };

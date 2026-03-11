@@ -381,6 +381,9 @@ void SetInteger(System::String^ name, int value);
 
 void PlayAnimation(System::String^ name);
 
+void ClearExecutedAnimationEvents();
+void SetFrame(int frame);
+
 ManagedComponentEnd()
 
 // ======================================

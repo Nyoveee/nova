@@ -66,7 +66,7 @@ public:
 	void depthPrePass(FrameBuffer const& frameBuffer);
 
 	// generates the SSAO texture.
-	void generateSSAO(FrameBuffer const& frameBuffer, Camera const& camera);
+	void generateSSAO(FrameBuffer const& frameBuffer, GLuint normalMapTextureId, Camera const& camera);
 
 	// initialise the sample kernel and noise texture used in SSAO
 	void initialiseSSAO();
@@ -213,10 +213,10 @@ private:
 	// render all models (normal and skinned).
 	void renderModels(RenderPass renderPass, std::optional<GLuint> depthTextureId);
 
-	void renderTranslucentModels(FrameBuffer const& frameBuffer);
+	void renderTranslucentModels(PairFrameBuffer const& frameBuffers);
 
-	void renderDepthTranslucentModels(FrameBuffer const& frameBuffer);
-	void renderOITTransculentModels(FrameBuffer const& frameBuffer);
+	void renderDepthTranslucentModels(PairFrameBuffer const& frameBuffers);
+	void renderOITTransculentModels(PairFrameBuffer const& frameBuffers);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text, ColorA const& colorMultiplier);
@@ -250,6 +250,9 @@ private:
 
 	// Calls the relevant compute shader Pre Post Process
 	void computeFog(PairFrameBuffer& frameBuffers, Fog const& fog, Camera const& camera);
+
+	// renders fog post processing effect..
+	void renderFog(PairFrameBuffer& frameBuffers);
 
 	// renders post processing effect on the pair framebuffer
 	void renderPostProcessing(PairFrameBuffer& frameBuffers);
@@ -485,6 +488,7 @@ public:
 	Shader bloomFinalShader;
 
 	Shader postprocessingShader;
+	Shader fogShader;
 
 	Shader shadowMapShader;
 	// Shader depthGBufferShader;

@@ -225,6 +225,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	bloomUpSampleShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomUpSample.frag" },
 	bloomFinalShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomFinal.frag" },
 	postprocessingShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/postprocessing.frag" },
+	fogShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/fog.frag" },
 	gridShader						{ "System/Shader/grid.vert",						"System/Shader/grid.frag" },
 	outlineShader					{ "System/Shader/outline.vert",						"System/Shader/outline.frag" },
 	debugShader						{ "System/Shader/debug.vert",						"System/Shader/debug.frag" },
@@ -293,18 +294,18 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	haltonFrameIndex				{},
 	ssaoNoiseTextureId				{ INVALID_ID },
 	videoVAO						{},
-	hdrExposure						{ 0.9f },				 // color..     gbuffer stuff..				transparency..				depth transparency..
-															 // main		normal			velocity	accumulation	revealage,	main color..
-	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8,		GL_RGBA16F } },
-	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8,		GL_RGBA16F } },
-	uiMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA8 } },
-	physicsDebugFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8 } },
-	objectIdFrameBuffer				{ gameWidth, gameHeight, { GL_R32UI } },
-	uiObjectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
+	hdrExposure						{ 0.9f },				 // color..     gbuffer stuff..					transparency..				depth transparency..
+															 // main		normal				velocity	accumulation	revealage,	main color..
+	editorMainFrameBuffer			{ gameWidth, gameHeight, GL_RGBA16F,	{ GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8,		GL_RGBA16F } },
+	gameMainFrameBuffer				{ gameWidth, gameHeight, GL_RGBA16F,	{ GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8,		GL_RGBA16F } },
+	uiMainFrameBuffer				{ gameWidth, gameHeight, GL_RGBA8 },
+	physicsDebugFrameBuffer			{ gameWidth, gameHeight, GL_RGBA8 },
+	objectIdFrameBuffer				{ gameWidth, gameHeight, GL_R32UI },
+	uiObjectIdFrameBuffer			{ gameWidth, gameHeight, GL_R32UI },
 	bloomFrameBuffer				{ gameWidth, gameHeight, 5 },
 	ssaoFrameBuffer					{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
-	cubeMapFrameBuffer				{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, { GL_RGBA16F, GL_RGB8_SNORM, GL_RG16F } },
-	diffuseIrradianceMapFrameBuffer	{ DIFFUSE_IRRADIANCE_MAP_WIDTH, DIFFUSE_IRRADIANCE_MAP_HEIGHT },
+	cubeMapFrameBuffer				{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, GL_RGBA16F },
+	diffuseIrradianceMapFrameBuffer	{ DIFFUSE_IRRADIANCE_MAP_WIDTH, DIFFUSE_IRRADIANCE_MAP_HEIGHT, GL_RGBA16F },
 	directionalLightShadowFBO		{ DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT },
 	shadowFBO						{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
 	spotlightShadowMaps				{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT32F, MAX_SPOTLIGHT_SHADOW_CASTER },
@@ -505,7 +506,7 @@ GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
 	int yOffset = static_cast<int>(normalisedPosition.y * objectIdFrameBuffer.getHeight());	// y offset
 
 	glGetTextureSubImage(
-		objectIdFrameBuffer.textureIds()[0], 
+		objectIdFrameBuffer.textureId(), 
 		0,					// mipmap level (0 = base image)
 		xOffset,			// x offset
 		yOffset,			// y offset
@@ -527,7 +528,7 @@ GLuint Renderer::getObjectUiId(glm::vec2 normalisedPosition) const {
 	int yOffset = static_cast<int>(normalisedPosition.y * uiObjectIdFrameBuffer.getHeight());	// y offset
 
 	glGetTextureSubImage(
-		uiObjectIdFrameBuffer.textureIds()[0],
+		uiObjectIdFrameBuffer.textureId(),
 		0,					// mipmap level (0 = base image)
 		xOffset,			// x offset
 		yOffset,			// y offset
@@ -736,6 +737,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 
 	// We clear this pair frame buffer..
 	frameBuffers.clearFrameBuffers();
+	frameBuffers.getActiveFrameBuffer().disableOtherColorAttachments();
 
 	// We upload camera data to the UBO..
 	updateCameraUBO(camera);
@@ -774,7 +776,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	depthPrePass(frameBuffers.getActiveFrameBuffer());
 
 	// We generate SSAO texture for forward rendering later..
-	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers.getActiveFrameBuffer(), camera);
+	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers.getActiveFrameBuffer(), frameBuffers.textureIds()[0], camera);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
@@ -789,17 +791,18 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	// We provide the current depth texture as well, since we did a depth pre pass earlier..
 	renderModels(RenderPass::ColorPass, frameBuffers.getActiveFrameBuffer().depthStencilId());
 
+	renderFog(frameBuffers);
+
 	// Transparent depth test...
 	glDepthFunc(GL_LEQUAL);
 
-	renderTranslucentModels(frameBuffers.getActiveFrameBuffer());
+	renderTranslucentModels(frameBuffers);
 
 	// Render particles
 	renderParticles();
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
-
 	setBlendMode(BlendingConfig::Disabled);
 
 	// Resolve TAA for anti-aliasing..
@@ -904,7 +907,7 @@ void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
 
 	// We bind with the original scene..
 	bloomDownSampleShader.setImageUniform("srcTexture", 0);
-	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().textureIds()[0]);
+	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().textureId());
 
 	// Progressively down sample through the mip chain
 	for (auto&& mip : mipChain) {
@@ -966,8 +969,8 @@ void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
 	bloomFinalShader.use();
-	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);	// original scene
-	glBindTextureUnit(1, bloomFrameBuffer.getMipChain()[0].id);					// blurred bright
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureId());	// original scene
+	glBindTextureUnit(1, bloomFrameBuffer.getMipChain()[0].id);				// blurred bright
 
 	bloomFinalShader.setImageUniform("scene", 0);
 	bloomFinalShader.setImageUniform("bloomBlur", 1);
@@ -1088,13 +1091,13 @@ void Renderer::depthPrePass(FrameBuffer const& frameBuffer) {
 	renderModels(RenderPass::DepthPrePass, std::nullopt);
 
 	// Reset color attachment active back to original..
-	frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
+	frameBuffer.disableOtherColorAttachments();	// we restore back to default, writing to the 1st color attachment
 
 	// Reset PBR UBO uniform..
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
 }
 
-void Renderer::generateSSAO(FrameBuffer const& frameBuffer, [[maybe_unused]] Camera const& camera) {
+void Renderer::generateSSAO(FrameBuffer const& frameBuffer, GLuint normalMapTextureId, [[maybe_unused]] Camera const& camera) {
 	// ========================================================================================
 	// 1. We first generate the SSAO texture using the random kernels, depth and normal map.
 	// ========================================================================================
@@ -1112,7 +1115,7 @@ void Renderer::generateSSAO(FrameBuffer const& frameBuffer, [[maybe_unused]] Cam
 	glBindTextureUnit(0, frameBuffer.depthStencilId());
 	ssaoShader.setImageUniform("depthMap", 0);
 
-	glBindTextureUnit(1, frameBuffer.textureIds()[1]);
+	glBindTextureUnit(1, normalMapTextureId);
 	ssaoShader.setImageUniform("normalMap", 1);
 
 	glBindTextureUnit(2, ssaoNoiseTextureId);
@@ -1131,7 +1134,7 @@ void Renderer::generateSSAO(FrameBuffer const& frameBuffer, [[maybe_unused]] Cam
 
 	gaussianBlurShader.use();
 
-	glBindTextureUnit(0, ssaoFrameBuffer.getReadFrameBuffer().textureIds()[0]);
+	glBindTextureUnit(0, ssaoFrameBuffer.getReadFrameBuffer().textureId());
 	gaussianBlurShader.setImageUniform("image", 0);
 
 	// first horizontal blur pass
@@ -1142,7 +1145,7 @@ void Renderer::generateSSAO(FrameBuffer const& frameBuffer, [[maybe_unused]] Cam
 	ssaoFrameBuffer.swapFrameBuffer();
 	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFrameBuffer.getActiveFrameBuffer().fboId());
 
-	glBindTextureUnit(0, ssaoFrameBuffer.getReadFrameBuffer().textureIds()[0]);
+	glBindTextureUnit(0, ssaoFrameBuffer.getReadFrameBuffer().textureId());
 	gaussianBlurShader.setImageUniform("image", 0);
 
 	// second vertical blur pass
@@ -1264,15 +1267,15 @@ void Renderer::submitSelectedObjects(std::vector<entt::entity> const& entities) 
 }
 
 GLuint Renderer::getEditorFrameBufferTexture() const {
-	return editorMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
+	return editorMainFrameBuffer.getActiveFrameBuffer().textureId();
 }
 
 GLuint Renderer::getGameFrameBufferTexture() const {
-	return gameMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
+	return gameMainFrameBuffer.getActiveFrameBuffer().textureId();
 }
 
 GLuint Renderer::getUIFrameBufferTexture() const {
-	return uiMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
+	return uiMainFrameBuffer.getActiveFrameBuffer().textureId();
 }
 
 GLuint Renderer::getUBOId() const {
@@ -2072,12 +2075,14 @@ void Renderer::renderModels(RenderPass renderPass, std::optional<GLuint> depthTe
 	}
 }
 
-void Renderer::renderTranslucentModels(FrameBuffer const& frameBuffer) {
-	renderOITTransculentModels(frameBuffer);
-	renderDepthTranslucentModels(frameBuffer);
+void Renderer::renderTranslucentModels(PairFrameBuffer const& frameBuffers) {
+	renderOITTransculentModels(frameBuffers);
+	renderDepthTranslucentModels(frameBuffers);
 }
 
-void Renderer::renderDepthTranslucentModels(FrameBuffer const& frameBuffer) {
+void Renderer::renderDepthTranslucentModels(PairFrameBuffer const& frameBuffers) {
+	FrameBuffer const& frameBuffer = frameBuffers.getActiveFrameBuffer();
+
 	// We cache the previous material and entity..
 	auto previousMaterialId = INVALID_RESOURCE_ID;
 	auto previousEntity = entt::null;
@@ -2122,7 +2127,7 @@ void Renderer::renderDepthTranslucentModels(FrameBuffer const& frameBuffer) {
 		}
 
 		// Reset color attachment active back to original..
-		frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
+		frameBuffer.disableOtherColorAttachments();	// we restore back to default, writing to the 1st color attachment
 
 		// Reset PBR UBO uniforms..
 		glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
@@ -2135,7 +2140,7 @@ void Renderer::renderDepthTranslucentModels(FrameBuffer const& frameBuffer) {
 		overlayShader.use();
 
 		// Bind the depth transparency texture..
-		glBindTextureUnit(0, frameBuffer.textureIds()[DEPTH_TRANSPARENCY_ATTACHMENT_INDEX]);
+		glBindTextureUnit(0, frameBuffers.textureIds()[DEPTH_TRANSPARENCY_ATTACHMENT_INDEX - 1]);
 
 		overlayShader.setImageUniform("overlay", 0);
 
@@ -2144,7 +2149,9 @@ void Renderer::renderDepthTranslucentModels(FrameBuffer const& frameBuffer) {
 	}
 }
 
-void Renderer::renderOITTransculentModels(FrameBuffer const& frameBuffer) {
+void Renderer::renderOITTransculentModels(PairFrameBuffer const& frameBuffers) {
+	FrameBuffer const& frameBuffer = frameBuffers.getActiveFrameBuffer();
+
 	// ==============================================================
 	// 2. Rendering OIT..
 	// ==============================================================
@@ -2198,7 +2205,7 @@ void Renderer::renderOITTransculentModels(FrameBuffer const& frameBuffer) {
 		}
 
 		// Reset color attachment active back to original..
-		frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
+		frameBuffer.disableOtherColorAttachments();	// we restore back to default, writing to the 1st color attachment
 
 		// Reset PBR UBO uniforms..
 		glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
@@ -2212,8 +2219,8 @@ void Renderer::renderOITTransculentModels(FrameBuffer const& frameBuffer) {
 		weightedBlendingCompositeShader.use();
 
 		// Bind the respective textures..
-		glBindTextureUnit(0, frameBuffer.textureIds()[ACCUMULATION_COLOR_ATTACHMENT_INDEX]);
-		glBindTextureUnit(1, frameBuffer.textureIds()[REVEALAGE_COLOR_ATTACHMENT_INDEX]);
+		glBindTextureUnit(0, frameBuffers.textureIds()[ACCUMULATION_COLOR_ATTACHMENT_INDEX - 1]);
+		glBindTextureUnit(1, frameBuffers.textureIds()[REVEALAGE_COLOR_ATTACHMENT_INDEX - 1]);
 
 		weightedBlendingCompositeShader.setImageUniform("accum", 0);
 		weightedBlendingCompositeShader.setImageUniform("reveal", 1);
@@ -3161,14 +3168,14 @@ void Renderer::resolveTAA(PairFrameBuffer& frameBuffers, GLuint historyTexture) 
 	TAAResolveShader.use();
 
 	// Bind main scene to texture 1..
-	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureId());
 	TAAResolveShader.setImageUniform("scene", 0);
 
 	// Bind history texture..
 	glBindTextureUnit(1, historyTexture);
 	TAAResolveShader.setImageUniform("historyTexture", 1);
 
-	glBindTextureUnit(2, frameBuffers.getMotionTexture());
+	glBindTextureUnit(2, frameBuffers.textureIds()[1]);
 	TAAResolveShader.setImageUniform("velocityUvTexture", 2);
 
 	// Render fullscreen quad
@@ -3176,7 +3183,7 @@ void Renderer::resolveTAA(PairFrameBuffer& frameBuffers, GLuint historyTexture) 
 
 	// Update history texture!!
 	glCopyImageSubData(
-		frameBuffers.getActiveFrameBuffer().textureIds()[0], GL_TEXTURE_2D, 0, 0, 0, 0,
+		frameBuffers.getActiveFrameBuffer().textureId(), GL_TEXTURE_2D, 0, 0, 0, 0,
 		historyTexture, GL_TEXTURE_2D, 0, 0, 0, 0,
 		gameWidth, gameHeight, 1
 	);
@@ -3500,7 +3507,7 @@ void Renderer::hdrAndGammaCorrection(PairFrameBuffer& frameBuffers, bool toToneM
 	toneMappingShader.setFloat("gamma", renderConfig.gamma);
 
 	// Bind the HDR texture from main framebuffer
-	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureId());
 	toneMappingShader.setImageUniform("hdrBuffer", 0);
 
 	// Render fullscreen quad
@@ -3533,6 +3540,50 @@ void Renderer::computeFog(PairFrameBuffer& frameBuffers, Fog const& fog, Camera 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
+void Renderer::renderFog(PairFrameBuffer& frameBuffers) {
+	// Set up fog..
+	if (!renderConfig.toEnableFog) {
+		return;
+	}
+
+	for (auto&& [entityId, entityData, fog] : registry.view<EntityData, Fog>().each()) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Fog>(entityId)) {
+			continue;
+		}
+
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_DEPTH_TEST);
+		setBlendMode(BlendingConfig::Disabled);
+
+		frameBuffers.swapFrameBuffer();
+
+		// we reattach color attachments..
+		frameBuffers.attachColorAttachments();
+
+		// Bind the post-processing framebuffer for LDR output
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
+
+		// Set up tone mapping shader
+		fogShader.use();
+
+		// Bind the HDR texture from main framebuffer
+		glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureId());
+		glBindTextureUnit(1, frameBuffers.getDepthTextureId());
+
+		fogShader.setImageUniform("scene", 0);
+		fogShader.setImageUniform("depthTexture", 1);
+
+		fogShader.setVec3("fogColor", fog.fogInscatteringColor);
+		fogShader.setFloat("fogNear", fog.startDistance);
+		fogShader.setFloat("fogFar", fog.endDistance);
+		fogShader.setFloat("fogDensity", fog.inscatteringDensity);
+
+		// Render fullscreen quad
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		return;
+	}
+}
+
 void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
 #if !defined(NOVA_INSTALLER)
 	ZoneScoped;
@@ -3547,32 +3598,11 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
 	postprocessingShader.use();
 
 	// Bind the HDR texture from main framebuffer
-	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureId());
 	glBindTextureUnit(1, frameBuffers.getDepthTextureId());
 
 	postprocessingShader.setImageUniform("scene", 0);
 	postprocessingShader.setImageUniform("depthTexture", 1);
-
-	// Set up fog..
-	[&]() {
-		if (renderConfig.toEnableFog) {
-			for (auto&& [entityId, entityData, fog] : registry.view<EntityData, Fog>().each()) {
-				if (!entityData.isActive || !engine.ecs.isComponentActive<Fog>(entityId)) {
-					continue;
-				}
-
-				postprocessingShader.setBool("isFogEnabled", true);
-				postprocessingShader.setVec3("fogColor", fog.fogInscatteringColor);
-				postprocessingShader.setFloat("fogNear", fog.startDistance);
-				postprocessingShader.setFloat("fogFar", fog.endDistance);
-				postprocessingShader.setFloat("fogDensity", fog.inscatteringDensity);
-
-				return;
-			}
-		}
-
-		postprocessingShader.setBool("isFogEnabled", false);
-	}();
 
 	// Vignette
 	postprocessingShader.setFloat("vignette", vignette);
@@ -3614,7 +3644,7 @@ void Renderer::setupMaterial(Material const& material, CustomShader const& custo
 	{
 		// setup SSAO
 		if (renderConfig.toEnableSSAO) {
-			glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureIds()[0]); //	SSAO.. (sampler2D)
+			glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureId()); //	SSAO.. (sampler2D)
 		}
 
 		// setup spotlight shadow

@@ -767,7 +767,7 @@ class GameUIManager : Script
         Vector3 eulerAngles = Rotation.ToEuler(initialDeathRotation);
 
         System.Random random = new System.Random();
-        float angle = random.Next(0, 2) == 0 ? 90f * Mathf.Deg2Rad : 90f * Mathf.Deg2Rad;
+        float angle = random.Next(0, 2) == 0 ? -90f * Mathf.Deg2Rad : 90f * Mathf.Deg2Rad;
 
         eulerAngles = new Vector3(eulerAngles.x, eulerAngles.y, angle);
 

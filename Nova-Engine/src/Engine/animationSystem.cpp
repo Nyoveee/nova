@@ -161,6 +161,58 @@ void AnimationSystem::resetSequence(Sequence& sequence) {
 	}
 }
 
+void AnimationSystem::setAnimationFrame(Animator& animator, int frame) {
+	// retrieve the current animation based on current node..
+	auto&& [animation, __] = resourceManager.getResource<Model>(animator.currentAnimation);
+
+	// Get controller resource..
+	auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
+
+	if (!controllerPtr) {
+		Logger::warn("Invalid controller when attempting to set frame.");
+		return;
+	}
+
+	Controller const& controller = *controllerPtr;
+	auto&& nodes = controller.getNodes();
+	auto iterator = nodes.find(animator.currentNode);
+
+	// if current node is invalid, we do nothing.. (this shouldn't happen)
+	if (iterator == nodes.end()) {
+		assert(false && "Animator's current node is pointing to an invalid node?");
+		return;
+	}
+
+	// set the current animation..
+	auto&& [id, currentNode] = *iterator;
+
+	if (!animation || animation->animations.empty()) {
+		Logger::warn("Invalid animation when attempting to set animation frame");
+		return;
+	}
+
+	if (frame > animation->animations[0].durationInTicks || frame < 0) {
+		Logger::warn("Requested set frame: {} is out of bound. Max frame in this animations is {}.", frame, animation->animations[0].durationInTicks);
+		return;
+	}
+
+	// Convert from frame to seconds..
+	float seconds = static_cast<float>(frame) / animation->animations[0].ticksPerSecond;
+	
+	// Clear animation events for frames after this set frame attempt..
+	for (auto&& animationEvent : currentNode.animationEvents) {
+		if (frame <= animationEvent.key) {
+			animator.executedAnimationEvents.erase(animationEvent.key);
+		}
+	};
+
+	animator.timeElapsed = seconds;
+}
+
+void AnimationSystem::clearExecutedAnimationEvents(Animator& animator) {
+	animator.executedAnimationEvents.clear();
+}
+
 void AnimationSystem::updateSequencer(entt::entity entityId, Sequence& sequence, Sequencer& sequencer, float dt) {
 	// advance sequencer..
 	if (
@@ -272,17 +324,21 @@ void AnimationSystem::updateAnimator(float dt) {
 		}
 		else {
 			// advance time..
-			animator.timeElapsed += dt * std::max(0.f, animator.speedMultiplier);
+			animator.timeElapsed += dt * animator.speedMultiplier;
+			
+			if (animator.timeElapsed < 0) animator.timeElapsed = 0;
 
 			// trigger animation event if possible..
 			int frameIndex = static_cast<int>(animator.timeElapsed * animation->animations[0].ticksPerSecond);
 
-			for (auto&& animationEvent : currentNode.animationEvents) {
-				if (frameIndex > animationEvent.key && !animator.executedAnimationEvents.count(animationEvent.key)) {
-					animator.executedAnimationEvents.insert(animationEvent.key);
-					engine.scriptingAPIManager.executeFunction(entityId, animationEvent.scriptId, animationEvent.functionName);
-				}
-			};
+			if (animator.speedMultiplier > 0) {
+				for (auto&& animationEvent : currentNode.animationEvents) {
+					if (frameIndex > animationEvent.key && !animator.executedAnimationEvents.count(animationEvent.key)) {
+						animator.executedAnimationEvents.insert(animationEvent.key);
+						engine.scriptingAPIManager.executeFunction(entityId, animationEvent.scriptId, animationEvent.functionName);
+					}
+				};
+			}
 		}
 	}
 }

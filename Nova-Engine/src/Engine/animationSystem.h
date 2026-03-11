@@ -42,6 +42,9 @@ public:
 	ENGINE_DLL_API void resetSequence(Sequence& sequence, Sequencer& sequencer);
 	ENGINE_DLL_API void resetSequence(Sequence& sequence);
 
+	ENGINE_DLL_API void setAnimationFrame(Animator& animator, int frame);
+	ENGINE_DLL_API void clearExecutedAnimationEvents(Animator& animator);
+
 private:
 	ENGINE_DLL_API void handleTransition(Animator& animator, Controller::Node const& currentNode, Controller const& controller);
 

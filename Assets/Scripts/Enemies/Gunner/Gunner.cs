@@ -81,6 +81,7 @@ class Gunner : Enemy
     // This function is invoked every fixed update.
     protected override void update()
     {
+        Debug.Log(gunnerState.ToString()    );
         base.update();
         updateState[gunnerState]();
         FlushDamageEnemy();
@@ -123,6 +124,8 @@ class Gunner : Enemy
             Invoke(() => {
                 if (gunnerState != GunnerState.Death)
                     gunnerState = originalState;
+                if(gunnerState == GunnerState.Walk)
+                    MoveToNavMeshPosition(targetVantagePoint.transform.position);
             }, movementStaggerTime);
         }
     }
@@ -266,6 +269,7 @@ class Gunner : Enemy
     **********************************************************************/
     private void Update_Spawning()
     {
+        physicsRigidbody.SetLinearDamping(0);
         if (IsTouchingGround())
         {
             ActivateNavMeshAgent();
@@ -369,11 +373,6 @@ class Gunner : Enemy
         Vector3 direction = playerHead.transform.position - projectileSpawnPoint.transform.position;
         direction.Normalize();
         projectile.getScript<GunnerProjectile>().SetDirection(direction);
-    }
-    public void EndStagger()
-    {
-        gunnerState = GunnerState.Idle;
-        animator.PlayAnimation("Gunner_Idle");
     }
     public void BeginJump()
     {
