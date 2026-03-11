@@ -1,5 +1,5 @@
 {
-    "RootEntity": 17,
+    "RootEntity": 9,
     "Entities": [
         {
             "EntityData": {
@@ -8,12 +8,12 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    18,
-                    22
+                    10,
+                    14
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 12448935114624401603,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -71,28 +71,28 @@
                             {
                                 "name": "landing",
                                 "data": {
-                                    "__variant_value": 18,
+                                    "__variant_value": 10,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "air",
                                 "data": {
-                                    "__variant_value": 22,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "light",
                                 "data": {
-                                    "__variant_value": 19,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "landingFireEmitter",
                                 "data": {
-                                    "__variant_value": 19,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             }
@@ -100,22 +100,22 @@
                     }
                 ]
             },
-            "id": 17
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Landing",
                 "tag": "",
-                "parent": 17,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": [
-                    19,
-                    20,
-                    21
+                    11,
+                    12,
+                    13
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 15331238876150874315,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -165,18 +165,18 @@
                     "z": 0.0
                 }
             },
-            "id": 18
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Landing Fire",
                 "tag": "",
-                "parent": 18,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 17637081885364355273,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -272,7 +272,7 @@
                 "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 0.0,
-                "burstAmount": 500,
+                "burstAmount": 100,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -365,18 +365,18 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 19
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Landing Smoke Ring",
                 "tag": "",
-                "parent": 18,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 15331238876147548359,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -542,18 +542,18 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 20
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Landing Smoke",
                 "tag": "",
-                "parent": 18,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 14178317371536031941,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -611,7 +611,7 @@
                 "startSpeed": 20.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
-                "minInitialRotationOffset": -2.7039207948452943e+26,
+                "minInitialRotationOffset": 0.0,
                 "maxInitialRotationOffset": 9.304621803116785e-43,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": -3.140000104904175,
@@ -626,7 +626,7 @@
                 "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
                 "burstRate": 0.0,
-                "burstAmount": 1000,
+                "burstAmount": 200,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -719,22 +719,22 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 21
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Air",
                 "tag": "",
-                "parent": 17,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": [
-                    23,
-                    24,
-                    25
+                    15,
+                    16,
+                    17
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 15331238876157411537,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -784,18 +784,18 @@
                     "z": 0.0
                 }
             },
-            "id": 22
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Smoke Trail",
                 "tag": "",
-                "parent": 22,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 4378484582393790675,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -961,18 +961,18 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 23
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "Fire Trail",
                 "tag": "",
-                "parent": 22,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 4378484582393790675,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1138,18 +1138,18 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 24
+            "id": 16
         },
         {
             "EntityData": {
                 "name": "Spark",
                 "tag": "",
-                "parent": 22,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 17191955598004732117,
+                "prefabID": 5662740551944257769,
                 "entityGUID": 1051054533505335507,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1315,7 +1315,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 25
+            "id": 17
         }
     ]
 }
