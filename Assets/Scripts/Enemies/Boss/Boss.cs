@@ -31,7 +31,7 @@ public class Boss : Enemy
     [SerializableField]
     private GameObject mainLauncher = null;
     [SerializableField]
-    private List<GameObject> sideLauncher;
+    private List<GameObject> sideLauncher = null;
     [SerializableField]
     private GameObject meleeAttackPosition = null;
 
@@ -44,6 +44,12 @@ public class Boss : Enemy
     private Prefab missilePrefab = null;
     [SerializableField]
     private Prefab meleeWavePrefab = null;
+
+    /***********************************************************
+    Ability Prefabs
+    ***********************************************************/
+    [SerializableField]
+    private Animator_ bossAnimator = null;
 
     /***********************************************************
     Private Variables (made public cause of ability sequencer)
@@ -401,7 +407,7 @@ public class Boss : Enemy
         float minimalAngle = -(angle / 2.0f);
 
 
-
+        animator.SetBool("TriggerAttack", false);
         for (int i = 0; i < count; i++)
         {
 
@@ -420,6 +426,28 @@ public class Boss : Enemy
     }
 
 
+
+    public void TriggerMeleeAttackAnimation()
+    {
+        
+        animator.PlayAnimation("Boss_Attack");
+        AdvanceToNextSequence();
+    }
+
+
+    public void ReturnToIdle()
+    {
+        animator.speedMultiplier = 1.0f;
+        animator.PlayAnimation("Boss_Idle");
+    }
+
+
+    public void AwaitAnimation()
+    { 
+        //Do nothing until animation advances this state
+    
+    }
+
     //Use with a lambda to delay action
     public void DelayedSequence( float delayTime)
     { 
@@ -428,6 +456,12 @@ public class Boss : Enemy
         {
             AdvanceToNextSequence();
         }
+    }
+
+    public void AnimationSpeedAdjustment(float value)
+    {
+        animator.speedMultiplier = value;
+        AdvanceToNextSequence();
     }
 
 
@@ -548,7 +582,10 @@ public class Boss : Enemy
             this.boss = boss;
 
             sequence.Add(boss.RotateToPlayerFully);
+            sequence.Add(boss.TriggerMeleeAttackAnimation);
+            sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.FannedMeleeAttack);
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(1.5f); });
             sequence.Add( () => { boss.DelayedSequence(0.5f); }); //quick way to delay action
         }
 
@@ -579,6 +616,7 @@ public class Boss : Enemy
     //Helper function to advance to the next sequence in the ability
     public void AdvanceToNextSequence()
     {
+        //Debug.Log("Advance to Next Squence");
         sequenceIndexer++;
         abilitytimeElapsed = 0;
     
