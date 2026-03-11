@@ -34,9 +34,9 @@ class EnemyCannon : Script
     [SerializableField]
     private float cannonChargeTime;
     [SerializableField]
-    private MeshRenderer_ cannonMeshRenderer;
-    [SerializableField]
     private MeshRenderer_ cannonBarrelMeshRenderer;
+    [SerializableField]
+    private GameObject firingPoint;
     [SerializableField]
     private Transform_ playerbody;
     [SerializableField]
@@ -88,7 +88,7 @@ class EnemyCannon : Script
             if(currentShootCooldown <= 0)
             {
                 GetTargetingLocation();
-                PrepareEnemyCannon();
+                EstimateCannonRotation();
                 return;
             }
         }
@@ -98,7 +98,7 @@ class EnemyCannon : Script
         {
             shotsQueued--;
             GetTargetingLocation();
-            PrepareEnemyCannon();
+            EstimateCannonRotation();
         }
 
         // Cannon Firing
@@ -168,10 +168,11 @@ class EnemyCannon : Script
     }
     private void Fire() {
         enemyObject.SetActive(true);
+        enemyObject.transform.position = firingPoint.transform.position;
         waveManager.getScript<CannonWaveManager>().RegisterEnemy(enemyObject);
-        //currentShootCooldown = Random.Range(minTimeShootCooldown, maxTimeShootCooldown);
 
         // Set the velocity
+        GetTrajectory(firingPoint.transform.position);
         Rigidbody_ enemyRigidbody = enemyObject.getComponent<Rigidbody_>();
         enemyRigidbody.SetVelocity(targetVelocity);
 
@@ -186,30 +187,17 @@ class EnemyCannon : Script
         light.enable = true;
         currentLightTime = fire.lifeTime;
         b_IsCharging = false;
-        cannonMeshRenderer.setMaterialBool(1, "isActive", false);
         cannonBarrelMeshRenderer.setMaterialBool(1, "isActive", false);
     }
-    private void PrepareEnemyCannon()
+    // Rotation may look slightly different close up but it's good enough for now
+    private void EstimateCannonRotation()
     {
         // Setup Components
-        enemyObject = Instantiate(enemyPrefab,gameObject.transform.position);
+        enemyObject = Instantiate(enemyPrefab);
         enemyObject.transform.position -= new Vector3(0,enemyObject.transform.scale.y / 2f,0);
         enemyObject.SetActive(false);
-        Rigidbody_ enemyRigidbody = enemyObject.getComponent<Rigidbody_>();
 
-        // Physics Params
-        arcTime = Random.Range(minArcTime, maxArcTime);
-        float gravity = -PhysicsAPI.GetGravity() * enemyRigidbody.GetGravityFactor();
-        Vector3 startPosition = gameObject.transform.position;
-        Vector3 endPosition = targetPosition;
-        Vector3 displacement = endPosition - startPosition;
-
-        // Horizontal
-        targetVelocity = new Vector3(displacement.x, 0, displacement.z) / arcTime;
-
-        // Vertical
-        float yVelocity = (displacement.y - 0.5f * gravity * arcTime * arcTime) / arcTime;
-        targetVelocity += new Vector3(0, yVelocity, 0);
+        GetTrajectory(gameObject.transform.position);
         
         // Set the rotation
         Vector3 targetDirection = targetVelocity;
@@ -219,22 +207,35 @@ class EnemyCannon : Script
         startCannonBarrelRotation = cannonBarrelMeshRenderer.gameObject.transform.rotation;
 
         targetRotation = Quaternion.LookRotation(targetDirection);
-        
-        Vector3 eulerAngle = Rotation.ToEuler(targetRotation);  // targetRotation;
-
+        Vector3 eulerAngle = Rotation.ToEuler(targetRotation); 
         eulerAngle = new Vector3(180f * Mathf.Deg2Rad, eulerAngle.y, eulerAngle.z);
-
         targetRotation = Rotation.ToQuaternion(eulerAngle);
-        // targetRotation.Normalize();
 
         targetCannonBarrelRotation = Quaternion.LookRotation(-targetDirection);
 
         // Set the timers
         currentTurningTime = 0;
     }
+   
+    private void GetTrajectory(Vector3 origin)
+    {
+        // Physics Params
+        Rigidbody_ enemyRigidbody = enemyObject.getComponent<Rigidbody_>();
+        arcTime = Random.Range(minArcTime, maxArcTime);
+        float gravity = -PhysicsAPI.GetGravity() * enemyRigidbody.GetGravityFactor();
+        Vector3 startPosition = origin;
+        Vector3 endPosition = targetPosition;
+        Vector3 displacement = endPosition - startPosition;
+
+        // Horizontal
+        targetVelocity = new Vector3(displacement.x, 0, displacement.z) / arcTime;
+
+        // Vertical
+        float yVelocity = (displacement.y - 0.5f * gravity * arcTime * arcTime) / arcTime;
+        targetVelocity += new Vector3(0, yVelocity, 0);
+    }
     private void PrepareCharge()
     {
-        cannonMeshRenderer.setMaterialBool(1, "isActive", true);
         cannonBarrelMeshRenderer.setMaterialBool(1, "isActive", true);
         currentChargeTime = cannonChargeTime;
         charge.enable = true;
