@@ -22,7 +22,9 @@
 // PROPS -> (Enviromental colliders) objects around the room that is collidable should be in this category
 // PlayerGhost -> Allow player to collide with environment colliders but not moving category
 // AttackColliders -> Collides with player and enemy colliders, and environments , use for thrown weapons and attack hitboxes. I need this layer cause of player ghost
-				
+// Player -> Special interactions rules with environmental objects include player interactor only		
+// INTERACT_ONLY_WITH_PLAYER -> Objects that can only interact with player	
+
 
 // Layer that objects can be in, determines which other objects it can collide with
 // Typically you at least want to have 1 layer for moving bodies and 1 layer for static bodies, but you can have more
@@ -139,14 +141,15 @@ public:
 			return inLayer2 == BroadPhaseLayers::MOVING
 				|| inLayer2 == BroadPhaseLayers::ITEM
 				|| inLayer2 == BroadPhaseLayers::NON_MOVING
+				|| inLayer2 == BroadPhaseLayers::PLAYER
 				|| inLayer2 == BroadPhaseLayers::PLAYERGHOST;
-		case Layers::MOVING:
+		case Layers::MOVING:  // Moving collides with everything except item
 			return inLayer2 == BroadPhaseLayers::PROPS
 				|| inLayer2 == BroadPhaseLayers::WALL
 				|| inLayer2 == BroadPhaseLayers::FLOOR
 				|| inLayer2 == BroadPhaseLayers::NON_MOVING
 				|| inLayer2 == BroadPhaseLayers::MOVING
-				|| inLayer2 == BroadPhaseLayers::ATTACK_COLLIDERS;	 // Moving collides with everything except item
+				|| inLayer2 == BroadPhaseLayers::PLAYER;
 		case Layers::ITEM:
 			return inLayer2 == BroadPhaseLayers::NON_MOVING
 				|| inLayer2 == BroadPhaseLayers::ITEM_INTERACTOR
@@ -172,7 +175,7 @@ public:
 				|| inLayer2 == BroadPhaseLayers::WALL
 				|| inLayer2 == BroadPhaseLayers::FLOOR
 				|| inLayer2 == BroadPhaseLayers::ENEMY_HURTSPOT
-				|| inLayer2 == BroadPhaseLayers::MOVING
+				|| inLayer2 == BroadPhaseLayers::PLAYER
 				|| inLayer2 == BroadPhaseLayers::PLAYERGHOST;
 		case Layers::PLAYER:								// Player is basically moving but in another layer.. so that other layers can specifically interact with player only.
 			return inLayer2 == BroadPhaseLayers::PROPS
@@ -220,6 +223,7 @@ public:
 			return inObject2 == Layers::MOVING
 				|| inObject2 == Layers::ITEM
 				|| inObject2 == Layers::NON_MOVING
+				|| inObject2 == Layers::PLAYER
 				|| inObject2 == Layers::PLAYERGHOST;
 		case Layers::MOVING:
 			return inObject2 == Layers::PROPS
@@ -227,7 +231,7 @@ public:
 				|| inObject2 == Layers::FLOOR
 				|| inObject2 == Layers::NON_MOVING
 				|| inObject2 == Layers::MOVING
-				|| inObject2 == Layers::ATTACK_COLLIDERS;	 // Moving collides with everything except item
+				|| inObject2 == Layers::PLAYER;
 		case Layers::ITEM:
 			return inObject2 == Layers::NON_MOVING
 				|| inObject2 == Layers::ITEM_INTERACTOR
@@ -254,6 +258,7 @@ public:
 				|| inObject2 == Layers::FLOOR
 				|| inObject2 == Layers::ENEMY_HURTSPOT
 				|| inObject2 == Layers::MOVING
+				|| inObject2 == Layers::PLAYER
 				|| inObject2 == Layers::PLAYERGHOST;
 		case Layers::PLAYER:								// Player is basically moving but in another layer.. so that other layers can specifically interact with player only.
 			return inObject2 == Layers::PROPS

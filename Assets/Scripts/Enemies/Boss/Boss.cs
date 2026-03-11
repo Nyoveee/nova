@@ -44,6 +44,8 @@ public class Boss : Enemy
     private Prefab missilePrefab = null;
     [SerializableField]
     private Prefab meleeWavePrefab = null;
+    [SerializableField]
+    private Prefab pushFieldPrefab = null;
 
     /***********************************************************
     Ability Prefabs
@@ -103,10 +105,10 @@ public class Boss : Enemy
 
 
         AbilitySequence[] abilitySequences = {
-            new MeleeAttack(this),
+            //new MeleeAttack(this),
             new StationaryGroundSlam(this),
-            //new BasicGroundSlam(this),
-            new MissileBarrage(this)
+             //new StationaryGroundSlam(this),
+            //new MissileBarrage(this)
         };
 
         AbilityDeckStart.AddRange(abilitySequences);
@@ -354,6 +356,9 @@ public class Boss : Enemy
         //Debug.Log("Shockwave");
         AdvanceToNextSequence();
         Instantiate(shockwavePrefab, gameObject.transform.position, gameObject.transform.rotation);
+
+        Instantiate(pushFieldPrefab, gameObject.transform.position, gameObject.transform.rotation);
+
     }
 
     public void TriggerMissileAnimation()
