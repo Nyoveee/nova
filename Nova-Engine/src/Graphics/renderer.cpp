@@ -776,7 +776,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	depthPrePass(frameBuffers.getActiveFrameBuffer());
 
 	// We generate SSAO texture for forward rendering later..
-	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers.getActiveFrameBuffer(), camera);
+	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers.getActiveFrameBuffer(), frameBuffers.textureIds()[0], camera);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
@@ -1097,7 +1097,7 @@ void Renderer::depthPrePass(FrameBuffer const& frameBuffer) {
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &RenderOutputColor);
 }
 
-void Renderer::generateSSAO(FrameBuffer const& frameBuffer, [[maybe_unused]] Camera const& camera) {
+void Renderer::generateSSAO(FrameBuffer const& frameBuffer, GLuint normalMapTextureId, [[maybe_unused]] Camera const& camera) {
 	// ========================================================================================
 	// 1. We first generate the SSAO texture using the random kernels, depth and normal map.
 	// ========================================================================================
@@ -1115,7 +1115,7 @@ void Renderer::generateSSAO(FrameBuffer const& frameBuffer, [[maybe_unused]] Cam
 	glBindTextureUnit(0, frameBuffer.depthStencilId());
 	ssaoShader.setImageUniform("depthMap", 0);
 
-	glBindTextureUnit(1, frameBuffer.textureId());
+	glBindTextureUnit(1, normalMapTextureId);
 	ssaoShader.setImageUniform("normalMap", 1);
 
 	glBindTextureUnit(2, ssaoNoiseTextureId);

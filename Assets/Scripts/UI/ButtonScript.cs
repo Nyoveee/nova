@@ -61,6 +61,7 @@ class ButtonScript : Script
     // used by settings
     public void DisableSettingsUI()
     {
+        PlayerPrefs.Save();
         ToShowPopUI("Setting UI", false, false);
     }
 

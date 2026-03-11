@@ -24,13 +24,13 @@
             "name": "Boss_Idle",
             "animationEvents": null
         },
-        "11459708924338618557": {
-            "id": 11459708924338618557,
-            "animation": 11419818642480660481,
+        "1122593181366370491": {
+            "id": 1122593181366370491,
+            "animation": 13228268979737853953,
             "transitions": null,
             "toLoop": true,
-            "blendFactor": 0.02199999988079071,
-            "name": "Boss_Attack",
+            "blendFactor": 0.20000000298023224,
+            "name": "Boss_Missile",
             "animationEvents": null
         },
         "17800777199676096695": {
@@ -42,22 +42,13 @@
             "name": "Boss_Jump",
             "animationEvents": null
         },
-        "1122593181366370491": {
-            "id": 1122593181366370491,
-            "animation": 13228268979737853953,
+        "11459708924338618557": {
+            "id": 11459708924338618557,
+            "animation": 11419818642480660481,
             "transitions": null,
             "toLoop": true,
-            "blendFactor": 0.20000000298023224,
-            "name": "Boss_Missile",
-            "animationEvents": null
-        },
-        "18247882613543485919": {
-            "id": 18247882613543485919,
-            "animation": 718949274041958415,
-            "transitions": null,
-            "toLoop": false,
-            "blendFactor": 0.20000000298023224,
-            "name": "Boss_Death",
+            "blendFactor": 0.02199999988079071,
+            "name": "Boss_Attack",
             "animationEvents": null
         },
         "11459708924338585787": {
@@ -67,6 +58,15 @@
             "toLoop": true,
             "blendFactor": 0.0,
             "name": "Boss_Run",
+            "animationEvents": null
+        },
+        "18247882613543485919": {
+            "id": 18247882613543485919,
+            "animation": 718949274041958415,
+            "transitions": null,
+            "toLoop": false,
+            "blendFactor": 0.20000000298023224,
+            "name": "Boss_Death",
             "animationEvents": null
         }
     },
