@@ -387,3 +387,17 @@ void Systems::Quit()
 {
 	Interface::engine->quit();
 }
+
+Vector3 Rotation::ToEuler(Quaternion quat) {
+	glm::quat quaternion = quat.native();
+	EulerAngles eulerAngle = quaternion;
+
+	return Vector3{ eulerAngle.angles };
+}
+
+Quaternion Rotation::ToQuaternion(Vector3 eulerAngles) {
+	EulerAngles angles = eulerAngles.native();
+	glm::quat quat = angles;
+
+	return Quaternion{ quat };
+}

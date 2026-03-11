@@ -1,5 +1,5 @@
 {
-    "RootEntity": 24,
+    "RootEntity": 153,
     "Entities": [
         {
             "EntityData": {
@@ -8,7 +8,7 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    25
+                    154
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -81,28 +81,28 @@
                             {
                                 "name": "light",
                                 "data": {
-                                    "__variant_value": 28,
+                                    "__variant_value": 157,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "fireSmoke",
                                 "data": {
-                                    "__variant_value": 26,
+                                    "__variant_value": 155,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "fire",
                                 "data": {
-                                    "__variant_value": 28,
+                                    "__variant_value": 157,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "charge",
                                 "data": {
-                                    "__variant_value": 27,
+                                    "__variant_value": 156,
                                     "__variant_type": 4
                                 }
                             },
@@ -176,14 +176,14 @@
                             {
                                 "name": "cannonMeshRenderer",
                                 "data": {
-                                    "__variant_value": 24,
+                                    "__variant_value": 153,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "cannonBarrelMeshRenderer",
                                 "data": {
-                                    "__variant_value": 25,
+                                    "__variant_value": 154,
                                     "__variant_type": 4
                                 }
                             },
@@ -215,18 +215,18 @@
             "NavMeshModifier": {
                 "Area_Type": "Exclude"
             },
-            "id": 24
+            "id": 153
         },
         {
             "EntityData": {
                 "name": "Cannon Barrel",
                 "tag": "",
-                "parent": 24,
+                "parent": 153,
                 "attachedSocket": 65535,
                 "children": [
-                    26,
-                    27,
-                    28
+                    155,
+                    156,
+                    157
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -292,13 +292,13 @@
             "NavMeshModifier": {
                 "Area_Type": "Exclude"
             },
-            "id": 25
+            "id": 154
         },
         {
             "EntityData": {
                 "name": "Fire Smoke",
                 "tag": "",
-                "parent": 25,
+                "parent": 154,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -465,15 +465,17 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 26
+            "id": 155
         },
         {
             "EntityData": {
                 "name": "Charge",
                 "tag": "",
-                "parent": 25,
+                "parent": 154,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -642,15 +644,17 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 27
+            "id": 156
         },
         {
             "EntityData": {
                 "name": "Fire",
                 "tag": "",
-                "parent": 25,
+                "parent": 154,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -840,9 +844,11 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 28
+            "id": 157
         }
     ]
 }

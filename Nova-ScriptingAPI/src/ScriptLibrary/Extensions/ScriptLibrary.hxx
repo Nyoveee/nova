@@ -161,6 +161,12 @@ public:
 	static float Deg2Rad = (std::numbers::pi_v<float> *2) / 360.f;
 };
 
+public ref class Rotation {
+public:
+	static Vector3 ToEuler(Quaternion quat);
+	static Quaternion ToQuaternion(Vector3 eulerAngles);
+};
+
 // ======================================
 // This class is responsible for random functionality
 // ======================================

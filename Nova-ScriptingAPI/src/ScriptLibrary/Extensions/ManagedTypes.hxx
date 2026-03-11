@@ -158,6 +158,7 @@ static bool operator!=(ColorAlpha a, ColorAlpha b);
 static bool operator==(ColorAlpha a, ColorAlpha b);
 
 ManagedStructEnd(ColorAlpha, glm::vec4)
+
 // ======================================
 // This struct is responsible for Quartenion Types
 // ======================================
@@ -179,6 +180,9 @@ static Quaternion AngleAxis(float angle, Vector3 axis);
 static Quaternion RotateTowards(Quaternion current, Quaternion target, float angleDegrees);
 static float Angle(Quaternion a, Quaternion b);
 static Quaternion operator*(Quaternion lhs,Quaternion rhs);
+
+void Normalize();
+
 ManagedStructEnd(Quaternion, glm::quat)
 
 // ======================================

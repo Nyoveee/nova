@@ -221,6 +221,13 @@ float Quaternion::Angle(Quaternion a, Quaternion b)
 	return glm::degrees(angleRadians);
 }
 
+void Quaternion::Normalize() {
+	glm::quat quat = glm::normalize(native());
+	w = quat.w;
+	x = quat.x;
+	y = quat.y;
+	z = quat.z;
+}
 
 //Quaternion Quaternion::Slerp(Quaternion a, Quaternion b, float t) {
 //	return Quaternion{ glm::look(a.native(), b.native(), t) };

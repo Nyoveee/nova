@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 133,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    2,
-                    3,
-                    6,
-                    7
+                    134,
+                    135,
+                    136,
+                    139,
+                    140
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -104,13 +104,13 @@
                 },
                 "scaleWithTransform": true
             },
-            "id": 0
+            "id": 133
         },
         {
             "EntityData": {
                 "name": "Barge Platform",
                 "tag": "",
-                "parent": 0,
+                "parent": 133,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -203,13 +203,13 @@
                 },
                 "scaleWithTransform": true
             },
-            "id": 1
+            "id": 134
         },
         {
             "EntityData": {
                 "name": "Barge Platform",
                 "tag": "",
-                "parent": 0,
+                "parent": 133,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -302,17 +302,17 @@
                 },
                 "scaleWithTransform": true
             },
-            "id": 2
+            "id": 135
         },
         {
             "EntityData": {
                 "name": "Large Barge Platform",
                 "tag": "",
-                "parent": 0,
+                "parent": 133,
                 "attachedSocket": 65535,
                 "children": [
-                    4,
-                    5
+                    137,
+                    138
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -404,13 +404,13 @@
                 },
                 "scaleWithTransform": true
             },
-            "id": 3
+            "id": 136
         },
         {
             "EntityData": {
                 "name": "Barge Pillar",
                 "tag": "",
-                "parent": 3,
+                "parent": 136,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -503,13 +503,13 @@
                 },
                 "scaleWithTransform": true
             },
-            "id": 4
+            "id": 137
         },
         {
             "EntityData": {
                 "name": "Barge Pillar",
                 "tag": "",
-                "parent": 3,
+                "parent": 136,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -602,13 +602,13 @@
                 },
                 "scaleWithTransform": true
             },
-            "id": 5
+            "id": 138
         },
         {
             "EntityData": {
                 "name": "Barge Platform",
                 "tag": "",
-                "parent": 0,
+                "parent": 133,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -701,13 +701,13 @@
                 },
                 "scaleWithTransform": true
             },
-            "id": 6
+            "id": 139
         },
         {
             "EntityData": {
                 "name": "Barge Platform",
                 "tag": "",
-                "parent": 0,
+                "parent": 133,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -800,7 +800,7 @@
                 },
                 "scaleWithTransform": true
             },
-            "id": 7
+            "id": 140
         }
     ]
 }
