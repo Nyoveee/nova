@@ -2,7 +2,7 @@
 #include "bloomFrameBuffer.h"
 
 BloomFrameBuffer::BloomFrameBuffer(int width, int height, int mipmapChain) :
-	FrameBuffer { width, height, {} },
+	FrameBuffer { width, height, GL_RGBA16F },
 	gameSize	{ width, height }
 {
 	// Create my "mipmap" chain.

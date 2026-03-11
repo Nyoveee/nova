@@ -13,14 +13,6 @@ uniform sampler2D depthTexture;
 uniform float vignette;
 uniform vec3 vignetteColor;
 
-uniform vec3 fogColor;
-
-uniform float fogNear;
-uniform float fogFar;
-uniform float fogDensity;
-
-uniform bool isFogEnabled;
-
 uniform bool isBlurEnabled;
 
 uniform bool chromaticAberration;
@@ -103,19 +95,6 @@ void main()
         color = texture2D(scene, textureCoords).rgb; 
     }
 
-    if (isFogEnabled) {
-        float linearDepth = linearizeDepth(texture2D(depthTexture, textureCoords).r);
-
-        float near = max(zNear, fogNear);
-        float far = min(zFar, fogFar);
-
-        float linearDistanceFactor = clamp((linearDepth - near)/ (far - near), 0, 1);
-        float fogFactor = clamp(exp(-(linearDistanceFactor * fogDensity * linearDistanceFactor * fogDensity)), 0, 1);
-
-        color = mix(fogColor, color, fogFactor);
-    }
-
     float dist = distance(vec2(0.5, 0.5), textureCoords);
-
     FragColor = vec4(mix(color, vignetteColor, clamp(smoothstep(0, 1, dist) * vignette, 0, 1)), 1.0);
 }  

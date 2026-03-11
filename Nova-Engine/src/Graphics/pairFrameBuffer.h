@@ -18,22 +18,34 @@
 */
 class PairFrameBuffer {
 public:
-	PairFrameBuffer(int width, int height, std::vector<TextureInternalFormat> colorAttachments = { GL_RGBA16 });
+	PairFrameBuffer(int width, int height, int mainColorAttachments, std::vector<TextureInternalFormat> additionalColorAttachments = {});
+	~PairFrameBuffer();
+
+	PairFrameBuffer(PairFrameBuffer const& other)				= delete;
+	PairFrameBuffer(PairFrameBuffer&& other)					= delete;
+	PairFrameBuffer& operator=(PairFrameBuffer const& other)	= delete;
+	PairFrameBuffer& operator=(PairFrameBuffer&& other)			= delete;
 
 public:
 	void clearFrameBuffers();
+
 	void swapFrameBuffer();
+
+	// swapping frame buffers means that the color attachments are no longer attached to the active FBO.
+	// invoke this member function to attach the additional color attachments to the active FBO.
+	void attachColorAttachments();
 
 	FrameBuffer const& getActiveFrameBuffer() const;
 	FrameBuffer const& getReadFrameBuffer() const;
 
 	GLuint getDepthTextureId() const;
 
-	// THIS IS A HARDCODED FUNCTION MEANT FOR DEBUGGING ONLY.
-	ENGINE_DLL_API GLuint getMotionTexture() const;
+	std::vector<GLuint> const& textureIds()	 const;
 
 private:
 	std::array<FrameBuffer, 2> frameBuffers;
 	int activeFrameBufferIndex	= 1;
 	int readFrameBufferIndex	= 0;
+
+	std::vector<GLuint> texture_ids;
 };
