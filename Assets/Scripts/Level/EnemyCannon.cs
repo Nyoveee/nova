@@ -7,6 +7,7 @@ using Windows.Services.Maps.LocalSearch;
 
 class EnemyCannon : Script
 {
+    public Prefab enemyPrefab;
     [SerializableField]
     private Light_ light;
     [SerializableField]
@@ -22,15 +23,15 @@ class EnemyCannon : Script
     [SerializableField]
     private List<GameObject> shootingAreas;
     [SerializableField]
-    private Prefab enemyPrefab;
-    [SerializableField]
     private Prefab launchingVFXPrefab;
-    [SerializableField]
-    private float cannonTurningTime;
     [SerializableField]
     private float minArcTime;
     [SerializableField]
     private float maxArcTime;
+    [SerializableField]
+    private float minTurningTime;
+    [SerializableField]
+    private float maxTurningTime;
     [SerializableField]
     private float cannonChargeTime;
     [SerializableField]
@@ -60,6 +61,7 @@ class EnemyCannon : Script
     private Vector3 targetVelocity;
 
     // Rotation Update
+    private float cannonTurningTime;
     private float currentTurningTime;
 
     // VFX Update
@@ -77,28 +79,28 @@ class EnemyCannon : Script
     }
 
     protected override void update() {
+        if (!waveManager.getScript<CannonWaveManager>().IsWaveActive())
+        {
+            fireSmoke.enable = false;
+            fire.enable = false;
+            charge.enable = false;
+            return;
+        }
+            
         Vector3 pos = gameObject.transform.position;
         pos.y = boat.transform.position.y + yOffset;
         gameObject.transform.position = pos;
-        
+
         // Cooldown
-        if(enemyObject == null && waveManager.getScript<CannonWaveManager>().useWave == false)
+        if (enemyObject == null && !b_IsCharging)
         {
             currentShootCooldown -= Time.V_DeltaTime();
-            if(currentShootCooldown <= 0)
+            if (currentShootCooldown <= 0)
             {
                 GetTargetingLocation();
                 EstimateCannonRotation();
                 return;
             }
-        }
-
-        // For Wave Manager
-        if (shotsQueued > 0 && enemyObject == null && !b_IsCharging && waveManager.getScript<CannonWaveManager>().useWave == true)
-        {
-            shotsQueued--;
-            GetTargetingLocation();
-            EstimateCannonRotation();
         }
 
         // Cannon Firing
@@ -167,9 +169,9 @@ class EnemyCannon : Script
         return currentTurningTime == cannonTurningTime;
     }
     private void Fire() {
+        currentShootCooldown = Random.Range(minTimeShootCooldown, maxTimeShootCooldown);
         enemyObject.SetActive(true);
         enemyObject.transform.position = firingPoint.transform.position;
-        waveManager.getScript<CannonWaveManager>().RegisterEnemy(enemyObject);
 
         // Set the velocity
         GetTrajectory(firingPoint.transform.position);
@@ -214,6 +216,7 @@ class EnemyCannon : Script
         targetCannonBarrelRotation = Quaternion.LookRotation(-targetDirection);
 
         // Set the timers
+        cannonTurningTime = Random.Range(minTurningTime, maxTurningTime);
         currentTurningTime = 0;
     }
    
