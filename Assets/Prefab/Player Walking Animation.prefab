@@ -1,0 +1,160 @@
+{
+    "RootEntity": 0,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Player Walk Animation",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    1
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 5760984149108555871,
+                "entityGUID": 11967023600407921337,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 1.946786880493164,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 1.946786880493164,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "SkinnedMeshRenderer": {
+                "modelId": 7209357616773480449,
+                "materialIds": [
+                    10789675197069180955,
+                    11942596701676535837,
+                    5601528426338910239,
+                    5025067674035535905,
+                    18446744073709551615,
+                    18446744073709551615
+                ],
+                "socketConnections": {
+                    "120": 0,
+                    "25": 4294967295
+                },
+                "castShadow": true,
+                "shadowCullFrontFace": true,
+                "toFrustumCull": true
+            },
+            "Animator": {
+                "controllerId": 3750593102965588629,
+                "speedMultiplier": 1.0
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Sniper",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 120,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 5760984149108555871,
+                "entityGUID": 1264808424221933745,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.46628665924072266,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": -1.4805002212524414,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3575225396416036865,
+                "materialIds": [
+                    11017643513640124435,
+                    6296226409495871767
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1
+        }
+    ]
+}

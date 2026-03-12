@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 11,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5
+                    12,
+                    13,
+                    14,
+                    15,
+                    16
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -186,7 +186,7 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             },
@@ -217,11 +217,11 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 0,
+                                                "__variant_value": 11,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 2,
+                                                "__variant_value": 13,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -248,14 +248,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             },
@@ -387,13 +387,13 @@
                     }
                 ]
             },
-            "id": 0
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "IchorSpawnPoint",
                 "tag": "",
-                "parent": 0,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -478,13 +478,13 @@
                     "z": -1.5707954168319702
                 }
             },
-            "id": 1
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "MissleHitBox",
                 "tag": "Enemy_WeakSpot",
-                "parent": 0,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -607,7 +607,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             }
@@ -615,13 +615,13 @@
                     }
                 ]
             },
-            "id": 2
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "MissileMesh",
                 "tag": "",
-                "parent": 0,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -714,13 +714,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 3
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Fire Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -781,6 +781,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 15.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 0.0,
@@ -791,6 +793,16 @@
                 "force": {
                     "x": 0.0,
                     "y": -15.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "lifeTime": 1.0,
@@ -891,13 +903,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 4
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "Smoke Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -958,6 +970,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 15.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 0.0,
@@ -966,6 +980,16 @@
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -1068,7 +1092,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 5
+            "id": 16
         }
     ]
 }

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 8,
+    "RootEntity": 2,
     "Entities": [
         {
             "EntityData": {
@@ -207,7 +207,7 @@
                                         "x": 102.0,
                                         "y": 69.0,
                                         "z": 20.0,
-                                        "w": 1.0
+                                        "w": 50.0
                                     },
                                     "__variant_type": 2
                                 }
@@ -222,6 +222,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.10000000149011612,
                 "startSpeed": 0.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.7386145465020012e-37,
@@ -230,6 +232,16 @@
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 5.837410926818848,
                 "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -332,7 +344,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 8
+            "id": 2
         }
     ]
 }

@@ -16,7 +16,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] const char* argv[]) {
 #if RECOMPILE_ALL_SYSTEM_RESOURCES 
 		Compiler::recompileAllSystemAssets(); 
 #endif
-		std::filesystem::path testingPath = std::filesystem::current_path() / "Descriptors" / "Model" / "10566562431974096897.desc";
+		std::filesystem::path testingPath = std::filesystem::current_path() / "Descriptors" / "Model" / "7209357616773480449.desc";
 		return Compiler::compile(std::string{ testingPath.string().c_str() });
 
 		return 0;

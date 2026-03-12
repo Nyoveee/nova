@@ -711,9 +711,25 @@ void AssetViewerUI::displayModelInfo(AssetInfo<Model>& descriptor) {
 				}
 			}
 
+			static bool showMultipleRootBone = false;
+			ImGui::Checkbox("Debug, show multiple root bone", &showMultipleRootBone);
+
 			ImGui::SeparatorText(std::string{ "Bones: " + std::to_string(skeleton.bones.size()) }.c_str());
-			
-			displayBoneHierarchy(descriptor, skeleton.rootBone, skeleton);
+
+			if (showMultipleRootBone) {
+				for (BoneIndex boneIndex = 0; boneIndex < skeleton.bones.size(); ++boneIndex) {
+					
+					if (skeleton.bones[boneIndex].parentBone != NO_BONE) {
+						continue;
+					}
+
+					displayBoneHierarchy(descriptor, boneIndex, skeleton);
+				}
+
+			}
+			else {
+				displayBoneHierarchy(descriptor, skeleton.rootBone, skeleton);
+			}
 
 			ImGui::SeparatorText(std::string{ "[Debug] Nodes: " + std::to_string(skeleton.nodes.size()) }.c_str());
 			displayNodeHierarchy(skeleton.rootNode, skeleton);

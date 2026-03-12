@@ -22,7 +22,13 @@
             "toLoop": true,
             "blendFactor": 0.20000000298023224,
             "name": "PlayerFullWalkAnimtion",
-            "animationEvents": null
+            "animationEvents": [
+                {
+                    "key": 46,
+                    "scriptId": 2878680387628726341,
+                    "functionName": "TriggerEvent"
+                }
+            ]
         }
     },
     "parameters": null

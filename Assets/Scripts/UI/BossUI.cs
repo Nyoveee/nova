@@ -70,7 +70,7 @@ class BossUI : Script
     {
         if (currentHealth < 0)
         {
-            bossUI.gameObject.SetActive(false);
+            bossUI?.gameObject.SetActive(false);
 
             Invoke(() =>
             {

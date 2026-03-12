@@ -151,14 +151,17 @@ public class Boss : Enemy
         {
             case BossState.Spawning:
                 {
+                    // Cutscene will be responsible for transitioning boss state to idle.
+
+#if false
                     cooldowntimeElapsed += Time.V_DeltaTime();
 
                     if (cooldowntimeElapsed > spawningDuration)
-                    { 
+                    {
                         cooldowntimeElapsed = 0;
                         currentState = BossState.Idle;
                     }
-
+#endif
                 }
                 break;
             case BossState.Idle:

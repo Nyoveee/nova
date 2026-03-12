@@ -230,7 +230,6 @@ class PlayerController_V2 : Script
         //if speed is too fast we want to slow player down
         SpeedModulator();
 
-
         if (PlayerMoveStates.InitState != playerMoveStates &&
             PlayerMoveStates.StartJump != playerMoveStates &&
             PlayerMoveStates.Jumping   != playerMoveStates &&
@@ -661,7 +660,6 @@ class PlayerController_V2 : Script
             rigidbody.SetLinearDamping(0f);
             playerMoveStates = PlayerMoveStates.StartJump;
         }
-
     }
 
     void triggerLandSFX()
