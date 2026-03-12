@@ -243,7 +243,6 @@ class PlayerWeaponController : Script
         // The final glow strength scales with how low the ammo count is..
         finalGlowStrength = noAmmoGlowStrength * Mathf.Pow(1f - (float)currentlyHeldGun.CurrentAmmo / (float)currentlyHeldGun.MaxAmmo, ammoGlowScalePower);
     }
-
     private void Fire()
     {
         if (isShootingDisabled)

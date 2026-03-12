@@ -1,6 +1,8 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+
 class StompAttackVFX : Script
 {
     [SerializableField] private float movingDuration = 2f;
@@ -8,6 +10,7 @@ class StompAttackVFX : Script
     [SerializableField] private float sizeIncrease = 2f;
     [SerializableField] private float fadeOut = 0.3f;
     [SerializableField] private float damage = 20f;
+    [SerializableField] private List<Audio> waveAudio;
 
     MeshRenderer_ meshRenderer;
 
@@ -30,6 +33,7 @@ class StompAttackVFX : Script
 
     protected override void init()
     {
+        getComponent<AudioComponent_>().PlayRandomSound(waveAudio);
         move();
     }
 

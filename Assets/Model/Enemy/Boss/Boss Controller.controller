@@ -24,56 +24,6 @@
             "name": "Boss_Idle",
             "animationEvents": null
         },
-        "11459708924338618557": {
-            "id": 11459708924338618557,
-            "animation": 11419818642480660481,
-            "transitions": null,
-            "toLoop": true,
-            "blendFactor": 0.02199999988079071,
-            "name": "Boss_Attack",
-            "animationEvents": [
-                {
-                    "key": 51,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent1"
-                },
-                {
-                    "key": 123,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent2"
-                }
-            ]
-        },
-        "17800777199676096695": {
-            "id": 17800777199676096695,
-            "animation": 3349368110232748037,
-            "transitions": null,
-            "toLoop": false,
-            "blendFactor": 0.15600000321865082,
-            "name": "Boss_Jump",
-            "animationEvents": [
-                {
-                    "key": 41,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent1"
-                },
-                {
-                    "key": 76,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent1"
-                },
-                {
-                    "key": 96,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent2"
-                },
-                {
-                    "key": 58,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent1"
-                }
-            ]
-        },
         "1122593181366370491": {
             "id": 1122593181366370491,
             "animation": 13228268979737853953,
@@ -100,7 +50,62 @@
                 {
                     "key": 78,
                     "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent2"
+                    "functionName": "TriggerEvent1"
+                }
+            ]
+        },
+        "17800777199676096695": {
+            "id": 17800777199676096695,
+            "animation": 3349368110232748037,
+            "transitions": [
+                {
+                    "nextNode": 7424483658214441141,
+                    "conditions": null
+                }
+            ],
+            "toLoop": false,
+            "blendFactor": 0.15600000321865082,
+            "name": "Boss_Jump",
+            "animationEvents": [
+                {
+                    "key": 41,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 76,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 96,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 58,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent3"
+                }
+            ]
+        },
+        "11459708924338618557": {
+            "id": 11459708924338618557,
+            "animation": 11419818642480660481,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.02199999988079071,
+            "name": "Boss_Attack",
+            "animationEvents": [
+                {
+                    "key": 51,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 123,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
                 }
             ]
         },

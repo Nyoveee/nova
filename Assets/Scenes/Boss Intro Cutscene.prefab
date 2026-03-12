@@ -1,0 +1,2302 @@
+{
+    "RootEntity": 0,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Boss Intro Cutscene",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    1,
+                    2,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    21
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 14407895433661858481,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false,
+                "audioGroup": "SFX"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 10949130919856889059,
+                        "fields": [
+                            {
+                                "name": "darkOverlay",
+                                "data": {
+                                    "__variant_value": 1049181,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "cutsceneCameraOne",
+                                "data": {
+                                    "__variant_value": 1,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "cutsceneCameraTwo",
+                                "data": {
+                                    "__variant_value": 4,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "animatedPlayer",
+                                "data": {
+                                    "__variant_value": 2,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "animatedBossStartingLocation",
+                                "data": {
+                                    "__variant_value": 5,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "animatedBossLandingLocation",
+                                "data": {
+                                    "__variant_value": 6,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "playerStartPosition",
+                                "data": {
+                                    "__variant_value": 7,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "arenaLight",
+                                "data": {
+                                    "__variant_value": 16,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "playerUI",
+                                "data": {
+                                    "__variant_value": 1049156,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "cutsceneUI",
+                                "data": {
+                                    "__variant_value": 1048794,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "bossUI",
+                                "data": {
+                                    "__variant_value": 27,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "cutsceneTopBar",
+                                "data": {
+                                    "__variant_value": 2097368,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "cutsceneBottomBar",
+                                "data": {
+                                    "__variant_value": 1048791,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "innerWallCollider",
+                                "data": {
+                                    "__variant_value": 142606373,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "simpleBGMManager",
+                                "data": {
+                                    "__variant_value": 21,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "boss",
+                                "data": {
+                                    "__variant_value": 1048584,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "bossAnimator",
+                                "data": {
+                                    "__variant_value": 11,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "initialCutsceneDelay",
+                                "data": {
+                                    "__variant_value": 1.2999999523162842,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "initialFadeOutDuration",
+                                "data": {
+                                    "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "playerWalkDuration",
+                                "data": {
+                                    "__variant_value": 5.199999809265137,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "durationBeforeCameraChange",
+                                "data": {
+                                    "__variant_value": 7.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "bossIntroVoiceLine",
+                                "data": {
+                                    "__variant_value": 2416137830663569429,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "bossVoiceLines",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": "Do you know how long I have been waiting for this moment!?",
+                                                "__variant_type": 7
+                                            },
+                                            {
+                                                "__variant_value": "We will free ourselves from the binding chains of the gods, Icarus.",
+                                                "__variant_type": 7
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 7
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "bossVoiceLineTime",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 3.0,
+                                                "__variant_type": 18
+                                            },
+                                            {
+                                                "__variant_value": 6.0,
+                                                "__variant_type": 18
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 18
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "bossDropDuration",
+                                "data": {
+                                    "__variant_value": 0.07000000029802322,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "delayBeforeVoiceLine",
+                                "data": {
+                                    "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "delayBeforeCameraPanback",
+                                "data": {
+                                    "__variant_value": 10.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "delayBeforeArenaLightTurnsOn",
+                                "data": {
+                                    "__variant_value": 14.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "delayBeforeCutsceneBar",
+                                "data": {
+                                    "__variant_value": 13.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "delayBeforeInnerWallAppearance",
+                                "data": {
+                                    "__variant_value": 11.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "cameraPanbackLerpDuration",
+                                "data": {
+                                    "__variant_value": 4.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "cameraPanbackLerpPower",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "cutsceneBarLerpDuration",
+                                "data": {
+                                    "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "cutsceneBarLerpPower",
+                                "data": {
+                                    "__variant_value": 0.6000000238418579,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "innerWallLerpDuration",
+                                "data": {
+                                    "__variant_value": 1.399999976158142,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "innerWallLerpPower",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "innerWallBlinkOccurences",
+                                "data": {
+                                    "__variant_value": 6,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "arenalightLerpDuration",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "arenalightLerpPower",
+                                "data": {
+                                    "__variant_value": 0.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "playerWalkingSteps",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 13670386948860854383,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736889969,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 6176397168916349043,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5023475664309502069,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3870554159702655095,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3870554159702655097,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7905779425826619515,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 10211622435040313469,
+                                                "__variant_type": 15
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepInterval",
+                                "data": {
+                                    "__variant_value": 0.75,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "bossCrashLandingSound",
+                                "data": {
+                                    "__variant_value": 7242800183680548887,
+                                    "__variant_type": 15
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Cutscene Camera 1",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 10949130919841645235,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 32.39225769042969,
+                    "z": 71.5718002319336
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 0.9999991655349731,
+                    "z": 0.9999996423721313
+                },
+                "rotation": {
+                    "w": 0.9703518748283386,
+                    "x": 0.24169664084911346,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.488227903842926,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 32.39225769042969,
+                    "z": 71.5718002319336
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 0.9999991655349731,
+                    "z": 0.9999996423721313
+                },
+                "localRotation": {
+                    "w": 0.9703518748283386,
+                    "x": 0.24169664084911346,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.488227903842926,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "CameraComponent": {
+                "camStatus": false,
+                "toRotateSideWays": false,
+                "fov": 45.0,
+                "nearPlane": 0.30000001192092896,
+                "farPlane": 1000.0
+            },
+            "Sequence": {
+                "sequencerId": 16137277690577997441,
+                "speedMultiplier": 1.0,
+                "toLoop": false,
+                "startPlaying": false
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "name": "Player Walk Animation",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": [
+                    3
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 11967023600407921337,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.14853429794311523,
+                    "y": -0.009558796882629395,
+                    "z": 131.35887145996094
+                },
+                "scale": {
+                    "x": 0.09350989013910294,
+                    "y": 0.09350001066923141,
+                    "z": 0.09350989013910294
+                },
+                "rotation": {
+                    "w": 0.0009875298710539937,
+                    "x": 0.0,
+                    "y": 0.9999995231628418,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 0.0019750602077692747,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 0.14853429794311523,
+                    "y": -0.009558796882629395,
+                    "z": 131.35887145996094
+                },
+                "localScale": {
+                    "x": 0.09350989013910294,
+                    "y": 0.09350001066923141,
+                    "z": 0.09350989013910294
+                },
+                "localRotation": {
+                    "w": 0.0009875298710539937,
+                    "x": 0.0,
+                    "y": 0.9999995231628418,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 0.0019750602077692747,
+                    "z": 3.1415927410125732
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 14768640787709680377,
+                        "fields": [
+                            {
+                                "name": "playOnStart",
+                                "data": {
+                                    "__variant_value": false,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "expandDuration",
+                                "data": {
+                                    "__variant_value": 10.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "distance",
+                                "data": {
+                                    "__variant_value": 90.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "lerpPower",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "scriptId": 2878680387628726341,
+                        "fields": [
+                            {
+                                "name": "bossIntroCutscene",
+                                "data": {
+                                    "__variant_value": 0,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "functionName",
+                                "data": {
+                                    "__variant_value": "EndOfPlayerWalk",
+                                    "__variant_type": 7
+                                }
+                            },
+                            {
+                                "name": "functionName2",
+                                "data": {
+                                    "__variant_value": "",
+                                    "__variant_type": 7
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "SkinnedMeshRenderer": {
+                "modelId": 7209357616773480449,
+                "materialIds": [
+                    10789675197069180955,
+                    11942596701676535837,
+                    5601528426338910239,
+                    5025067674035535905,
+                    18446744073709551615,
+                    18446744073709551615
+                ],
+                "socketConnections": {
+                    "120": 0,
+                    "25": 4294967295
+                },
+                "castShadow": true,
+                "shadowCullFrontFace": true,
+                "toFrustumCull": true
+            },
+            "Animator": {
+                "controllerId": 3750593102965588629,
+                "speedMultiplier": 1.0
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "name": "Sniper",
+                "tag": "",
+                "parent": 2,
+                "attachedSocket": 120,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 1264808424221933745,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.14852966368198395,
+                    "y": -0.14798548817634583,
+                    "z": 131.35887145996094
+                },
+                "scale": {
+                    "x": 0.09350989013910294,
+                    "y": 0.09350001811981201,
+                    "z": 0.09350989013910294
+                },
+                "rotation": {
+                    "w": 0.0009875298710539937,
+                    "x": 0.0,
+                    "y": 0.9999995231628418,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 0.0019750602077692747,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 4.9591064453125e-05,
+                    "y": -1.480499267578125,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999999403953552,
+                    "y": 1.0000001192092896,
+                    "z": 0.9999999403953552
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3575225396416036865,
+                "materialIds": [
+                    11017643513640124435,
+                    6296226409495871767
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 3
+        },
+        {
+            "EntityData": {
+                "name": "Cutscene Camera 2",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 10949130919841645235,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 35.59089660644531,
+                    "z": 19.300519943237305
+                },
+                "scale": {
+                    "x": 1.0000417232513428,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000289678573608
+                },
+                "rotation": {
+                    "w": -8.906964410471119e-08,
+                    "x": -7.733712337198995e-09,
+                    "y": 0.99625164270401,
+                    "z": 0.0865027979016304
+                },
+                "eulerAngles": {
+                    "x": 2.9683706760406494,
+                    "y": -1.7613363922919234e-07,
+                    "z": -3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 35.59089660644531,
+                    "z": 19.300519943237305
+                },
+                "localScale": {
+                    "x": 1.0000419616699219,
+                    "y": 1.0000001192092896,
+                    "z": 1.0000290870666504
+                },
+                "localRotation": {
+                    "w": -8.906962989385647e-08,
+                    "x": -7.733711449020575e-09,
+                    "y": 0.99625164270401,
+                    "z": 0.0865027979016304
+                },
+                "localEulerAngles": {
+                    "x": 2.9683706760406494,
+                    "y": -1.761336108074829e-07,
+                    "z": -3.1415927410125732
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 2878680387628726341,
+                        "fields": [
+                            {
+                                "name": "bossIntroCutscene",
+                                "data": {
+                                    "__variant_value": 0,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "functionName",
+                                "data": {
+                                    "__variant_value": "StartBossDrop",
+                                    "__variant_type": 7
+                                }
+                            },
+                            {
+                                "name": "functionName2",
+                                "data": {
+                                    "__variant_value": "PauseCutsceneCameraTwo",
+                                    "__variant_type": 7
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "CameraComponent": {
+                "camStatus": false,
+                "toRotateSideWays": false,
+                "fov": 45.0,
+                "nearPlane": 0.30000001192092896,
+                "farPlane": 1000.0
+            },
+            "Sequence": {
+                "sequencerId": 14638282702207828945,
+                "speedMultiplier": 1.0,
+                "toLoop": false,
+                "startPlaying": false
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "name": "Animated Boss Start Location",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 18097047216071279893,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 126.8272933959961,
+                    "z": -45.77632522583008
+                },
+                "scale": {
+                    "x": 1.0003820657730103,
+                    "y": 1.0,
+                    "z": 1.0003820657730103
+                },
+                "rotation": {
+                    "w": -0.0002441555552650243,
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -0.0004883109941147268,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 126.8272933959961,
+                    "z": -45.77632522583008
+                },
+                "localScale": {
+                    "x": 1.0003821849822998,
+                    "y": 1.0,
+                    "z": 1.0003821849822998
+                },
+                "localRotation": {
+                    "w": -0.00024415558436885476,
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -0.0004883110523223877,
+                    "z": 3.1415927410125732
+                }
+            },
+            "SkinnedMeshRenderer": {
+                "modelId": 5078750367143018503,
+                "materialIds": [
+                    4412824558259913179,
+                    6718667567473967581
+                ],
+                "socketConnections": {
+                    "0": 4294967295
+                },
+                "castShadow": true,
+                "shadowCullFrontFace": true,
+                "toFrustumCull": false
+            },
+            "Animator": {
+                "controllerId": 3685528408488855315,
+                "speedMultiplier": 1.0
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "name": "Animated Boss Landing Location",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 18097047216071279893,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 3.1086244689504383e-15,
+                    "y": 1.6801773309707642,
+                    "z": -45.77631759643555
+                },
+                "scale": {
+                    "x": 1.0004518032073975,
+                    "y": 0.9999862909317017,
+                    "z": 1.0004395246505737
+                },
+                "rotation": {
+                    "w": -0.0002436453360132873,
+                    "x": 1.5644352970412e-05,
+                    "y": 0.9979448914527893,
+                    "z": -0.06407778710126877
+                },
+                "eulerAngles": {
+                    "x": -3.0133492946624756,
+                    "y": -0.00048428442096337676,
+                    "z": 3.1415302753448486
+                },
+                "localPosition": {
+                    "x": 3.1086244689504383e-15,
+                    "y": 1.6801773309707642,
+                    "z": -45.77631759643555
+                },
+                "localScale": {
+                    "x": 1.000451922416687,
+                    "y": 0.9999862909317017,
+                    "z": 1.0004395246505737
+                },
+                "localRotation": {
+                    "w": -0.00024364532146137208,
+                    "x": 1.5644349332433194e-05,
+                    "y": 0.9979448914527893,
+                    "z": -0.06407778710126877
+                },
+                "localEulerAngles": {
+                    "x": -3.0133492946624756,
+                    "y": -0.0004842843918595463,
+                    "z": 3.1415302753448486
+                }
+            },
+            "ParticleEmitter": {
+                "texture": 11156164407260069997,
+                "startSize": 5.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 10.0,
+                "startSpeed": 20.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 40.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": 0.0,
+                "maxInitialRotationOffset": 6.2831854820251465,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
+                    "y": 40.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "minLifeTimeOffset": 0.0,
+                "maxLifeTimeOffset": 1.0,
+                "particleRate": 0.0,
+                "burstRate": 0.0,
+                "burstAmount": 500,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "invertMovement": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Circle",
+                    "radiusEmitter": {
+                        "radius": 2.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 0.26896554231643677,
+                        "g": 0.26896554231643677,
+                        "b": 0.26896554231643677,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
+                },
+                "sizeOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": false,
+                    "trailTexture": 0,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
+            },
+            "id": 6
+        },
+        {
+            "EntityData": {
+                "name": "Player Start Position",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 17814182456819590039,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.2930000126361847,
+                    "y": -0.009999999776482582,
+                    "z": 58.316001892089844
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.2930000126361847,
+                    "y": -0.009999999776482582,
+                    "z": 58.316001892089844
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 7
+        },
+        {
+            "EntityData": {
+                "name": "Lighting",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": [
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    19,
+                    20
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 14061821949915319779,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 8
+        },
+        {
+            "EntityData": {
+                "name": "Vat Light",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 12332439693005245925,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 75.75492095947266,
+                    "y": 52.46815490722656,
+                    "z": -76.27837371826172
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 75.75492095947266,
+                    "y": 52.46815490722656,
+                    "z": -76.27837371826172
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.7429251074790955,
+                    "b": 0.18965518474578857
+                },
+                "intensity": 79.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 200.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 9
+        },
+        {
+            "EntityData": {
+                "name": "Vat Light",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 12332439693005245925,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 114.29578399658203,
+                    "y": 52.46815872192383,
+                    "z": -0.3778519630432129
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 114.29578399658203,
+                    "y": 52.46815872192383,
+                    "z": -0.3778519630432129
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.7429251074790955,
+                    "b": 0.18965518474578857
+                },
+                "intensity": 79.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 200.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 10
+        },
+        {
+            "EntityData": {
+                "name": "Vat Light",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 12332439693005245925,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 84.18211364746094,
+                    "y": 52.468162536621094,
+                    "z": 85.05705261230469
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 84.18211364746094,
+                    "y": 52.468162536621094,
+                    "z": 85.05705261230469
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.7429251074790955,
+                    "b": 0.18965518474578857
+                },
+                "intensity": 79.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 200.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 11
+        },
+        {
+            "EntityData": {
+                "name": "Vat Light",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 12332439693005245925,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -80.7780990600586,
+                    "y": 52.46816635131836,
+                    "z": 80.26557159423828
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -80.7780990600586,
+                    "y": 52.46816635131836,
+                    "z": 80.26557159423828
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.7429251074790955,
+                    "b": 0.18965518474578857
+                },
+                "intensity": 79.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 200.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 12
+        },
+        {
+            "EntityData": {
+                "name": "Vat Light",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 12332439693005245925,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -116.03389739990234,
+                    "y": 52.46817398071289,
+                    "z": -0.4257497787475586
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -116.03389739990234,
+                    "y": 52.46817398071289,
+                    "z": -0.4257497787475586
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.7429251074790955,
+                    "b": 0.18965518474578857
+                },
+                "intensity": 79.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 200.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 13
+        },
+        {
+            "EntityData": {
+                "name": "Vat Light",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 12332439693005245925,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -79.50314331054688,
+                    "y": 52.46818161010742,
+                    "z": -78.5395736694336
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -79.50314331054688,
+                    "y": 52.46818161010742,
+                    "z": -78.5395736694336
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.7429251074790955,
+                    "b": 0.18965518474578857
+                },
+                "intensity": 79.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 200.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 14
+        },
+        {
+            "EntityData": {
+                "name": "Hub Reflection Probe",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 8873675179189605327,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 40.464271545410156,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 40.464271545410156,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "ReflectionProbe": {
+                "boxExtents": {
+                    "x": 187.0,
+                    "y": 244.0,
+                    "z": 195.0
+                },
+                "centerOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "captureRadius": 449.3050231933594,
+                "toCaptureShadow": true,
+                "toCaptureEnvironmentLight": true,
+                "fallOff": 0.0,
+                "intensity": 1.0,
+                "irradianceMap": 18446744073709551615,
+                "prefilteredEnvironmentMap": 9450135931493487569
+            },
+            "id": 15
+        },
+        {
+            "EntityData": {
+                "name": "Arena Light",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": [
+                    17,
+                    18
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 803224646949065707,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 16
+        },
+        {
+            "EntityData": {
+                "name": "Entity 4",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 11755978940710638547,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 33.611392974853516,
+                    "y": 260.6325988769531,
+                    "z": -198.7774658203125
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.000000238418579,
+                    "z": 1.000000238418579
+                },
+                "rotation": {
+                    "w": 0.9258074760437012,
+                    "x": 0.37799543142318726,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.7752602696418762,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 33.611392974853516,
+                    "y": 260.6325988769531,
+                    "z": -198.7774658203125
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.000000238418579,
+                    "z": 1.000000238418579
+                },
+                "localRotation": {
+                    "w": 0.9258074760437012,
+                    "x": 0.37799543142318726,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.7752602696418762,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Light": {
+                "type": "Spotlight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.7527942657470703,
+                    "b": 0.3482758402824402
+                },
+                "intensity": 5000.0,
+                "cutOffAngle": 0.21816612780094147,
+                "outerCutOffAngle": 1.5707963705062866,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 541.0,
+                "shadowCaster": true,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 17
+        },
+        {
+            "EntityData": {
+                "name": "Entity 4",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 11755978940710638547,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 33.611392974853516,
+                    "y": 260.6325988769531,
+                    "z": 191.0695037841797
+                },
+                "scale": {
+                    "x": 1.000025749206543,
+                    "y": 1.0000008344650269,
+                    "z": 1.0000245571136475
+                },
+                "rotation": {
+                    "w": 1.818683301735291e-07,
+                    "x": 1.0644521353242453e-07,
+                    "y": 0.9258074164390564,
+                    "z": -0.3779956102371216
+                },
+                "eulerAngles": {
+                    "x": -2.3663320541381836,
+                    "y": 4.1722174159986025e-07,
+                    "z": 3.141592502593994
+                },
+                "localPosition": {
+                    "x": 33.611392974853516,
+                    "y": 260.6325988769531,
+                    "z": 191.0695037841797
+                },
+                "localScale": {
+                    "x": 1.000025749206543,
+                    "y": 1.0000008344650269,
+                    "z": 1.0000245571136475
+                },
+                "localRotation": {
+                    "w": 1.818683301735291e-07,
+                    "x": 1.0644521353242453e-07,
+                    "y": 0.9258074164390564,
+                    "z": -0.3779956102371216
+                },
+                "localEulerAngles": {
+                    "x": -2.3663320541381836,
+                    "y": 4.1722174159986025e-07,
+                    "z": 3.141592502593994
+                }
+            },
+            "Light": {
+                "type": "Spotlight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.7527942657470703,
+                    "b": 0.3482758402824402
+                },
+                "intensity": 5000.0,
+                "cutOffAngle": 0.21816612780094147,
+                "outerCutOffAngle": 1.5707963705062866,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 541.0,
+                "shadowCaster": true,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 18
+        },
+        {
+            "EntityData": {
+                "name": "Entrance Light",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 12332439693005245925,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -19.34636688232422,
+                    "y": 87.66812133789063,
+                    "z": 58.46849060058594
+                },
+                "scale": {
+                    "x": 1.0000202655792236,
+                    "y": 1.0000869035720825,
+                    "z": 1.0001035928726196
+                },
+                "rotation": {
+                    "w": 0.846017062664032,
+                    "x": 0.503974199295044,
+                    "y": 0.14945967495441437,
+                    "z": -0.08903343230485916
+                },
+                "eulerAngles": {
+                    "x": 1.0745066404342651,
+                    "y": 0.34971705079078674,
+                    "z": 3.172249307681341e-08
+                },
+                "localPosition": {
+                    "x": -19.34636688232422,
+                    "y": 87.66812133789063,
+                    "z": 58.46849060058594
+                },
+                "localScale": {
+                    "x": 1.0000202655792236,
+                    "y": 1.0000869035720825,
+                    "z": 1.0001035928726196
+                },
+                "localRotation": {
+                    "w": 0.846017062664032,
+                    "x": 0.503974199295044,
+                    "y": 0.14945967495441437,
+                    "z": -0.08903343230485916
+                },
+                "localEulerAngles": {
+                    "x": 1.0745066404342651,
+                    "y": 0.34971705079078674,
+                    "z": 3.172249307681341e-08
+                }
+            },
+            "Light": {
+                "type": "Spotlight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.8556004762649536,
+                    "b": 0.5448275804519653
+                },
+                "intensity": 1000.0,
+                "cutOffAngle": 0.0,
+                "outerCutOffAngle": 1.5707963705062866,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 221.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 19
+        },
+        {
+            "EntityData": {
+                "name": "Glass Light",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 12332439693005245925,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.7957496643066406,
+                    "y": 60.927513122558594,
+                    "z": -75.32172393798828
+                },
+                "scale": {
+                    "x": 1.0000030994415283,
+                    "y": 1.000075101852417,
+                    "z": 1.000077247619629
+                },
+                "rotation": {
+                    "w": 8.940669005141899e-08,
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 1.7881338010283798e-07,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": -0.7957496643066406,
+                    "y": 60.927513122558594,
+                    "z": -75.32172393798828
+                },
+                "localScale": {
+                    "x": 1.0000030994415283,
+                    "y": 1.000075101852417,
+                    "z": 1.000077247619629
+                },
+                "localRotation": {
+                    "w": 8.940669005141899e-08,
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 1.7881338010283798e-07,
+                    "z": 3.1415927410125732
+                }
+            },
+            "Light": {
+                "type": "Spotlight",
+                "color": {
+                    "r": 1.0,
+                    "g": 0.8556004762649536,
+                    "b": 0.5448275804519653
+                },
+                "intensity": 1000.0,
+                "cutOffAngle": 0.8715822696685791,
+                "outerCutOffAngle": 0.9482196569442749,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 55.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 20
+        },
+        {
+            "EntityData": {
+                "name": "GameManager",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10490907250623972059,
+                "entityGUID": 12006087048045186847,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "AudioComponent": {
+                "volume": 0.5,
+                "loop": false,
+                "audioGroup": "BGM"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 13809620329935700787,
+                        "fields": [
+                            {
+                                "name": "questManager",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "scriptId": 3744981201570060489,
+                        "fields": [
+                            {
+                                "name": "bgm",
+                                "data": {
+                                    "__variant_value": 5339369634168946691,
+                                    "__variant_type": 15
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 21
+        }
+    ]
+}

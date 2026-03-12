@@ -346,7 +346,7 @@ void NavigationWindow::update() {
 
 		// Auto-save on specific edit end
 		if (edited) {
-			// Optional: save immediately or wait for deactivation
+			
 		}
 		if (ImGui::IsItemDeactivatedAfterEdit()) {
 			std::ofstream outFile(saveFilePath);
@@ -369,6 +369,8 @@ void NavigationWindow::update() {
 		onFileCreate = true;
 		step = 0;
 	};
+
+
 
 	// File creation step logic...
 	if (onFileCreate) {

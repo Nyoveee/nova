@@ -48,6 +48,8 @@ BuildSettings& NavMeshGeneration::GetBuildSettings()
 }
 
 void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
+
+
 	// =====================================================
 	// Variable initialisation..
 	// =====================================================
@@ -396,6 +398,9 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 	std::filesystem::path temporaryMeshFilePath = AssetIO::assetDirectory / "NavMesh" / filename;
 	temporaryMeshFilePath.replace_extension(".navmesh");
 
+
+	Logger::warn("NavmeshFile Created: " + temporaryMeshFilePath.string());
+
 	std::ofstream navMeshFile{ temporaryMeshFilePath, std::ios::binary };
 
 	if (!navMeshFile) {
@@ -404,6 +409,8 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 	}
 
 	navMeshFile.write(reinterpret_cast<char *>(navData), navDataSize);
+
+
 	dtFree(navData);
 }
 

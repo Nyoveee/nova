@@ -1,0 +1,235 @@
+{
+    "RootEntity": 22,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Boss Cutscene UI",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    23,
+                    24
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 2996917470680860155,
+                "entityGUID": 16340141978634540873,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 1.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Canvas": {
+                "alpha": 1.0,
+                "isInteractable": true
+            },
+            "id": 22
+        },
+        {
+            "EntityData": {
+                "name": "Cutscene Bottom Bar",
+                "tag": "",
+                "parent": 22,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 10,
+                "isActive": false,
+                "prefabID": 2996917470680860155,
+                "entityGUID": 17425342323186474359,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 50.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1920.0,
+                    "y": 100.0,
+                    "z": 1.6399999856948853
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 50.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1920.0,
+                    "y": 100.0,
+                    "z": 1.6399999856948853
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 9,
+                "colorTint": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "isAlphaMap": false,
+                "textureCoordinatesStart": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "textureCoordinatesEnd": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "id": 23
+        },
+        {
+            "EntityData": {
+                "name": "Cutscene Top Bar",
+                "tag": "",
+                "parent": 22,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 10,
+                "isActive": false,
+                "prefabID": 2996917470680860155,
+                "entityGUID": 17425342323186474359,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 1030.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1920.0,
+                    "y": 100.0,
+                    "z": 1.6399999856948853
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 1030.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1920.0,
+                    "y": 100.0,
+                    "z": 1.6399999856948853
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 9,
+                "colorTint": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "isAlphaMap": false,
+                "textureCoordinatesStart": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "textureCoordinatesEnd": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "id": 24
+        }
+    ]
+}

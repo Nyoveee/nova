@@ -172,11 +172,14 @@ class BossIntroCutscene : Script
         sniper.SetActive(false);
         player.movementIsEnabled = false;
         playerWeaponController.DisableShooting();
+        playerWeaponController.DisableWeaponArm();
         playerRotateController.rotationIsEnabled = false;
 
         animatedPlayer.getScript<Translation>().move();
         boss.gameObject.transform.position = animatedBossStartingLocation.position;
         boss.getComponent<NavMeshAgent_>().enable = false;
+
+        bossUI.gameObject.SetActive(false);
 
         Invoke(() =>
         {
@@ -379,10 +382,11 @@ class BossIntroCutscene : Script
             playerCamera.camStatus = true;
             player.movementIsEnabled = true;
             playerWeaponController.EnableShooting();
+            playerWeaponController.EnableWeaponArm();
             playerRotateController.rotationIsEnabled = true;
 
             boss.getComponent<NavMeshAgent_>().enable = true;
-            boss.ReturnToIdle(); 
+            boss.GoToIdleState(); 
 
             simpleBGMManager.playBGM();
         }

@@ -1,6 +1,8 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+
 class Shockwave : Script
 {
     [SerializableField] private float damage = 40f;
@@ -11,12 +13,13 @@ class Shockwave : Script
     [SerializableField] private float fadeOutDuration = 1f;
     [SerializableField] private float emissiveMultiplier = 100f;
     [SerializableField] private float motionLerpPower = 1f;
+    [SerializableField] private List<Audio> shockWaveSounds;
 
     private float timeElapsed = 0f;
     private MeshRenderer_ meshRenderer;
     private float initialParticleRate = 1f;
     private float initialParticleRadius = 1f;
-
+    private AudioComponent_ audioComponent;
     private bool hasDamagedPlayer = false;
 
     // This function is invoked once before init when gameobject is active.
@@ -41,6 +44,9 @@ class Shockwave : Script
             }
         }
 
+        audioComponent = getComponent<AudioComponent_>();
+
+        audioComponent.PlayRandomSound(shockWaveSounds);
         getComponent<ParticleEmitter_>()?.emit(500);
     }
 
