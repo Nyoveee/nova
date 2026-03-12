@@ -77,9 +77,9 @@ public class Boss : Enemy
     private float cooldowntimeElapsed = 0;
     public bool lockSequencing = false; //prevent animations from overriding the a sequencer handled through script
     Blackboard blackboard = new Blackboard(); //a blackboard helper class since i realised we gonna need to pass a lot of data around and i dont feel like creating 100 variables
-
     Vector3 halfExtent; //based on scaling values
-
+    private AudioComponent_ audioComponent;
+    private BossAudio bossAudioReferences;
     private BossUI bossUI;
     private float maxHealth;
 
@@ -121,7 +121,7 @@ public class Boss : Enemy
         AbilitySequence[] abilityStartSequences = {
             //new MeleeAttack(this),
             //new MeleeAttack(this),
-            new MeleeAttack(this),
+            //new MeleeAttack(this),
             //new StationaryGroundSlam(this),
             //new StationaryGroundSlam(this),
             //new MissileBarrage(this),
@@ -153,6 +153,8 @@ public class Boss : Enemy
         navMeshAgent.setAutomateNavMeshOfflinksState(false);
         bossStats = getScript<EnemyStats>();
         player = GameObject.FindWithTag("Player");
+        audioComponent = getComponent<AudioComponent_>();
+        bossAudioReferences = getScript<BossAudio>();
         navMeshAgent.setIsUpdateRotation(false);
         halfExtent = new Vector3(gameObject.transform.scale.x, gameObject.transform.scale.y, gameObject.transform.scale.z);
 
@@ -176,7 +178,7 @@ public class Boss : Enemy
         blackboard.SetValue("EngageJump", 80f);
         blackboard.SetValue("MeleeDistance", 120f);
 
-
+        //blackboard.SetValue("FootStepIndex", 0);
 
     }
 
@@ -522,7 +524,7 @@ public class Boss : Enemy
     public void SetWalking()
     {
         animator.PlayAnimation("Boss_Run");
-        animator.speedMultiplier = 5.0f;
+
         Vector3? navemshPoint = NavigationAPI.SampleNavMeshPosition("Boss", gameObject.transform.position, new Vector3(1f, 40f, 1f));
 
         if (navemshPoint == null)
@@ -549,7 +551,7 @@ public class Boss : Enemy
         //navMeshAgent.Warp(navemshPoint);
         animator.PlayAnimation("Boss_Idle");
         navMeshAgent.enable = false;
-        animator.speedMultiplier = 5.0f;
+
     }
 
     public void SearchJumpPointFurthestFromPlayer()
@@ -1327,8 +1329,21 @@ public class Boss : Enemy
         
     }
 
+    /***************Audio Functions List *****************/
+    public void TriggerWalkSound()
+    {
+        //audioComponent.PlayRandomSound(bossAudioReferences.walkSoundsAudio);
+        audioComponent.PlaySound(bossAudioReferences.walkSoundsAudio[bossAudioReferences.footStepIndex]);
+        bossAudioReferences.footStepIndex++;
+        if (bossAudioReferences.footStepIndex >= bossAudioReferences.walkSoundsAudio.Count())
+        {
+            bossAudioReferences.footStepIndex = 0;
 
 
+        }
+
+
+    }
 
 
 }
@@ -1390,4 +1405,5 @@ public class Blackboard
         return false;
     }
 }
+
 
