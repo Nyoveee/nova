@@ -1,5 +1,5 @@
 {
-    "RootEntity": 87,
+    "RootEntity": 56,
     "Entities": [
         {
             "EntityData": {
@@ -129,6 +129,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 0.0,
@@ -137,6 +139,16 @@
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -239,7 +251,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 87
+            "id": 56
         }
     ]
 }

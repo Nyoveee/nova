@@ -9,7 +9,7 @@ class Grunt : Enemy
     private delegate void CurrentState();
 
     /***********************************************************
-        Inspector Variables
+        Inspector VariablesF
     ***********************************************************/
     [SerializableField]
     private ParticleEmitter_ emitter = null;

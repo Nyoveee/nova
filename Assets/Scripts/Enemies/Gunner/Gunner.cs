@@ -81,7 +81,6 @@ class Gunner : Enemy
     // This function is invoked every fixed update.
     protected override void update()
     {
-        Debug.Log(gunnerState.ToString()    );
         base.update();
         updateState[gunnerState]();
         FlushDamageEnemy();

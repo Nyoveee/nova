@@ -108,6 +108,8 @@ class ThrowableRifle : Script
     private ThrowingWeaponState throwingWeaponState;
     private bool seekingFailed = true; //Need to call seeking
     private float timeElapsed = 0f;
+    private float weaponHitTimeElapsed = 0f;
+
     private List<GameObject> hasDamageList = new List<GameObject>();
     private float playerHeight =5.0f;
     private float homingDelay = 0.1f;
@@ -420,7 +422,6 @@ class ThrowableRifle : Script
     {
         if (timeElapsed > weaponHitDelayTime)
         {
-
             throwingWeaponState = ThrowingWeaponState.Return;
             LookAtPlayer();
             timeElapsed = 0;

@@ -17,8 +17,8 @@ class EnemyHitBox : Script
 
     protected override void onCollisionEnter(GameObject other)
     {
-        Debug.Log("EnemyHit box collided with:" + other.name);
-        Debug.Log("Damage: " + damage);
+        //Debug.Log("EnemyHit box collided with:" + other.name);
+        //Debug.Log("Damage: " + damage);
 
     }
 }

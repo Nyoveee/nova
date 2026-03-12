@@ -1,5 +1,5 @@
 {
-    "RootEntity": 88,
+    "RootEntity": 57,
     "Entities": [
         {
             "EntityData": {
@@ -8,12 +8,12 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    89,
-                    93,
-                    94,
-                    95,
-                    96,
-                    105
+                    58,
+                    62,
+                    63,
+                    64,
+                    65,
+                    74
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -110,7 +110,7 @@
                             {
                                 "name": "attackHitbox",
                                 "data": {
-                                    "__variant_value": 92,
+                                    "__variant_value": 61,
                                     "__variant_type": 4
                                 }
                             },
@@ -124,21 +124,21 @@
                             {
                                 "name": "stompHitBoxTransform",
                                 "data": {
-                                    "__variant_value": 94,
+                                    "__variant_value": 63,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "emitter",
                                 "data": {
-                                    "__variant_value": 95,
+                                    "__variant_value": 64,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "chargeLines",
                                 "data": {
-                                    "__variant_value": 105,
+                                    "__variant_value": 74,
                                     "__variant_type": 4
                                 }
                             },
@@ -296,7 +296,7 @@
                             {
                                 "name": "rigidbody",
                                 "data": {
-                                    "__variant_value": 88,
+                                    "__variant_value": 57,
                                     "__variant_type": 4
                                 }
                             },
@@ -317,28 +317,28 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 93,
+                                    "__variant_value": 62,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "animator",
                                 "data": {
-                                    "__variant_value": 89,
+                                    "__variant_value": 58,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "renderer",
                                 "data": {
-                                    "__variant_value": 89,
+                                    "__variant_value": 58,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshAgent",
                                 "data": {
-                                    "__variant_value": 88,
+                                    "__variant_value": 57,
                                     "__variant_type": 4
                                 }
                             },
@@ -348,19 +348,19 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 90,
+                                                "__variant_value": 59,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 91,
+                                                "__variant_value": 60,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 92,
+                                                "__variant_value": 61,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 88,
+                                                "__variant_value": 57,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -387,14 +387,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 88,
+                                    "__variant_value": 57,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 91,
+                                    "__variant_value": 60,
                                     "__variant_type": 4
                                 }
                             },
@@ -403,6 +403,13 @@
                                 "data": {
                                     "__variant_value": 10.0,
                                     "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "deathFlickerIndex",
+                                "data": {
+                                    "__variant_value": 0,
+                                    "__variant_type": 17
                                 }
                             },
                             {
@@ -614,7 +621,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 88,
+                                    "__variant_value": 57,
                                     "__variant_type": 4
                                 }
                             }
@@ -629,18 +636,18 @@
                 "agentRotationSpeed": 100.0,
                 "separationWeight": 10.0
             },
-            "id": 88
+            "id": 57
         },
         {
             "EntityData": {
                 "name": "Charger Model",
                 "tag": "Enemy",
-                "parent": 88,
+                "parent": 57,
                 "attachedSocket": 65535,
                 "children": [
-                    90,
-                    91,
-                    92
+                    59,
+                    60,
+                    61
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -808,13 +815,13 @@
                 "controllerId": 9182558606910275585,
                 "speedMultiplier": 1.0
             },
-            "id": 89
+            "id": 58
         },
         {
             "EntityData": {
                 "name": "Charger_WeakSpot",
                 "tag": "Enemy_WeakSpot",
-                "parent": 89,
+                "parent": 58,
                 "attachedSocket": 4,
                 "children": null,
                 "layerId": 0,
@@ -932,7 +939,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 88,
+                                    "__variant_value": 57,
                                     "__variant_type": 4
                                 }
                             }
@@ -940,13 +947,13 @@
                     }
                 ]
             },
-            "id": 90
+            "id": 59
         },
         {
             "EntityData": {
                 "name": "Charger_ArmouredBody",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 89,
+                "parent": 58,
                 "attachedSocket": 1,
                 "children": null,
                 "layerId": 0,
@@ -1069,7 +1076,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 88,
+                                    "__variant_value": 57,
                                     "__variant_type": 4
                                 }
                             }
@@ -1077,13 +1084,13 @@
                     }
                 ]
             },
-            "id": 91
+            "id": 60
         },
         {
             "EntityData": {
                 "name": "Basic_AttackColldier",
                 "tag": "EnemyHitBox",
-                "parent": 89,
+                "parent": 58,
                 "attachedSocket": 21,
                 "children": null,
                 "layerId": 0,
@@ -1206,13 +1213,13 @@
                     }
                 ]
             },
-            "id": 92
+            "id": 61
         },
         {
             "EntityData": {
                 "name": "IchorSpawnPoint",
                 "tag": "",
-                "parent": 88,
+                "parent": 57,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1297,13 +1304,13 @@
                     "z": 0.0
                 }
             },
-            "id": 93
+            "id": 62
         },
         {
             "EntityData": {
                 "name": "StompHitboxPosition",
                 "tag": "",
-                "parent": 88,
+                "parent": 57,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1388,13 +1395,13 @@
                     "z": 0.0
                 }
             },
-            "id": 94
+            "id": 63
         },
         {
             "EntityData": {
                 "name": "Emitter",
                 "tag": "",
-                "parent": 88,
+                "parent": 57,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1485,6 +1492,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.5780774997393408e+16,
@@ -1496,6 +1505,16 @@
                     "x": -107374176.0,
                     "y": -107374176.0,
                     "z": -107374176.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "lifeTime": 1.0,
                 "minLifeTimeOffset": 0.0,
@@ -1595,23 +1614,23 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 95
+            "id": 64
         },
         {
             "EntityData": {
                 "name": "Charge Lines",
                 "tag": "",
-                "parent": 88,
+                "parent": 57,
                 "attachedSocket": 65535,
                 "children": [
-                    97,
-                    98,
-                    99,
-                    100,
-                    101,
-                    102,
-                    103,
-                    104
+                    66,
+                    67,
+                    68,
+                    69,
+                    70,
+                    71,
+                    72,
+                    73
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -1695,13 +1714,13 @@
                     "z": 0.0
                 }
             },
-            "id": 96
+            "id": 65
         },
         {
             "EntityData": {
                 "name": "Charge Line 1",
                 "tag": "",
-                "parent": 96,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1792,6 +1811,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.577318149521408e+16,
@@ -1801,6 +1822,16 @@
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
                     "x": 12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -1902,13 +1933,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 97
+            "id": 66
         },
         {
             "EntityData": {
                 "name": "Charge Line 2",
                 "tag": "",
-                "parent": 96,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1999,6 +2030,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.5780328320794624e+16,
@@ -2008,6 +2041,16 @@
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
                     "x": -12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -2109,13 +2152,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 98
+            "id": 67
         },
         {
             "EntityData": {
                 "name": "Charge Line 3",
                 "tag": "",
-                "parent": 96,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2206,6 +2249,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.5777871599501312e+16,
@@ -2215,6 +2260,16 @@
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
                     "x": 12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -2316,13 +2371,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 99
+            "id": 68
         },
         {
             "EntityData": {
                 "name": "Charge Line 4",
                 "tag": "",
-                "parent": 96,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2413,6 +2468,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.5784571748483072e+16,
@@ -2422,6 +2479,16 @@
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
                     "x": -12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -2523,13 +2590,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 100
+            "id": 69
         },
         {
             "EntityData": {
                 "name": "Charge Line 5",
                 "tag": "",
-                "parent": 96,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2620,6 +2687,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.5776084893106176e+16,
@@ -2629,6 +2698,16 @@
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
                     "x": 12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -2730,13 +2809,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 101
+            "id": 70
         },
         {
             "EntityData": {
                 "name": "Charge Line 6",
                 "tag": "",
-                "parent": 96,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2827,6 +2906,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.57809983356928e+16,
@@ -2836,6 +2917,16 @@
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
                     "x": -12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -2937,13 +3028,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 102
+            "id": 71
         },
         {
             "EntityData": {
                 "name": "Charge Line 7",
                 "tag": "",
-                "parent": 96,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3034,6 +3125,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.5778318276100096e+16,
@@ -3043,6 +3136,16 @@
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
                     "x": 12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -3144,13 +3247,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 103
+            "id": 72
         },
         {
             "EntityData": {
                 "name": "Charge Line 8",
                 "tag": "",
-                "parent": 96,
+                "parent": 65,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3241,6 +3344,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": -2.1882452447274936e-15,
@@ -3250,6 +3355,16 @@
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
                     "x": -12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -3351,13 +3466,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 104
+            "id": 73
         },
         {
             "EntityData": {
                 "name": "ChargeLines_New",
                 "tag": "",
-                "parent": 88,
+                "parent": 57,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3448,6 +3563,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 9.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": 1.5782338365489152e+16,
@@ -3458,6 +3575,16 @@
                 "force": {
                     "x": 0.0,
                     "y": 25.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "lifeTime": 3.0,
@@ -3558,7 +3685,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 105
+            "id": 74
         }
     ]
 }
