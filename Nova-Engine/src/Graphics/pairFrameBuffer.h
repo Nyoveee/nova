@@ -34,6 +34,7 @@ public:
 	// swapping frame buffers means that the color attachments are no longer attached to the active FBO.
 	// invoke this member function to attach the additional color attachments to the active FBO.
 	void attachColorAttachments();
+	void attachDepthAttachment();
 
 	FrameBuffer const& getActiveFrameBuffer() const;
 	FrameBuffer const& getReadFrameBuffer() const;
@@ -48,4 +49,6 @@ private:
 	int readFrameBufferIndex	= 0;
 
 	std::vector<GLuint> texture_ids;
+	int currentAttachmentIndex = -1;
+	int currentDepthIndex = 1;
 };
