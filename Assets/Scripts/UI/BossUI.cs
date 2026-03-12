@@ -1,6 +1,8 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using Windows.UI.Composition.Interactions;
+
 class BossUI : Script
 {
     // ========================================================================
@@ -11,6 +13,12 @@ class BossUI : Script
 
     [SerializableField]
     private Image_ bossHealthFill;
+
+    [SerializableField]
+    private SceneTransition transition;
+
+    [SerializableField]
+    private float delayBeforeSceneTransition = 2f;
 
     // ========================================================================
     // Heath loss animation configuration..
@@ -63,6 +71,12 @@ class BossUI : Script
         if (currentHealth < 0)
         {
             bossUI.gameObject.SetActive(false);
+
+            Invoke(() =>
+            {
+                transition.BeginTransition();
+            }, delayBeforeSceneTransition);
+
             return;
         }
 
