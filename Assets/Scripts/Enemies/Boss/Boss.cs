@@ -24,6 +24,12 @@ public class Boss : Enemy
     private float rotationSpeed = 120f;
     [SerializableField]
     private float lookAngle = 30f;
+    [SerializableField]
+    private float startLookTolerance = 30f; //add a buffer to rotation angle so it does not immediately jerk on plaeyer moves
+    [SerializableField]
+    private float stopDistance = 40f;
+    [SerializableField]
+    private float startDistanceTolerance = 20f; //add a buffer to start distance so it does not immediately jerk on plaeyer moves
 
     /***********************************************************
     Position Variables
@@ -64,6 +70,7 @@ public class Boss : Enemy
     public int abilityIndexer = -1;
     private float abilitytimeElapsed = 0;
     private float cooldowntimeElapsed = 0;
+    private bool isIdleAnimation = false;
     Blackboard blackboard = new Blackboard(); //a blackboard helper class since i realised we gonna need to pass a lot of data around and i dont feel like creating 100 variables
 
     Vector3 halfExtent; //based on scaling values
@@ -90,6 +97,7 @@ public class Boss : Enemy
         Spawning,
         Idle,
         Walking,
+        Targeting,
         SelectAbility,
         AbilityCarryOut,
         Dead
@@ -105,10 +113,10 @@ public class Boss : Enemy
 
 
         AbilitySequence[] abilitySequences = {
-            new MeleeAttack(this),
-           new StationaryGroundSlam(this),
-             //new StationaryGroundSlam(this),
-            new MissileBarrage(this)
+            //new MeleeAttack(this),
+           //new StationaryGroundSlam(this),
+           //  new StationaryGroundSlam(this),
+           new MissileBarrage(this)
         };
 
         AbilityDeckStart.AddRange(abilitySequences);
@@ -135,6 +143,12 @@ public class Boss : Enemy
         BossState currentState = BossState.Spawning;
 
         maxHealth = enemyStats.health;
+
+        //-------------Additional Parameters ----------------------------
+        blackboard.SetValue("MeleeRotationSpeed", 200f);
+        blackboard.SetValue("PlayerLeftAngle", 10f);
+
+
     }
 
     // This function is invoked every update.
@@ -145,6 +159,7 @@ public class Boss : Enemy
 
         //make the boss look at the player
 
+        Debug.Log("Current State: " + currentState.ToString());
 
     
         switch (currentState)
@@ -155,7 +170,7 @@ public class Boss : Enemy
 
                     if (cooldowntimeElapsed > spawningDuration)
                     { 
-                        cooldowntimeElapsed = 0;
+                        cooldowntimeElapsed = abilityCoolDownTime;
                         currentState = BossState.Idle;
                     }
 
@@ -163,34 +178,153 @@ public class Boss : Enemy
                 break;
             case BossState.Idle:
                 {
-                    if (currentAbilityDeck.Count() == 0 || currentStamina == 0)
+
+                    cooldowntimeElapsed += Time.V_DeltaTime();
+                    if (cooldowntimeElapsed > abilityCoolDownTime)
                     {
-                        cooldowntimeElapsed += Time.V_DeltaTime();
-                        if (cooldowntimeElapsed > abilityCoolDownTime)
+                        if (currentAbilityDeck.Count() == 0 || currentStamina <= 0)
                         {
                             currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart); //referesh list
                             cooldowntimeElapsed = 0;
                             currentStamina = maxStamina;
                             currentState = BossState.SelectAbility;
                             //Debug.Log("Select Ability");
+
                         }
+                        else
+                        { 
+                            currentState = BossState.SelectAbility;
+                        }
+
+
                     }
                     else
                     {
-                        currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart); //referesh list
-                        cooldowntimeElapsed = 0;
-                        currentStamina = maxStamina;
-                        currentState = BossState.SelectAbility;
+                        //choose to rotate or choose to start walking 
+
+                        //prioritise walking over turning cause turning also walks
+                        if (!isWithinIdleTolerance())
+                        {
+                            currentState = BossState.Walking;
+                            SetWalking();
+                        }
+                        else
+                        if (!isWithinTargetingTolerance())
+                        {
+                            currentState = BossState.Targeting;
+                            animator.PlayAnimation("Boss_Run");
+
+                        }
+
                     }
-                
+
+
                 }
                 break;
             case BossState.Walking:
-                { 
-                    
-                
+                {
+                    cooldowntimeElapsed += Time.V_DeltaTime();
+
+                    //check if agent is near player
+                    Vector3 toPlayer = gameObject.transform.position - player.transform.position;
+
+
+                    //start walking menacingly towards player
+                    if (toPlayer.Length() > stopDistance)
+                    {
+                        RotateToPlayer();
+                        Vector3 playerposMod = player.transform.position;
+                        playerposMod.y = + 5;
+                        Vector3? playerPosition  = NavigationAPI.SampleNavMeshPosition("Boss", playerposMod, new Vector3(100f,50f,100f));
+
+                        if (playerPosition != null)
+                        {
+
+                            NavigationAPI.setDestination(gameObject, playerPosition);
+                        }
+                        else
+                        {
+                            Debug.Log("Unable to set position");
+                        }
+
+
+                    }
+                    else //within rangle go back to idle
+                    {
+
+                        NavigationAPI.stopAgent(gameObject);
+                        currentState = BossState.Idle;
+                        animator.PlayAnimation("Boss_Idle");
+
+                    }
+
+                    if (cooldowntimeElapsed >= abilityCoolDownTime)
+                    {
+                        currentState = BossState.Idle;
+
+                        StopWalking();
+                    }
+
+
+
+
                 }
                 break;
+            case BossState.Targeting:
+                {
+                    cooldowntimeElapsed += Time.V_DeltaTime();
+
+
+                    //Rotate to player
+
+                    Vector3 direction = player.transform.position - gameObject.transform.position;
+                    direction.y = 0;
+
+                    //rotation handling
+                    //above or below the player
+                    if (direction.Length() > 1f)
+                    {
+                        direction.Normalize();
+                        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+                        float angleRemaining = Quaternion.Angle(gameObject.transform.rotation, targetRotation);
+
+                        if (angleRemaining > lookAngle)
+                        {
+                            Debug.Log("Current Angle: " + angleRemaining);
+                            //if (isIdleAnimation == true)
+                            //{
+                            //    animator.PlayAnimation("Boss_Run");
+                            //    isIdleAnimation = false;
+                            //}
+                            gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, targetRotation, rotationSpeed * Time.V_DeltaTime());
+                        }
+                        else
+                        {
+                            currentState = BossState.Idle;
+                            animator.PlayAnimation("Boss_Idle");
+
+                        }
+                    }
+
+
+
+                    //Start ability sequence when ability is up
+                    if (cooldowntimeElapsed >= abilityCoolDownTime)
+                    {
+                        currentState = BossState.Idle;
+                        StopWalking();
+                    }
+
+                    //if player exits not walking range walk towards player
+                    if (!isWithinIdleTolerance())
+                    {
+                        SetWalking();
+                        currentState = BossState.Walking;
+
+                    }
+                }
+                    break;
             case BossState.SelectAbility:
                 {
                     //Shuffle current deck and pick a squence. Then carry it out.
@@ -299,6 +433,79 @@ public class Boss : Enemy
             }
         }
     }
+
+    public bool isWithinTargetingTolerance()
+    {
+
+        Vector3 direction = player.transform.position - gameObject.transform.position;
+        direction.y = 0;
+
+        //above or below the player
+        if (direction.Length() > 1f)
+        {
+            direction.Normalize();
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            float angleRemaining = Quaternion.Angle(gameObject.transform.rotation, targetRotation);
+
+            if (angleRemaining <= lookAngle + startLookTolerance)
+            {
+                return true;
+            }
+
+
+        }
+
+        return false;
+    }
+
+    public bool isWithinIdleTolerance()
+    {
+
+        Vector3 direction = player.transform.position - gameObject.transform.position;
+        direction.y = 0;
+
+        //above or below the player
+        if (direction.Length() <= stopDistance + startDistanceTolerance )
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void SetWalking()
+    {
+        animator.PlayAnimation("Boss_Run");
+        Vector3? navemshPoint = NavigationAPI.SampleNavMeshPosition("Boss", gameObject.transform.position, new Vector3(1f, 40f, 1f));
+
+        if (navemshPoint == null)
+        {
+            Debug.LogError("Boss cannot find Navmesh point");
+            return;
+        }
+
+        navMeshAgent.Warp(navemshPoint);
+        navMeshAgent.enable = true;
+    }
+
+    public void StopWalking()
+    {
+        //animator.PlayAnimation("Boss_Run");
+        //Vector3? navemshPoint = NavigationAPI.SampleNavMeshPosition("Boss", gameObject.transform.position, new Vector3(1f, 40f, 1f));
+
+        //if (navemshPoint == null)
+        //{
+        //    Debug.LogError("Boss cannot find Navmesh point");
+        //    return;
+        //}
+
+        //navMeshAgent.Warp(navemshPoint);
+        animator.PlayAnimation("Boss_Idle");
+        navMeshAgent.enable = false;
+    }
+
+
 
     /***********************************************************
     Weaver Actions
@@ -537,6 +744,42 @@ public class Boss : Enemy
 
     }
 
+    //due to animation we need to rotate to player left a bit
+    public void RotateToPlayerMelee()
+    {
+        blackboard.TryGetValue("MeleeRotationSpeed", out float rotationBoost);
+        blackboard.TryGetValue("PlayerLeftAngle", out float playerLeftAngle);
+        Vector3 currenplayerPos = player.transform.position;
+        currenplayerPos += (-player.transform.right * playerLeftAngle);
+        Vector3 direction = currenplayerPos - gameObject.transform.position;
+
+        direction.y = 0;
+
+        //above or below the player
+        if (direction.Length() > 1f)
+        {
+            direction.Normalize();
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            float angleRemaining = Quaternion.Angle(gameObject.transform.rotation, targetRotation);
+            //Debug.Log( (float) (rotationSpeed * Time.V_DeltaTime()));
+
+            if (angleRemaining > lookAngle)
+            {
+                gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, targetRotation, (rotationSpeed+ rotationBoost) * Time.V_DeltaTime());
+            }
+            else
+            {
+                sequenceIndexer++;
+
+            }
+        }
+        else { sequenceIndexer++; }
+
+
+
+    }
+
 
     /******************End of Weaver Action*******************/
 
@@ -617,12 +860,14 @@ public class Boss : Enemy
 
     public class MeleeAttack : AbilitySequence
     {
+        
+
 
         public MeleeAttack(Boss boss) : base(boss)
         {
             this.boss = boss;
 
-            sequence.Add(boss.RotateToPlayerFully);
+            sequence.Add(boss.RotateToPlayerMelee);
             sequence.Add(boss.TriggerMeleeAttackAnimation);
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.FannedMeleeAttack);
