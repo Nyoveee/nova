@@ -20,7 +20,7 @@
             "animation": 3349368110232731651,
             "transitions": null,
             "toLoop": true,
-            "blendFactor": 0.17900000512599945,
+            "blendFactor": 0.18299999833106995,
             "name": "Boss_Idle",
             "animationEvents": null
         },
@@ -31,16 +31,58 @@
             "toLoop": true,
             "blendFactor": 0.20000000298023224,
             "name": "Boss_Missile",
-            "animationEvents": null
+            "animationEvents": [
+                {
+                    "key": 54,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 62,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 30,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 78,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent2"
+                }
+            ]
         },
         "17800777199676096695": {
             "id": 17800777199676096695,
             "animation": 3349368110232748037,
             "transitions": null,
-            "toLoop": true,
+            "toLoop": false,
             "blendFactor": 0.15600000321865082,
             "name": "Boss_Jump",
-            "animationEvents": null
+            "animationEvents": [
+                {
+                    "key": 41,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 76,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 96,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent2"
+                },
+                {
+                    "key": 58,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                }
+            ]
         },
         "11459708924338618557": {
             "id": 11459708924338618557,
@@ -49,7 +91,18 @@
             "toLoop": true,
             "blendFactor": 0.02199999988079071,
             "name": "Boss_Attack",
-            "animationEvents": null
+            "animationEvents": [
+                {
+                    "key": 51,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
+                },
+                {
+                    "key": 123,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent2"
+                }
+            ]
         },
         "11459708924338585787": {
             "id": 11459708924338585787,
