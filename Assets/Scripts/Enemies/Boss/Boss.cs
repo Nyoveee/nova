@@ -31,7 +31,7 @@ public class Boss : Enemy
     [SerializableField]
     private GameObject mainLauncher = null;
     [SerializableField]
-    private List<GameObject> sideLauncher;
+    private List<GameObject> sideLauncher = null;
     [SerializableField]
     private GameObject meleeAttackPosition = null;
 
@@ -44,6 +44,14 @@ public class Boss : Enemy
     private Prefab missilePrefab = null;
     [SerializableField]
     private Prefab meleeWavePrefab = null;
+    [SerializableField]
+    private Prefab pushFieldPrefab = null;
+
+    /***********************************************************
+    Ability Prefabs
+    ***********************************************************/
+    [SerializableField]
+    private Animator_ bossAnimator = null;
 
     /***********************************************************
     Private Variables (made public cause of ability sequencer)
@@ -97,9 +105,9 @@ public class Boss : Enemy
 
 
         AbilitySequence[] abilitySequences = {
-            //new MeleeAttack(this),
-            //new BasicGroundSlam(this),
-            //new BasicGroundSlam(this),
+            new MeleeAttack(this),
+           new StationaryGroundSlam(this),
+             //new StationaryGroundSlam(this),
             new MissileBarrage(this)
         };
 
@@ -236,8 +244,8 @@ public class Boss : Enemy
                         return;
                     }
 
-                    //Debug.Log("update sequencer");
-                    //carry out the abili sequence
+                    //Debug.Log("current squence name: " + currentAbilityDeck[abilityIndexer].sequence[sequenceIndexer].ToString());
+                    //carry out the ability sequence
                     currentAbilityDeck[abilityIndexer].sequence[sequenceIndexer]();
 
                 }
@@ -295,7 +303,7 @@ public class Boss : Enemy
     /***********************************************************
     Weaver Actions
     ***********************************************************/
-    public void StarStationaryJump()
+    public void StarStationaryJumpKinematic()
     {
         AdvanceToNextSequence();
 
@@ -309,7 +317,7 @@ public class Boss : Enemy
 
     }
 
-    public void Jumping()
+    public void JumpingKinematic()
     {
         blackboard.TryGetValue("Jump Height", out float jumpHeight);
         blackboard.TryGetValue("InitialPosition", out Vector3 initialPosition);
@@ -335,19 +343,34 @@ public class Boss : Enemy
         }
     }
 
+
+    public void TriggerJumpAnimation()
+    {
+        animator.PlayAnimation("Boss_Jump");
+        AdvanceToNextSequence();
+    }
+
+
     public void CreateShockWave()
     {
         //Debug.Log("Shockwave");
         AdvanceToNextSequence();
         Instantiate(shockwavePrefab, gameObject.transform.position, gameObject.transform.rotation);
+
+        Instantiate(pushFieldPrefab, gameObject.transform.position, gameObject.transform.rotation);
+
     }
 
-
+    public void TriggerMissileAnimation()
+    {
+        animator.PlayAnimation("Boss_Missile");
+        AdvanceToNextSequence();
+    }
 
     public void FireMissileCombination()
     { 
         //launch interval
-        float launchInterval = 0.5f;
+        float launchInterval = 0.0f;
 
        // int count = launchInterval / abilitytimeElapsed;
 
@@ -367,7 +390,7 @@ public class Boss : Enemy
             leftMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(sideLauncher[0].transform.front);
             rightMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(sideLauncher[1].transform.front);
 
-
+            AnimationSpeedAdjustment(0.8f);
             AdvanceToNextSequence();
         }
 
@@ -381,7 +404,7 @@ public class Boss : Enemy
     public void FireMissileMain()
     {
         //launch interval
-        float launchInterval = 0.5f;
+        float launchInterval = 0.0f;
         if (abilitytimeElapsed > launchInterval)
         {
             //Top
@@ -399,7 +422,6 @@ public class Boss : Enemy
 
         float angleStep = (count > 1) ? angle / (count - 1) : 0;
         float minimalAngle = -(angle / 2.0f);
-
 
 
         for (int i = 0; i < count; i++)
@@ -420,6 +442,36 @@ public class Boss : Enemy
     }
 
 
+
+    public void TriggerMeleeAttackAnimation()
+    {
+        
+        animator.PlayAnimation("Boss_Attack");
+        AdvanceToNextSequence();
+    }
+
+
+    public void ReturnToIdle()
+    {
+        animator.speedMultiplier = 1.0f;
+        animator.PlayAnimation("Boss_Idle");
+    }
+
+    //return to idle without animations controller
+    public void ForcedReturnToIdle()
+    {
+        AdvanceToNextSequence();
+        animator.speedMultiplier = 1.0f;
+        animator.PlayAnimation("Boss_Idle");
+    }
+
+
+    public void AwaitAnimation()
+    { 
+        //Do nothing until animation advances this state
+    
+    }
+
     //Use with a lambda to delay action
     public void DelayedSequence( float delayTime)
     { 
@@ -428,6 +480,17 @@ public class Boss : Enemy
         {
             AdvanceToNextSequence();
         }
+    }
+
+    public void AnimationSpeedAdjustmentGoNext(float value)
+    {
+        animator.speedMultiplier = value;
+        AdvanceToNextSequence();
+    }
+
+    public void AnimationSpeedAdjustment(float value)
+    {
+        animator.speedMultiplier = value;
     }
 
 
@@ -481,17 +544,21 @@ public class Boss : Enemy
     /***********************************************************
     Ability List (Create our Mix Ups in here :D)
     ***********************************************************/
-    public class BasicGroundSlam : AbilitySequence
+    public class StationaryGroundSlam : AbilitySequence
     {
 
-        public BasicGroundSlam(Boss boss) : base(boss)
+        public StationaryGroundSlam(Boss boss) : base(boss)
         {
             this.boss = boss;
 
-            sequence.Add(boss.RotateToPlayerFully);
-            sequence.Add(boss.StarStationaryJump);
-            sequence.Add(boss.Jumping);
+            //sequence.Add(boss.RotateToPlayerFully);
+            sequence.Add(boss.TriggerJumpAnimation);
+            sequence.Add(boss.AwaitAnimation); //jump has two triggers
+            sequence.Add(boss.AwaitAnimation); //jump has two triggers
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
             sequence.Add(boss.CreateShockWave);
+            sequence.Add(() => { boss.DelayedSequence(0.5f); });
+            sequence.Add(() => { boss.DelayedSequence(2.0f); });
         }
 
 
@@ -517,10 +584,18 @@ public class Boss : Enemy
         public MissileBarrage(Boss boss) : base(boss)
         {
             this.boss = boss;
-
+            sequence.Add(boss.TriggerMissileAnimation);
+            sequence.Add(boss.AwaitAnimation); //await for missile
+            sequence.Add(boss.AwaitAnimation); //await to skip opening animation
             sequence.Add(boss.FireMissileCombination);
-            sequence.Add(boss.FireMissileMain);
-            sequence.Add(boss.FireMissileMain);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(105.0f); boss.TriggerMissileAnimation();  } ); //retrigger animation
+            sequence.Add(boss.AwaitAnimation);
+            //sequence.Add(() => { boss.AnimationSpeedAdjustment(52.0f); }); //sync to animation //skip opening squence
+            //sequence.Add(() => { boss.AnimationSpeedAdjustment(1.0f); });
+            sequence.Add(boss.FireMissileCombination);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.ForcedReturnToIdle);
             sequence.Add(() => { boss.DelayedSequence(2.0f); }); //quick way to delay action
         }
 
@@ -548,8 +623,12 @@ public class Boss : Enemy
             this.boss = boss;
 
             sequence.Add(boss.RotateToPlayerFully);
+            sequence.Add(boss.TriggerMeleeAttackAnimation);
+            sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.FannedMeleeAttack);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.5f); });
             sequence.Add( () => { boss.DelayedSequence(0.5f); }); //quick way to delay action
+            //sequence.Add(() => { boss.DelayedSequence(2.0f); });
         }
 
 
@@ -579,6 +658,7 @@ public class Boss : Enemy
     //Helper function to advance to the next sequence in the ability
     public void AdvanceToNextSequence()
     {
+        //Debug.Log("Advance to Next Squence");
         sequenceIndexer++;
         abilitytimeElapsed = 0;
     

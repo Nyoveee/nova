@@ -42,18 +42,19 @@ void PairFrameBuffer::clearFrameBuffers() {
 		framebuffer.clear();
 	}
 
-	// We choose 1 as the active index because we last bind to the last element of the array above^
-	// Reset main frame buffer indices..
-	activeFrameBufferIndex = 1;
-	readFrameBufferIndex = 0;
-
 	// We clear the color attachments..
 	for (int i = 1; i < textureIds().size(); ++i) {
 		GLuint textureId = textureIds()[i];
 		glClearTexImage(textureId, 0, GL_RGBA, GL_FLOAT, color);
 	}
 
+	// We choose 1 as the active index because we last bind to the last element of the array above^
+	// Reset main frame buffer indices..
+	activeFrameBufferIndex = 1;
+	readFrameBufferIndex = 0;
+
 	attachColorAttachments();
+	attachDepthAttachment();
 }
 
 void PairFrameBuffer::swapFrameBuffer() {
@@ -71,9 +72,20 @@ void PairFrameBuffer::swapFrameBuffer() {
 }
 
 void PairFrameBuffer::attachColorAttachments() {
-	for (int i = 0; i < texture_ids.size(); ++i) {
-		GLuint colorAttachment = GL_COLOR_ATTACHMENT0 + i + 1;
-		glNamedFramebufferTexture(getActiveFrameBuffer().fboId(), colorAttachment, texture_ids[i], 0);
+	if (currentAttachmentIndex != activeFrameBufferIndex) {
+		for (int i = 0; i < texture_ids.size(); ++i) {
+			GLuint colorAttachment = GL_COLOR_ATTACHMENT0 + i + 1;
+			glNamedFramebufferTexture(getActiveFrameBuffer().fboId(), colorAttachment, texture_ids[i], 0);
+		}
+
+		currentAttachmentIndex = activeFrameBufferIndex;
+	}
+}
+
+void PairFrameBuffer::attachDepthAttachment() {
+	if (currentDepthIndex != activeFrameBufferIndex) {
+		glNamedFramebufferTexture(getActiveFrameBuffer().fboId(), GL_DEPTH_STENCIL_ATTACHMENT, frameBuffers[1].depthStencilId(), 0);
+		currentDepthIndex = activeFrameBufferIndex;
 	}
 }
 

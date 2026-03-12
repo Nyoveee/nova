@@ -3580,6 +3580,9 @@ void Renderer::renderFog(PairFrameBuffer& frameBuffers) {
 
 		// Render fullscreen quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		frameBuffers.attachDepthAttachment();
+
 		return;
 	}
 }
