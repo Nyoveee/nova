@@ -119,13 +119,12 @@ public class Boss : Enemy
 
 
         AbilitySequence[] abilityStartSequences = {
-            //new MeleeAttack(this),
-            //new MeleeAttack(this),
-            //new MeleeAttack(this),
-            //new StationaryGroundSlam(this),
-            //new StationaryGroundSlam(this),
-            //new MissileBarrage(this),
-            //new JumpSlash(this),
+            new MeleeAttack(this),
+            new MeleeAttack(this),
+            new StationaryGroundSlam(this),
+            new StationaryGroundSlam(this),
+            new MissileBarrage(this),
+            new JumpSlash(this)
             //new ArenaJump(this)
 
         };
@@ -133,10 +132,7 @@ public class Boss : Enemy
         AbilityDeckStart.AddRange(abilityStartSequences);
 
         AbilitySequence[] abilityStrongSequences = {
-            ////new MeleeAttack(this),
-            ////new StationaryGroundSlam(this),
-            ////new StationaryGroundSlam(this),
-            ////new MissileBarrage(this),
+            new MeleeAttack(this),
             // new JumpSlash(this)
            
         };
@@ -154,6 +150,7 @@ public class Boss : Enemy
         bossStats = getScript<EnemyStats>();
         player = GameObject.FindWithTag("Player");
         audioComponent = getComponent<AudioComponent_>();
+        audioComponent.volume = 0.70f;
         bossAudioReferences = getScript<BossAudio>();
         navMeshAgent.setIsUpdateRotation(false);
         halfExtent = new Vector3(gameObject.transform.scale.x, gameObject.transform.scale.y, gameObject.transform.scale.z);
@@ -179,6 +176,7 @@ public class Boss : Enemy
         blackboard.SetValue("MeleeDistance", 120f);
 
         //blackboard.SetValue("FootStepIndex", 0);
+
 
     }
 
@@ -583,14 +581,14 @@ public class Boss : Enemy
         toBoss.Normalize();
         Vector3 nearestPoint = player.transform.position + (toBoss * 40f);
 
-        Vector3? truefurthestPoint = NavigationAPI.SampleNavMeshPosition("Boss", nearestPoint, new Vector3(100f, 100f, 100f));
+        Vector3? trueNearestPoint = NavigationAPI.SampleNavMeshPosition("Boss", nearestPoint, new Vector3(100f, 100f, 100f));
 
         //Debug.Log("True Furthest Point: " + truefurthestPoint);
 
-        if (truefurthestPoint != null)
+        if (trueNearestPoint != null)
         {
             blackboard.SetValue("StartJumpPoint", gameObject.transform.position);
-            blackboard.SetValue("EndJumpPoint", nearestPoint);
+            blackboard.SetValue("EndJumpPoint", trueNearestPoint);
         }
     }
 
@@ -767,6 +765,7 @@ public class Boss : Enemy
 
     public void CreateShockWave()
     {
+        TriggerShockWaveSound();
         //Debug.Log("Shockwave");
         AdvanceToNextSequence();
         Instantiate(shockwavePrefab, gameObject.transform.position, gameObject.transform.rotation);
@@ -803,7 +802,7 @@ public class Boss : Enemy
             topMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(mainLauncher.transform.front);
             leftMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(sideLauncher[0].transform.front);
             rightMissile.getScript<BossHomingMissile>().InitialiseMissileSetting(sideLauncher[1].transform.front);
-
+            TriggerRocketSound();
             AnimationSpeedAdjustment(0.8f);
             AdvanceToNextSequence();
         }
@@ -826,12 +825,12 @@ public class Boss : Enemy
     public void FannedMeleeAttack()
     {
 
-        float angle = 60;
-        int count = 3;
+        float angle = 180;
+        int count = 7;
 
         float angleStep = (count > 1) ? angle / (count - 1) : 0;
         float minimalAngle = -(angle / 2.0f);
-
+        audioComponent.PlayRandomSound(bossAudioReferences.meleeAttackAudio);
 
         for (int i = 0; i < count; i++)
         {
@@ -1112,6 +1111,19 @@ public class Boss : Enemy
         }
     }
 
+
+    //public class RushingMeleeAttack : AbilitySequence
+    //{
+
+
+
+
+
+
+    //}
+
+
+
     public class JumpSlash : AbilitySequence
     {
 
@@ -1245,7 +1257,7 @@ public class Boss : Enemy
                 damage *= bossStats.enemyWeakSpotMultiplier;
 
             }
-
+            TriggerBossHitSound();
             accumulatedDamageInstance += damage;
 
 
@@ -1274,7 +1286,7 @@ public class Boss : Enemy
         if (damageType == Enemy.EnemydamageType.Ultimate)
         {
 
-            accumulatedDamageInstance += damage;
+            accumulatedDamageInstance += damage * 0.2f;
 
         }
 
@@ -1338,10 +1350,36 @@ public class Boss : Enemy
         if (bossAudioReferences.footStepIndex >= bossAudioReferences.walkSoundsAudio.Count())
         {
             bossAudioReferences.footStepIndex = 0;
-
-
         }
 
+
+    }
+
+    public void TriggerBossHitSound()
+    {
+        //audioComponent.PlayRandomSound(bossAudioReferences.walkSoundsAudio);
+        audioComponent.PlayRandomSound(bossAudioReferences.bossHitAudio);
+
+    }
+
+    public void TriggerRocketSound()
+    {
+        //audioComponent.PlayRandomSound(bossAudioReferences.walkSoundsAudio);
+        audioComponent.PlayRandomSound(bossAudioReferences.fireRocketAudio);
+
+    }
+
+    public void TriggerShockWaveSound()
+    {
+        //audioComponent.PlayRandomSound(bossAudioReferences.walkSoundsAudio);
+        audioComponent.PlayRandomSound(bossAudioReferences.shockWaveAudio);
+
+    }
+
+    public void TriggerMeleeStrikeSound()
+    {
+        //audioComponent.PlayRandomSound(bossAudioReferences.walkSoundsAudio);
+        audioComponent.PlayRandomSound(bossAudioReferences.meleeAttackAudio);
 
     }
 

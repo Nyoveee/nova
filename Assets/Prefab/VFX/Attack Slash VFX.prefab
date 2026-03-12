@@ -1,5 +1,5 @@
 {
-    "RootEntity": 19,
+    "RootEntity": 3,
     "Entities": [
         {
             "EntityData": {
@@ -8,9 +8,9 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    20,
-                    21,
-                    22
+                    4,
+                    5,
+                    6
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -57,9 +57,9 @@
                     "z": 28.373756408691406
                 },
                 "scale": {
-                    "x": 0.7619872093200684,
-                    "y": 0.7615157961845398,
-                    "z": 0.762039303779602
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "rotation": {
                     "w": 9.777829035328978e-08,
@@ -69,7 +69,7 @@
                 },
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": 1.9555658070657955e-07,
+                    "y": 1.9555646701974183e-07,
                     "z": 3.1415927410125732
                 },
                 "localPosition": {
@@ -90,7 +90,7 @@
                 },
                 "localEulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": 1.9555658070657955e-07,
+                    "y": 1.9555646701974183e-07,
                     "z": 3.1415927410125732
                 }
             },
@@ -132,6 +132,11 @@
                 },
                 "scaleWithTransform": true
             },
+            "AudioComponent": {
+                "volume": 0.699999988079071,
+                "loop": false,
+                "audioGroup": "SFX"
+            },
             "Scripts": {
                 "scriptDatas": [
                     {
@@ -147,7 +152,7 @@
                             {
                                 "name": "speed",
                                 "data": {
-                                    "__variant_value": 60.0,
+                                    "__variant_value": 100.0,
                                     "__variant_type": 18
                                 }
                             },
@@ -171,18 +176,50 @@
                                     "__variant_value": 20.0,
                                     "__variant_type": 18
                                 }
+                            },
+                            {
+                                "name": "waveAudio",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 12206312515514433559,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 10476930258604163097,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 16817998533941821467,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 6441704992480198685,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 12782773267817857055,
+                                                "__variant_type": 15
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
                             }
                         ]
                     }
                 ]
             },
-            "id": 19
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Ground Spark",
                 "tag": "",
-                "parent": 19,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -383,13 +420,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 20
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Bright line mark",
                 "tag": "",
-                "parent": 19,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -532,9 +569,9 @@
                 },
                 "particleColorSelection": {
                     "color": {
-                        "r": 1.0,
-                        "g": 0.5115338563919067,
-                        "b": 0.45517241954803467,
+                        "r": 0.982758641242981,
+                        "g": 0.8691278696060181,
+                        "b": 0.49815696477890015,
                         "a": 1.0
                     },
                     "colorOffsetMin": {
@@ -590,13 +627,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 21
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Debris",
                 "tag": "",
-                "parent": 19,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -797,7 +834,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 22
+            "id": 6
         }
     ]
 }
