@@ -140,6 +140,7 @@ public class Boss : Enemy
     // This function is invoked every update.
     protected override void update()
     {
+        base.update();
         FlushDamageEnemy();
         //Debug.Log(bossStats.health);
 

@@ -43,6 +43,8 @@ public abstract class Enemy : Script
     [SerializableField]
     private float maxEmissiveValue;
     [SerializableField]
+    private int deathFlickerIndex;
+    [SerializableField]
     private int deathFlickerAmount;
     [SerializableField]
     private float deathFlickerSpeed;
@@ -289,10 +291,10 @@ public abstract class Enemy : Script
             --deathFlickerAmount;
         }
         else if (currentDeathEmissiveTime > currentDeathFlickerSpeed / 2f) {
-            renderer.setMaterialFloat(0, "emissiveStrength", maxEmissiveValue);
+            renderer.setMaterialFloat(deathFlickerIndex, "emissiveStrength", maxEmissiveValue);
         }
         else {
-            renderer.setMaterialFloat(0, "emissiveStrength", 0);
+            renderer.setMaterialFloat(deathFlickerIndex, "emissiveStrength", 0);
         }
     }
     /***********************************************************
@@ -304,7 +306,7 @@ public abstract class Enemy : Script
         player = GameObject.FindWithTag("Player");
         playerHead = GameObject.FindWithTag("PlayerHead");
         navMeshAgent.setAutomateNavMeshOfflinksState(false);
-        renderer.setMaterialFloat(0, "emissiveStrength", maxEmissiveValue);
+        renderer.setMaterialFloat(deathFlickerIndex, "emissiveStrength", maxEmissiveValue);
         currentFlickerVariance = Random.Range(deathFlickerMinSpeedOffset, deathFlickerMaxSpeedOffset);
     }
     protected override void update()
@@ -314,7 +316,7 @@ public abstract class Enemy : Script
             if (deathFlickerAmount > 0)
                 DeathFlicker();
             else
-                renderer.setMaterialFloat(0, "emissiveStrength", 0);
+                renderer.setMaterialFloat(deathFlickerIndex, "emissiveStrength", 0);
         }
     }
 

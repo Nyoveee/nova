@@ -323,7 +323,7 @@ class GameUIManager : Script
         camera.ResetUp();
 
         playerController.Reset();
-        getScript<VignetteController>().TriggerVignette(0.00f, 0, new Colour(0.0f, 0.0f, 0.0f));
+        getScript<VignetteController>().TriggerVignetteFadeOut(0.00f, 0, new Colour(0.0f, 0.0f, 0.0f));
     }
 
     protected override void update()

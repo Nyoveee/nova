@@ -169,8 +169,13 @@ class EnemyCannon : Script
         return currentTurningTime == cannonTurningTime;
     }
     private void Fire() {
+        // Set Active is currently bugged so i'm reinstantiating instead
+        Destroy(enemyObject);
+        enemyObject = Instantiate(enemyPrefab);
+        enemyObject.transform.position -= new Vector3(0, enemyObject.transform.scale.y / 2f, 0);
+
         currentShootCooldown = Random.Range(minTimeShootCooldown, maxTimeShootCooldown);
-        enemyObject.SetActive(true);
+        
         enemyObject.transform.position = firingPoint.transform.position;
 
         // Set the velocity

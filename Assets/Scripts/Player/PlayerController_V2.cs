@@ -773,7 +773,7 @@ class PlayerController_V2 : Script
         // gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
         gameUIManager?.AnimateHealthLoss(previousHealth, currentHealth, maxHealth);
 
-        vignetteController.TriggerVignette(0.07f, 1, new Colour(1.0f, 0.0f, 0.0f));
+        vignetteController.TriggerVignetteFadeOut(0.07f, 1, new Colour(1.0f, 0.0f, 0.0f));
 
         // Placeholder for a player death 
         if (currentHealth <= 0f)
@@ -893,7 +893,7 @@ class PlayerController_V2 : Script
         if (heal > 0)
         {
             gameUIManager?.AnimateHealthGain(currentHealth - heal, currentHealth, maxHealth);
-            vignetteController.TriggerVignette(0.03f, 1, new Colour(0f, 1.0f, 0.0f));
+            vignetteController.TriggerVignetteFadeOut(0.03f, 1, new Colour(0f, 1.0f, 0.0f));
         }
     }
 
