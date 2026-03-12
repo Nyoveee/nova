@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 1,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
                     2,
                     3,
                     4,
-                    5
+                    5,
+                    6
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -186,7 +186,7 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 2,
                                     "__variant_type": 4
                                 }
                             },
@@ -217,11 +217,11 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 0,
+                                                "__variant_value": 1,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 2,
+                                                "__variant_value": 3,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -248,14 +248,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
@@ -387,13 +387,13 @@
                     }
                 ]
             },
-            "id": 0
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "IchorSpawnPoint",
                 "tag": "",
-                "parent": 0,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -478,13 +478,13 @@
                     "z": -1.5707954168319702
                 }
             },
-            "id": 1
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "MissleHitBox",
                 "tag": "Enemy_WeakSpot",
-                "parent": 0,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -607,7 +607,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             }
@@ -615,13 +615,13 @@
                     }
                 ]
             },
-            "id": 2
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "MissileMesh",
                 "tag": "",
-                "parent": 0,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -714,13 +714,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 3
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Fire Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -891,13 +891,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 4
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Smoke Particle Emitter",
                 "tag": "",
-                "parent": 0,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1068,7 +1068,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 5
+            "id": 6
         }
     ]
 }

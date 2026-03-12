@@ -3,7 +3,8 @@
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
 using System; 
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using System.Reflection;
 
 public class Boss : Enemy
 {
@@ -40,6 +41,10 @@ public class Boss : Enemy
     private List<GameObject> sideLauncher = null;
     [SerializableField]
     private GameObject meleeAttackPosition = null;
+    [SerializableField]
+    private GameObject centeralPoint = null;
+    [SerializableField]
+    private List<GameObject> cornerMarkers = null;
 
     /***********************************************************
     Ability Prefabs
@@ -70,7 +75,7 @@ public class Boss : Enemy
     public int abilityIndexer = -1;
     private float abilitytimeElapsed = 0;
     private float cooldowntimeElapsed = 0;
-    private bool isIdleAnimation = false;
+    public bool lockSequencing = false; //prevent animations from overriding the a sequencer handled through script
     Blackboard blackboard = new Blackboard(); //a blackboard helper class since i realised we gonna need to pass a lot of data around and i dont feel like creating 100 variables
 
     Vector3 halfExtent; //based on scaling values
@@ -86,10 +91,11 @@ public class Boss : Enemy
     //The weaver can have multiple ability decks such as one for 50> hp and 50< hp. 
 
     List<AbilitySequence> AbilityDeckStart = new List<AbilitySequence>();
+    List<AbilitySequence> AbilityDeckStrong = new List<AbilitySequence>();
 
     //current set of abilities
-    List<AbilitySequence> currentAbilityDeck = new List<AbilitySequence>(); 
-    
+    List<AbilitySequence> currentAbilityDeck = new List<AbilitySequence>();
+
 
 
     public enum BossState
@@ -105,21 +111,38 @@ public class Boss : Enemy
     }
 
 
-    protected override void  awake()
+    protected override void awake()
     {
         //lets create our own ability deck :D
 
 
 
 
-        AbilitySequence[] abilitySequences = {
+        AbilitySequence[] abilityStartSequences = {
             //new MeleeAttack(this),
-           //new StationaryGroundSlam(this),
-           //  new StationaryGroundSlam(this),
-           new MissileBarrage(this)
+            //new MeleeAttack(this),
+            new MeleeAttack(this),
+            //new StationaryGroundSlam(this),
+            //new StationaryGroundSlam(this),
+            //new MissileBarrage(this),
+            //new JumpSlash(this),
+            //new ArenaJump(this)
+
         };
 
-        AbilityDeckStart.AddRange(abilitySequences);
+        AbilityDeckStart.AddRange(abilityStartSequences);
+
+        AbilitySequence[] abilityStrongSequences = {
+            ////new MeleeAttack(this),
+            ////new StationaryGroundSlam(this),
+            ////new StationaryGroundSlam(this),
+            ////new MissileBarrage(this),
+            // new JumpSlash(this)
+           
+        };
+
+
+        AbilityDeckStrong.AddRange(abilityStrongSequences);
     }
 
     protected override void init()
@@ -147,6 +170,12 @@ public class Boss : Enemy
         //-------------Additional Parameters ----------------------------
         blackboard.SetValue("MeleeRotationSpeed", 200f);
         blackboard.SetValue("PlayerLeftAngle", 10f);
+        blackboard.SetValue("JumpDuration", 1.5f);
+        blackboard.SetValue("QuickJumpDuration", 0.8f);
+        blackboard.SetValue("DisengageJump", 100f);
+        blackboard.SetValue("EngageJump", 80f);
+        blackboard.SetValue("MeleeDistance", 120f);
+
 
 
     }
@@ -159,9 +188,9 @@ public class Boss : Enemy
 
         //make the boss look at the player
 
-        Debug.Log("Current State: " + currentState.ToString());
+        //Debug.Log("Current State: " + currentState.ToString()+ " currentStamina: " + currentStamina);
 
-    
+
         switch (currentState)
         {
             case BossState.Spawning:
@@ -169,7 +198,7 @@ public class Boss : Enemy
                     cooldowntimeElapsed += Time.V_DeltaTime();
 
                     if (cooldowntimeElapsed > spawningDuration)
-                    { 
+                    {
                         cooldowntimeElapsed = abilityCoolDownTime;
                         currentState = BossState.Idle;
                     }
@@ -180,11 +209,13 @@ public class Boss : Enemy
                 {
 
                     cooldowntimeElapsed += Time.V_DeltaTime();
-                    if (cooldowntimeElapsed > abilityCoolDownTime)
+                    if (cooldowntimeElapsed > abilityCoolDownTime) //ability cooldown controls the interval at which boss is recharge ability
                     {
-                        if (currentAbilityDeck.Count() == 0 || currentStamina <= 0)
+                        if (currentAbilityDeck.Count() == 0 || currentStamina <= 0) //id
                         {
-                            currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart); //referesh list
+                            Debug.Log("Refreshed Stamina and Abilities! ");
+                            //currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart); //referesh list
+                            ResetDeck();
                             cooldowntimeElapsed = 0;
                             currentStamina = maxStamina;
                             currentState = BossState.SelectAbility;
@@ -192,7 +223,7 @@ public class Boss : Enemy
 
                         }
                         else
-                        { 
+                        {
                             currentState = BossState.SelectAbility;
                         }
 
@@ -209,12 +240,12 @@ public class Boss : Enemy
                             SetWalking();
                         }
                         else
-                        if (!isWithinTargetingTolerance())
-                        {
-                            currentState = BossState.Targeting;
-                            animator.PlayAnimation("Boss_Run");
+                            if (!isWithinTargetingTolerance())
+                            {
+                                currentState = BossState.Targeting;
+                                animator.PlayAnimation("Boss_Run");
 
-                        }
+                            }
 
                     }
 
@@ -234,8 +265,8 @@ public class Boss : Enemy
                     {
                         RotateToPlayer();
                         Vector3 playerposMod = player.transform.position;
-                        playerposMod.y = + 5;
-                        Vector3? playerPosition  = NavigationAPI.SampleNavMeshPosition("Boss", playerposMod, new Vector3(100f,50f,100f));
+                        playerposMod.y = +5;
+                        Vector3? playerPosition = NavigationAPI.SampleNavMeshPosition("Boss", playerposMod, new Vector3(100f, 50f, 100f));
 
                         if (playerPosition != null)
                         {
@@ -324,11 +355,11 @@ public class Boss : Enemy
 
                     }
                 }
-                    break;
+                break;
             case BossState.SelectAbility:
                 {
                     //Shuffle current deck and pick a squence. Then carry it out.
-                    if (currentAbilityDeck.Count() > 0 && currentStamina > 0 )
+                    if (currentAbilityDeck.Count() > 0 && currentStamina > 0)
                     {
                         terminateExecution = false;
 
@@ -338,7 +369,7 @@ public class Boss : Enemy
                         //System.Random.Shared.Shuffle<AbilitySequence>(currentAbilityDeck);
                         bool noAbilityFound = true;
 
-                        for(int i = 0; i < currentAbilityDeck.Count(); i++)
+                        for (int i = 0; i < currentAbilityDeck.Count(); i++)
                         {
                             if (currentAbilityDeck[i].CheckConditions())
                             {
@@ -353,17 +384,24 @@ public class Boss : Enemy
                             }
                         }
 
-                        if (noAbilityFound == true)
+                        if (noAbilityFound == true) //perhaps rand out of conditions to cast abilities
                         {
                             Debug.Log("No ability found");
                             //no ability found go back to idle
+                            // ResetDeck();
                             currentState = BossState.Idle;
+                            animator.PlayAnimation("Boss_Idle");
+                            currentStamina = 0;
+                            cooldowntimeElapsed = 0;
+
                         }
 
                     }
-                    else
-                    { 
+                    else //ran out of abilities or no stamina
+                    {
                         currentState = BossState.Idle;
+                        animator.PlayAnimation("Boss_Idle");
+                        cooldowntimeElapsed = 0;
                     }
                 }
                 break;
@@ -385,8 +423,8 @@ public class Boss : Enemy
                 }
                 break;
             case BossState.Dead:
-                { 
-                
+                {
+
                 }
                 break;
         }
@@ -395,7 +433,7 @@ public class Boss : Enemy
 
     // This function is invoked every update.
     protected override void fixedUpdate()
-    { 
+    {
     }
 
 
@@ -404,11 +442,18 @@ public class Boss : Enemy
         return true;
     }
 
-    void Idle()
-    { 
-        currentState = BossState.Walking;
-    
+    //A set of stats to check what type of deck to selects
+    public void ResetDeck()
+    {
+        if (bossStats.health > 0)
+        {
+            
+            currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart);
+            Debug.Log("Reset Deck!" + "CurrentStamina: " + currentStamina + "abilityCount " + currentAbilityDeck.Count());
+        }
+
     }
+
 
 
     //Rotate Whenever
@@ -466,7 +511,7 @@ public class Boss : Enemy
         direction.y = 0;
 
         //above or below the player
-        if (direction.Length() <= stopDistance + startDistanceTolerance )
+        if (direction.Length() <= stopDistance + startDistanceTolerance)
         {
             return true;
         }
@@ -477,6 +522,7 @@ public class Boss : Enemy
     public void SetWalking()
     {
         animator.PlayAnimation("Boss_Run");
+        animator.speedMultiplier = 5.0f;
         Vector3? navemshPoint = NavigationAPI.SampleNavMeshPosition("Boss", gameObject.transform.position, new Vector3(1f, 40f, 1f));
 
         if (navemshPoint == null)
@@ -503,7 +549,49 @@ public class Boss : Enemy
         //navMeshAgent.Warp(navemshPoint);
         animator.PlayAnimation("Boss_Idle");
         navMeshAgent.enable = false;
+        animator.speedMultiplier = 5.0f;
     }
+
+    public void SearchJumpPointFurthestFromPlayer()
+    {
+        Vector3 toCenter = centeralPoint.transform.position - player.transform.position;
+
+        toCenter.y = 0;
+
+        toCenter.Normalize();
+        Vector3 furthestPoint = centeralPoint.transform.position + (toCenter * 200f);
+
+        Vector3? truefurthestPoint = NavigationAPI.SampleNavMeshPosition("Boss", furthestPoint , new Vector3(300f,100f,300f));
+
+        //Debug.Log("True Furthest Point: " + truefurthestPoint);
+
+        if (truefurthestPoint != null)
+        {
+            blackboard.SetValue("StartJumpPoint", gameObject.transform.position);
+            blackboard.SetValue("EndJumpPoint", truefurthestPoint);
+        }
+    }
+
+    public void SearchJumpPointNearestToPlayer()
+    {
+        Vector3 toBoss = gameObject.transform.position - player.transform.position;
+
+        toBoss.y = 0;
+
+        toBoss.Normalize();
+        Vector3 nearestPoint = player.transform.position + (toBoss * 40f);
+
+        Vector3? truefurthestPoint = NavigationAPI.SampleNavMeshPosition("Boss", nearestPoint, new Vector3(100f, 100f, 100f));
+
+        //Debug.Log("True Furthest Point: " + truefurthestPoint);
+
+        if (truefurthestPoint != null)
+        {
+            blackboard.SetValue("StartJumpPoint", gameObject.transform.position);
+            blackboard.SetValue("EndJumpPoint", nearestPoint);
+        }
+    }
+
 
 
 
@@ -518,7 +606,7 @@ public class Boss : Enemy
         navMeshAgent.enable = false;
 
         blackboard.SetValue("Jump Height", 20.0f);
-        blackboard.SetValue("Jump Time",   1.0f);
+        blackboard.SetValue("Jump Time", 1.0f);
         blackboard.SetValue("InitialPosition", gameObject.transform.position);
         blackboard.SetValue("EndPosition", gameObject.transform.position);
 
@@ -557,6 +645,123 @@ public class Boss : Enemy
         AdvanceToNextSequence();
     }
 
+    public void ConsiderDisengageJump() //jumptowards target while rotating to face player
+    {
+        Vector3 toPlayer = player.transform.position - gameObject.transform.position;
+
+        blackboard.TryGetValue("DisengageJump", out float jumpDistance);
+        
+        if (toPlayer.Length() < jumpDistance)
+        {
+            Debug.Log("Jumping");
+            SearchJumpPointFurthestFromPlayer();
+            AdvanceToNextSequence();
+
+        }
+        else 
+        {
+            
+            AdvanceToNextSequence(); //skip jump sequence
+            AdvanceToNextSequence();
+            AdvanceToNextSequence();
+            AdvanceToNextSequence();
+            AdvanceToNextSequence();
+        }
+
+    }
+
+
+    public void JumpTowardsTargetWithoutShockWave() //jumptowards target while rotating to face player
+    {
+        lockSequencing = true;
+        navMeshAgent.setIsUpdatePosition(false);
+        abilitytimeElapsed += Time.V_DeltaTime();
+
+        blackboard.TryGetValue("StartJumpPoint", out Vector3 startJumpPoint);
+        blackboard.TryGetValue("EndJumpPoint", out Vector3 endJumpPoint);
+        blackboard.TryGetValue("JumpDuration", out float jumpDuration);
+        float currentT = abilitytimeElapsed / jumpDuration;
+        RotateToPlayer();
+        if (currentT <= 1.0f)
+        {
+            //Debug.Log("StartJumpPoint: " + startJumpPoint);
+            //Debug.Log("EndJumpPoint: " + endJumpPoint);
+            Vector3 currentPoint = Vector3.Lerp(startJumpPoint, endJumpPoint, currentT);
+            //Debug.Log("Current JumpPoint: " + currentPoint);
+            gameObject.transform.position = currentPoint;
+        }
+        else 
+        {
+            navMeshAgent.setIsUpdatePosition(true);
+            Vector3? samplePosition = NavigationAPI.SampleNavMeshPosition("Boss", gameObject.transform.position, new Vector3(100f, 50f, 1000f));
+            navMeshAgent.Warp(samplePosition.Value);
+            lockSequencing = false;
+           // AdvanceToNextSequence();
+            
+        }
+
+    }
+
+
+    
+
+    public void TriggerJumpAnimationTowardsPlayer()
+    {
+        SearchJumpPointNearestToPlayer();
+        animator.PlayAnimation("Boss_Jump");
+        AdvanceToNextSequence();
+    }
+    public void JumpTowardsTargetWithShockWave() //jumptowards target while rotating to face player
+    {
+        //lockSequencing = true;
+        navMeshAgent.setIsUpdatePosition(false);
+        abilitytimeElapsed += Time.V_DeltaTime();
+
+        blackboard.TryGetValue("StartJumpPoint", out Vector3 startJumpPoint);
+        blackboard.TryGetValue("EndJumpPoint", out Vector3 endJumpPoint);
+        blackboard.TryGetValue("QuickJumpDuration", out float jumpDuration);
+        float currentT = abilitytimeElapsed / jumpDuration;
+        RotateToPlayer();
+        if (currentT <= 1.0f)
+        {
+            //Debug.Log("StartJumpPoint: " + startJumpPoint);
+            //Debug.Log("EndJumpPoint: " + endJumpPoint);
+            Vector3 currentPoint = Vector3.Lerp(startJumpPoint, endJumpPoint, currentT);
+            //Debug.Log("Current JumpPoint: " + currentPoint);
+            gameObject.transform.position = currentPoint;
+        }
+        else
+        {
+            navMeshAgent.setIsUpdatePosition(true);
+            Vector3? samplePosition = NavigationAPI.SampleNavMeshPosition("Boss", gameObject.transform.position, new Vector3(100f, 50f, 1000f));
+            navMeshAgent.Warp(samplePosition.Value);
+            //lockSequencing = false;
+            // AdvanceToNextSequence();
+
+        }
+
+    }
+    public void TriggerArenaJumpSequence()
+    {
+        int index = 0;
+        blackboard.SetValue("MarkerIndex", index);
+        AdvanceToNextSequence();
+    }
+
+    public void SetNextArenaJumpDestination()
+    {
+        blackboard.TryGetValue("MarkerIndex", out int indexCount );
+        animator.PlayAnimation("Boss_Jump");
+        GameObject markerObject = cornerMarkers[indexCount];
+
+        blackboard.SetValue("StartJumpPoint", gameObject.transform.position);
+        blackboard.SetValue("EndJumpPoint", markerObject.transform.position);
+
+        indexCount++;
+        blackboard.SetValue("MarkerIndex", indexCount);
+
+        AdvanceToNextSequence();
+    }
 
     public void CreateShockWave()
     {
@@ -600,11 +805,6 @@ public class Boss : Enemy
             AnimationSpeedAdjustment(0.8f);
             AdvanceToNextSequence();
         }
-
-
-
-
-
 
     }
 
@@ -697,9 +897,10 @@ public class Boss : Enemy
 
     public void AnimationSpeedAdjustment(float value)
     {
+        
         animator.speedMultiplier = value;
     }
-
+   
 
     public void RestoreDefaultSettings()
     {
@@ -800,8 +1001,13 @@ public class Boss : Enemy
             sequence.Add(boss.AwaitAnimation); //jump has two triggers
             sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
             sequence.Add(boss.CreateShockWave);
-            sequence.Add(() => { boss.DelayedSequence(0.5f); });
-            sequence.Add(() => { boss.DelayedSequence(2.0f); });
+            //sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); });
+            //sequence.Add(() => { boss.DelayedSequence(0.5f); });
+            //sequence.Add(boss.ReturnToIdle);
+            //sequence.Add(() => { boss.DelayedSequence(2.0f); });
         }
 
 
@@ -823,23 +1029,30 @@ public class Boss : Enemy
 
     public class MissileBarrage : AbilitySequence
     {
+        
+
 
         public MissileBarrage(Boss boss) : base(boss)
         {
+
             this.boss = boss;
+            sequence.Add(boss.ConsiderDisengageJump);
+            sequence.Add(boss.TriggerJumpAnimation);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.JumpTowardsTargetWithoutShockWave);
+            sequence.Add(boss.AwaitAnimation);
+            //sequence.Add(() => { boss.DelayedSequence(0.5f); }); //quick way to delay action
             sequence.Add(boss.TriggerMissileAnimation);
             sequence.Add(boss.AwaitAnimation); //await for missile
             sequence.Add(boss.AwaitAnimation); //await to skip opening animation
             sequence.Add(boss.FireMissileCombination);
             sequence.Add(boss.AwaitAnimation);
-            sequence.Add(() => { boss.AnimationSpeedAdjustment(105.0f); boss.TriggerMissileAnimation();  } ); //retrigger animation
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(0.5f); boss.animator.SetFrame(54); boss.FireMissileCombination(); }); //retrigger animation
             sequence.Add(boss.AwaitAnimation);
-            //sequence.Add(() => { boss.AnimationSpeedAdjustment(52.0f); }); //sync to animation //skip opening squence
-            //sequence.Add(() => { boss.AnimationSpeedAdjustment(1.0f); });
+            sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.FireMissileCombination);
             sequence.Add(boss.AwaitAnimation);
-            sequence.Add(boss.ForcedReturnToIdle);
-            sequence.Add(() => { boss.DelayedSequence(2.0f); }); //quick way to delay action
+            //sequence.Add(() => { boss.DelayedSequence(1.0f); }); //quick way to delay action
         }
 
 
@@ -858,6 +1071,7 @@ public class Boss : Enemy
         }
     }
 
+
     public class MeleeAttack : AbilitySequence
     {
         
@@ -872,7 +1086,7 @@ public class Boss : Enemy
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.FannedMeleeAttack);
             sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.5f); });
-            sequence.Add( () => { boss.DelayedSequence(0.5f); }); //quick way to delay action
+            sequence.Add(boss.AwaitAnimation); //quick way to delay action
             //sequence.Add(() => { boss.DelayedSequence(2.0f); });
         }
 
@@ -881,8 +1095,9 @@ public class Boss : Enemy
         {
             Vector3 direction = boss.meleeAttackPosition.transform.position  - boss.player.transform.position;
 
+            boss.blackboard.TryGetValue("MeleeDistance", out float distance);
 
-            if (boss != null && boss.currentStamina > 1 && direction.Length() < 300)
+            if (boss != null && boss.currentStamina > 1 && direction.Length() < distance)
             {
 
                 return true;
@@ -895,10 +1110,103 @@ public class Boss : Enemy
         }
     }
 
+    public class JumpSlash : AbilitySequence
+    {
+
+        public JumpSlash(Boss boss) : base(boss)
+        {
+            this.boss = boss;
+            sequence.Add(boss.TriggerJumpAnimationTowardsPlayer);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
+            sequence.Add(boss.CreateShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); });
+        }
+        public override bool CheckConditions()
+        {
+            if (boss != null && boss.currentStamina > 1)
+            {
+                boss.blackboard.TryGetValue("EngageJump", out float engageDistance);
+                if (Vector3.Distance(boss.player.transform.position, boss.gameObject.transform.position) < engageDistance)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 1;
+        }
+    }
+
+    public class ArenaJump: AbilitySequence
+    {
+
+        public ArenaJump(Boss boss) : base(boss)
+        {
+            this.boss = boss;
+            //1st jump
+            sequence.Add(boss.TriggerArenaJumpSequence);
+            sequence.Add(boss.SetNextArenaJumpDestination);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
+            sequence.Add(boss.CreateShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.AdvanceToNextSequence(); });
+            //2nd jump
+            sequence.Add(boss.SetNextArenaJumpDestination);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
+            sequence.Add(boss.CreateShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); });
+            ////3rd
+            sequence.Add(boss.SetNextArenaJumpDestination);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
+            sequence.Add(boss.CreateShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); });
+            //4rd
+            sequence.Add(boss.SetNextArenaJumpDestination);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
+            sequence.Add(boss.CreateShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); });
+
+        }
+        public override bool CheckConditions()
+        {
+            if (boss != null && boss.currentStamina > 3)
+            {
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 3;
+        }
+    }
+
+
+
 
     /***************End of Ability List *****************/
-
-
 
     //Helper function to advance to the next sequence in the ability
     public void AdvanceToNextSequence()
@@ -908,6 +1216,15 @@ public class Boss : Enemy
         abilitytimeElapsed = 0;
     
     }
+    public void AdvanceToNextSequenceConditional()
+    {
+        if (lockSequencing == false)
+        {
+            sequenceIndexer++;
+            abilitytimeElapsed = 0;
+        }
+    }
+
 
 
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
@@ -1001,6 +1318,9 @@ public class Boss : Enemy
             accumulatedDamageInstance = 0;
         }
     }
+
+
+
 
     public override void SetSpawningDuration(float seconds)
     {
