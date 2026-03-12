@@ -1,0 +1,64 @@
+{
+    "selectedShader": 16537957319682754287,
+    "uniformDatas": [
+        {
+            "glslType": "sampler2D",
+            "identifier": "albedoMap",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "colorOne",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 0.268965482711792,
+                    "b": 0.0
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "colorTwo",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 0.7962425351142883,
+                    "b": 0.1310344934463501
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "power",
+            "value": {
+                "__variant_value": 8.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "yUVMultiplier",
+            "value": {
+                "__variant_value": 1.2000000476837158,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "emissiveMultiplier",
+            "value": {
+                "__variant_value": 0.6000000238418579,
+                "__variant_type": 3
+            }
+        }
+    ],
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "NoDepthWrite",
+    "cullingConfig": "Enable"
+}
