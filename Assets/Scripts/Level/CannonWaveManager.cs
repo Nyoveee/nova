@@ -35,7 +35,6 @@ class CannonWaveManager : Script
     // This function is invoked every update.
     protected override void update()
     {
-        Debug.Log("current time: " + currentTime);
         if (lever.getScript<Switch>().isSwitchActivated() == true)
         {
             currentTime += Time.V_DeltaTime();

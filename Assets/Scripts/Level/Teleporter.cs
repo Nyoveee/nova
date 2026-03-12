@@ -25,6 +25,7 @@ class Teleporter : Script
         {
             player.getScript<PlayerController_V2>().OnTeleport();
             player.transform.position = destination.position;
+            player.getScript<PlayerController_V2>().TakeDamage(10);
         }
     }
 }
