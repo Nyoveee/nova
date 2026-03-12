@@ -105,10 +105,10 @@ public class Boss : Enemy
 
 
         AbilitySequence[] abilitySequences = {
-            //new MeleeAttack(this),
-            new StationaryGroundSlam(this),
+            new MeleeAttack(this),
+           new StationaryGroundSlam(this),
              //new StationaryGroundSlam(this),
-            //new MissileBarrage(this)
+            new MissileBarrage(this)
         };
 
         AbilityDeckStart.AddRange(abilitySequences);
