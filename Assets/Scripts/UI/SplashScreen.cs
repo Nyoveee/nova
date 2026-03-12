@@ -47,8 +47,10 @@ class SplashScreen : Script
                 {
                     currentFadeTime = 0;
                     currentFadeState = SplashScreenState.Delay;
+                    images[currentImageIndex].colorTint = new ColorAlpha(1f, 1f, 1f, 1f);
                     break;
                 }
+
                 float alpha = Mathf.Interpolate(0, 1, currentFadeTime / fadeInTime, 1);
                 images[currentImageIndex].colorTint = new ColorAlpha(1f, 1f, 1f, alpha);
                 break;
@@ -66,6 +68,8 @@ class SplashScreen : Script
             {
                 if (currentFadeTime >= fadeOutTime)
                 {
+                    images[currentImageIndex].colorTint = new ColorAlpha(1f, 1f, 1f, 0f);
+
                     ++currentImageIndex;
                     if (currentImageIndex == images.Count)
                         SceneAPI.ChangeScene(nextScene);
