@@ -4,22 +4,45 @@
 
 class VignetteController : Script
 {
-  
+    enum VignetteState
+    {
+        FadeIn,
+        FadeOut
+    }
     private float startFadeTime;
     private float currentFadeTime;
     private float startVignette;
+    private float targetVignette;
+    private VignetteState vignetteState;
     protected override void update()
     {
-        if (RendererAPI.vignette == 0)
+        if (currentFadeTime == 0)
             return;
         currentFadeTime -= Time.V_FixedDeltaTime();
         currentFadeTime = Mathf.Max(currentFadeTime, 0);
-        RendererAPI.vignette = Mathf.Interpolate(0f, startVignette, currentFadeTime / startFadeTime,1);
+
+        switch (vignetteState)
+        {
+            case VignetteState.FadeOut:
+                RendererAPI.vignette = Mathf.Interpolate(0f, startVignette, currentFadeTime / startFadeTime, 1);
+                break;
+            case VignetteState.FadeIn:
+                RendererAPI.vignette = Mathf.Interpolate(targetVignette, 0, currentFadeTime / startFadeTime, 1);
+                break;
+        }
     }
-    public void TriggerVignette(float vignetteAmount, float fadeTime, Colour vignetteColor)
+    public void TriggerVignetteFadeOut(float startVignette, float fadeTime, Colour vignetteColor)
     {
         RendererAPI.vignetteColor = vignetteColor;
-        RendererAPI.vignette = startVignette = vignetteAmount;
+        RendererAPI.vignette = this.startVignette = targetVignette;
         startFadeTime = currentFadeTime = fadeTime;
+        vignetteState = VignetteState.FadeOut;
+    }
+    public void TriggerVignetteFadeIn(float targetVignette, float fadeTime, Colour vignetteColor)
+    {
+        RendererAPI.vignetteColor = vignetteColor;
+        RendererAPI.vignette = this.targetVignette = targetVignette;
+        startFadeTime = currentFadeTime = fadeTime;
+        vignetteState = VignetteState.FadeIn;
     }
 }

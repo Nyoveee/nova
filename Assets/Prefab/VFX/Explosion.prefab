@@ -1,5 +1,5 @@
 {
-    "RootEntity": 70,
+    "RootEntity": 106,
     "Entities": [
         {
             "EntityData": {
@@ -8,10 +8,10 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    71,
-                    72,
-                    73,
-                    74
+                    107,
+                    108,
+                    109,
+                    110
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -19,8 +19,8 @@
                 "entityGUID": 10702708319697372321,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true,
-                    "16652763906952685383": true
+                    "16652763906952685383": true,
+                    "17237801994024849853": true
                 },
                 "inactiveComponents": null
             },
@@ -90,7 +90,7 @@
                             {
                                 "name": "lightGameobject",
                                 "data": {
-                                    "__variant_value": 74,
+                                    "__variant_value": 110,
                                     "__variant_type": 4
                                 }
                             }
@@ -98,13 +98,13 @@
                     }
                 ]
             },
-            "id": 70
+            "id": 106
         },
         {
             "EntityData": {
                 "name": "Initial Burst",
                 "tag": "",
-                "parent": 70,
+                "parent": 106,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -278,13 +278,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 71
+            "id": 107
         },
         {
             "EntityData": {
                 "name": "Spark",
                 "tag": "",
-                "parent": 70,
+                "parent": 106,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -457,13 +457,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 72
+            "id": 108
         },
         {
             "EntityData": {
                 "name": "Field",
                 "tag": "",
-                "parent": 70,
+                "parent": 106,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -636,13 +636,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 73
+            "id": 109
         },
         {
             "EntityData": {
                 "name": "Light Burst",
                 "tag": "",
-                "parent": 70,
+                "parent": 106,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -718,7 +718,7 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 74
+            "id": 110
         }
     ]
 }

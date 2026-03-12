@@ -8,7 +8,7 @@ class EndOfLevel2 : Script
     [SerializableField]
     private float scrollSpeed = 50f;
     [SerializableField]
-    private GameObject[] stopScroll;
+    private GameObject stopScroll;
     [SerializableField]
     private bool start = false;
 
@@ -19,7 +19,7 @@ class EndOfLevel2 : Script
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
-        stopScroll = GameObject.FindGameObjectsWithTag("Scroll");
+        stopScroll = GameObject.FindWithTag("Scroll");
     }
 
     // This function is invoked every update.
@@ -35,7 +35,7 @@ class EndOfLevel2 : Script
             }
             else
             {
-                foreach (var scroll in stopScroll)
+                foreach (var scroll in stopScroll.GetChildren())
                 {
                     scroll.getScript<ScrollingBG>().StopScrolling();
                 }
