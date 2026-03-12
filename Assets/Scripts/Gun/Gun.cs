@@ -19,7 +19,7 @@ public abstract class Gun : Script
     private int initialCurrentSp = 0;
 
     [SerializableField]
-    private int initialMaxSp = 30;
+    private int initialMaxSp = 100;
 
     private GameUIManager gameUIManager;
 
