@@ -1340,6 +1340,8 @@ void Renderer::recompileShaders() {
 	TAAResolveShader.recompile();
 	texture2dShader.recompile();
 	
+	videoShader.recompile();
+
 	auto [defaultPBRShader, _] = resourceManager.getResource<CustomShader>(DEFAULT_PBR_SHADER_ID);
 
 	if (defaultPBRShader) {

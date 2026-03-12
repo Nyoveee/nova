@@ -19,6 +19,9 @@ void main() {
 	float cb = texture2D(texture_cb, TexCoord).r;
 	float cr = texture2D(texture_cr, TexCoord).r;
 
-	FragColor = vec4(y, cb, cr, 1.0) * rec601;
-	// FragColor = vec4(TexCoord.x, TexCoord.y, 1, 1);
+	vec4 color = vec4(y, cb, cr, 1.0) * rec601;
+
+	// sRGB to linear..
+	vec3 linear_color = pow(color.rgb, vec3(2.2));
+	FragColor = vec4(linear_color, 1.0);
 }
