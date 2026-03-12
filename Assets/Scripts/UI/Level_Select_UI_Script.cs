@@ -57,6 +57,7 @@ class Level_Select_UI_Script : Script
 
     public void onReleased()
     {
+        audioComponent.PlaySound(onClickSFX);
         levelSelectScript?.SelectNewLevel(level);
     }
 }
