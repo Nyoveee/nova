@@ -7,7 +7,7 @@ class RaiseEnemBoat : Script
     private Transform_ furthestDistance;
 
     [SerializableField]
-    private float distance = -600f;
+    private float distance = -400f;
     
     [SerializableField] 
     private GameObject waveManager;
@@ -18,7 +18,7 @@ class RaiseEnemBoat : Script
     private float bobTimer = 0f;
 
     private float riseSpeed = 2f;
-    private float riseHeight = 70f;
+    private float riseHeight = 60f;
     private float bobAmplitude = 5f;   // How much it shakes up/down
     private float bobFrequency = 1.5f;
 
