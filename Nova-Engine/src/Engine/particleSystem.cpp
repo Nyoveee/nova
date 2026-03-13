@@ -294,6 +294,7 @@ void ParticleSystem::determineParticleRotation(ParticleLifespanData& particleLif
 			cameraProjectionView = engine.renderer.getEditorCamera().viewProjection();
 		if (engine.renderer.isGameScreenShown)
 			cameraProjectionView = engine.renderer.getGameCamera().viewProjection();
+
 		glm::vec2 screenSpaceVelocity = glm::normalize(cameraProjectionView * glm::vec4(particleLifeSpanData.velocity, 0.0));
 		glm::vec2 up = glm::vec2(0, 1.0);
 		glm::vec2 right = glm::vec2(1.0, 0);

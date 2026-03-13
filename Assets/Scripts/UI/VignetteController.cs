@@ -2,6 +2,8 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 
+using System;
+
 class VignetteController : Script
 {
     enum VignetteState
@@ -24,7 +26,7 @@ class VignetteController : Script
         switch (vignetteState)
         {
             case VignetteState.FadeOut:
-                RendererAPI.vignette = Mathf.Interpolate(0f, startVignette, currentFadeTime / startFadeTime, 1);
+                RendererAPI.vignette = Mathf.Interpolate(0, startVignette, currentFadeTime / startFadeTime, 1);
                 break;
             case VignetteState.FadeIn:
                 RendererAPI.vignette = Mathf.Interpolate(targetVignette, 0, currentFadeTime / startFadeTime, 1);
@@ -34,7 +36,8 @@ class VignetteController : Script
     public void TriggerVignetteFadeOut(float startVignette, float fadeTime, Colour vignetteColor)
     {
         RendererAPI.vignetteColor = vignetteColor;
-        RendererAPI.vignette = this.startVignette = targetVignette;
+        RendererAPI.vignette = this.startVignette = startVignette;
+
         startFadeTime = currentFadeTime = fadeTime;
         vignetteState = VignetteState.FadeOut;
     }

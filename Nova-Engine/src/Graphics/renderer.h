@@ -170,7 +170,7 @@ public:
 
 public:
 	bool isEditorScreenShown;
-	bool isGameScreenShown;
+	bool isGameScreenShown = true;
 	bool isUIScreenShown;
 	bool toGammaCorrect;
 	bool isBlurEnabled = false;

@@ -81,7 +81,7 @@ const vec2 textureCoordinates[4] = {
 };
 
 const int View = 0;
-const int Local = 0;
+const int Local = 1;
 
 uniform uint textureIndex;
 uniform uint maxParticlesPerTexture;

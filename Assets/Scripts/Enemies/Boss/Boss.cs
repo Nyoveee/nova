@@ -200,7 +200,7 @@ public class Boss : Enemy
 
         //make the boss look at the player
 
-       Debug.Log("Current State: " + currentState.ToString()+ " currentStamina: " + currentStamina);
+       //Debug.Log("Current State: " + currentState.ToString()+ " currentStamina: " + currentStamina);
 
 
         switch (currentState)
@@ -1536,6 +1536,7 @@ public class Boss : Enemy
                     DisablePhysicalInteraction();
 
                     animator.PlayAnimation("Boss_Death");
+                    animator.speedMultiplier = 1f;
                 }
             }
             else
