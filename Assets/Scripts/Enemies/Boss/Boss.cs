@@ -119,12 +119,15 @@ public class Boss : Enemy
 
 
         AbilitySequence[] abilityStartSequences = {
-            new MeleeAttack(this),
-            new MeleeAttack(this),
-            new StationaryGroundSlam(this),
-            new StationaryGroundSlam(this),
+            new RushingMeleeAttack(this),
+            new RushingMeleeAttack(this),
+            //new MeleeAttack(this),
+             //new StationaryGroundSlam(this),
+            //new StationaryGroundSlam(this),
             new MissileBarrage(this),
-            new JumpSlash(this)
+            new MissileBarrage(this),
+            //new JumpSlash(this),
+            new TripleJumpSlam(this)
             //new ArenaJump(this)
 
         };
@@ -132,8 +135,16 @@ public class Boss : Enemy
         AbilityDeckStart.AddRange(abilityStartSequences);
 
         AbilitySequence[] abilityStrongSequences = {
-            new MeleeAttack(this),
-            // new JumpSlash(this)
+            new RushingMeleeAttack(this),
+            new RushingMeleeAttack(this),
+            //new MeleeAttack(this),
+             //new StationaryGroundSlam(this),
+            //new StationaryGroundSlam(this),
+            new MissileBarrage(this),
+            new MissileBarrage(this),
+            //new JumpSlash(this),
+            new TripleJumpSlam(this),
+            new ArenaJump(this)
            
         };
 
@@ -167,13 +178,13 @@ public class Boss : Enemy
         maxHealth = enemyStats.health;
 
         //-------------Additional Parameters ----------------------------
-        blackboard.SetValue("MeleeRotationSpeed", 200f);
+        blackboard.SetValue("MeleeRotationSpeed", 100f);
         blackboard.SetValue("PlayerLeftAngle", 10f);
         blackboard.SetValue("JumpDuration", 1.5f);
-        blackboard.SetValue("QuickJumpDuration", 0.8f);
+        blackboard.SetValue("QuickJumpDuration", 0.6f);
         blackboard.SetValue("DisengageJump", 100f);
         blackboard.SetValue("EngageJump", 80f);
-        blackboard.SetValue("MeleeDistance", 120f);
+        blackboard.SetValue("MeleeDistance", 90f);
 
         //blackboard.SetValue("FootStepIndex", 0);
 
@@ -189,7 +200,7 @@ public class Boss : Enemy
 
         //make the boss look at the player
 
-        //Debug.Log("Current State: " + currentState.ToString()+ " currentStamina: " + currentStamina);
+       Debug.Log("Current State: " + currentState.ToString()+ " currentStamina: " + currentStamina);
 
 
         switch (currentState)
@@ -381,6 +392,7 @@ public class Boss : Enemy
                                 currentAbilityDeck[i].ApplyCost();
                                 currentState = BossState.AbilityCarryOut;
                                 abilitytimeElapsed = 0;
+                                animator.speedMultiplier = 1.0f;
                                 abilityIndexer = i;
                                 sequenceIndexer = 0;
                                 noAbilityFound = false;
@@ -449,11 +461,16 @@ public class Boss : Enemy
     //A set of stats to check what type of deck to selects
     public void ResetDeck()
     {
-        if (bossStats.health > 0)
+        if (bossStats.health > maxHealth / 2)
         {
-            
+
             currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart);
             Debug.Log("Reset Deck!" + "CurrentStamina: " + currentStamina + "abilityCount " + currentAbilityDeck.Count());
+        }
+        else
+        {
+            currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart);
+
         }
 
     }
@@ -526,7 +543,7 @@ public class Boss : Enemy
     public void SetWalking()
     {
         animator.PlayAnimation("Boss_Run");
-
+        animator.speedMultiplier = 1.5f;
         Vector3? navemshPoint = NavigationAPI.SampleNavMeshPosition("Boss", gameObject.transform.position, new Vector3(1f, 40f, 1f));
 
         if (navemshPoint == null)
@@ -552,6 +569,7 @@ public class Boss : Enemy
 
         //navMeshAgent.Warp(navemshPoint);
         animator.PlayAnimation("Boss_Idle");
+        animator.speedMultiplier = 1.0f;
         navMeshAgent.enable = false;
 
     }
@@ -583,7 +601,7 @@ public class Boss : Enemy
         toBoss.y = 0;
 
         toBoss.Normalize();
-        Vector3 nearestPoint = player.transform.position + (toBoss * 40f);
+        Vector3 nearestPoint = player.transform.position + (toBoss * 30f);
 
         Vector3? trueNearestPoint = NavigationAPI.SampleNavMeshPosition("Boss", nearestPoint, new Vector3(100f, 100f, 100f));
 
@@ -646,6 +664,7 @@ public class Boss : Enemy
     public void TriggerJumpAnimation()
     {
         animator.PlayAnimation("Boss_Jump");
+        animator.speedMultiplier = 1.8f;
         AdvanceToNextSequence();
     }
 
@@ -666,6 +685,8 @@ public class Boss : Enemy
         {
             
             AdvanceToNextSequence(); //skip jump sequence
+            AdvanceToNextSequence();
+            AdvanceToNextSequence();
             AdvanceToNextSequence();
             AdvanceToNextSequence();
             AdvanceToNextSequence();
@@ -713,6 +734,7 @@ public class Boss : Enemy
     {
         SearchJumpPointNearestToPlayer();
         animator.PlayAnimation("Boss_Jump");
+        animator.speedMultiplier = 1.8f;
         AdvanceToNextSequence();
     }
     public void JumpTowardsTargetWithShockWave() //jumptowards target while rotating to face player
@@ -756,6 +778,7 @@ public class Boss : Enemy
     {
         blackboard.TryGetValue("MarkerIndex", out int indexCount );
         animator.PlayAnimation("Boss_Jump");
+        animator.speedMultiplier = 2.0f;
         GameObject markerObject = cornerMarkers[indexCount];
 
         blackboard.SetValue("StartJumpPoint", gameObject.transform.position);
@@ -781,6 +804,7 @@ public class Boss : Enemy
     public void TriggerMissileAnimation()
     {
         animator.PlayAnimation("Boss_Missile");
+        animator.speedMultiplier = 1.1f;
         AdvanceToNextSequence();
     }
 
@@ -854,11 +878,70 @@ public class Boss : Enemy
     }
 
 
+    public void StartSwiftWalk()
+    {
+        animator.PlayAnimation("Boss_Run");
+        animator.speedMultiplier = 1.5f;
+        AdvanceToNextSequence();
+    
+    }
+
+    public void SwitftWalk()
+    { 
+        Vector3 toPlayer = player.transform.position - gameObject.transform.position;
+        abilitytimeElapsed += Time.V_DeltaTime();
+
+        if (abilitytimeElapsed >= 4.0f)
+        {
+            AdvanceToNextSequence();
+            return;
+        }
+
+        RotateToPlayer();
+        blackboard.TryGetValue("MeleeDistance", out float distance);
+        if (toPlayer.Length() > distance)
+        {
+            RotateToPlayer();
+            Vector3 playerposMod = player.transform.position;
+            Vector3? playerPosition = NavigationAPI.SampleNavMeshPosition("Boss", playerposMod, new Vector3(100f, 50f, 100f));
+
+            if (playerPosition != null)
+            {
+
+                NavigationAPI.setDestination(gameObject, playerPosition);
+            }
+            else
+            {
+                Debug.Log("Unable to set position");
+            }
+
+
+        }
+        else
+        {
+            AdvanceToNextSequence();
+            EndSwiftWalk();
+        }
+
+
+    }
+
+    public void EndSwiftWalk()
+    {
+        animator.PlayAnimation("Boss_Idle");
+        NavigationAPI.stopAgent(gameObject);
+        animator.speedMultiplier = 1.0f;
+        AdvanceToNextSequence();
+
+    }
+
+
 
     public void TriggerMeleeAttackAnimation()
     {
         
         animator.PlayAnimation("Boss_Attack");
+        animator.speedMultiplier = 2.0f;
         AdvanceToNextSequence();
     }
 
@@ -1007,16 +1090,15 @@ public class Boss : Enemy
         {
             this.boss = boss;
 
-            //sequence.Add(boss.RotateToPlayerFully);
             sequence.Add(boss.TriggerJumpAnimation);
             sequence.Add(boss.AwaitAnimation); //jump has two triggers
             sequence.Add(boss.AwaitAnimation); //jump has two triggers
+            sequence.Add(() => { boss.DelayedSequence(0.1f); boss.AnimationSpeedAdjustment(0.0f); });
             sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
             sequence.Add(boss.CreateShockWave);
-            //sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
             sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
             sequence.Add(boss.AwaitAnimation);
-            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); });
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); boss.navMeshAgent.setIsUpdatePosition(true); });
             //sequence.Add(() => { boss.DelayedSequence(0.5f); });
             //sequence.Add(boss.ReturnToIdle);
             //sequence.Add(() => { boss.DelayedSequence(2.0f); });
@@ -1051,8 +1133,10 @@ public class Boss : Enemy
             sequence.Add(boss.ConsiderDisengageJump);
             sequence.Add(boss.TriggerJumpAnimation);
             sequence.Add(boss.AwaitAnimation);
-            sequence.Add(boss.JumpTowardsTargetWithoutShockWave);
-            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.DelayedSequence(0.1f); boss.AnimationSpeedAdjustment(0.0f); });
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
+            sequence.Add(boss.CreateShockWave);
             //sequence.Add(() => { boss.DelayedSequence(0.5f); }); //quick way to delay action
             sequence.Add(boss.TriggerMissileAnimation);
             sequence.Add(boss.AwaitAnimation); //await for missile
@@ -1063,7 +1147,7 @@ public class Boss : Enemy
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.FireMissileCombination);
-            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.AwaitAnimation(); boss.navMeshAgent.setIsUpdatePosition(true); } );
             //sequence.Add(() => { boss.DelayedSequence(1.0f); }); //quick way to delay action
         }
 
@@ -1096,6 +1180,7 @@ public class Boss : Enemy
             sequence.Add(boss.RotateToPlayerMelee);
             sequence.Add(boss.TriggerMeleeAttackAnimation);
             sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.FannedMeleeAttack);
             sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.5f); });
             sequence.Add(boss.AwaitAnimation); //quick way to delay action
@@ -1122,16 +1207,84 @@ public class Boss : Enemy
         }
     }
 
-
-    //public class RushingMeleeAttack : AbilitySequence
-    //{
-
+    public class SnapMeleeAttack : AbilitySequence
+    {
 
 
 
+        public SnapMeleeAttack(Boss boss) : base(boss)
+        {
+            this.boss = boss;
+            sequence.Add(boss.TriggerMeleeAttackAnimation);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.animator.speedMultiplier = 0.0f; boss.RotateToPlayerMelee(); });
+            sequence.Add(() => { boss.DelayedSequence(0.1f); } );
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(3.0f); } );
+            sequence.Add(boss.FannedMeleeAttack);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.5f); });
+            sequence.Add(boss.AwaitAnimation); //quick way to delay action
+        }
 
 
-    //}
+        public override bool CheckConditions()
+        {
+
+
+
+            if (boss != null && boss.currentStamina > 1)
+            {
+
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 1;
+        }
+    }
+
+
+    public class RushingMeleeAttack : AbilitySequence
+    {
+        public RushingMeleeAttack(Boss boss) : base(boss)
+        {
+            sequence.Add(boss.StartSwiftWalk);
+            sequence.Add(boss.SwitftWalk);
+            sequence.Add(boss.EndSwiftWalk);
+            sequence.Add(boss.TriggerMeleeAttackAnimation);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.animator.speedMultiplier = 0.0f; boss.RotateToPlayerMelee(); });
+            sequence.Add(() => { boss.DelayedSequence(0.1f); });
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(3.0f); });
+            sequence.Add(boss.FannedMeleeAttack);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.5f); });
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.TriggerMeleeAttackAnimation);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.animator.speedMultiplier = 0.0f; boss.RotateToPlayerMelee(); });
+            sequence.Add(() => { boss.DelayedSequence(0.1f); });
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(3.0f); });
+            sequence.Add(boss.FannedMeleeAttack);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.5f); });
+            sequence.Add(boss.AwaitAnimation);
+        }
+
+        public override bool CheckConditions()
+        {
+
+            if (boss != null && boss.currentStamina > 1)
+            {
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 2;
+        }
+
+    }
 
 
 
@@ -1144,11 +1297,12 @@ public class Boss : Enemy
             sequence.Add(boss.TriggerJumpAnimationTowardsPlayer);
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.DelayedSequence(0.1f); boss.AnimationSpeedAdjustment(0.0f); });
             sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
             sequence.Add(boss.CreateShockWave);
             sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
             sequence.Add(boss.AwaitAnimation);
-            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); });
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); boss.navMeshAgent.setIsUpdatePosition(true); });
         }
         public override bool CheckConditions()
         {
@@ -1169,6 +1323,61 @@ public class Boss : Enemy
         }
     }
 
+    public class TripleJumpSlam : AbilitySequence
+    {
+
+        public TripleJumpSlam(Boss boss) : base(boss)
+        {
+            this.boss = boss;
+            sequence.Add(boss.TriggerJumpAnimation);
+            sequence.Add(boss.AwaitAnimation); //jump has two triggers
+            sequence.Add(boss.AwaitAnimation); //jump has two triggers
+            sequence.Add(() => { boss.DelayedSequence(0.1f); boss.AnimationSpeedAdjustment(0.0f); });
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
+            sequence.Add(boss.CreateShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); });
+
+            sequence.Add(boss.TriggerJumpAnimation);
+            sequence.Add(boss.AwaitAnimation); //jump has two triggers
+            sequence.Add(boss.AwaitAnimation); //jump has two triggers
+            sequence.Add(() => { boss.DelayedSequence(0.1f); boss.AnimationSpeedAdjustment(0.0f); });
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
+            sequence.Add(boss.CreateShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); });
+
+            sequence.Add(boss.TriggerJumpAnimationTowardsPlayer);
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.DelayedSequence(0.1f); boss.AnimationSpeedAdjustment(0.0f); });
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
+            sequence.Add(boss.CreateShockWave);
+            sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
+            sequence.Add(boss.AwaitAnimation);
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); boss.navMeshAgent.setIsUpdatePosition(true); });
+        }
+        public override bool CheckConditions()
+        {
+            if (boss != null && boss.currentStamina > 1)
+            {
+                boss.blackboard.TryGetValue("EngageJump", out float engageDistance);
+                if (Vector3.Distance(boss.player.transform.position, boss.gameObject.transform.position) < engageDistance)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+        public override void ApplyCost()
+        {
+            boss.currentStamina -= 4;
+        }
+    }
+
     public class ArenaJump: AbilitySequence
     {
 
@@ -1180,6 +1389,7 @@ public class Boss : Enemy
             sequence.Add(boss.SetNextArenaJumpDestination);
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.DelayedSequence(0.1f); boss.AnimationSpeedAdjustment(0.0f); });
             sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
             sequence.Add(boss.CreateShockWave);
             sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
@@ -1189,6 +1399,7 @@ public class Boss : Enemy
             sequence.Add(boss.SetNextArenaJumpDestination);
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.DelayedSequence(0.1f); boss.AnimationSpeedAdjustment(0.0f); });
             sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
             sequence.Add(boss.CreateShockWave);
             sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
@@ -1198,6 +1409,7 @@ public class Boss : Enemy
             sequence.Add(boss.SetNextArenaJumpDestination);
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.DelayedSequence(0.1f); boss.AnimationSpeedAdjustment(0.0f); });
             sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
             sequence.Add(boss.CreateShockWave);
             sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
@@ -1207,11 +1419,12 @@ public class Boss : Enemy
             sequence.Add(boss.SetNextArenaJumpDestination);
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(boss.JumpTowardsTargetWithShockWave);
+            sequence.Add(() => { boss.DelayedSequence(0.1f); boss.AnimationSpeedAdjustment(0.0f); });
             sequence.Add(() => { boss.AnimationSpeedAdjustment(5.0f); });
             sequence.Add(boss.CreateShockWave);
             sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
             sequence.Add(boss.AwaitAnimation);
-            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); });
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); boss.navMeshAgent.setIsUpdatePosition(true); });
 
         }
         public override bool CheckConditions()
