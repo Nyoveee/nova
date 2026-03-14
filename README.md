@@ -2,7 +2,7 @@ Prerequisites:
 - VS2022 17.12 or higher
 - .NET Desktop Development (install through Visual Studio Installer)
 - .NET 9 SDK (or download through Visual Studio Installer)
-- Windows 10.
+- Windows 10 or above.
 
 We use a VS2022 solution for our build system. No cmake.
 (This solution builds fine on the school PC, DIT0828SG in E2-08-14)
@@ -26,6 +26,7 @@ Folder structure
 - Nova-Scripts (contains solution to compile our C# scripts for hot reloading.)
 - Resources (contains cooked data, final resource files)
 - System (contains system assets that is not intended to be part of the Assets folder)
+- Installer (contains base template to create our executable project, to be integrated with CD in M6, via the batch file package_installer_output.bat)
 
 Working directory: Solution directory.
 
