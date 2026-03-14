@@ -64,7 +64,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, Ass
 	// 1. We prepare assimp to load the model..
 	// --------------------------------------------------------------------
 	constexpr unsigned int PostProcessingFlags {
-		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
+		aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
 	};
 
 	Assimp::Importer importer;
@@ -97,12 +97,13 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, Ass
 	meshesData.reserve(scene->mNumMeshes);
 	
 	// We process the node hierarchy, and load meshes accordingly..
+	//processNodeHierarchy(scene, meshesData, scene->mRootNode, glm::mat4{ 1.f });
 	processNodeHierarchy(scene, meshesData, scene->mRootNode, toGlmMat4(scene->mRootNode->mTransformation));
 
 	// --------------------------------------------------------------------
 	// 4. We now process bones, skeletons and animation data..
 	// Processing animation requires converting from assimp format to our own Animation data structure..
-	// Processing skeleton requires traversing the node hierarchy and store both the bone hierarchy and node hierarchy,
+	// Processing skeleton requires traversing the node hierarchy and store both the bone hierarchy and node hierarchy,s
 	// in our own data structures..
 	// --------------------------------------------------------------------
 	
@@ -252,7 +253,7 @@ MeshData ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm:
 		glm::vec3 position;
 
 		// 1. Position
-		if (hasBones) {
+		if (hasBones && mesh->mNumBones) {
 			position = glm::vec3{ glm::vec4{ toGlmVec3(mesh->mVertices[i]), 1.f } };
 		}
 		else {

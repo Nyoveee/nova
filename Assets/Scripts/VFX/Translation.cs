@@ -52,4 +52,10 @@ class Translation : Script
         timeElapsed = 0f;
         isExpanding = true;
     }
+
+    public void stop()
+    {
+        isExpanding = false;
+    }
+
 }

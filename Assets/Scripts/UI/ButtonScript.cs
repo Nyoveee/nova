@@ -109,4 +109,9 @@ class ButtonScript : Script
     {
         GameObject.FindWithTag("Main UI Manager")?.getScript<MainUIManager>()?.GoToMainMenuUI();
     }
+
+    public void GoToCredits() 
+    {
+        GameObject.FindWithTag("Main_Level_Select_Script")?.getScript<Main_Level_Select_Script>()?.TransitionToCredits();
+    }
 }

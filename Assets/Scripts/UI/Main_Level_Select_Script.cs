@@ -10,6 +10,7 @@ class Main_Level_Select_Script : Script
     [SerializableField] private List<Texture> levelInfoTextures;
     [SerializableField] private List<Button_> levelSelectUIs;
     [SerializableField] private List<Scene> levels;
+    [SerializableField] private Scene creditScene;
     [SerializableField] ColorAlpha selectedLevelColor;
 
     [SerializableField] private Canvas_ darkOverlay;
@@ -18,7 +19,9 @@ class Main_Level_Select_Script : Script
     int selectedLevel = 0;
     bool transitioning = false;
     float timeElapsed = 0;
-    
+
+    Scene sceneToChange;
+
     protected override void init()
     {
         SelectNewLevel(0);
@@ -76,6 +79,19 @@ class Main_Level_Select_Script : Script
 
         darkOverlay.gameObject.SetActive(true);
         transitioning = true;
+        sceneToChange = levels[selectedLevel];
+    }
+
+    public void TransitionToCredits()
+    {
+        if (transitioning)
+        {
+            return;
+        }
+
+        darkOverlay.gameObject.SetActive(true);
+        transitioning = true;
+        sceneToChange = creditScene;
     }
 
     protected override void update()
@@ -92,7 +108,7 @@ class Main_Level_Select_Script : Script
 
         if(interval == 1f)
         {
-            SceneAPI.ChangeScene(levels[selectedLevel]);
+            SceneAPI.ChangeScene(sceneToChange);
         }
     }
 }

@@ -757,16 +757,25 @@ struct ParticleEmitter
 	float minStartSizeOffset = 0.f;
 	float maxStartSizeOffset = 0.f;
 	float startSpeed = 1;
+
+	float minStartSpeed = 0;
+	float maxStartSpeed = 0;
+
 	glm::vec3 force{};
+	glm::vec3 minForceOffset{};
+	glm::vec3 maxForceOffset{};
+
 	// Rotation
 	float initialRotation{};
 	bool velocityBasedInitialRotation{};
 	float minInitialRotationOffset;
 	float maxInitialRotationOffset;
+
 	// Angular Velocity
 	float initialAngularVelocity{};
 	float minAngularVelocityOffset{};
 	float maxAngularVelocityOffset{};
+
 	// LifeTime
 	float lifeTime = 1;
 	float minLifeTimeOffset;
@@ -775,6 +784,7 @@ struct ParticleEmitter
 	float particleRate = 100;
 	float burstRate = 0;
 	int burstAmount = 30;
+
 	// Light
 	float lightIntensity{};
 	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
@@ -794,6 +804,8 @@ struct ParticleEmitter
 		minStartSizeOffset,
 		maxStartSizeOffset,
 		startSpeed,
+		minStartSpeed,
+		maxStartSpeed,
 		initialRotation,
 		velocityBasedInitialRotation,
 		minInitialRotationOffset,
@@ -802,6 +814,8 @@ struct ParticleEmitter
 		minAngularVelocityOffset,
 		maxAngularVelocityOffset,
 		force,
+		minForceOffset,
+		maxForceOffset,
 		lifeTime,
 		minLifeTimeOffset,
 		maxLifeTimeOffset,

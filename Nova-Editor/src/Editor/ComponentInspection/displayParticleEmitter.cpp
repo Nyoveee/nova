@@ -217,11 +217,16 @@ void displayParticleEmitterComponent(Editor& editor, ParticleEmitter& emitter) {
 
 	if (ImGui::TreeNode("Velocity")) {
 		DisplayProperty<float>(editor, "Start Speed", emitter.startSpeed);
+		DisplayProperty<float>(editor, "-ve speed variance", emitter.minStartSpeed);
+		DisplayProperty<float>(editor, "+ve speed variance", emitter.maxStartSpeed);
 
 		DisplayProperty<bool>(editor, "Randomize direction?", emitter.randomizedDirection);
 		DisplayProperty<bool>(editor, "Invert direction?", emitter.invertMovement);
 
 		DisplayProperty<glm::vec3>(editor, "Force", emitter.force);
+		DisplayProperty<glm::vec3>(editor, "-ve force variance", emitter.minForceOffset);
+		DisplayProperty<glm::vec3>(editor, "+ve force variance", emitter.maxForceOffset);
+
 		ImGui::TreePop();
 	}
 

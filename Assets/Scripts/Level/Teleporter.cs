@@ -19,12 +19,17 @@ class Teleporter : Script
 
     protected override void onCollisionEnter(GameObject other)
     {
-        Debug.Log(other);
 
         if(other == player)
         {
             player.getScript<PlayerController_V2>().OnTeleport();
             player.transform.position = destination.position;
+            player.getScript<PlayerController_V2>().TakeDamage(10);
+        }
+
+        if(other.tag == "Enemy")
+        {
+            other.getScript<Enemy>().TakeDamage(1000, Enemy.EnemydamageType.WeaponShot, "Enemy_WeakSpot");
         }
     }
 }

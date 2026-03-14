@@ -84,7 +84,7 @@ class Ichor : Script
         direction.Normalize();
         choosenDirection = direction;
         Vector3 force =  direction * Random.Range(minForce, maxForce);
-        Debug.Log("Force: " + force);
+        //Debug.Log("Force: " + force);
         rigidbody.AddForce(force);
         rigidbody.SetGravityFactor(Random.Range(minGravityFactor, maxGravityFactor));
 

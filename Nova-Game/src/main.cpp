@@ -30,6 +30,10 @@ int main() {
 	ResourceManager resourceManager	{};
 	Engine			engine			{ window, inputManager, resourceManager, gameConfig, Engine::State::Game };
 
+	if (engine.dataManager.renderConfig.fullScreen) {
+		window.toggleFullScreen();
+	}
+
 	// In the executable, we don't do any compiling. We assume it has been compiled and provided for.
 	
 	// Start up scene

@@ -1,0 +1,38 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "id": 1000,
+            "animation": 18446744073709551615,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Entry Node",
+            "animationEvents": null
+        },
+        "18058344406822981413": {
+            "id": 18058344406822981413,
+            "animation": 3349368110232748037,
+            "transitions": [
+                {
+                    "nextNode": 9987893874575118119,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Boss_Jump",
+            "animationEvents": null
+        },
+        "9987893874575118119": {
+            "id": 9987893874575118119,
+            "animation": 2464973730155004331,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Boss_Idle",
+            "animationEvents": null
+        }
+    },
+    "parameters": null
+}

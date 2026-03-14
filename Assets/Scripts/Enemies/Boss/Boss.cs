@@ -194,26 +194,30 @@ public class Boss : Enemy
     // This function is invoked every update.
     protected override void update()
     {
+        base.update();
         FlushDamageEnemy();
         //Debug.Log(bossStats.health);
 
         //make the boss look at the player
 
-       Debug.Log("Current State: " + currentState.ToString()+ " currentStamina: " + currentStamina);
+       //Debug.Log("Current State: " + currentState.ToString()+ " currentStamina: " + currentStamina);
 
 
         switch (currentState)
         {
             case BossState.Spawning:
                 {
+                    // Cutscene will be responsible for transitioning boss state to idle.
+
+#if false
                     cooldowntimeElapsed += Time.V_DeltaTime();
 
                     if (cooldowntimeElapsed > spawningDuration)
                     {
-                        cooldowntimeElapsed = abilityCoolDownTime;
+                        cooldowntimeElapsed = 0;
                         currentState = BossState.Idle;
                     }
-
+#endif
                 }
                 break;
             case BossState.Idle:
@@ -948,6 +952,13 @@ public class Boss : Enemy
         animator.PlayAnimation("Boss_Idle");
     }
 
+    
+    // for spawning only..
+    public void GoToIdleState()
+    {
+        currentState = BossState.Idle;
+    }
+
     //return to idle without animations controller
     public void ForcedReturnToIdle()
     {
@@ -1525,6 +1536,7 @@ public class Boss : Enemy
                     DisablePhysicalInteraction();
 
                     animator.PlayAnimation("Boss_Death");
+                    animator.speedMultiplier = 1f;
                 }
             }
             else

@@ -144,7 +144,9 @@ void ParticleSystem::determineParticleSpawnDetails(
 	auto determineParticleVelocity = [](ParticleEmitter& emitter, glm::vec3 nonRandomizedDirection){
 		if (!emitter.randomizedDirection)
 			return nonRandomizedDirection;
-		return glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1)) * emitter.startSpeed;
+
+		float speed = emitter.startSpeed + RandomRange::Float(emitter.minStartSpeed, emitter.maxStartSpeed);
+		return glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1)) * speed;
 	};
 
 	// Lifetime
@@ -155,14 +157,17 @@ void ParticleSystem::determineParticleSpawnDetails(
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
 			particleVertex.position = particlePosition + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
-			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * emitter.startSpeed);
+
+			float speed = emitter.startSpeed + RandomRange::Float(emitter.minStartSpeed, emitter.maxStartSpeed);
+			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * speed);
 			break;
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Point:
 		{
 			glm::vec3 randomVelocity = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
 			randomVelocity = glm::normalize(randomVelocity);
-			randomVelocity *= emitter.startSpeed;
+			float speed = emitter.startSpeed + RandomRange::Float(emitter.minStartSpeed, emitter.maxStartSpeed);
+			randomVelocity *= speed;
 			particleVertex.position = particlePosition;
 			particleLifeSpanData.velocity = randomVelocity;
 			break;
@@ -172,7 +177,8 @@ void ParticleSystem::determineParticleSpawnDetails(
 			glm::vec3 min{ emitter.particleEmissionTypeSelection.cubeEmitter.min }, max{ emitter.particleEmissionTypeSelection.cubeEmitter.max };
 			glm::vec3 randomSpawnPoint = particlePosition + glm::vec3{ RandomRange::Float(min.x,max.x),RandomRange::Float(min.y,max.y),RandomRange::Float(min.z,max.z) };
 			particleVertex.position = randomSpawnPoint;
-			particleLifeSpanData.velocity = determineParticleVelocity(emitter, glm::normalize(randomSpawnPoint - particlePosition) * emitter.startSpeed);
+			float speed = emitter.startSpeed + RandomRange::Float(emitter.minStartSpeed, emitter.maxStartSpeed);
+			particleLifeSpanData.velocity = determineParticleVelocity(emitter, glm::normalize(randomSpawnPoint - particlePosition) * speed);
 			break;
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Edge:
@@ -181,7 +187,9 @@ void ParticleSystem::determineParticleSpawnDetails(
 			randomSpawnPoint -= glm::vec3{ 1,0,0 } *emitter.particleEmissionTypeSelection.radiusEmitter.radius / 2.f;
 			randomSpawnPoint += glm::vec3{ 1,0,0 } *RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
 			particleVertex.position = randomSpawnPoint;
-			particleLifeSpanData.velocity = determineParticleVelocity(emitter, glm::vec3{ 0,1,0 } *emitter.startSpeed);
+
+			float speed = emitter.startSpeed + RandomRange::Float(emitter.minStartSpeed, emitter.maxStartSpeed);
+			particleLifeSpanData.velocity = determineParticleVelocity(emitter, glm::vec3{ 0,1,0 } * speed);
 			break;
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Circle:
@@ -189,7 +197,9 @@ void ParticleSystem::determineParticleSpawnDetails(
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), 0, RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
 			particleVertex.position = particlePosition + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
-			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * emitter.startSpeed);
+
+			float speed = emitter.startSpeed + RandomRange::Float(emitter.minStartSpeed, emitter.maxStartSpeed);
+			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * speed);
 			break;
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Hemisphere:
@@ -197,7 +207,9 @@ void ParticleSystem::determineParticleSpawnDetails(
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(0, 1), RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
 			particleVertex.position = particlePosition + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius);
-			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * emitter.startSpeed);
+
+			float speed = emitter.startSpeed + RandomRange::Float(emitter.minStartSpeed, emitter.maxStartSpeed);
+			particleLifeSpanData.velocity = determineParticleVelocity(emitter, randomSpawnDirection * speed);
 			break;
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Cone:
@@ -215,7 +227,9 @@ void ParticleSystem::determineParticleSpawnDetails(
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
 			glm::vec3 spawnPosition = particlePosition + randomSpawnDirection * spawnRadius;
 			glm::vec3 targetPosition = particlePosition + glm::vec3{ 0,distance,0 } + randomSpawnDirection * spawnRadius / radius * outerRadius;
-			glm::vec3 velocity = glm::normalize(targetPosition - spawnPosition) * emitter.startSpeed;
+
+			float speed = emitter.startSpeed + RandomRange::Float(emitter.minStartSpeed, emitter.maxStartSpeed);
+			glm::vec3 velocity = glm::normalize(targetPosition - spawnPosition) * speed;
 			// Set the new Particle details
 			particleVertex.position = spawnPosition;
 			particleLifeSpanData.velocity = determineParticleVelocity(emitter, velocity);
@@ -224,7 +238,7 @@ void ParticleSystem::determineParticleSpawnDetails(
 	}
 
 	// Other Particle Details
-	particleLifeSpanData.force = emitter.force;
+	particleLifeSpanData.force = emitter.force + RandomRange::Vec3(emitter.minForceOffset, emitter.maxForceOffset);
 	particleLifeSpanData.angularVelocity = emitter.initialAngularVelocity + RandomRange::Float(emitter.minAngularVelocityOffset, emitter.maxAngularVelocityOffset);
 	particleLifeSpanData.lightIntensity = emitter.lightIntensity;
 	particleLifeSpanData.lightattenuation = emitter.lightattenuation;
@@ -280,6 +294,7 @@ void ParticleSystem::determineParticleRotation(ParticleLifespanData& particleLif
 			cameraProjectionView = engine.renderer.getEditorCamera().viewProjection();
 		if (engine.renderer.isGameScreenShown)
 			cameraProjectionView = engine.renderer.getGameCamera().viewProjection();
+
 		glm::vec2 screenSpaceVelocity = glm::normalize(cameraProjectionView * glm::vec4(particleLifeSpanData.velocity, 0.0));
 		glm::vec2 up = glm::vec2(0, 1.0);
 		glm::vec2 right = glm::vec2(1.0, 0);

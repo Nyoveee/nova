@@ -1,5 +1,5 @@
 {
-    "RootEntity": 70,
+    "RootEntity": 41,
     "Entities": [
         {
             "EntityData": {
@@ -8,10 +8,10 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    71,
-                    72,
-                    73,
-                    74
+                    42,
+                    43,
+                    44,
+                    45
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -19,8 +19,8 @@
                 "entityGUID": 10702708319697372321,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true,
-                    "16652763906952685383": true
+                    "16652763906952685383": true,
+                    "17237801994024849853": true
                 },
                 "inactiveComponents": null
             },
@@ -90,7 +90,7 @@
                             {
                                 "name": "lightGameobject",
                                 "data": {
-                                    "__variant_value": 74,
+                                    "__variant_value": 45,
                                     "__variant_type": 4
                                 }
                             }
@@ -98,13 +98,13 @@
                     }
                 ]
             },
-            "id": 70
+            "id": 41
         },
         {
             "EntityData": {
                 "name": "Initial Burst",
                 "tag": "",
-                "parent": 70,
+                "parent": 41,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -168,6 +168,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 20.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": -4.096186588814377e+17,
@@ -176,6 +178,16 @@
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -278,13 +290,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 71
+            "id": 42
         },
         {
             "EntityData": {
                 "name": "Spark",
                 "tag": "",
-                "parent": 70,
+                "parent": 41,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -347,6 +359,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 20.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": -4.098187699976929e+17,
@@ -355,6 +369,16 @@
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -457,13 +481,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 72
+            "id": 43
         },
         {
             "EntityData": {
                 "name": "Field",
                 "tag": "",
-                "parent": 70,
+                "parent": 41,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -526,6 +550,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 0.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": -4.0966153983492096e+17,
@@ -534,6 +560,16 @@
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -636,13 +672,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 73
+            "id": 44
         },
         {
             "EntityData": {
                 "name": "Light Burst",
                 "tag": "",
-                "parent": 70,
+                "parent": 41,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -718,7 +754,7 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 74
+            "id": 45
         }
     ]
 }

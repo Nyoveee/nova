@@ -1,0 +1,126 @@
+{
+    "selectedShader": 14972877226300538881,
+    "uniformDatas": [
+        {
+            "glslType": "Color",
+            "identifier": "baseColor",
+            "value": {
+                "__variant_value": {
+                    "r": 0.060285378247499466,
+                    "g": 0.36656296253204346,
+                    "b": 0.5827586650848389
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "edgeColor",
+            "value": {
+                "__variant_value": {
+                    "r": 0.03529410809278488,
+                    "g": 0.1567004919052124,
+                    "b": 0.2980392277240753
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "emissivemultiplier",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "gridsize",
+            "value": {
+                "__variant_value": {
+                    "x": 60.0,
+                    "y": 100.0
+                },
+                "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "flowDirection",
+            "value": {
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": -1.0
+                },
+                "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "flowSpeed",
+            "value": {
+                "__variant_value": 0.009999999776482582,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "waveSpeed",
+            "value": {
+                "__variant_value": 100.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "waveAmplitude",
+            "value": {
+                "__variant_value": 3.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "waveLength",
+            "value": {
+                "__variant_value": 100.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "int",
+            "identifier": "numberOfWaveSamples",
+            "value": {
+                "__variant_value": 16,
+                "__variant_type": 1
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "roughness",
+            "value": {
+                "__variant_value": 0.3619999885559082,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "metallic",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "occulusion",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 12
+            }
+        }
+    ],
+    "blendingConfig": "Disabled",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Enable"
+}

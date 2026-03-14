@@ -25,8 +25,9 @@ class Level_Select_UI_Script : Script
         audioComponent = getComponent<AudioComponent_>();
         button = getComponent<Button_>();
 
-        int completedLevels = PlayerPrefs.GetInt("CompletedLevel", 2);
-          
+        // int completedLevels = PlayerPrefs.GetInt("CompletedLevel", 2);
+        int completedLevels = 3;
+
         if (completedLevels < level)
         {
             button.isInteractable = false;
@@ -57,6 +58,7 @@ class Level_Select_UI_Script : Script
 
     public void onReleased()
     {
+        audioComponent.PlaySound(onClickSFX);
         levelSelectScript?.SelectNewLevel(level);
     }
 }

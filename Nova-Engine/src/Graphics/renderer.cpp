@@ -313,6 +313,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	toGammaCorrect					{ true },
 	UIProjection					{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
+	
 	// Setup baking camera once.. this camera is used for baking cubemaps..
 	bakingCamera.setFov(glm::radians(90.f));
 	bakingCamera.setNearPlaneDistance(0.1f);
@@ -1340,6 +1341,8 @@ void Renderer::recompileShaders() {
 	TAAResolveShader.recompile();
 	texture2dShader.recompile();
 	
+	videoShader.recompile();
+
 	auto [defaultPBRShader, _] = resourceManager.getResource<CustomShader>(DEFAULT_PBR_SHADER_ID);
 
 	if (defaultPBRShader) {

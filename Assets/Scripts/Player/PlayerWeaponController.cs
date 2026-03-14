@@ -243,7 +243,6 @@ class PlayerWeaponController : Script
         // The final glow strength scales with how low the ammo count is..
         finalGlowStrength = noAmmoGlowStrength * Mathf.Pow(1f - (float)currentlyHeldGun.CurrentAmmo / (float)currentlyHeldGun.MaxAmmo, ammoGlowScalePower);
     }
-
     private void Fire()
     {
         if (isShootingDisabled)
@@ -282,7 +281,7 @@ class PlayerWeaponController : Script
             else
             {
                 GameObject ammoTrail = Instantiate(ammoTrailPrefab, muzzle.gameObject.transform.position, muzzle.gameObject.transform.rotation);
-                Debug.Log("Miss");
+                // Debug.Log("Miss");
                 ammoTrail.getScript<ammoTrails>().startPosition = muzzle.gameObject.transform.position;
                 ammoTrail.getScript<ammoTrails>().endPosition = muzzle.gameObject.transform.position + (muzzle.gameObject.transform.right * 500f);
             }

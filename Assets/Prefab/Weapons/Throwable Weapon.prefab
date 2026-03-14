@@ -1,5 +1,5 @@
 {
-    "RootEntity": 3,
+    "RootEntity": 113,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    4,
-                    6,
-                    7,
-                    8,
-                    9
+                    114,
+                    116,
+                    117,
+                    118,
+                    119
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -20,8 +20,8 @@
                 "entityGUID": 15864537180317254659,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "17237801994024849853": true,
+                    "11935986701403193153": false,
                     "13953638462837156301": true,
                     "6919815292445452220": false
                 },
@@ -129,7 +129,7 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 4,
+                                    "__variant_value": 114,
                                     "__variant_type": 4
                                 }
                             },
@@ -279,6 +279,41 @@
                                 }
                             },
                             {
+                                "name": "absorbtionEmitters",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "throwingEmitters",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "slicingEmitters",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "jetStreamEmitters",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "hitEnviromentSparkVFXPrefab",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
                                 "name": "pickupSFX",
                                 "data": {
                                     "__variant_value": 18446744073709551615,
@@ -329,16 +364,16 @@
                     }
                 ]
             },
-            "id": 3
+            "id": 113
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 3,
+                "parent": 113,
                 "attachedSocket": 65535,
                 "children": [
-                    5
+                    115
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -346,8 +381,8 @@
                 "entityGUID": 9523468904979596293,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "13484132868097894827": true,
                     "9059764703561530457": true,
+                    "13484132868097894827": true,
                     "17237801994024849853": true,
                     "6919815292445452220": true
                 },
@@ -412,13 +447,13 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 4
+            "id": 114
         },
         {
             "EntityData": {
                 "name": "Rifle Outline",
                 "tag": "",
-                "parent": 4,
+                "parent": 114,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -482,13 +517,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 5
+            "id": 115
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 3,
+                "parent": 113,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -497,8 +532,8 @@
                 "entityGUID": 4911782886552208391,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "17237801994024849853": true,
+                    "11935986701403193153": false,
                     "13953638462837156301": false
                 },
                 "inactiveComponents": null
@@ -580,7 +615,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 113,
                                     "__variant_type": 4
                                 }
                             }
@@ -588,13 +623,13 @@
                     }
                 ]
             },
-            "id": 6
+            "id": 116
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 3,
+                "parent": 113,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -655,6 +690,10 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": 3.0783649809045394e+24,
+                "maxInitialRotationOffset": 9.122453002754559e-43,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -664,6 +703,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 1.0,
+                "minLifeTimeOffset": 434880118784.0,
+                "maxLifeTimeOffset": 1.0047309989208938e-42,
                 "particleRate": 0.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -755,15 +796,17 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 7
+            "id": 117
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 3,
+                "parent": 113,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -824,6 +867,10 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": 451599663104.0,
+                "maxInitialRotationOffset": 1.0047309989208938e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -833,6 +880,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 1.0,
+                "minLifeTimeOffset": 434865963008.0,
+                "maxLifeTimeOffset": 1.0047309989208938e-42,
                 "particleRate": 0.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -924,15 +973,17 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 8
+            "id": 118
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 3,
+                "parent": 113,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -993,6 +1044,10 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 1.0,
+                "initialRotation": 0.0,
+                "velocityBasedInitialRotation": false,
+                "minInitialRotationOffset": 451579215872.0,
+                "maxInitialRotationOffset": 1.0047309989208938e-42,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
@@ -1002,6 +1057,8 @@
                     "z": 0.0
                 },
                 "lifeTime": 1.0,
+                "minLifeTimeOffset": 434932023296.0,
+                "maxLifeTimeOffset": 1.0047309989208938e-42,
                 "particleRate": 0.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -1093,9 +1150,11 @@
                         "z": 0.0
                     },
                     "trailEmissiveMultiplier": 1.0
-                }
+                },
+                "renderAlignment": "View",
+                "renderOrder": 0
             },
-            "id": 9
+            "id": 119
         }
     ]
 }

@@ -125,9 +125,12 @@ class MainUIManager : Script
             fromCanvas.alpha = Mathf.Interpolate(1f, 0f, interval, 1f);
         }
         // afk..
-        // ..
+        else if (timeElapsed < (fadeDuration + delay))
+        {
+            fromCanvas.alpha = 0f;
+        }
         // Final fade in..
-        else if (timeElapsed > (fadeDuration + delay) && timeElapsed < (2 * fadeDuration + delay)) { 
+        else if (timeElapsed > (fadeDuration + delay) && timeElapsed < (2 * fadeDuration + delay)) {
             float interval = (timeElapsed - (fadeDuration + delay)) / fadeDuration;
             toCanvas.alpha = Mathf.Interpolate(0f, 1f, interval, 1f);
         }
@@ -136,6 +139,7 @@ class MainUIManager : Script
         {
             isTransitioning = false;
             toCanvas.isInteractable = true;
+            toCanvas.alpha = 1f;
         }
 
         timeElapsed += Time.V_DeltaTime(); 

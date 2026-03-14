@@ -19,6 +19,8 @@ class CannonWaveManager : Script
     private GameObject boat;
     [SerializableField]
     private float timeCount = 120f;
+    [SerializableField]
+    private GameObject lever;
 
     private float currentTime;
     private bool waveActive = false;
@@ -33,7 +35,10 @@ class CannonWaveManager : Script
     // This function is invoked every update.
     protected override void update()
     {
-        currentTime += Time.V_DeltaTime();
+        if (lever.getScript<Switch>().isSwitchActivated() == true)
+        {
+            currentTime += Time.V_DeltaTime();
+        }
         if (currentTime >= timeCount)
         {
             waveActive = false;

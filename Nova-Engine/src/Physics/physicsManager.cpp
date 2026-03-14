@@ -81,14 +81,14 @@ namespace {
 // B.t.w. 10 MB is way too much for this example but it is a typical value you can use.
 // If you don't want to pre-allocate you can also use TempAllocatorMalloc to fall back to
 // malloc / free.
-constexpr std::size_t TEMPORARY_MEMORY = 10 * 1024 * 1024;
+constexpr std::size_t TEMPORARY_MEMORY = 100 * 1024 * 1024;
 
 constexpr unsigned int maxPhysicsJobs = 2048;
 constexpr unsigned int maxPhysicsBarriers = 8;
 
 // This is the max amount of rigid bodies that you can add to the physics system. If you try to add more you'll get an error.
 // Note: This value is low because this is a simple test. For a real project use something in the order of 65536.
-constexpr unsigned int maxBodies = 1024;
+constexpr unsigned int maxBodies = 65536;
 
 // This determines how many mutexes to allocate to protect rigid bodies from concurrent access. Set it to 0 for the default settings.
 constexpr unsigned int numBodyMutexes = 0;
@@ -97,12 +97,12 @@ constexpr unsigned int numBodyMutexes = 0;
 // body pairs based on their bounding boxes and will insert them into a queue for the narrowphase). If you make this buffer
 // too small the queue will fill up and the broad phase jobs will start to do narrow phase work. This is slightly less efficient.
 // Note: This value is low because this is a simple test. For a real project use something in the order of 65536.
-constexpr unsigned int maxBodyPairs = 1024;
+constexpr unsigned int maxBodyPairs = 65536;
 
 // This is the maximum size of the contact constraint buffer. If more contacts (collisions between bodies) are detected than this
 // number then these contacts will be ignored and bodies will start interpenetrating / fall through the world.
 // Note: This value is low because this is a simple test. For a real project use something in the order of 10240.
-constexpr unsigned int maxContactConstraints = 1024;
+constexpr unsigned int maxContactConstraints = 65536;
 
 PhysicsManager::PhysicsManager(Engine& engine) :
 	// we use a placeholder to invoke a function before constructing the rest of the data member.
@@ -217,8 +217,12 @@ void PhysicsManager::systemInitialise() {
 }
 
 void PhysicsManager::clear() {
-	bodyInterface.RemoveBodies(createdBodies.data(), static_cast<int>(createdBodies.size()));
-	bodyInterface.DestroyBodies(createdBodies.data(), static_cast<int>(createdBodies.size()));
+	JPH::BodyIDVector bodies;
+	physicsSystem.GetBodies(bodies);
+
+	bodyInterface.RemoveBodies(bodies.data(), static_cast<int>(bodies.size()));
+	bodyInterface.DestroyBodies(bodies.data(), static_cast<int>(bodies.size()));
+
 	createdBodies.clear();
 	nonRotatableBodies.clear();
 
@@ -694,7 +698,7 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 		entt::entity entity = static_cast<entt::entity>(bodyInterface.GetUserData(bodyId));
 		glm::vec3 collisionPoint = ray.origin + distanceVector * rayCastResult.mFraction;
 	
-		JPH::BodyLockRead lock(physicsSystem.GetBodyLockInterfaceNoLock(), rayCastResult.mBodyID); //goofy ahh engine, Not lock here
+		JPH::BodyLockRead lock(physicsSystem.GetBodyLockInterface(), rayCastResult.mBodyID); //goofy ahh engine, Not lock here
 		glm::vec3 hitSurfaceNormal = toGlmVec3(lock.GetBody().GetWorldSpaceSurfaceNormal(rayCastResult.mSubShapeID2, toJPHVec3(collisionPoint)));
 
 		return PhysicsRayCastResult{ entity, collisionPoint, hitSurfaceNormal};
@@ -715,7 +719,7 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 		entt::entity entity = static_cast<entt::entity>(bodyInterface.GetUserData(bodyId));
 		glm::vec3 collisionPoint = ray.origin + distanceVector * rayCastResult.mFraction;
 		
-		JPH::BodyLockRead lock(physicsSystem.GetBodyLockInterfaceNoLock(), rayCastResult.mBodyID); //goofy ahh engine, Not lock here
+		JPH::BodyLockRead lock(physicsSystem.GetBodyLockInterface(), rayCastResult.mBodyID); //goofy ahh engine, Not lock here
 		glm::vec3 hitSurfaceNormal = toGlmVec3(lock.GetBody().GetWorldSpaceSurfaceNormal(rayCastResult.mSubShapeID2, toJPHVec3(collisionPoint)));
 
 		return PhysicsRayCastResult{ entity, collisionPoint, hitSurfaceNormal };
@@ -990,7 +994,7 @@ void PhysicsManager::setGravityFactor(Rigidbody& rigidbody, float value) {
 }
 
 void PhysicsManager::setMass(Rigidbody& rigidbody, float value) {
-	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterfaceNoLock(), rigidbody.bodyId);
+	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterface(), rigidbody.bodyId);
 	
 	if (lock.Succeeded())
 	{
