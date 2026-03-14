@@ -2079,6 +2079,10 @@ void Renderer::renderModels(RenderPass renderPass, std::optional<GLuint> depthTe
 }
 
 void Renderer::renderTranslucentModels(PairFrameBuffer const& frameBuffers) {
+	// Disable SSAO for translucent models..
+	static constexpr int ssao = 0;
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toEnableSSAO), sizeof(int), &ssao);
+
 	renderOITTransculentModels(frameBuffers);
 	renderDepthTranslucentModels(frameBuffers);
 }
@@ -2174,7 +2178,7 @@ void Renderer::renderOITTransculentModels(PairFrameBuffer const& frameBuffers) {
 		glNamedFramebufferDrawBuffers(frameBuffer.fboId(), 5, oitBuffers);
 
 		// we setup the appropriate blending equations..
-		glDepthMask(GL_FALSE);
+		setDepthMode(DepthTestingMethod::NoDepthWrite);
 		glEnable(GL_BLEND);
 		glBlendFunci(ACCUMULATION_COLOR_ATTACHMENT_INDEX, GL_ONE, GL_ONE); // accumulation blend target
 		glBlendFunci(REVEALAGE_COLOR_ATTACHMENT_INDEX, GL_ZERO, GL_ONE_MINUS_SRC_COLOR); // revealge blend target

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 1,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,10 +8,10 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
+                    1,
                     2,
                     3,
-                    4,
-                    5
+                    4
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -108,14 +108,14 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 2,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 2,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
@@ -165,13 +165,13 @@
                     }
                 ]
             },
-            "id": 1
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "Right Door",
                 "tag": "",
-                "parent": 1,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -180,8 +180,8 @@
                 "entityGUID": 9181397647453476195,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": true,
                     "10106385962890515953": true,
+                    "6919815292445452220": true,
                     "11935986701403193153": true,
                     "9059764703561530457": true
                 },
@@ -259,13 +259,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 2
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "Left Door",
                 "tag": "",
-                "parent": 1,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -274,8 +274,8 @@
                 "entityGUID": 4569711629026088293,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": true,
                     "10106385962890515953": true,
+                    "6919815292445452220": true,
                     "11935986701403193153": true,
                     "17421316227555880647": false,
                     "9059764703561530457": true
@@ -354,13 +354,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 3
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "Door Frame",
                 "tag": "",
-                "parent": 1,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -443,13 +443,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 4
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Door Locking Mechanism",
                 "tag": "",
-                "parent": 1,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -542,7 +542,7 @@
                             {
                                 "name": "door",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -550,7 +550,7 @@
                     }
                 ]
             },
-            "id": 5
+            "id": 4
         }
     ]
 }
