@@ -13,8 +13,8 @@ class UltimateProjectile : Script
     public float lifetime = 3f;
     [SerializableField]
     private Audio ultProjSFX;
-    [SerializableField]
-    private Audio ultExplodeSFX;
+    //[SerializableField]
+    //private Audio ultExplodeSFX;
     // ===========================================
     // Components
     // ===========================================
