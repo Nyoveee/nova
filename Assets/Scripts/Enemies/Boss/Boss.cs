@@ -119,15 +119,15 @@ public class Boss : Enemy
 
 
         AbilitySequence[] abilityStartSequences = {
-            new RushingMeleeAttack(this),
-            new RushingMeleeAttack(this),
+            //new RushingMeleeAttack(this),
+            //new RushingMeleeAttack(this),
             //new MeleeAttack(this),
              //new StationaryGroundSlam(this),
             //new StationaryGroundSlam(this),
             new MissileBarrage(this),
-            new MissileBarrage(this),
+            //new MissileBarrage(this),
             //new JumpSlash(this),
-            new TripleJumpSlam(this)
+            //new TripleJumpSlam(this)
             //new ArenaJump(this)
 
         };

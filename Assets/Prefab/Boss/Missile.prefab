@@ -1,5 +1,5 @@
 {
-    "RootEntity": 34,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    35,
-                    36,
-                    37,
-                    38,
-                    39
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -170,6 +170,13 @@
                                 }
                             },
                             {
+                                "name": "destroyVFX",
+                                "data": {
+                                    "__variant_value": 4064868719818646243,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
                                 "name": "ichorPrefab",
                                 "data": {
                                     "__variant_value": 7207563182715584513,
@@ -186,7 +193,7 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 35,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
@@ -217,11 +224,11 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 34,
+                                                "__variant_value": 0,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 36,
+                                                "__variant_value": 2,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -248,14 +255,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 34,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 34,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             },
@@ -394,13 +401,13 @@
                     }
                 ]
             },
-            "id": 34
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "IchorSpawnPoint",
                 "tag": "",
-                "parent": 34,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -485,13 +492,13 @@
                     "z": -1.5707954168319702
                 }
             },
-            "id": 35
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "MissleHitBox",
                 "tag": "Enemy_WeakSpot",
-                "parent": 34,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -614,7 +621,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 34,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -622,13 +629,13 @@
                     }
                 ]
             },
-            "id": 36
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "MissileMesh",
                 "tag": "",
-                "parent": 34,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -721,13 +728,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 37
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Fire Particle Emitter",
                 "tag": "",
-                "parent": 34,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -910,13 +917,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 38
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Smoke Particle Emitter",
                 "tag": "",
-                "parent": 34,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1099,7 +1106,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 39
+            "id": 5
         }
     ]
 }

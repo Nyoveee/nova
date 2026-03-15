@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 29,
     "Entities": [
         {
             "EntityData": {
@@ -8,10 +8,10 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    9,
-                    10,
-                    11
+                    30,
+                    38,
+                    39,
+                    40
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -95,7 +95,7 @@
                             {
                                 "name": "bossStats",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 29,
                                     "__variant_type": 4
                                 }
                             },
@@ -158,7 +158,7 @@
                             {
                                 "name": "mainLauncher",
                                 "data": {
-                                    "__variant_value": 7,
+                                    "__variant_value": 36,
                                     "__variant_type": 4
                                 }
                             },
@@ -168,11 +168,11 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 8,
+                                                "__variant_value": 37,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 6,
+                                                "__variant_value": 35,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -185,7 +185,7 @@
                             {
                                 "name": "meleeAttackPosition",
                                 "data": {
-                                    "__variant_value": 10,
+                                    "__variant_value": 39,
                                     "__variant_type": 4
                                 }
                             },
@@ -255,7 +255,7 @@
                             {
                                 "name": "bossAnimator",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 30,
                                     "__variant_type": 4
                                 }
                             },
@@ -321,28 +321,28 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 9,
+                                    "__variant_value": 38,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "animator",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 30,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "renderer",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 30,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshAgent",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 29,
                                     "__variant_type": 4
                                 }
                             },
@@ -352,7 +352,7 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 0,
+                                                "__variant_value": 29,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -379,14 +379,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 32,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 30,
                                     "__variant_type": 4
                                 }
                             },
@@ -688,17 +688,17 @@
                 "agentRotationSpeed": 0.0,
                 "separationWeight": 0.0
             },
-            "id": 0
+            "id": 29
         },
         {
             "EntityData": {
                 "name": "Boss Model",
                 "tag": "",
-                "parent": 0,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": [
-                    2,
-                    5
+                    31,
+                    34
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -838,17 +838,17 @@
                 "controllerId": 12036169676641468417,
                 "speedMultiplier": 1.0
             },
-            "id": 1
+            "id": 30
         },
         {
             "EntityData": {
                 "name": "Boss_RB_Collider",
                 "tag": "",
-                "parent": 1,
+                "parent": 30,
                 "attachedSocket": 0,
                 "children": [
-                    3,
-                    4
+                    32,
+                    33
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -927,13 +927,13 @@
                     "z": 0.0
                 }
             },
-            "id": 2
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "Boss_RB_Box",
                 "tag": "",
-                "parent": 2,
+                "parent": 31,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1026,7 +1026,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 29,
                                     "__variant_type": 4
                                 }
                             }
@@ -1034,13 +1034,13 @@
                     }
                 ]
             },
-            "id": 3
+            "id": 32
         },
         {
             "EntityData": {
                 "name": "Enemy_Body_Hitbox",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 2,
+                "parent": 31,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1128,7 +1128,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 29,
                                     "__variant_type": 4
                                 }
                             }
@@ -1136,18 +1136,18 @@
                     }
                 ]
             },
-            "id": 4
+            "id": 33
         },
         {
             "EntityData": {
                 "name": "MissilePods",
                 "tag": "",
-                "parent": 1,
+                "parent": 30,
                 "attachedSocket": 1,
                 "children": [
-                    6,
-                    7,
-                    8
+                    35,
+                    36,
+                    37
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1201,13 +1201,13 @@
                     "z": 1.2214723028591834e-06
                 }
             },
-            "id": 5
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "RightMissilePod",
                 "tag": "",
-                "parent": 5,
+                "parent": 34,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1270,13 +1270,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 6
+            "id": 35
         },
         {
             "EntityData": {
                 "name": "MainMissilePod",
                 "tag": "",
-                "parent": 5,
+                "parent": 34,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1339,13 +1339,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 7
+            "id": 36
         },
         {
             "EntityData": {
                 "name": "LeftMissilePod",
                 "tag": "",
-                "parent": 5,
+                "parent": 34,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1408,13 +1408,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 8
+            "id": 37
         },
         {
             "EntityData": {
                 "name": "Ichor Spawn Point1",
                 "tag": "",
-                "parent": 0,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1469,13 +1469,13 @@
                     "z": 0.0
                 }
             },
-            "id": 9
+            "id": 38
         },
         {
             "EntityData": {
                 "name": "MeleePoint",
                 "tag": "",
-                "parent": 0,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1530,13 +1530,13 @@
                     "z": 3.1415927410125732
                 }
             },
-            "id": 10
+            "id": 39
         },
         {
             "EntityData": {
                 "name": "Entity 1",
                 "tag": "",
-                "parent": 0,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1621,7 +1621,7 @@
                 },
                 "scaleWithTransform": true
             },
-            "id": 11
+            "id": 40
         }
     ]
 }

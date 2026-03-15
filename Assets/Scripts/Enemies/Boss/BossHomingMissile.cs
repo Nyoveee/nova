@@ -32,6 +32,9 @@ class BossHomingMissile : Enemy
     [SerializableField]
     public float homingGravityFactor = 3.0f;
 
+    [SerializableField]
+    public Prefab destroyVFX = null;
+
 
     /***********************************************************
     Runtime variables..
@@ -108,6 +111,8 @@ class BossHomingMissile : Enemy
                     {
                         Destroy(gameObject);
                     }, 0.1f);
+
+                    Instantiate(destroyVFX, gameObject.transform.position, gameObject.transform.rotation);
 
 
                 }
@@ -224,7 +229,7 @@ class BossHomingMissile : Enemy
     {
         //missile rotates to face that direction.
         Quaternion lookRotation = Quaternion.LookRotation(direction);
-        Debug.Log("Now facing " + direction);
+        //Debug.Log("Now facing " + direction);
         //Quaternion lookRotation = Quaternion.LookRotation(new Vector3( 0,1,0));
         gameObject.transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, lookRotation, 1f);
 
