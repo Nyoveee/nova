@@ -38,13 +38,14 @@ class EnemyCannon : Script
     private MeshRenderer_ cannonBarrelMeshRenderer;
     [SerializableField]
     private GameObject firingPoint;
-    [SerializableField]
-    private Transform_ playerbody;
+    
     [SerializableField]
     private GameObject boat;
     [SerializableField]
     private GameObject waveManager;
 
+    private Transform_ playerbody;
+    
     // Shooting Update
     private float arcTime;
     private float currentShootCooldown;
@@ -76,6 +77,7 @@ class EnemyCannon : Script
     protected override void init() 
     {
         yOffset = gameObject.transform.position.y - boat.transform.position.y;
+        playerbody = GameObject.FindWithTag("Player")?.transform;
     }
 
     protected override void update() {

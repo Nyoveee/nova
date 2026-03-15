@@ -283,7 +283,7 @@ class PlayerWeaponController : Script
                 GameObject ammoTrail = Instantiate(ammoTrailPrefab, muzzle.gameObject.transform.position, muzzle.gameObject.transform.rotation);
                 // Debug.Log("Miss");
                 ammoTrail.getScript<ammoTrails>().startPosition = muzzle.gameObject.transform.position;
-                ammoTrail.getScript<ammoTrails>().endPosition = muzzle.gameObject.transform.position + (muzzle.gameObject.transform.right * 500f);
+                ammoTrail.getScript<ammoTrails>().endPosition = muzzle.gameObject.transform.position + (playerCamera.front * 500f);
             }
         }
 
