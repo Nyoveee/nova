@@ -26,7 +26,7 @@ class UltimateExplosion : Script
 
     [SerializableField]
     private Audio ultExplodeSFX;
-
+    
     // ======================================
     // Runtime variables.
     // ======================================
@@ -39,6 +39,7 @@ class UltimateExplosion : Script
     private Vector3 explosionInitialScaleVector;
     private Vector3 explosionFinalScaleVector;
     private Vector3 finalScaleVector;
+    private bool playOnce = false;
 
     // ===========================================
     // Components
@@ -59,12 +60,13 @@ class UltimateExplosion : Script
         finalScaleVector            = new Vector3(finalScale, finalScale, finalScale);
 
         audioComponent = getComponent<AudioComponent_>();
-        //audioComponent.PlaySound(ultExplodeSFX);
+        
     }
 
     // This function is invoked every update.
     protected override void update()
     {
+        triggerExplosionSFX();
         // Handle fade in lerp..
         if (timeElapsed < fadeInDuration)
         {
@@ -125,6 +127,14 @@ class UltimateExplosion : Script
         
     }
 
+    void triggerExplosionSFX()
+    {
+        if(!playOnce)
+        {
+            audioComponent.PlaySound(ultExplodeSFX);
+            playOnce = true;
+        }
+    }
     protected override void onCollisionEnter(GameObject other)
     {
         if (other.tag == "Enemy_ArmouredSpot" || other.tag == "Enemy_WeakSpot")

@@ -53,6 +53,7 @@ class UltimateController : Script
         MapKey(Key.F, BeginUltimateSequence);
         rigidbody = getComponent<Rigidbody_>();
         vignetteController = GameObject.FindWithTag("Game UI Manager")?.getScript<VignetteController>();
+        audioComponent = getComponent<AudioComponent_>();
     }
 
     // This function is invoked every fixed update.
@@ -85,7 +86,8 @@ class UltimateController : Script
 
         playerWeaponController.currentlyHeldGun.CurrentSp = 0;
 
-        // AudioAPI.PlaySound(gameObject, "sniper_specialFire_01");
+        audioComponent.PlaySound(ultSFX);
+        
         playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.Busy;
 
         isCasting = true;

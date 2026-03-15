@@ -1,5 +1,5 @@
 {
-    "RootEntity": 76,
+    "RootEntity": 86,
     "Entities": [
         {
             "EntityData": {
@@ -8,9 +8,9 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    77,
-                    78,
-                    79
+                    87,
+                    88,
+                    89
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -133,7 +133,7 @@
                 "scaleWithTransform": true
             },
             "AudioComponent": {
-                "volume": 0.699999988079071,
+                "volume": 0.3499999940395355,
                 "loop": false,
                 "audioGroup": "SFX"
             },
@@ -213,13 +213,13 @@
                     }
                 ]
             },
-            "id": 76
+            "id": 86
         },
         {
             "EntityData": {
                 "name": "Ground Spark",
                 "tag": "",
-                "parent": 76,
+                "parent": 86,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -432,13 +432,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 77
+            "id": 87
         },
         {
             "EntityData": {
                 "name": "Bright line mark",
                 "tag": "",
-                "parent": 76,
+                "parent": 86,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -651,13 +651,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 78
+            "id": 88
         },
         {
             "EntityData": {
                 "name": "Debris",
                 "tag": "",
-                "parent": 76,
+                "parent": 86,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -870,7 +870,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 79
+            "id": 89
         }
     ]
 }
