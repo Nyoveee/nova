@@ -122,7 +122,7 @@ public class Boss : Enemy
             new RushingMeleeAttack(this),
             new RushingMeleeAttack(this),
             //new MeleeAttack(this),
-             //new StationaryGroundSlam(this),
+            //new StationaryGroundSlam(this),
             //new StationaryGroundSlam(this),
             new MissileBarrage(this),
             new MissileBarrage(this),
@@ -880,6 +880,7 @@ public class Boss : Enemy
 
     public void StartSwiftWalk()
     {
+        Debug.Log("Start Switft Walk");
         animator.PlayAnimation("Boss_Run");
         animator.speedMultiplier = 1.5f;
         AdvanceToNextSequence();
