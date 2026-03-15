@@ -109,7 +109,7 @@ class PlayerController_V2 : Script
 
     //Timers
     private float jumpTimer = 0.0f;
-    private float dashCooldownTimer = 0.0f;
+    public float dashCooldownTimer = 0.0f;
     private float gravityLerpTimer = 0.0f;
     private float dashTimeElapsed = 0.0f;
 
@@ -683,6 +683,7 @@ class PlayerController_V2 : Script
             && currentStamina >= dashStaminaConsumption)
         {
             audioComponent.PlayRandomSound(dashSFX);
+            playerMotionAnimations.triggerParticleEffects();
             currentStamina -= dashStaminaConsumption;
             playerMoveStates = PlayerMoveStates.Dashing;
             //rigidbody.SetVelocity(Vector3.Zero());
