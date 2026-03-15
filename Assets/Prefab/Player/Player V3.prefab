@@ -1,5 +1,5 @@
 {
-    "RootEntity": 22,
+    "RootEntity": 41,
     "Entities": [
         {
             "EntityData": {
@@ -8,8 +8,8 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    23,
-                    54
+                    42,
+                    73
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -65,25 +65,25 @@
                     "z": 0.0
                 }
             },
-            "id": 22
+            "id": 41
         },
         {
             "EntityData": {
                 "name": "PlayerHead",
                 "tag": "PlayerHead",
-                "parent": 22,
+                "parent": 41,
                 "attachedSocket": 65535,
                 "children": [
-                    24,
-                    25,
-                    29,
-                    30,
-                    31,
-                    35,
-                    36,
-                    37,
-                    38,
-                    39
+                    43,
+                    44,
+                    48,
+                    49,
+                    50,
+                    54,
+                    55,
+                    56,
+                    57,
+                    58
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -189,21 +189,21 @@
                             {
                                 "name": "playerOrientation",
                                 "data": {
-                                    "__variant_value": 56,
+                                    "__variant_value": 75,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerCameraPos",
                                 "data": {
-                                    "__variant_value": 57,
+                                    "__variant_value": 76,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerBody",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 73,
                                     "__variant_type": 4
                                 }
                             }
@@ -211,13 +211,13 @@
                     }
                 ]
             },
-            "id": 23
+            "id": 42
         },
         {
             "EntityData": {
                 "name": "ThrowPosition",
                 "tag": "",
-                "parent": 23,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -305,16 +305,16 @@
             "Scripts": {
                 "scriptDatas": null
             },
-            "id": 24
+            "id": 43
         },
         {
             "EntityData": {
                 "name": "Gun Holder",
                 "tag": "",
-                "parent": 23,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": [
-                    26
+                    45
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -398,17 +398,17 @@
                     "z": 3.5100500284102054e-10
                 }
             },
-            "id": 25
+            "id": 44
         },
         {
             "EntityData": {
                 "name": "Sniper Holder",
                 "tag": "Sniper",
-                "parent": 25,
+                "parent": 44,
                 "attachedSocket": 65535,
                 "children": [
-                    27,
-                    28
+                    46,
+                    47
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -421,10 +421,10 @@
                     "16652763906952685383": false,
                     "17237801994024849853": true,
                     "6919815292445452220": true,
-                    "9059764703561530457": false,
                     "452538415452204233": false,
-                    "13484132868097894827": true,
+                    "9059764703561530457": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": true,
                     "10599230719904143524": false,
                     "17421316227555880647": false,
                     "6152912775364972041": false,
@@ -505,7 +505,7 @@
                             {
                                 "name": "camera",
                                 "data": {
-                                    "__variant_value": 30,
+                                    "__variant_value": 49,
                                     "__variant_type": 4
                                 }
                             },
@@ -569,6 +569,13 @@
                                 }
                             },
                             {
+                                "name": "criticalHitVFXPrefab",
+                                "data": {
+                                    "__variant_value": 11425729632279822471,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
                                 "name": "weakPointHitSparkColour",
                                 "data": {
                                     "__variant_value": {
@@ -609,14 +616,14 @@
                             {
                                 "name": "playerMovementController",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 73,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerWeaponController",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 73,
                                     "__variant_type": 4
                                 }
                             },
@@ -644,13 +651,13 @@
                 "toLoop": false,
                 "startPlaying": false
             },
-            "id": 26
+            "id": 45
         },
         {
             "EntityData": {
                 "name": "Sniper Mesh",
                 "tag": "",
-                "parent": 26,
+                "parent": 45,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -744,13 +751,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 27
+            "id": 46
         },
         {
             "EntityData": {
                 "name": "Muzzle",
                 "tag": "",
-                "parent": 26,
+                "parent": 45,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -963,13 +970,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 28
+            "id": 47
         },
         {
             "EntityData": {
                 "name": "GunPosition",
                 "tag": "",
-                "parent": 23,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1054,13 +1061,13 @@
                     "z": 0.0
                 }
             },
-            "id": 29
+            "id": 48
         },
         {
             "EntityData": {
                 "name": "Camera",
                 "tag": "PlayerCamera",
-                "parent": 23,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1153,7 +1160,7 @@
                             {
                                 "name": "ultimateController",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 73,
                                     "__variant_type": 4
                                 }
                             }
@@ -1174,18 +1181,18 @@
                 "toLoop": false,
                 "startPlaying": false
             },
-            "id": 30
+            "id": 49
         },
         {
             "EntityData": {
                 "name": "Ultimate Pose",
                 "tag": "",
-                "parent": 23,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": [
-                    32,
-                    33,
-                    34
+                    51,
+                    52,
+                    53
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -1269,13 +1276,13 @@
                     "z": 3.1415927410125732
                 }
             },
-            "id": 31
+            "id": 50
         },
         {
             "EntityData": {
                 "name": "SniperPose",
                 "tag": "",
-                "parent": 31,
+                "parent": 50,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1369,13 +1376,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 32
+            "id": 51
         },
         {
             "EntityData": {
                 "name": "PlayerPose",
                 "tag": "",
-                "parent": 31,
+                "parent": 50,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1473,13 +1480,13 @@
                 "shadowCullFrontFace": true,
                 "toFrustumCull": true
             },
-            "id": 33
+            "id": 52
         },
         {
             "EntityData": {
                 "name": "Muzzle",
                 "tag": "",
-                "parent": 31,
+                "parent": 50,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1564,13 +1571,13 @@
                     "z": 0.0
                 }
             },
-            "id": 34
+            "id": 53
         },
         {
             "EntityData": {
                 "name": "DashEmitter_Front",
                 "tag": "",
-                "parent": 23,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1783,13 +1790,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 35
+            "id": 54
         },
         {
             "EntityData": {
                 "name": "DashEmitter_Left",
                 "tag": "",
-                "parent": 23,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2002,13 +2009,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 36
+            "id": 55
         },
         {
             "EntityData": {
                 "name": "DashEmitter_Back",
                 "tag": "",
-                "parent": 23,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2221,13 +2228,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 37
+            "id": 56
         },
         {
             "EntityData": {
                 "name": "DashEmitter_Right",
                 "tag": "",
-                "parent": 23,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2440,29 +2447,29 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 38
+            "id": 57
         },
         {
             "EntityData": {
                 "name": "DashEmitters",
                 "tag": "",
-                "parent": 23,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": [
-                    40,
-                    41,
-                    42,
-                    43,
-                    44,
-                    45,
-                    46,
-                    47,
-                    48,
-                    49,
-                    50,
-                    51,
-                    52,
-                    53
+                    59,
+                    60,
+                    61,
+                    62,
+                    63,
+                    64,
+                    65,
+                    66,
+                    67,
+                    68,
+                    69,
+                    70,
+                    71,
+                    72
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -2546,13 +2553,13 @@
                     "z": 0.0
                 }
             },
-            "id": 39
+            "id": 58
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2765,13 +2772,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 40
+            "id": 59
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2984,13 +2991,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 41
+            "id": 60
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3203,13 +3210,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 42
+            "id": 61
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3422,13 +3429,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 43
+            "id": 62
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3641,13 +3648,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 44
+            "id": 63
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3860,13 +3867,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 45
+            "id": 64
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4079,13 +4086,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 46
+            "id": 65
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4298,13 +4305,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 47
+            "id": 66
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4517,13 +4524,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 48
+            "id": 67
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4736,13 +4743,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 49
+            "id": 68
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4955,13 +4962,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 50
+            "id": 69
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5174,13 +5181,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 51
+            "id": 70
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5393,13 +5400,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 52
+            "id": 71
         },
         {
             "EntityData": {
                 "name": "DashEmiiterFar",
                 "tag": "",
-                "parent": 39,
+                "parent": 58,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5612,18 +5619,18 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 53
+            "id": 72
         },
         {
             "EntityData": {
                 "name": "PlayerBody",
                 "tag": "Player",
-                "parent": 22,
+                "parent": 41,
                 "attachedSocket": 65535,
                 "children": [
-                    55,
-                    56,
-                    57
+                    74,
+                    75,
+                    76
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -5682,7 +5689,7 @@
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": 0.012310542166233063,
+                    "y": 0.012310539372265339,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -5703,7 +5710,7 @@
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": 1.3187511740397895e-06,
+                    "y": 1.318750946666114e-06,
                     "z": 0.0
                 }
             },
@@ -5745,56 +5752,56 @@
                             {
                                 "name": "muzzle",
                                 "data": {
-                                    "__variant_value": 28,
+                                    "__variant_value": 47,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "gunHolder",
                                 "data": {
-                                    "__variant_value": 25,
+                                    "__variant_value": 44,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "throwPosition",
                                 "data": {
-                                    "__variant_value": 24,
+                                    "__variant_value": 43,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "gunPosition",
                                 "data": {
-                                    "__variant_value": 29,
+                                    "__variant_value": 48,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerCamera",
                                 "data": {
-                                    "__variant_value": 30,
+                                    "__variant_value": 49,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sniper",
                                 "data": {
-                                    "__variant_value": 26,
+                                    "__variant_value": 45,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sniperMesh",
                                 "data": {
-                                    "__variant_value": 27,
+                                    "__variant_value": 46,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerCollider",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 73,
                                     "__variant_type": 4
                                 }
                             },
@@ -5893,49 +5900,49 @@
                             {
                                 "name": "camera",
                                 "data": {
-                                    "__variant_value": 30,
+                                    "__variant_value": 49,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "ultimatePose",
                                 "data": {
-                                    "__variant_value": 31,
+                                    "__variant_value": 50,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "muzzle",
                                 "data": {
-                                    "__variant_value": 34,
+                                    "__variant_value": 53,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "originalGun",
                                 "data": {
-                                    "__variant_value": 27,
+                                    "__variant_value": 46,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerController",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 73,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerWeaponController",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 73,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sequence",
                                 "data": {
-                                    "__variant_value": 30,
+                                    "__variant_value": 49,
                                     "__variant_type": 4
                                 }
                             },
@@ -6101,21 +6108,21 @@
                             {
                                 "name": "rotateController",
                                 "data": {
-                                    "__variant_value": 23,
+                                    "__variant_value": 42,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerOrientation",
                                 "data": {
-                                    "__variant_value": 56,
+                                    "__variant_value": 75,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerMotionAnimations",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 73,
                                     "__variant_type": 4
                                 }
                             },
@@ -6372,42 +6379,42 @@
                             {
                                 "name": "playerWeaponController",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 73,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerController",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 73,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "dashEmitter_Front",
                                 "data": {
-                                    "__variant_value": 38,
+                                    "__variant_value": 57,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "dashEmitter_Left",
                                 "data": {
-                                    "__variant_value": 38,
+                                    "__variant_value": 57,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "dashEmitter_Right",
                                 "data": {
-                                    "__variant_value": 38,
+                                    "__variant_value": 57,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "dashEmitter_Back",
                                 "data": {
-                                    "__variant_value": 38,
+                                    "__variant_value": 57,
                                     "__variant_type": 4
                                 }
                             },
@@ -6429,13 +6436,13 @@
                     }
                 ]
             },
-            "id": 54
+            "id": 73
         },
         {
             "EntityData": {
                 "name": "PlayerObj",
                 "tag": "",
-                "parent": 54,
+                "parent": 73,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6530,13 +6537,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 55
+            "id": 74
         },
         {
             "EntityData": {
                 "name": "PlayerOrientation",
                 "tag": "",
-                "parent": 54,
+                "parent": 73,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6621,13 +6628,13 @@
                     "z": 0.0
                 }
             },
-            "id": 56
+            "id": 75
         },
         {
             "EntityData": {
                 "name": "CameraPos",
                 "tag": "",
-                "parent": 54,
+                "parent": 73,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6712,7 +6719,7 @@
                     "z": 0.0
                 }
             },
-            "id": 57
+            "id": 76
         }
     ]
 }

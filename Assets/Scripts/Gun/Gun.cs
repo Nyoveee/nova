@@ -10,6 +10,8 @@ public abstract class Gun : Script
     [SerializableField]
     private Prefab contactSparkVFXPrefab;
     [SerializableField]
+    private Prefab criticalHitVFXPrefab;
+    [SerializableField]
     private ColorAlpha weakPointHitSparkColour;
 
     [SerializableField]
@@ -139,15 +141,25 @@ public abstract class Gun : Script
         if (enemyColliderScript != null)
         {
             // LookRotation is based on Z axis, rotate the emitter to face the z axis first
-            GameObject contactSparkVFX = Instantiate(contactSparkVFXPrefab, result.Value.point, Quaternion.LookRotation(direction) * Quaternion.AngleAxis(Mathf.Deg2Rad * 90, new Vector3(1,0,0)));
-            ParticleEmitter_ emitter = contactSparkVFX.getComponent<ParticleEmitter_>();
-            if (collidedEntity.tag == "Enemy_WeakSpot")
+            //GameObject contactSparkVFX = Instantiate(contactSparkVFXPrefab, result.Value.point, Quaternion.LookRotation(direction) * Quaternion.AngleAxis(Mathf.Deg2Rad * 90, new Vector3(1,0,0)));
+            //ParticleEmitter_ emitter = contactSparkVFX.getComponent<ParticleEmitter_>();
+            if (collidedEntity.tag == "Enemy_ArmouredSpot")
             {
                 //Debug.Log("Called");
-                emitter.setParticleColor(weakPointHitSparkColour);
+                //emitter.setParticleColor(weakPointHitSparkColour);
+                GameObject contactSparkVFX = Instantiate(contactSparkVFXPrefab, result.Value.point, Quaternion.LookRotation(direction) * Quaternion.AngleAxis(Mathf.Deg2Rad * 90, new Vector3(1, 0, 0)));
+                ParticleEmitter_ emitter = contactSparkVFX.getComponent<ParticleEmitter_>();
+                contactSparkVFX.getComponent<ParticleEmitter_>().emit();
             }
-            
-            contactSparkVFX.getComponent<ParticleEmitter_>().emit();
+
+            if (collidedEntity.tag == "Enemy_WeakSpot")
+            {
+                Debug.Log("criticalHitVFXPrefab!!!");
+                //Time.timeScale = 0;
+                GameObject contactSparkVFX = Instantiate(criticalHitVFXPrefab, result.Value.point, Quaternion.LookRotation(direction));
+
+            }
+
             enemyColliderScript.OnColliderShot(damage,Enemy.EnemydamageType.WeaponShot,collidedEntity.tag);
             direction.y = 0;
             direction.Normalize();
