@@ -69,11 +69,12 @@ Questline: Player has a questline, follow the quest line to complete the game.
 Known Bugs:
 - No game breaking or crashing bugs.
 - Minor visual bugs may happen like the enemy particle emitter still active when dead. (rarely happens when enemy falls out the boat in Level 2)
+- Mouse doesnt come back after credit screen
 
 --------------------------------------------------------------------------------
 What's Implemented:
 - Alot of VFX.
-- Polished level 1 with more goddess dialogue.  
+- Polished level 1 with more goddess dialogue, tutorial prompts, and elevator cutscene.  
 - Core implementation of level 2. (lighting, goddess dialogue, boat scripting, wave system, props)
-- Core implementation of boss level. (lighting, boss AI, boss attack VFX, level VFX)
+- Core implementation of boss level. (lighting, boss AI, boss attack VFX, level VFX, boss cutscene)
 - Polished UI (3D main menu with transition to level select, updated gameplay UI, settings, credit screen, controls page)

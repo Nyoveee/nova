@@ -43,9 +43,11 @@ bld/
 
 !ExternalApplication/Library/Debug/
 !ExternalApplication/Library/Release/
+!ExternalApplication/Library/Installer/
 
 ExternalApplication/Debug
 ExternalApplication/Release
+ExternalApplication/Installer
 
 # Build results on 'Bin' directories
 **/[Bb]in/*
@@ -440,4 +442,5 @@ Nova-ScriptingAPI.dll
 .asset_cache
 NodeEditor.json
 /Installer/GAMEDIRECTORY/
+/Installer/Installer
 .temp
