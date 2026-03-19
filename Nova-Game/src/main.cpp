@@ -34,6 +34,10 @@ int main() {
 		window.toggleFullScreen();
 	}
 
+#if NDEBUG
+	Intention Compile Time Error;
+#endif
+
 	// In the executable, we don't do any compiling. We assume it has been compiled and provided for.
 	
 	// Start up scene
