@@ -1492,14 +1492,6 @@ public class Boss : Enemy
         {
             if (bossStats.health <= bossStats.enemyExecuteThreshold)
             {
-                //Explode();
-                ////animator.PlayAnimation("Grunt Death");
-                ////NavigationAPI.stopAgent(gameObject);
-                ////rigidbody.enable = false;
-                //bossStats = bos;
-                //if (gameObject != null)
-                //    Destroy(gameObject);
-
             }
             else
             {
@@ -1515,6 +1507,7 @@ public class Boss : Enemy
 
         }
 
+        accumulatedDamageInstance = MathF.Min(accumulatedDamageInstance, enemyStats.health);
     }
 
     void FlushDamageEnemy()

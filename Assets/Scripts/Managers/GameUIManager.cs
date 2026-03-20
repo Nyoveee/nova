@@ -655,14 +655,12 @@ class GameUIManager : Script
         {
             return;
         }
-
         float previousPercentage = (float) previousSp / (float) maxSp;
         float percentage = (float) currentSp / (float) maxSp;
 
         gunIsGlowing = false;
         gunUltimateGlow.gameObject.SetActive(false);
         gunUltimateFill.gameObject.SetActive(true);
-
         isAnimatingUltimateFill = true;
         initialUltimateFillPercentage = new Vector2(previousPercentage, 1);
         finalUltimateFillPercentage = new Vector2(percentage, 1);

@@ -18,6 +18,7 @@ class BossIntroCutscene : Script
     [SerializableField] private GameObject arenaLight;
 
     [SerializableField] private Canvas_ playerUI;
+    [SerializableField] private Image_ gunUltimateGlow;
     [SerializableField] private GameObject cutsceneUI;
     [SerializableField] private Canvas_ bossUI;
 
@@ -327,6 +328,7 @@ class BossIntroCutscene : Script
                 cutsceneBarTimeElapsed = 0f;
                 playerUI.gameObject.SetActive(true);
                 playerUI.alpha = 0f;
+                gunUltimateGlow.gameObject.SetActive(false);
 
                 bossUI.gameObject.SetActive(true);
                 bossUI.alpha = 0f;

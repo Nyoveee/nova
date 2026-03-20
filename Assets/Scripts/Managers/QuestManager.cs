@@ -126,7 +126,7 @@ public class QuestManager : Script
 
     private void HandlePlayerDeath(object sender, EventArgs e)
     {
-        currentQuest.SetQuestState(Quest.QuestState.Fail);
+        currentQuest?.SetQuestState(Quest.QuestState.Fail);
     }
 
     private void RestartQuest()
