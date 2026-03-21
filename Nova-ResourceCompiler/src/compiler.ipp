@@ -12,13 +12,13 @@
 template <ValidResource T>
 int Compiler::compileAsset(AssetInfo<T> const& assetInfo, ResourceFilePath const& resourceFilePath) {
 	if constexpr (std::same_as<T, Texture>) {
-		return compileTexture(resourceFilePath, assetInfo.filepath, assetInfo.compression);
+		return compileTexture(resourceFilePath, assetInfo.filepath, assetInfo.compression, assetInfo.wrapping);
 	}
 	else if constexpr (std::same_as<T, Model>) {
 		return compileModel(resourceFilePath, assetInfo);
 	}
 	else if constexpr (std::same_as<T, EquirectangularMap>) {
-		return compileTexture(resourceFilePath, assetInfo.filepath, AssetInfo<Texture>::Compression::BC6H);
+		return compileTexture(resourceFilePath, assetInfo.filepath, AssetInfo<Texture>::Compression::BC6H, Texture::Wrapping::Repeat);
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
 		auto&& scriptAssetInfo = dynamic_cast<const AssetInfo<ScriptAsset>* const>(&assetInfo);

@@ -57,6 +57,17 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 				assetInfo.type = textureTypeOpt.value();
 			}
 
+			std::string samplingType;
+			std::getline(descriptorFile, samplingType);
+			auto wrappingTypeOpt = magic_enum::enum_cast<Texture::Wrapping>(samplingType);
+
+			if (!wrappingTypeOpt) {
+				assetInfo.wrapping = Texture::Wrapping::Repeat;
+			}
+			else {
+				assetInfo.wrapping = wrappingTypeOpt.value();
+			}
+
 		}
 		else if constexpr (std::same_as<T, CustomShader>) {
 			std::string pipelineString;
@@ -188,6 +199,7 @@ static AssetInfo<T> AssetIO::createDescriptorFile(ResourceID id, std::filesystem
 	if constexpr (std::same_as<T, Texture>) {
 		descriptorFile << magic_enum::enum_name(AssetInfo<Texture>::Compression::BC1_SRGB) << '\n';
 		descriptorFile << magic_enum::enum_name(AssetInfo<Texture>::TextureType::sRGB) << '\n';
+		descriptorFile << magic_enum::enum_name(Texture::Wrapping::Repeat) << '\n';
 	}
 	else if constexpr (std::same_as<T, CustomShader>) {
 		descriptorFile << magic_enum::enum_name(Pipeline::PBR) << '\n';
