@@ -10,6 +10,7 @@ class OscillatingMaterialField : Script
     public List<String> materialFieldName;
     
     public float speedMultiplier = 1f;
+    public bool isActive = true;
 
     private MeshRenderer_ meshRenderer;
     private float timeElapsed = 0f;
@@ -27,10 +28,15 @@ class OscillatingMaterialField : Script
     // This function is invoked every update.
     protected override void update()
     {
+        if(!isActive)
+        {
+            return;
+        }
+
         timeElapsed += Time.V_DeltaTime();
         timeElapsed = timeElapsed % (Mathf.Deg2Rad * 360f);
 
-        float interval = (Mathf.Sin(timeElapsed) + 1f) / 2f;
+        float interval = (Mathf.Sin(timeElapsed - Mathf.Deg2Rad * 90f) + 1f) / 2f;
 
         for(int i = 0; i < materialIndex.Count; ++i)
         {

@@ -115,6 +115,10 @@ void DebugUI::renderHDRSection() {
 	ImGui::Checkbox("Chromatic Aberration", &renderer.enableChromaticAberration);
 	ImGui::Checkbox("Blur", &renderer.isBlurEnabled);
 
+	float iblMultiplier = engine.renderer.iblMultiplier;
+	ImGui::SliderFloat("IBL Multiplier", &iblMultiplier, 0.f, 1.0f, "%.2f");
+	engine.renderer.iblMultiplier = iblMultiplier;
+
 	if (ImGui::Button("Randomize Offset")) {
 		renderer.randomiseChromaticAberrationoffset();
 	}

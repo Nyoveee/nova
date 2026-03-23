@@ -76,12 +76,12 @@ class MainUIManager : Script
             fadeOutTimeElasped = 0f;
 
             fadeOutCallback = () => mainMenuUi.isInteractable = true;
-        }, 4.2f);
+        }, initialLerpDuration);
 
-        Invoke(() =>
-        {
-            hubLights.SetActive(true);
-        }, 3f);
+        //Invoke(() =>
+        //{
+        //    RecursiveLightSwitch();
+        //}, 6f);
 
         Invoke(() =>
         {
@@ -89,8 +89,8 @@ class MainUIManager : Script
             initialAlpha = 1f;
             finalAlpha = 0f;
 
-            cameraSequence.play();
             isFading = true;
+            isCameraMoving = true;
         }, 1f);
     }
 
@@ -144,12 +144,33 @@ class MainUIManager : Script
 
         float interval = timeElapsed / initialLerpDuration;
 
-        camera.transform.position = Vector3.Lerp(initialCameraPosition, finalCameraPosition, Mathf.Pow(interval, lerpPower));
+        float newY = Mathf.SmoothLerp(initialCameraPosition.y, finalCameraPosition.y, Mathf.Pow(interval, lerpPower));
+        camera.transform.position = new Vector3(initialCameraPosition.x, newY, initialCameraPosition.z);
 
         if (timeElapsed > initialLerpDuration)
         {
             isCameraMoving = false;
         }
+    }
+
+    int counter = 0;
+    bool isOn = true;
+
+    private void RecursiveLightSwitch()
+    {
+        Invoke(() =>
+        {
+            isOn = !isOn;
+            counter++;
+
+            hubLights.SetActive(isOn);
+
+            if (counter < 4)
+            {
+                RecursiveLightSwitch();
+            }
+
+        }, Random.Range(0.05f, 0.1f) * counter);
     }
 
     private void handleFading()

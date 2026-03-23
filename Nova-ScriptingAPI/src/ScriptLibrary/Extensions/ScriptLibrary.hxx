@@ -288,9 +288,15 @@ public:
 		bool get() { return Interface::engine->dataManager.renderConfig.toEnableIBL; };
 		void set(bool value) { Interface::engine->dataManager.renderConfig.toEnableIBL = value; };
 	}
+
 	static property bool fullScreen {
 		bool get() { return Interface::engine->dataManager.renderConfig.fullScreen; };
 		void set(bool value) { Interface::engine->setFullscreen(value); };
+	}
+
+	static property float iblMultiplier {
+		float get() { return Interface::engine->renderer.iblMultiplier; };
+		void set(float value) { Interface::engine->renderer.iblMultiplier = value; };
 	}
 };
 
