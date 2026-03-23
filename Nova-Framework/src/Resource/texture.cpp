@@ -9,7 +9,7 @@ namespace {
 	GLuint TEXTURE_NOT_LOADED = std::numeric_limits<GLuint>::max();
 }
 
-Texture::Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture const& texture, gli::gl::format const& format) :
+Texture::Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture const& texture, gli::gl::format const& format, Wrapping wrapping) :
 	Resource		 { id, std::move(resourceFilePath) },
 	width			 { texture.extent().x },
 	height			 { texture.extent().y },
@@ -54,8 +54,16 @@ Texture::Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture 
 	glTextureParameteri(textureId, GL_TEXTURE_BASE_LEVEL, 0);
 	glTextureParameteri(textureId, GL_TEXTURE_MAX_LEVEL, static_cast<GLint>(texture.levels() - 1));
 
-	glTextureParameteri(textureId, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	switch (wrapping) {
+	case Wrapping::Repeat:
+		glTextureParameteri(textureId, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		break;
+	case Wrapping::Clamp:
+		glTextureParameteri(textureId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		break;
+	}
 	glTextureParameteri(textureId, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTextureParameteri(textureId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -63,6 +71,7 @@ Texture::Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture 
 	glTextureParameteri(textureId, GL_TEXTURE_SWIZZLE_G, format.Swizzles[1]);
 	glTextureParameteri(textureId, GL_TEXTURE_SWIZZLE_B, format.Swizzles[2]);
 	glTextureParameteri(textureId, GL_TEXTURE_SWIZZLE_A, format.Swizzles[3]);
+	
 }
 
 Texture::~Texture() {

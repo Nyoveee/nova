@@ -321,7 +321,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	bakingCamera.recalculateProjectionMatrix();
 
 	// Load the BRDF LUT from systems folder..
-	auto ptr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/brdfLUT.dds" }).value()();
+	auto ptr = ResourceLoader<Texture>::loadWithoutDescriptor(std::string{ "System/brdfLUT.dds" }).value()();
 	BRDFLUT.reset(static_cast<Texture*>(ptr.release()));
 
 	// BRDF requires clamp instead of repeat 

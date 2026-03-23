@@ -5,9 +5,15 @@
 
 using GLuint = unsigned int; 
 
+
 class Texture : public Resource {
 public:
-	FRAMEWORK_DLL_API Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture const& texture, gli::gl::format const& format);
+	enum class Wrapping{
+		Repeat,
+		Clamp
+	};
+public:
+	FRAMEWORK_DLL_API Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture const& texture, gli::gl::format const& format, Wrapping wrapping);
 	FRAMEWORK_DLL_API ~Texture();
 
 	FRAMEWORK_DLL_API Texture(Texture const& other) = delete;
@@ -52,4 +58,6 @@ struct AssetInfo<Texture> : public BasicAssetInfo {
 		BC7_SRGB,				// for high quality texture.
 		BC7_Linear				// for BC7 but linear.
 	} compression;
+
+	Texture::Wrapping wrapping;
 };
