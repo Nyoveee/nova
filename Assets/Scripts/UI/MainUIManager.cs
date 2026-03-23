@@ -17,9 +17,6 @@ class MainUIManager : Script
     [SerializableField] Canvas_ mainMenuUi;
     [SerializableField] Canvas_ levelSelectUi;
     [SerializableField] Canvas_ darkOverlay;
-    [SerializableField] ExpandingScale intersectionVfx;
-    [SerializableField] Translation blackBackground;
-    [SerializableField] GoddessAnimateGlow goddess;
     [SerializableField] Transform_ cameraMainMenuPos;
 
     [SerializableField] public float initialLerpDuration = 2f;
@@ -30,6 +27,7 @@ class MainUIManager : Script
     [SerializableField] public float travelTime = 1f;
 
     [SerializableField] public float initialFadeOut = 1f;
+    [SerializableField] public GameObject hubLights;
 
     private CameraComponent_ cameraComponent;
     private Sequence_ cameraSequence;
@@ -70,25 +68,20 @@ class MainUIManager : Script
 
         Invoke(() =>
         {
-            Invoke(() => { 
-                blackBackground.move(); 
-            }, 0.6f);
-            intersectionVfx.expand();
-            goddess.toGlow();
+            canvasToFade = mainMenuUi;
+            initialAlpha = 0f;
+            finalAlpha = 1f;
+            isFading = true;
 
-            Invoke(() =>
-            {
-                canvasToFade = mainMenuUi;
-                initialAlpha = 0f;
-                finalAlpha = 1f;
-                isFading = true;
+            fadeOutTimeElasped = 0f;
 
-                fadeOutTimeElasped = 0f;
+            fadeOutCallback = () => mainMenuUi.isInteractable = true;
+        }, 4.2f);
 
-                fadeOutCallback = () => mainMenuUi.isInteractable = true;
-            }, 2f);
-
-        }, 4.5f);
+        Invoke(() =>
+        {
+            hubLights.SetActive(true);
+        }, 3f);
 
         Invoke(() =>
         {
@@ -96,7 +89,7 @@ class MainUIManager : Script
             initialAlpha = 1f;
             finalAlpha = 0f;
 
-            isCameraMoving = true;
+            cameraSequence.play();
             isFading = true;
         }, 1f);
     }

@@ -2,7 +2,7 @@
     "entities": [
         {
             "EntityData": {
-                "name": "Entity 3",
+                "name": "Player_MainMenu_Idle",
                 "tag": "",
                 "parent": 4294967295,
                 "attachedSocket": 65535,
@@ -10,21 +10,21 @@
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "entityGUID": 5513400521933793517,
+                "entityGUID": 17730065431915912153,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 9.621368408203125,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 32.239036560058594,
+                    "y": 8.742173194885254,
+                    "z": -26.253293991088867
                 },
                 "scale": {
-                    "x": 7.055999755859375,
-                    "y": 7.055999755859375,
-                    "z": 7.055999755859375
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -38,14 +38,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 9.621368408203125,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 32.239036560058594,
+                    "y": 8.742173194885254,
+                    "z": -26.253293991088867
                 },
                 "localScale": {
-                    "x": 7.055999755859375,
-                    "y": 7.055999755859375,
-                    "z": 7.055999755859375
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -59,84 +59,24 @@
                     "z": 0.0
                 }
             },
-            "MeshRenderer": {
-                "modelId": 4,
+            "SkinnedMeshRenderer": {
+                "modelId": 5624389633542012929,
                 "materialIds": [
-                    11507471645771988995
+                    10789675197069180955,
+                    11942596701676535837,
+                    5601528426338910239,
+                    5025067674035535905
                 ],
-                "castShadow": false,
-                "shadowCullFrontFace": true
+                "socketConnections": null,
+                "castShadow": true,
+                "shadowCullFrontFace": true,
+                "toFrustumCull": true
             },
-            "id": 6291665
-        },
-        {
-            "EntityData": {
-                "name": "Entity 3",
-                "tag": "",
-                "parent": 4294967295,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 18446744073709551615,
-                "entityGUID": 5513400521933793517,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
+            "Animator": {
+                "controllerId": 3895007376634780703,
+                "speedMultiplier": 1.0
             },
-            "Transform": {
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 7.055999755859375,
-                    "y": 7.055999755859375,
-                    "z": 7.055999755859375
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 7.055999755859375,
-                    "y": 7.055999755859375,
-                    "z": 7.055999755859375
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "MeshRenderer": {
-                "modelId": 4,
-                "materialIds": [
-                    11507471645771988995
-                ],
-                "castShadow": false,
-                "shadowCullFrontFace": true
-            },
-            "id": 0
+            "id": 7340241
         }
     ],
     "layers": [
