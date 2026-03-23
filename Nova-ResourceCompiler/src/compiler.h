@@ -15,7 +15,7 @@ private:
 	template <ValidResource T>
 	static int compileAsset			(AssetInfo<T> const& assetInfo, ResourceFilePath const& resourceFilePath);
 
-	static int compileTexture		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat);
+	static int compileTexture		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat, Texture::Wrapping wrapping);
 	static int compileFont			(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, unsigned int fontSize);
 
 	static int compileModel			(ResourceFilePath const& resourceFilePath, AssetInfo<Model> descriptor);

@@ -29,7 +29,7 @@ class Teleporter : Script
 
         if(other.tag == "Enemy")
         {
-            other.getScript<Enemy>().TakeDamage(1000, Enemy.EnemydamageType.WeaponShot, "Enemy_WeakSpot");
+            other.getScript<Enemy>().TakeDamage(other.getScript<EnemyStats>().health, Enemy.EnemydamageType.WeaponShot, "Enemy_WeakSpot");
         }
     }
 }

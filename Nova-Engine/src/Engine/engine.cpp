@@ -291,7 +291,8 @@ void Engine::SystemsUnload() {
 	renderer.resetLoadedReflectionProbes();
 	renderer.enableChromaticAberration = false;
 	renderer.isBlurEnabled = false;
-	
+	renderer.iblMultiplier = 1.f;
+
 	renderer.getGameCamera().setUp(glm::vec3{ 0.f, 1.f, 0.f });
 
 	scriptingAPIManager.cleanPreviousSceneScriptState();

@@ -49,7 +49,11 @@ class Material;
 
 // explicit template specialisation for respective loaders.
 ResourceLoaderDefinition(Model)
-ResourceLoaderDefinition(Texture)
+template<> class ResourceLoader<Texture> {
+public:
+	FRAMEWORK_DLL_API static std::optional<ResourceConstructor> load(ResourceID id, ResourceFilePath const& resourceFilePath);
+	FRAMEWORK_DLL_API static std::optional<ResourceConstructor> loadWithoutDescriptor(ResourceFilePath const& resourceFilePath);
+};
 ResourceLoaderDefinition(EquirectangularMap)
 ResourceLoaderDefinition(ScriptAsset)
 ResourceLoaderDefinition(NavMesh)

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 131,
+    "RootEntity": 24,
     "Entities": [
         {
             "EntityData": {
@@ -8,9 +8,9 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    132,
-                    133,
-                    134
+                    25,
+                    26,
+                    27
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -213,13 +213,13 @@
                     }
                 ]
             },
-            "id": 131
+            "id": 24
         },
         {
             "EntityData": {
                 "name": "Ground Spark",
                 "tag": "",
-                "parent": 131,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -432,13 +432,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 132
+            "id": 25
         },
         {
             "EntityData": {
                 "name": "Bright line mark",
                 "tag": "",
-                "parent": 131,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -651,13 +651,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 133
+            "id": 26
         },
         {
             "EntityData": {
                 "name": "Debris",
                 "tag": "",
-                "parent": 131,
+                "parent": 24,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -870,7 +870,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 134
+            "id": 27
         }
     ]
 }

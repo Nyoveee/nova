@@ -17,6 +17,12 @@ class LaunchingVFX : Script
     private float currentBurstEmittertime;
     protected override void update()
     {
+        if (enemy.IsDead())
+        {
+            if (gameObject != null)
+                Destroy(gameObject);
+            return;
+        }
         if(enemy!= null && enemy.IsTouchingGround() && air.IsActive())
         {
             air.SetActive(false);

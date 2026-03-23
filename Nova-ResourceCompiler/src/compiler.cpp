@@ -19,7 +19,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat) {
+int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat, Texture::Wrapping wrapping) {
 	std::string format;
 	std::string option;
 
@@ -68,8 +68,9 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 		option = "--ignore-srgb";
 		break;
 	default:
-		Logger::error("Unknown compression format specified.");
-		return -1;
+		format = "BC1_UNORM_SRGB";
+		option = "-srgb";
+		break;
 	}
 	
 	std::filesystem::path executableName = std::filesystem::current_path() / "ExternalApplication" / "texconv.exe";
@@ -93,6 +94,25 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 
 	// let's rename the resource.
 	std::filesystem::rename(oldFilePath, resourceFilePath);
+
+	// Appending additional data to the texture
+	std::ifstream resourceData{ resourceFilePath.string, std::ios::binary };
+	std::size_t start = resourceData.tellg();
+	resourceData.seekg(0, std::ios::end);
+	std::size_t end = resourceData.tellg();
+	resourceData.seekg(start);
+	std::size_t fileSize{ end - start };
+	std::vector<char> data(fileSize);
+	resourceData.read(data.data(), fileSize);
+
+	std::ofstream resourceFile{ resourceFilePath.string, std::ios::binary | std::ios::trunc};
+	std::ostringstream textureData;
+	if (!resourceFile) {
+		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
+		return -1;
+	}
+	serializeToBinary(resourceFile, static_cast<std::string>(magic_enum::enum_name(wrapping)));
+	resourceFile.write(data.data(), fileSize);
 	return 0;
 }
 

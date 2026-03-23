@@ -37,7 +37,7 @@ struct FieldEnum {
 
 #endif
 #define ALL_TYPED_RESOURCE_ID \
-	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>, TypedResourceID<Scene>, TypedResourceID<Audio>
+	TypedResourceID<Prefab>, TypedResourceID<Sequencer>, TypedResourceID<Texture>, TypedResourceID<Material>, TypedResourceID<Scene>, TypedResourceID<Audio>
 
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \

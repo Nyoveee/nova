@@ -146,17 +146,6 @@ class Gunner : Enemy
             }
 
             accumulatedDamageInstance += damage;
-            //gunnerStats.health -= damage;
-            //if (gunnerStats.health <= 0)
-            //{
-            //    if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
-            //        SpawnIchor();
-            //    gunnerState = GunnerState.Death;
-            //    animator.PlayAnimation("Gunner_Death");
-            //    NavigationAPI.stopAgent(gameObject);
-            //    rigidBody.enable = false;
-            //}
-
         }
 
 
@@ -174,53 +163,16 @@ class Gunner : Enemy
             {
 
                 accumulatedDamageInstance += damage;
-                //gunnerStats.health -= damage;
-                //if (gunnerStats.health <= 0)
-                //{
-                //    if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
-                //        SpawnIchor();
-                //    gunnerState = GunnerState.Death;
-                //    animator.PlayAnimation("Gunner_Death");
-                //    NavigationAPI.stopAgent(gameObject);
-                //    rigidBody.enable = false;
-                //}
             }
-
-
         }
 
         if (damageType == Enemy.EnemydamageType.Ultimate)
         {
 
             accumulatedDamageInstance += damage;
-            //gunnerStats.health -= damage;
-            //if (gunnerStats.health <= 0)
-            //{
-            //    if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
-            //        SpawnIchor();
-            //    gunnerState = GunnerState.Death;
-            //    animator.PlayAnimation("Gunner_Death");
-            //    NavigationAPI.stopAgent(gameObject);
-            //    rigidBody.enable = false;
-            //}
-
         }
 
-        //    if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
-        //    return;
-        //SpawnIchor();
-        //TriggerRecentlyDamageCountdown();
-        //AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-        //renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
-        //Invoke(() =>
-        //{
-        //    renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
-        //}, gunnerStats.hurtDuration);
-        //// Don't stagger if it's in the middle of a jump
-        //if (IsCurrentlyJumping())
-        //    return;
-        //gunnerState = GunnerState.Stagger;
-        //animator.PlayAnimation("Gunner_Stagger");
+        accumulatedDamageInstance = MathF.Min(accumulatedDamageInstance, enemyStats.health);
     }
 
     void FlushDamageEnemy()

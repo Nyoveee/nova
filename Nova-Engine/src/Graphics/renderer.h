@@ -514,6 +514,8 @@ public:
 	// HDR parameters
 	float hdrExposure;
 
+	NormalizedFloat iblMultiplier = 1.f;
+
 	// Used to debug frustum culling..
 	bool toDebugRenderBoundingVolume = false;
 	bool toDebugClusters = false;

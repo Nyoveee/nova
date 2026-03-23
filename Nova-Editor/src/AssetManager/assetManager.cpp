@@ -46,7 +46,7 @@ AssetManager::~AssetManager() {
 	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
 		assert(serialiseFunctorPtr && "Should never be nullptr");
 
-		if (!resourceManager.isResource<Model>(id)) {
+		if (!resourceManager.isResource<Texture>(id)) {
 			continue;
 		}
 

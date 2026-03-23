@@ -836,16 +836,7 @@ class PlayerController_V2 : Script
 
     public void SetIframes(bool value)
     {
-        if (value == true)
-        {
-            isIFrames = value;
-            rigidbody.SetPhysicsLayer("PlayerGhost");
-        }
-        else 
-        {
-            isIFrames = value;
-            rigidbody.SetPhysicsLayer("Player");
-        }
+        isIFrames = value;
     }
 
     //Sound function

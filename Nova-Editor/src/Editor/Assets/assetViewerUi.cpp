@@ -510,11 +510,16 @@ void AssetViewerUI::displayTextureInfo(AssetInfo<Texture>& textureInfo) {
 			toRecompile = true;
 		}
 	});
-
 	if (textureInfo.type != AssetInfo<Texture>::TextureType::Custom) {
 		ImGui::EndDisabled();
 	}
 
+	editor.displayEnumDropDownList<Texture::Wrapping>(textureInfo.wrapping, "Wrapping", [&](auto enumValue) {
+		if (enumValue != textureInfo.wrapping) {
+			textureInfo.wrapping = enumValue;
+			toRecompile = true;
+		}
+	});
 	if (toRecompile) {
 		recompileResourceWithUpdatedDescriptor<Texture>(textureInfo);
 	}

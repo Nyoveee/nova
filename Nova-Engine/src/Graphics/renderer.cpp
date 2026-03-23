@@ -321,7 +321,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	bakingCamera.recalculateProjectionMatrix();
 
 	// Load the BRDF LUT from systems folder..
-	auto ptr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/brdfLUT.dds" }).value()();
+	auto ptr = ResourceLoader<Texture>::loadWithoutDescriptor(std::string{ "System/brdfLUT.dds" }).value()();
 	BRDFLUT.reset(static_cast<Texture*>(ptr.release()));
 
 	// BRDF requires clamp instead of repeat 
@@ -2752,8 +2752,8 @@ void Renderer::preparePBRUniforms() {
 	int ssao					= renderConfig.toEnableSSAO;
 	int directionalLightCaster	= hasDirectionalLightShadowCaster;
 	int ibl						= renderConfig.toEnableIBL;
-	float iblDiffuseStrength	= engine.ecs.sceneManager.iblDiffuseStrength;
-	float iblSpecularStrength	= engine.ecs.sceneManager.iblSpecularStrength;
+	float iblDiffuseStrength	= engine.ecs.sceneManager.iblDiffuseStrength * iblMultiplier;
+	float iblSpecularStrength	= engine.ecs.sceneManager.iblSpecularStrength * iblMultiplier;
 
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightSpaceMatrix), sizeof(glm::mat4x4), glm::value_ptr(directionalLightViewMatrix));
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightDir), sizeof(glm::vec3), glm::value_ptr(directionalLightDir));

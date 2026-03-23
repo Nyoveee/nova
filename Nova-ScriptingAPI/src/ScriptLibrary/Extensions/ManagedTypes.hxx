@@ -11,14 +11,14 @@
 namespace ScriptingAPI {
 	ManagedResource(Prefab)
 	ManagedResource(Texture)
-	ManagedResource(Model)
+	ManagedResource(Sequencer)
 	ManagedResource(Material)
 	ManagedResource(Scene)
 	ManagedResource(Audio)
 }
 
 #define ALL_MANAGED_TYPED_RESOURCE_ID \
-	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material, ScriptingAPI::Scene, ScriptingAPI::Audio
+	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Sequencer, ScriptingAPI::Material, ScriptingAPI::Scene, ScriptingAPI::Audio
 
 public enum class ButtonState {
 	Normal,

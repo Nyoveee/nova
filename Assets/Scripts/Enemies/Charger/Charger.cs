@@ -143,19 +143,6 @@ class Charger : Enemy
             }
 
             accumulatedDamageInstance += damage;
-            //chargerstats.health -= damage;
-            //if (chargerstats.health <= 0)
-            //{
-            //    if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
-            //        SpawnIchor();
-            //    chargerState = ChargerState.Death;
-            //    animator.PlayAnimation("ChargerDeath");
-            //    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-            //    chargingRigidbody.enable = false;
-            //    navMeshRigidbody.enable = false;
-            //    chargeLines.SetActive(false);
-            //    NavigationAPI.stopAgent(gameObject);
-            //}
 
 
         }
@@ -173,20 +160,6 @@ class Charger : Enemy
             else
             {
                 accumulatedDamageInstance += damage;
-                //chargerstats.health -= damage;
-                //if (chargerstats.health <= 0)
-                //{
-                //    if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
-                //        SpawnIchor();
-                //    chargerState = ChargerState.Death;
-                //    animator.PlayAnimation("ChargerDeath");
-                //    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-                //    chargingRigidbody.enable = false;
-                //    navMeshRigidbody.enable = false;
-                //    chargeLines.SetActive(false);
-                //    NavigationAPI.stopAgent(gameObject);
-
-                //}
             }
         }
 
@@ -194,34 +167,9 @@ class Charger : Enemy
         if (damageType == Enemy.EnemydamageType.Ultimate)
         {
             accumulatedDamageInstance += damage;
-            //chargerstats.health -= damage;
-            //if (chargerstats.health <= 0)
-            //{
-            //    if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
-            //        SpawnIchor();
-            //    chargerState = ChargerState.Death;
-            //    animator.PlayAnimation("ChargerDeath");
-            //    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-            //    chargingRigidbody.enable = false;
-            //    navMeshRigidbody.enable = false;
-            //    chargeLines.SetActive(false);
-            //    NavigationAPI.stopAgent(gameObject);
-
-            //}
-
-
         }
-        //    if (chargerState == ChargerState.Death || WasRecentlyDamaged())
-        //    return;
-        //TriggerRecentlyDamageCountdown();
-        //SpawnIchor();
-        //renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
-        //renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
-        //Invoke(() =>
-        //{
-        //    renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
-        //    renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
-        //}, chargerstats.hurtDuration);
+
+        accumulatedDamageInstance = MathF.Min(accumulatedDamageInstance, enemyStats.health);
 
     }
     public override bool IsEngagedInBattle()

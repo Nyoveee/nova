@@ -17,9 +17,6 @@ class MainUIManager : Script
     [SerializableField] Canvas_ mainMenuUi;
     [SerializableField] Canvas_ levelSelectUi;
     [SerializableField] Canvas_ darkOverlay;
-    [SerializableField] ExpandingScale intersectionVfx;
-    [SerializableField] Translation blackBackground;
-    [SerializableField] GoddessAnimateGlow goddess;
     [SerializableField] Transform_ cameraMainMenuPos;
 
     [SerializableField] public float initialLerpDuration = 2f;
@@ -30,6 +27,7 @@ class MainUIManager : Script
     [SerializableField] public float travelTime = 1f;
 
     [SerializableField] public float initialFadeOut = 1f;
+    [SerializableField] public GameObject hubLights;
 
     private CameraComponent_ cameraComponent;
     private Sequence_ cameraSequence;
@@ -70,25 +68,20 @@ class MainUIManager : Script
 
         Invoke(() =>
         {
-            Invoke(() => { 
-                blackBackground.move(); 
-            }, 0.6f);
-            intersectionVfx.expand();
-            goddess.toGlow();
+            canvasToFade = mainMenuUi;
+            initialAlpha = 0f;
+            finalAlpha = 1f;
+            isFading = true;
 
-            Invoke(() =>
-            {
-                canvasToFade = mainMenuUi;
-                initialAlpha = 0f;
-                finalAlpha = 1f;
-                isFading = true;
+            fadeOutTimeElasped = 0f;
 
-                fadeOutTimeElasped = 0f;
+            fadeOutCallback = () => mainMenuUi.isInteractable = true;
+        }, initialLerpDuration);
 
-                fadeOutCallback = () => mainMenuUi.isInteractable = true;
-            }, 2f);
-
-        }, 4.5f);
+        //Invoke(() =>
+        //{
+        //    RecursiveLightSwitch();
+        //}, 6f);
 
         Invoke(() =>
         {
@@ -96,8 +89,8 @@ class MainUIManager : Script
             initialAlpha = 1f;
             finalAlpha = 0f;
 
-            isCameraMoving = true;
             isFading = true;
+            isCameraMoving = true;
         }, 1f);
     }
 
@@ -151,12 +144,33 @@ class MainUIManager : Script
 
         float interval = timeElapsed / initialLerpDuration;
 
-        camera.transform.position = Vector3.Lerp(initialCameraPosition, finalCameraPosition, Mathf.Pow(interval, lerpPower));
+        float newY = Mathf.SmoothLerp(initialCameraPosition.y, finalCameraPosition.y, Mathf.Pow(interval, lerpPower));
+        camera.transform.position = new Vector3(initialCameraPosition.x, newY, initialCameraPosition.z);
 
         if (timeElapsed > initialLerpDuration)
         {
             isCameraMoving = false;
         }
+    }
+
+    int counter = 0;
+    bool isOn = true;
+
+    private void RecursiveLightSwitch()
+    {
+        Invoke(() =>
+        {
+            isOn = !isOn;
+            counter++;
+
+            hubLights.SetActive(isOn);
+
+            if (counter < 4)
+            {
+                RecursiveLightSwitch();
+            }
+
+        }, Random.Range(0.05f, 0.1f) * counter);
     }
 
     private void handleFading()

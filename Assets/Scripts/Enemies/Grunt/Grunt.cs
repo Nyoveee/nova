@@ -151,9 +151,6 @@ class Grunt : Enemy
             if (gruntStats.health <= gruntStats.enemyExecuteThreshold)
             {
                 Explode();
-                //animator.PlayAnimation("Grunt Death");
-                //NavigationAPI.stopAgent(gameObject);
-                //rigidbody.enable = false;
                 gruntState = GruntState.Death;
                 if (gameObject != null)
                     Destroy(gameObject);
@@ -171,6 +168,8 @@ class Grunt : Enemy
 
             accumulatedDamageInstance += damage;
         }
+
+        accumulatedDamageInstance = MathF.Min(accumulatedDamageInstance, enemyStats.health);
     }
 
 

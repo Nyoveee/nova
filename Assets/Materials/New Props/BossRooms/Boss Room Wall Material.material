@@ -1,5 +1,5 @@
 {
-    "selectedShader": 1,
+    "selectedShader": 230563778812100609,
     "uniformDatas": [
         {
             "glslType": "sampler2D",
@@ -45,7 +45,7 @@
             "glslType": "NormalizedFloat",
             "identifier": "roughness",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 0.15299999713897705,
                 "__variant_type": 12
             }
         },
@@ -53,7 +53,7 @@
             "glslType": "NormalizedFloat",
             "identifier": "metallic",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 0.42100000381469727,
                 "__variant_type": 12
             }
         },
@@ -61,7 +61,7 @@
             "glslType": "NormalizedFloat",
             "identifier": "occulusion",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 1.0,
                 "__variant_type": 12
             }
         },
@@ -117,6 +117,22 @@
                     "y": 0.0
                 },
                 "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "bool",
+            "identifier": "invertORMMap",
+            "value": {
+                "__variant_value": false,
+                "__variant_type": 0
+            }
+        },
+        {
+            "glslType": "bool",
+            "identifier": "maskedAlpha",
+            "value": {
+                "__variant_value": false,
+                "__variant_type": 0
             }
         }
     ],
