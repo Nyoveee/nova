@@ -1,15 +1,6 @@
 {
     "entryNode": 1000,
     "nodes": {
-        "13554120084823654411": {
-            "id": 13554120084823654411,
-            "animation": 15509887387844050953,
-            "transitions": null,
-            "toLoop": true,
-            "blendFactor": 0.20000000298023224,
-            "name": "Entry Node",
-            "animationEvents": null
-        },
         "1000": {
             "id": 1000,
             "animation": 18446744073709551615,
@@ -24,13 +15,13 @@
             "name": "Entry Node",
             "animationEvents": null
         },
-        "5483669552575332355": {
-            "id": 5483669552575332355,
-            "animation": 15509887387844050949,
+        "13554120084823654411": {
+            "id": 13554120084823654411,
+            "animation": 15509887387844050953,
             "transitions": null,
             "toLoop": true,
             "blendFactor": 0.20000000298023224,
-            "name": "ChargerIdle",
+            "name": "Entry Node",
             "animationEvents": null
         },
         "14130580837126930439": {
@@ -42,31 +33,13 @@
             "name": "ChargerWalk",
             "animationEvents": null
         },
-        "5483669552575643657": {
-            "id": 5483669552575643657,
-            "animation": 15104853692451422209,
+        "5483669552575332355": {
+            "id": 5483669552575332355,
+            "animation": 15509887387844050949,
             "transitions": null,
             "toLoop": true,
             "blendFactor": 0.20000000298023224,
-            "name": "ChargerCharge",
-            "animationEvents": null
-        },
-        "3325363430777339905": {
-            "id": 3325363430777339905,
-            "animation": 13204044378630356999,
-            "transitions": null,
-            "toLoop": false,
-            "blendFactor": 0.20000000298023224,
-            "name": "ChargerJump",
-            "animationEvents": null
-        },
-        "1448444286451908621": {
-            "id": 1448444286451908621,
-            "animation": 6862976103292698627,
-            "transitions": null,
-            "toLoop": false,
-            "blendFactor": 0.20000000298023224,
-            "name": "ChargerDeath",
+            "name": "ChargerIdle",
             "animationEvents": null
         },
         "9625265992367898633": {
@@ -83,6 +56,33 @@
                     "functionName": "TriggerEvent6"
                 }
             ]
+        },
+        "1448444286451908621": {
+            "id": 1448444286451908621,
+            "animation": 6862976103292698627,
+            "transitions": null,
+            "toLoop": false,
+            "blendFactor": 0.20000000298023224,
+            "name": "ChargerDeath",
+            "animationEvents": null
+        },
+        "3325363430777339905": {
+            "id": 3325363430777339905,
+            "animation": 13204044378630356999,
+            "transitions": null,
+            "toLoop": false,
+            "blendFactor": 0.20000000298023224,
+            "name": "ChargerJump",
+            "animationEvents": null
+        },
+        "5483669552575643657": {
+            "id": 5483669552575643657,
+            "animation": 15104853692451422209,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "ChargerCharge",
+            "animationEvents": null
         },
         "16233225301454651393": {
             "id": 16233225301454651393,
