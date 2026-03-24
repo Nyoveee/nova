@@ -1,7 +1,17 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
-using System.Runtime.CompilerServices;
+struct LightInfo
+{
+    public LightInfo(Light_ light, float initialIntensity)
+    {
+        this.light = light;
+        this.initialIntensity = initialIntensity;
+    }
+
+    public Light_ light;
+    public float initialIntensity;
+}
 
 class MainUIManager : Script
 {
@@ -18,6 +28,8 @@ class MainUIManager : Script
     [SerializableField] Canvas_ levelSelectUi;
     [SerializableField] Canvas_ darkOverlay;
     [SerializableField] Transform_ cameraMainMenuPos;
+    [SerializableField] GameObject particleEmitter;
+    [SerializableField] GameObject playerLights;
 
     [SerializableField] public float initialLerpDuration = 2f;
     [SerializableField] public float lerpPower = 0.3f;
@@ -49,9 +61,12 @@ class MainUIManager : Script
     private float initialAlpha = 1f;
     private float finalAlpha = 0f;
     private bool isFading = false;
+    private bool isLightTurningOn = false;
     private float fadeOutTimeElasped = 0f;
 
     private Callback fadeOutCallback;
+
+    private List<LightInfo> playerLightsRuntime = new List<LightInfo>();
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
@@ -66,22 +81,20 @@ class MainUIManager : Script
         initialCameraPosition = camera.transform.position;
         finalCameraPosition = cameraMainMenuPos.position;
 
+
         Invoke(() =>
         {
             canvasToFade = mainMenuUi;
             initialAlpha = 0f;
             finalAlpha = 1f;
             isFading = true;
+            isLightTurningOn = true;
 
             fadeOutTimeElasped = 0f;
+            particleEmitter.SetActive(true);
 
             fadeOutCallback = () => mainMenuUi.isInteractable = true;
         }, initialLerpDuration);
-
-        //Invoke(() =>
-        //{
-        //    RecursiveLightSwitch();
-        //}, 6f);
 
         Invoke(() =>
         {
@@ -92,6 +105,16 @@ class MainUIManager : Script
             isFading = true;
             isCameraMoving = true;
         }, 1f);
+
+        foreach (GameObject child in playerLights.GetChildren())
+        {
+            Light_ light = child.getComponent<Light_>();
+
+            if (light != null) {
+                playerLightsRuntime.Add(new LightInfo(light, light.intensity));
+                light.intensity = 0f;
+            }
+        }
     }
 
     protected override void update()
@@ -181,11 +204,20 @@ class MainUIManager : Script
 
         canvasToFade.alpha = Mathf.Interpolate(initialAlpha, finalAlpha, interval, 1f);
 
+        if (isLightTurningOn)
+        {
+            foreach (LightInfo lightInfo in playerLightsRuntime)
+            {
+                lightInfo.light.intensity = Mathf.Interpolate(0, lightInfo.initialIntensity, interval, 1f);
+            }
+        }
+
         if (fadeOutTimeElasped > fadeDuration)
         {
             isFading = false;
+            isLightTurningOn = false;
 
-            if(fadeOutCallback != null)
+            if (fadeOutCallback != null)
             {
                 fadeOutCallback();
             }

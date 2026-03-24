@@ -296,6 +296,8 @@ void Engine::SystemsUnload() {
 	renderer.getGameCamera().setUp(glm::vec3{ 0.f, 1.f, 0.f });
 
 	scriptingAPIManager.cleanPreviousSceneScriptState();
+
+	gameLockMouse(false);
 }
 
 void Engine::pauseSystems (bool toPause) {

@@ -727,6 +727,8 @@ void Renderer::renderUI()
 	//glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glBindVertexArray(mainVAO);
+
+	renderParticles(true);
 }
 
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint historyTexture, [[maybe_unused]] bool isRenderingEditor) {
@@ -800,7 +802,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	renderTranslucentModels(frameBuffers);
 
 	// Render particles
-	renderParticles();
+	renderParticles(false);
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -2409,7 +2411,7 @@ void Renderer::renderOutline() {
 #endif
 }
 
-void Renderer::renderParticles()
+void Renderer::renderParticles(bool toRenderUILayer)
 {
 	// Original depth test..
 	glEnable(GL_DEPTH_TEST);
@@ -2427,13 +2429,19 @@ void Renderer::renderParticles()
 	EBO.uploadData(squareIndices);
 
 	// render texture by texture
-	std::sort(engine.particleSystem.usedTextures.begin(), engine.particleSystem.usedTextures.end(), [&](auto const& lhs, auto const& rhs) {
-		return lhs.layer < rhs.layer;
-	});
+	//std::sort(engine.particleSystem.usedTextures.begin(), engine.particleSystem.usedTextures.end(), [&](auto const& lhs, auto const& rhs) {
+	//	return lhs.layer < rhs.layer;
+	//});
 
 	for (auto const& textureLayer : engine.particleSystem.usedTextures) {
 		auto&& [renderOrder, textureId, textureIndex, _] = textureLayer;
 		auto&& [texture, result] = resourceManager.getResource<Texture>(textureId);
+
+		if (renderOrder == -1 && !toRenderUILayer)
+			continue;
+
+		if (renderOrder != -1 && toRenderUILayer)
+			continue;
 
 		if (!texture)
 			continue;

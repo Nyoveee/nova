@@ -35,6 +35,7 @@ public:
 public:
 	void reset();
 	void update(float dt);
+
 public:
 	std::vector<TextureLayer> usedTextures;
 

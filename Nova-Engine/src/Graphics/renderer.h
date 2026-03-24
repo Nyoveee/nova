@@ -228,7 +228,7 @@ private:
 	void renderOutline();
 
 	// Render all particles
-	void renderParticles();
+	void renderParticles(bool toRenderUILayer);
 
 	// render a debug triangles in physics
 	void debugRenderPhysicsCollider();
