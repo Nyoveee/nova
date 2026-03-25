@@ -16,8 +16,8 @@ class Admin : Script
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
-        playerBody = GameObject.FindWithTag("Player").getScript<PlayerController_V2>();
-        sniper = GameObject.FindWithTag("Sniper").getScript<Sniper>();
+        playerBody = GameObject.FindWithTag("Player")?.getScript<PlayerController_V2>();
+        sniper = GameObject.FindWithTag("Sniper")?.getScript<Sniper>();
 
         // instant death.
         MapKey(Key.K, () =>

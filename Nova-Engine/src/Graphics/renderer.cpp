@@ -1762,6 +1762,11 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 				}
 
 				ResourceID materialId = materialIds[mesh.materialIndex];
+
+				if (materialId == INVALID_RESOURCE_ID || materialId == NONE_TEXTURE_ID) {
+					continue;
+				}
+
 				createMaterialBatchEntry(camera, *model, materialId, mesh, entity, meshType, layerIndex, renderQueueConfig);
 			}
 
@@ -1770,6 +1775,10 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 			for (auto i = model->materialNames.size(); i < materialIds.size(); ++i) {
 				auto materialId = materialIds[i];
 				
+				if (materialId == INVALID_RESOURCE_ID || materialId == NONE_TEXTURE_ID) {
+					continue;
+				}
+
 				for (auto& mesh : model->meshes) {
 					createMaterialBatchEntry(camera, *model, materialId, mesh, entity, meshType, layerIndex, renderQueueConfig);
 				}
@@ -1838,6 +1847,11 @@ void Renderer::frustumCullAndSetupShadowRenderQueue(glm::mat4 const& viewProject
 			}
 
 			ResourceID materialId = materialIds[mesh.materialIndex];
+
+			if (materialId == INVALID_RESOURCE_ID || materialId == NONE_TEXTURE_ID) {
+				continue;
+			}
+
 			createShadowBatchEntry(*model, mesh, entity, meshType);
 		}
 	}

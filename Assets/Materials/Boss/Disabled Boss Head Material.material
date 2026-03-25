@@ -1,11 +1,11 @@
 {
-    "selectedShader": 230563778812100609,
+    "selectedShader": 1,
     "uniformDatas": [
         {
             "glslType": "sampler2D",
             "identifier": "albedoMap",
             "value": {
-                "__variant_value": 6370544569810223129,
+                "__variant_value": 4177713787862696007,
                 "__variant_type": 9
             }
         },
@@ -13,7 +13,7 @@
             "glslType": "ORMMap",
             "identifier": "packedMap",
             "value": {
-                "__variant_value": 3488240808293122077,
+                "__variant_value": 16859850338538061901,
                 "__variant_type": 16
             }
         },
@@ -21,7 +21,7 @@
             "glslType": "NormalMap",
             "identifier": "normalMap",
             "value": {
-                "__variant_value": 6947005322113663003,
+                "__variant_value": 8212939053986693195,
                 "__variant_type": 13
             }
         },
@@ -29,7 +29,7 @@
             "glslType": "EmissiveMap",
             "identifier": "emissiveMap",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 142488521738747977,
                 "__variant_type": 14
             }
         },
@@ -37,7 +37,7 @@
             "glslType": "AlphaMap",
             "identifier": "alphaMap",
             "value": {
-                "__variant_value": 18446744073709551615,
+                "__variant_value": 8,
                 "__variant_type": 15
             }
         },
@@ -118,25 +118,9 @@
                 },
                 "__variant_type": 4
             }
-        },
-        {
-            "glslType": "bool",
-            "identifier": "invertORMMap",
-            "value": {
-                "__variant_value": true,
-                "__variant_type": 0
-            }
-        },
-        {
-            "glslType": "bool",
-            "identifier": "maskedAlpha",
-            "value": {
-                "__variant_value": false,
-                "__variant_type": 0
-            }
         }
     ],
-    "blendingConfig": "AlphaBlending",
-    "depthTestingMethod": "NoDepthWrite",
-    "cullingConfig": "Disable"
+    "blendingConfig": "Disabled",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Enable"
 }
