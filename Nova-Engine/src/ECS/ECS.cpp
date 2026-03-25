@@ -158,6 +158,11 @@ void ECS::setActive(entt::entity entity, bool isActive) {
 			engine.physicsManager.addBodiesToSystem(registry, entity);
 			engine.navigationSystem.SetAgentActive(entity);
 			engine.scriptingAPIManager.onActive(entity);
+
+			Sequence* sequence = registry.try_get<Sequence>(entity);
+
+			if(sequence)
+				engine.animationSystem.initialiseSequence(*sequence);
 		}
 		else {
 			engine.physicsManager.removeBodiesFromSystem(registry, entity);

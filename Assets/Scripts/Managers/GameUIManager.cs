@@ -305,8 +305,6 @@ class GameUIManager : Script
 
         gunUltimateFill.textureCoordinatesEnd = new Vector2(0, 1);
 
-        camera.toRotateSideWays = false;
-        camera.ResetUp();
         playerIsDying = false;
         
         isPaused = false;
@@ -316,13 +314,14 @@ class GameUIManager : Script
         deathOverlay.gameObject.SetActive(false);
         deathScreenEffectUi.gameObject.SetActive(false);
         
-        //playerUI.SetActive(true);
-        //missionObjectiveUI.SetActive(true);
-
         Systems.Pause = false;
-        camera.ResetUp();
-
-        //playerController.Reset();
+        
+        if(camera != null)
+        {
+            camera.toRotateSideWays = false;
+            camera.ResetUp();
+        }
+        
         getScript<VignetteController>().TriggerVignetteFadeOut(0.00f, 0, new Colour(0.0f, 0.0f, 0.0f));
     }
 
