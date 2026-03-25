@@ -24,9 +24,12 @@ class Level_Select_UI_Script : Script
     {
         audioComponent = getComponent<AudioComponent_>();
         button = getComponent<Button_>();
-
-        // int completedLevels = PlayerPrefs.GetInt("CompletedLevel", 2);
-        int completedLevels = 3;
+        RefreshUI();
+        
+    }
+    public void RefreshUI()
+    {
+        int completedLevels = PlayerPrefs.GetInt("CompletedLevel");
 
         if (completedLevels < level)
         {
@@ -39,7 +42,6 @@ class Level_Select_UI_Script : Script
 
         levelSelectScript = GameObject.FindWithTag("Main_Level_Select_Script")?.getScript<Main_Level_Select_Script>();
     }
-
     public void onHover()
     {
         audioComponent.PlaySound(onHoverSFX);

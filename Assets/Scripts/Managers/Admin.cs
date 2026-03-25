@@ -9,6 +9,13 @@ class Admin : Script
 
     [SerializableField]
     private QuestManager questManager;
+
+    [SerializableField]
+    private List<Level_Select_UI_Script> levelSelects = new List<Level_Select_UI_Script>();
+
+    [SerializableField]
+    private Main_Level_Select_Script mainLevelselect;
+
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
     {}
@@ -64,8 +71,33 @@ class Admin : Script
 
         MapKey(Key.Y, () =>
         {
-            // playerBody?.GainHealth(10f);
-            sniper.CurrentSp += 17;
+            if(sniper != null)
+                sniper.CurrentSp += 17;
+        });
+
+        MapKey(Key._1, () => {
+            PlayerPrefs.SetInt("CompletedLevel", 0);
+            if (levelSelects.Count == 0)
+                return;
+            foreach (Level_Select_UI_Script levelSelect in levelSelects)
+                levelSelect?.RefreshUI();
+                
+        });
+        MapKey(Key._2, () =>
+        {
+            PlayerPrefs.SetInt("CompletedLevel", 3);
+            if (levelSelects.Count == 0)
+                return;
+            foreach (Level_Select_UI_Script levelSelect in levelSelects)
+                levelSelect?.RefreshUI();
+        });
+        MapKey(Key._3, () =>
+        {
+            PlayerPrefs.SetFloat("LevelCompletionDuration0", 0f);
+            PlayerPrefs.SetFloat("LevelCompletionDuration1", 0f);
+            PlayerPrefs.SetFloat("LevelCompletionDuration2", 0f);
+            if (mainLevelselect != null)
+                mainLevelselect.RefreshUI();
         });
     }
 }
