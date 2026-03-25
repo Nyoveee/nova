@@ -27,11 +27,15 @@ class Main_Level_Select_Script : Script
         SelectNewLevel(0);
     }
 
+    public void RefreshUI()
+    {
+        PreviewLevel(selectedLevel);
+    }
     public void PreviewLevel(int level)
     {
         float levelCompleteDuration = PlayerPrefs.GetFloat("LevelCompletionDuration" + level, 0f);
 
-        if (levelCompleteDuration > 0) 
+        if (level < PlayerPrefs.GetInt("CompletedLevel") && levelCompleteDuration > 0) 
         {
             int timeInSeconds = (int)levelCompleteDuration;
             int minutes = timeInSeconds / 60;
