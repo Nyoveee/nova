@@ -12,9 +12,7 @@ Properties{
     ORMMap packedMap;
     NormalMap normalMap;
     AlphaMap alphaMap;
-
-    float colorMultiplier;
-    vec2 UVOffset;
+    NormalizedFloat alphaCutout;
 }
 
 // Vertex shader..
@@ -28,24 +26,39 @@ Vert{
 // Fragment shader..
 Frag{
     // === Handling the 3 properties ===
-    vec2 uv = UVTileAndOffset(fsIn.textureUnit, vec2(1, 1), UVOffset);
+    float _roughness; 
+    float _metallic; 
+    float _occulusion;
 
-    vec3 map = texture(packedMap, uv).rgb;
-    float metallic   = map.r;
-    float roughness  = map.g;
-    float occulusion = map.b;
+    vec2 uv = fsIn.textureUnit;
 
-    // === Handling normal ===
-    vec3 normal = getNormalFromMap(normalMap, uv); ;
-    
     vec4 albedo = texture(albedoMap, uv);
-    
     float resultingAlpha = albedo.a;
-
+    
     if(toUseAlphaMap) {
         resultingAlpha *= texture(alphaMap, uv).r;
     }
 
-    vec3 pbrColor = PBRCaculation(vec3(albedo) * colorMultiplier, fsIn.normal, roughness, metallic, occulusion);
-    return vec4(pbrColor, resultingAlpha);
+    if (resultingAlpha < alphaCutout) {
+        discard;
+        return vec4(0);
+    }
+
+    vec3 map = texture(packedMap, uv).rgb;
+    _metallic   = 1 - map.r;
+    _roughness  = 1 - map.g;
+    _occulusion = 1 - map.b;
+
+    // === Handling normal ===
+    vec3 _normal;
+    if(toUseNormalMap) {
+        _normal = getNormalFromMap(normalMap, uv); 
+    }
+    else {
+        _normal = normalize(fsIn.normal);
+    }
+
+    vec3 pbrColor = PBRCaculation(vec3(albedo), _normal, _roughness, _metallic, _occulusion);
+
+    return vec4(pbrColor, 1);
 }

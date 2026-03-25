@@ -177,7 +177,6 @@ class BossIntroCutscene : Script
         playerRotateController.rotationIsEnabled = false;
 
         animatedPlayer.getScript<Translation>().move();
-        boss.gameObject.transform.position = animatedBossStartingLocation.position;
         boss.getComponent<NavMeshAgent_>().enable = false;
 
         bossUI.gameObject.SetActive(false);
@@ -195,7 +194,6 @@ class BossIntroCutscene : Script
 
             player.gameObject.transform.position = playerStartPosition.position;
             playerRotateController.gameObject.transform.rotation = Quaternion.LookRotation(playerStartPosition.front);
-            //player.gameObject.transform.rotation = Quaternion.LookRotation(playerStartPosition.front);
 
             RecursiveFootstep();
 
@@ -210,6 +208,8 @@ class BossIntroCutscene : Script
                 cutsceneCameraTwo.camStatus = true;
 
                 cutsceneCameraTwo.gameObject.getComponent<Sequence_>().play();
+                boss.getComponent<Sequence_>().play();
+                bossAnimator.PlayAnimation("Boss_Run");
             }, durationBeforeCameraChange);
 
         }, initialCutsceneDelay);
@@ -410,7 +410,7 @@ class BossIntroCutscene : Script
         {
             innerWallCollider.setMaterialFloat(0, "alpha", 1);
             isAnimatingInnerWall = false;
-            RecursiveWallBlink();
+            //RecursiveWallBlink();
         }
     }
 
@@ -477,10 +477,14 @@ class BossIntroCutscene : Script
     // Invoked by animation event.
     public void StartBossDrop()
     {
+        boss.getComponent<Sequence_>().pause();
         bossAnimator.PlayAnimation("Boss_Jump");
         bossAnimator.SetFrame(74);
         isAnimatingBossDrop = true;
         timeElapsed = 0f;
+
+        boss.gameObject.transform.position = animatedBossStartingLocation.position;
+        boss.gameObject.transform.localRotation = Quaternion.LookRotation(Vector3.Front());
     }
 
     public void PauseCutsceneCameraTwo()
