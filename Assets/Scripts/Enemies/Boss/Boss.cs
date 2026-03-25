@@ -63,7 +63,13 @@ public class Boss : Enemy
     ***********************************************************/
     [SerializableField]
     private Animator_ bossAnimator = null;
-
+    /***********************************************************
+    Boss Death Transition
+    ***********************************************************/
+    [SerializableField]
+    private SceneTransition transition;
+    [SerializableField]
+    private float sceneTransitionTriggerTime;
     /***********************************************************
     Private Variables (made public cause of ability sequencer)
     ***********************************************************/
@@ -82,6 +88,7 @@ public class Boss : Enemy
     private BossAudio bossAudioReferences;
     private BossUI bossUI;
     private float maxHealth;
+
 
     //The idea is that the boss can have a deck of abilities like a card game, which he can use. 
     //WHen he uses an ability, he will remove it from the deck. it cannot be used until deck is exhausted or he chooses to refresh it.
@@ -114,10 +121,6 @@ public class Boss : Enemy
     protected override void awake()
     {
         //lets create our own ability deck :D
-
-
-
-
         AbilitySequence[] abilityStartSequences = {
             new RushingMeleeAttack(this),
             new RushingMeleeAttack(this),
@@ -167,6 +170,7 @@ public class Boss : Enemy
         halfExtent = new Vector3(gameObject.transform.scale.x, gameObject.transform.scale.y, gameObject.transform.scale.z);
 
         bossUI = GameObject.FindWithTag("Game UI Manager")?.getScript<BossUI>();
+
 
         currentStamina = maxStamina;
 
@@ -1525,8 +1529,11 @@ public class Boss : Enemy
                 {
                     currentState = BossState.Dead;
 
-                    //audioComponent.PlayRandomSound(deathSFX);
-                    //animator.PlayAnimation("Grunt Death");
+                    bossAudioReferences.TriggerDeathVoiceOver();
+                    Invoke(() =>
+                    {
+                        transition?.BeginTransition();
+                    }, sceneTransitionTriggerTime);
                     DisablePhysicalInteraction();
 
                     animator.PlayAnimation("Boss_Death");

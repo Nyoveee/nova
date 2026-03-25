@@ -23,26 +23,26 @@ class BossAudio : Script
     [SerializableField]
     public List<Audio> bossHitAudio;
 
+    [SerializableField]
+    private string weaverVoiceoverText;
+    [SerializableField]
+    private float weaverVoiceoverTime;
+    [SerializableField]
+    private Audio weaverVoiceoverAudio;
+    [SerializableField]
+    private float weaverVoiceoverDelay;
 
-
-    // This function is invoked once before init when gameobject is active.
-    //protected override void awake()
-    //{}
-
-    //// This function is invoked once when gameobject is active.
-    //protected override void init()
-    //{}
-
-    //// This function is invoked every update.
-    //protected override void update()
-    //{}
-
-    //// This function is invoked every update.
-    //protected override void fixedUpdate()
-    //{}
-
-    //// This function is invoked when destroyed.
-    //protected override void exit()
-    //{}
+    private VoiceoverScript voiceoverScript;
+    protected override void init()
+    {
+        voiceoverScript = GameObject.FindWithTag("Game UI Manager")?.getScript<VoiceoverScript>();
+    }
+    public void TriggerDeathVoiceOver()
+    {
+        Invoke(() =>
+        {
+            voiceoverScript.TriggerVoiceOver("Weaver", weaverVoiceoverText, weaverVoiceoverAudio, weaverVoiceoverTime, false);
+        }, weaverVoiceoverDelay);   
+    }
 
 }
