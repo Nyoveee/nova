@@ -241,7 +241,8 @@ void Transform_::rotate(Vector3 axis, float degrees) {
 	Transform* transform = nativeComponent();
 
 	if (transform) {
-		transform->rotation = glm::rotate(transform->rotation, static_cast<float>(toRadian(degrees)), axis.native());
+		glm::quat deltaRotation = glm::angleAxis(glm::radians(degrees), axis.native());
+		transform->rotation = deltaRotation * transform->rotation;
 	}
 }
 

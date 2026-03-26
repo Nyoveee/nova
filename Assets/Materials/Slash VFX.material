@@ -1,0 +1,63 @@
+{
+    "selectedShader": 8709716025215123473,
+    "uniformDatas": [
+        {
+            "glslType": "sampler2D",
+            "identifier": "image",
+            "value": {
+                "__variant_value": 3085713875012190367,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "UVOffset",
+            "value": {
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "colorMultiplier",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 0.6303447484970093,
+                    "b": 0.07586205005645752
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "intensity",
+            "value": {
+                "__variant_value": 20.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "power",
+            "value": {
+                "__variant_value": 10.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "alpha",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 3
+            }
+        }
+    ],
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "NoDepthWrite",
+    "cullingConfig": "Enable"
+}
