@@ -1,0 +1,87 @@
+{
+    "selectedShader": 4720740617673902819,
+    "uniformDatas": [
+        {
+            "glslType": "Color",
+            "identifier": "color",
+            "value": {
+                "__variant_value": {
+                    "r": 0.05713164061307907,
+                    "g": 0.021688472479581833,
+                    "b": 0.1310344934463501
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "sampler2D",
+            "identifier": "image",
+            "value": {
+                "__variant_value": 1794271476785463393,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "uvScale",
+            "value": {
+                "__variant_value": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "yMultiplier",
+            "value": {
+                "__variant_value": 4.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "min",
+            "value": {
+                "__variant_value": 0.2070000022649765,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "max",
+            "value": {
+                "__variant_value": 0.2939999997615814,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "alphaPower",
+            "value": {
+                "__variant_value": 3.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "initialAlpha",
+            "value": {
+                "__variant_value": 0.0820000022649765,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "transparency",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        }
+    ],
+    "blendingConfig": "OIT",
+    "depthTestingMethod": "NoDepthWrite",
+    "cullingConfig": "Disable"
+}
