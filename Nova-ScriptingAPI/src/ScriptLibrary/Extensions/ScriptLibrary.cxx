@@ -388,6 +388,11 @@ void Systems::Quit()
 	Interface::engine->quit();
 }
 
+void Systems::PreloadAssets(ScriptingAPI::Scene^ scene)
+{
+	Interface::engine->preloadAssets(scene->resourceID);
+}
+
 Vector3 Rotation::ToEuler(Quaternion quat) {
 	glm::quat quaternion = quat.native();
 	EulerAngles eulerAngle = quaternion;

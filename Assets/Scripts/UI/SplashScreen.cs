@@ -21,6 +21,8 @@ class SplashScreen : Script
     private float delayTime;
     [SerializableField]
     private float fadeOutTime;
+    [SerializableField]
+    private List<Scene> levelScenes;
 
     private float currentFadeTime = 0;
     private int currentImageIndex = 0;
@@ -35,6 +37,10 @@ class SplashScreen : Script
             image.colorTint = new ColorAlpha(1f, 1f, 1f, 0);
         }
         MapKey(Key.Escape, SkipCurrentLogo);
+
+        foreach (Scene scene in levelScenes) {
+            Systems.PreloadAssets(scene);
+        }
     }
     protected override void update()
     {
