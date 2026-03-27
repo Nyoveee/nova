@@ -258,7 +258,7 @@ class GameUIManager : Script
         playerController = GameObject.FindWithTag("Player")?.getScript<PlayerController_V2>();
         dialogueScript = getScript<DialogueScript>();
         progressBars[ProgressBarType.HealthBar] = healthFill;
-        MapKey(Key.P, PauseHandler, true);
+        MapKey(Key.Escape, PauseHandler, true);
 
         initialCrossHairScale = crossHairUi.scale;
         expandedCrossHairScale = crossHairUi.scale * crossHairExpandScaleRatio;

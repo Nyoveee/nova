@@ -146,7 +146,7 @@ class GoddessBehaviour : Script
         {
             Invoke(() =>
             {
-                voiceoverScript.TriggerVoiceOverSequence("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime, true);
+                voiceoverScript.TriggerVoiceOverSequence("Goddess", goddessVoiceOverText, goddessVoiceOverAudio, goddessVoiceOverTime, false);
             }, delayForVoiceOver);
            
         } 
