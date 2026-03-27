@@ -190,6 +190,7 @@ class Gunner : Enemy
                     gunnerState = GunnerState.Death;
                     audioComponent.PlayRandomSound(deathSFX);
                     animator.PlayAnimation("Gunner_Death");
+                    ActivateDeathFlicker();
                     DisablePhysicalInteraction();
                 }
             }

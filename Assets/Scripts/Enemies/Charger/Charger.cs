@@ -192,6 +192,7 @@ class Charger : Enemy
                     chargerState = ChargerState.Death;
                     audioComponent.PlayRandomSound(deathSFX);
                     chargeLines.SetActive(false);
+                    ActivateDeathFlicker();
                     DisablePhysicalInteraction();
                     animator.PlayAnimation("ChargerDeath");
                 }
