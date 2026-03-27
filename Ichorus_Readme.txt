@@ -23,7 +23,8 @@ Team Roster:
 [BFA]  Sung Jernin (Artist)
 
 Game Concept:
-Ichorus is a 1st Person Movement Shooter following Ichorus the main character, fighting back a malicious group using ichor of gods to create automatons.
+Ichorus is a fast-paced Action FPS set in a Steampunk dystopia. Following the events of the Great War in Heaven, Icarus, a mysterious wanderer. Carve a path through hell and high-water battling hordes of automatons to save the Goddess from the Weaver's mechanical clutches.
+
 --------------------------------------------------------------------------------
 Controls:
 
@@ -31,8 +32,9 @@ WASD - Moving
 Spacebar - Jump
 Shift - Dash
 Mouse & LMB - Aim & Shoot
-F -> F to use player's ultimate.
-E -> E to interact with the objects and environment.
+RMB (Hold) - Prime weapon for throwing, LMB to throw
+F -> F to use player's ultimate
+E -> E to interact with the objects and environment
 P -> Pause
 
 Cheat codes 
