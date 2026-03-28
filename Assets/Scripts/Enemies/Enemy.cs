@@ -49,6 +49,8 @@ public abstract class Enemy : Script
     [SerializableField]
     private float deathFlickerSpeed;
     [SerializableField]
+    private float deathFlickerDelay;
+    [SerializableField]
     private float deathFlickerMinSpeedOffset;
     [SerializableField]
     private float deathFlickerMaxSpeedOffset;
@@ -75,6 +77,7 @@ public abstract class Enemy : Script
     private float currentDeathEmissiveTime;
     private float currentFlickerTime;
     private float currentFlickerVariance;
+    private bool b_isFlickering = false;
     /***********************************************************
         Enemy Types must inherited from this
     ***********************************************************/
@@ -104,6 +107,13 @@ public abstract class Enemy : Script
        Public Functions
     ***********************************************************/
     public bool IsDead() => (enemyStats.health <= 0);
+    public void ActivateDeathFlicker()
+    {
+        Invoke(() =>
+        {
+            b_isFlickering = true;
+        }, deathFlickerDelay);
+    }
     public bool IsExecutable() => (enemyStats.health <= enemyStats.enemyExecuteThreshold && enemyStats.health > 0);
     public bool WasRecentlyDamaged() => wasRecentlyDamaged;
     public void UpdateExecutableMaterialState() { renderer.setMaterialBool(1, "isActive", IsExecutable()); }
@@ -311,7 +321,7 @@ public abstract class Enemy : Script
     }
     protected override void update()
     {
-        if (IsDead())
+        if (b_isFlickering)
         {
             if (deathFlickerAmount > 0)
                 DeathFlicker();

@@ -1528,12 +1528,13 @@ public class Boss : Enemy
                 if (currentState != BossState.Dead)
                 {
                     currentState = BossState.Dead;
-
+                    
                     bossAudioReferences.TriggerDeathVoiceOver();
                     Invoke(() =>
                     {
                         transition?.BeginTransition();
                     }, sceneTransitionTriggerTime);
+                    ActivateDeathFlicker();
                     DisablePhysicalInteraction();
 
                     animator.PlayAnimation("Boss_Death");

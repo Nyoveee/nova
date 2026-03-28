@@ -303,6 +303,7 @@ property Quaternion rotation {
 
 void rotate(Vector3 axis, float angle);
 void rotate(Quaternion quartenion);
+void localRotate(Vector3 axis, float angle);
 
 Quaternion LookAt(Transform_^ target);
 void setFront(Vector3 frontAxis);

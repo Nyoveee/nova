@@ -216,6 +216,7 @@ private:
 	void renderTranslucentModels(PairFrameBuffer const& frameBuffers);
 
 	void renderDepthTranslucentModels(PairFrameBuffer const& frameBuffers);
+	void renderNormalTranslucentModels();
 	void renderOITTransculentModels(PairFrameBuffer const& frameBuffers);
 
 	// render all Texts.

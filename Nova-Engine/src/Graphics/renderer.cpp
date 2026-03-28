@@ -1708,6 +1708,7 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 
 	renderQueue.opaqueMaterials.clear();
 	renderQueue.oitTransparentMaterials.clear();
+	renderQueue.normalTransparentMaterials.clear();
 	renderQueue.depthTransparentMaterials.clear();
 	renderQueue.materialResourceIdToOpaqueIndex.clear();
 
@@ -1791,6 +1792,10 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 	if (renderQueueConfig == RenderQueueConfig::Normal) {
 		// Sort transparent objects by the z value, from camera..
 		std::sort(renderQueue.depthTransparentMaterials.begin(), renderQueue.depthTransparentMaterials.end(), [&](auto&& lhs, auto&& rhs) {
+			return lhs.distanceToCamera > rhs.distanceToCamera;
+		});
+
+		std::sort(renderQueue.normalTransparentMaterials.begin(), renderQueue.normalTransparentMaterials.end(), [&](auto&& lhs, auto&& rhs) {
 			return lhs.distanceToCamera > rhs.distanceToCamera;
 		});
 	}
@@ -1895,11 +1900,14 @@ void Renderer::createMaterialBatchEntry(Camera const& camera, Model const& model
 	}
 	// we dont create a transparent entry if requested to ignore..
 	else if (renderQueueConfig != RenderQueueConfig::IgnoreTransparent) {
-		if (material->materialData.depthTestingMethod == DepthTestingMethod::DepthTest) {
+		if (material->materialData.blendingConfig == BlendingConfig::OIT) {
+			createTransparentMaterialEntry(renderQueue.oitTransparentMaterials, camera, model, *material, *customShader, shader, mesh, entity, meshType);
+		}
+		else if (material->materialData.depthTestingMethod == DepthTestingMethod::DepthTest){
 			createTransparentMaterialEntry(renderQueue.depthTransparentMaterials, camera, model, *material, *customShader, shader, mesh, entity, meshType);
 		}
 		else {
-			createTransparentMaterialEntry(renderQueue.oitTransparentMaterials, camera, model, *material, *customShader, shader, mesh, entity, meshType);
+			createTransparentMaterialEntry(renderQueue.normalTransparentMaterials, camera, model, *material, *customShader, shader, mesh, entity, meshType);
 		}
 	}
 }
@@ -1981,7 +1989,8 @@ void Renderer::createTransparentMaterialEntry(std::vector<TransparentEntry>& tra
 		// lets add a new entry..
 		// we need to calculate the distance between camera and game object..
 		Transform& transform = registry.get<Transform>(entity);
-		float distance = glm::dot(transform.position - camera.getPos(), camera.getFront());	// rough distance from object to camera in the z axis.
+		//float distance = glm::dot(transform.position - camera.getPos(), camera.getFront());	// rough distance from object to camera in the z axis.
+		float distance = glm::distance2(transform.position, camera.getPos()); // rough distance from object to camera in the z axis.
 
 		TransparentEntry transparentEntry{
 			.entity				= entity,
@@ -2099,6 +2108,7 @@ void Renderer::renderTranslucentModels(PairFrameBuffer const& frameBuffers) {
 	static constexpr int ssao = 0;
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toEnableSSAO), sizeof(int), &ssao);
 
+	renderNormalTranslucentModels();
 	renderOITTransculentModels(frameBuffers);
 	renderDepthTranslucentModels(frameBuffers);
 }
@@ -2169,6 +2179,35 @@ void Renderer::renderDepthTranslucentModels(PairFrameBuffer const& frameBuffers)
 
 		// Render fullscreen quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+}
+
+void Renderer::renderNormalTranslucentModels() {
+	// We cache the previous material and entity..
+	auto previousMaterialId = INVALID_RESOURCE_ID;
+	auto previousEntity = entt::null;
+
+	if (renderQueue.normalTransparentMaterials.size()) {
+		for (auto const& transparentEntry : renderQueue.normalTransparentMaterials) {
+			for (auto const& material : transparentEntry.materials) {
+
+				// set the uniforms of the material.. if it's different..
+				if (previousMaterialId != material.material.get().id()) {
+					setupMaterial(material.material, material.customShader, material.shader, DepthConfig::UseMaterial, BlendConfig::UseMaterial, std::nullopt);
+					previousMaterialId = material.material.get().id();
+				}
+
+				// set the uniforms of the model.. if it's different..
+				if (previousEntity != transparentEntry.entity) {
+					setupModelUniforms(transparentEntry.entity, material.shader, transparentEntry.model, transparentEntry.meshType);
+				}
+
+				// for each mesh..
+				for (auto const& mesh : material.meshes) {
+					renderMesh(mesh);
+				}
+			}
+		}
 	}
 }
 
