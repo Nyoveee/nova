@@ -393,6 +393,11 @@ void Systems::PreloadAssets(ScriptingAPI::Scene^ scene)
 	Interface::engine->preloadAssets(scene->resourceID);
 }
 
+void Systems::PreloadAllTextures()
+{
+	Interface::engine->preloadAllTextures();
+}
+
 Vector3 Rotation::ToEuler(Quaternion quat) {
 	glm::quat quaternion = quat.native();
 	EulerAngles eulerAngle = quaternion;

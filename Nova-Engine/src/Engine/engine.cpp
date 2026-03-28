@@ -354,3 +354,8 @@ void Engine::preloadAssets(ResourceID id)
 		resourceManager.getResource<Model>(skinMeshRenderer.modelId);
 	}
 }
+
+ENGINE_DLL_API void Engine::preloadAllTextures()
+{
+	resourceManager.getAllResources<Texture>();
+}

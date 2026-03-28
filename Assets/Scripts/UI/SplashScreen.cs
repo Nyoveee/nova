@@ -38,9 +38,11 @@ class SplashScreen : Script
         }
         MapKey(Key.Escape, SkipCurrentLogo);
 
+        // Preload necessary scene assets
         foreach (Scene scene in levelScenes) {
             Systems.PreloadAssets(scene);
         }
+        Systems.PreloadAllTextures();
     }
     protected override void update()
     {

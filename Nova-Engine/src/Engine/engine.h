@@ -68,6 +68,7 @@ public:
 	ENGINE_DLL_API float getAccumulatedTime() const; //ALL FOR THE SAKE OF SMOOTH CAMERA LERP!
 
 	ENGINE_DLL_API void preloadAssets(ResourceID id);
+	ENGINE_DLL_API void preloadAllTextures();
 
 public:
 	ENGINE_DLL_API int getGameWidth() const;
