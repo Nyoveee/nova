@@ -46,7 +46,8 @@ NavigationWindow::NavigationWindow(Editor& editor, NavigationSystem& navigationS
 					{"Radius",  buildSettings.agentRadius},
 					{"Height", buildSettings.agentHeight},
 					{"MaxClimb", buildSettings.agentMaxClimb},
-					{"MaxSlope", buildSettings.agentMaxSlope}
+					{"MaxSlope", buildSettings.agentMaxSlope},
+					{"excludeDisabledObjects", buildSettings.excludeDisabledObjects}
 				};
 
 				config["Agents"].push_back(defaultAgent);
@@ -168,6 +169,7 @@ void NavigationWindow::update() {
 				buildSettings.agentHeight = agent.value("Height", 2.0f);
 				buildSettings.agentMaxClimb = agent.value("MaxClimb", 0.9f);
 				buildSettings.agentMaxSlope = agent.value("MaxSlope", 45.0f);
+				buildSettings.excludeDisabledObjects = agent.value("excludeDisabledObjects", true);
 			}
 			if (isSelected) ImGui::SetItemDefaultFocus();
 		}
@@ -341,6 +343,18 @@ void NavigationWindow::update() {
 		ImGui::SameLine();
 		if (ImGui::SliderFloat("##Agent Max Slope:", &buildSettings.agentMaxSlope, 0.0f, 89.9f, "%.2f")) {
 			config["Agents"][selectedAgentIndex]["MaxSlope"] = buildSettings.agentMaxSlope;
+			edited = true;
+		}
+
+		ImGui::Dummy(ImVec2(10.0f, 0.0f));
+		ImGui::SameLine();
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Exclude Disable Objects:"); // Your label
+		ImGui::SameLine();
+
+		// Assuming buildSettings.excludeDisabledObjects is a bool
+		if (ImGui::Checkbox("##Exclude Disable Objects:", &buildSettings.excludeDisabledObjects)) {
+			config["Agents"][selectedAgentIndex]["excludeDisabledObjects"] = buildSettings.excludeDisabledObjects;
 			edited = true;
 		}
 
