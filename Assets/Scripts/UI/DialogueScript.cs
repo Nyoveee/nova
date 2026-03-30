@@ -186,6 +186,7 @@ class DialogueScript : Script
                         playerContainerUI.SetActive(true);
                         missionObjectiveUI.SetActive(true);
                         cutsceneUI.SetActive(false);
+                        dialogueUI.gameObject.SetActive(false);
                         dialogueUI.alpha = 0f;
 
                         playerBody.movementIsEnabled = true;
@@ -201,6 +202,7 @@ class DialogueScript : Script
 
     public void BeginDialogueSequence(string speaker, List<string> text, List<float> times, float finalDialogueTime)
     {
+        dialogueUI.gameObject.SetActive(true);
         playerWeaponController.DisableShooting();
         BeginFadeSequence(
         () =>

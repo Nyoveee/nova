@@ -164,6 +164,10 @@ class GameUIManager : Script
     private float blinkingEffectDuration = 2f;
 
     // ========================================================================
+    // Death stuff
+    [SerializableField]
+    private bool useCustomCheckpointsOnRestart;
+    // ========================================================================
     // ========================================================================
     // Runtime variables
 
@@ -235,7 +239,6 @@ class GameUIManager : Script
 
     private bool isPaused = false;
     private bool isTutorialPromptActive = false;
-    public event Action RestartFromCheckpointButton;
 
     // ------------------------------------
     // Death sequence..
@@ -725,13 +728,6 @@ class GameUIManager : Script
         }
     }
     
-    /***********************************************************
-       Dialogue 
-    ***********************************************************/
-    public void ActivateDialogue(string speaker, List<string> text, List<float> times, float finalDialogueTime)
-    {
-        dialogueScript.BeginDialogueSequence(speaker, text, times, finalDialogueTime);
-    }
 
     /***********************************************************
        Death 
@@ -797,10 +793,23 @@ class GameUIManager : Script
     }
 
     public void OnRestartButtonPressed()
-    {
+    { 
+        QuestManager questManagerOld = GameObject.FindWithTag("Quest Manager")?.getScript<QuestManager>();
+        GameplayStatisticsManager gameplayStatisticsManagerOld = GameObject.FindWithTag("Gameplay Statistics Manager")?.getScript<GameplayStatisticsManager>();
+        // Reset the scene, then skip to the current progress
+        if (useCustomCheckpointsOnRestart)
+        {
+            int fallbackQuest = questManagerOld.GetLastCheckpoint();
+            float gameplayTime = gameplayStatisticsManagerOld.GetGameplayTime();
+            Systems.Restart();
+            // Scene Reloaded, not using the old scripts as they would have been gone by now
+            QuestManager questManagerNew = GameObject.FindWithTag("Quest Manager")?.getScript<QuestManager>();
+            GameplayStatisticsManager gameplayStatisticsManagernew = GameObject.FindWithTag("Gameplay Statistics Manager")?.getScript<GameplayStatisticsManager>();
+            gameplayStatisticsManagernew.SetGameplayTime(fallbackQuest);
+            questManagerNew.SkipToQuest(fallbackQuest);
+            return;
+        }
+        // Just do a normal reset
         Systems.Restart();
-
-        // Restart();
-        // RestartFromCheckpointButton?.Invoke();
     }
 }

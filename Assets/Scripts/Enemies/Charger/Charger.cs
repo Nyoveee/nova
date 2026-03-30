@@ -69,6 +69,7 @@ class Charger : Enemy
         Jump,
         Death
     }
+    private ChargerState chargerStateBeforeJumping;
     private ChargerState chargerState = ChargerState.Spawning;
     private Dictionary<ChargerState, CurrentState> updateState = new Dictionary<ChargerState, CurrentState>();
     /***********************************************************
@@ -243,7 +244,9 @@ class Charger : Enemy
     }
     private void Update_Idle(){
         currentChargeCooldown -= Time.V_DeltaTime();
-        if (GetDistanceFromPlayer() < chargerstats.chasingRange && HasLineOfSight(player))
+        if (GetDistanceFromPlayer() < chargerstats.chasingRange 
+            && HasLineOfSightToPlayer(gameObject)
+            && MoveToNavMeshPosition(player.transform.position))
         {
             audioComponent.PlayRandomSound(spotSFX);
             chargerState = ChargerState.Walk;
@@ -253,7 +256,17 @@ class Charger : Enemy
     }
     private void Update_Patrol()
     {
-        if (GetDistanceFromPlayer() <= chargerstats.chasingRange && HasLineOfSight(player))
+        if (IsOnNavMeshOfflink())
+        {
+            chargerStateBeforeJumping = chargerState;
+            chargerState = ChargerState.Jump;
+            StopNavMeshMovement();
+            LookAt(GetTargetJumpPosition());
+            navMeshAgent.enable = false;
+            animator.PlayAnimation("ChargerJump");
+            return;
+        }
+        if (GetDistanceFromPlayer() <= chargerstats.chasingRange && HasLineOfSightToPlayer(gameObject))
         {
             //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
             if (Random.Range(0, 1) <= this.spotCallSFXChance)
@@ -264,7 +277,7 @@ class Charger : Enemy
             chargerState = ChargerState.Walk;
             return;
         }
-        if (IsTargetNavigationPositionReached() && !HasLineOfSight(player))
+        if (IsTargetNavigationPositionReached() && !HasLineOfSightToPlayer(gameObject))
         {
             chargerState = ChargerState.Idle;
             animator.PlayAnimation("ChargerIdle");
@@ -272,19 +285,33 @@ class Charger : Enemy
         }
     }
     private void Update_Walk() {
-        if(GetDistanceFromPlayer() > chargerstats.chasingRange || !HasLineOfSight(player))
+        // Move Enemy 
+        if (!MoveToNavMeshPosition(player.transform.position))
         {
-            chargerState = ChargerState.Patrol;
-            MoveToNavMeshPosition(player.transform.position);
+            chargerState = ChargerState.Idle;
+            animator.PlayAnimation("ChargerIdle");
+            StopNavMeshMovement();
+            return;
+        }
+        if (GetDistanceFromPlayer() > chargerstats.chasingRange || !HasLineOfSightToPlayer(gameObject))
+        {
+            if(MoveToNavMeshPosition(player.transform.position))
+                chargerState = ChargerState.Patrol;
+            else
+            {
+                chargerState = ChargerState.Idle;
+                StopNavMeshMovement();
+            }
             return;
         }
         currentChargeCooldown -= Time.V_DeltaTime();
         currentStompCooldown -= Time.V_DeltaTime();
         if (IsOnNavMeshOfflink())
         {
+            chargerStateBeforeJumping = chargerState;
+            chargerState = ChargerState.Jump;
             StopNavMeshMovement();
             LookAt(GetTargetJumpPosition());
-            chargerState = ChargerState.Jump;
             navMeshAgent.enable = false;
             animator.PlayAnimation("ChargerJump");
             return;
@@ -319,8 +346,7 @@ class Charger : Enemy
             ActivateNavMeshAgent();
             return;
         }
-        // Move Enemy 
-        MoveToNavMeshPosition(player.transform.position);
+        
     }
     private void Update_Charging() {
         currentChargeTime -= Time.V_DeltaTime();
@@ -355,6 +381,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerIdle");
             navMeshAgent.CompleteOffMeshLink();
             navMeshAgent.enable = true;
+            ContinueExistingPath();
         }
     }
     private void Update_StaggerStrong() { }

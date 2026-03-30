@@ -151,6 +151,8 @@ public:
 	static Colour Interpolate(Colour a, Colour b, float t);
 	static float Min(float a, float b);
 	static float Max(float a, float b);
+	static int Min(int a, int b);
+	static int Max(int a, int b);
 	static float Pow(float base, float exponent);
 	static float Sqrt(float f);
 	static float Abs(float value);

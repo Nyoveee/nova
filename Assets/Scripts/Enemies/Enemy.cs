@@ -69,6 +69,7 @@ public abstract class Enemy : Script
 
     private Vector3? navigationTargetPosition = null;
     protected float accumulatedDamageInstance = 0f;
+    private float navigationArrivalDistance = 1f;
     // Jump
     private float currentJumpDuration = 0f;
     private NavMeshOfflinkData offlinkData;
@@ -98,7 +99,7 @@ public abstract class Enemy : Script
         {
             if (gameObject != null)
             {
-                MoveToNavMeshPosition(navigationTargetPosition.Value);
+                ContinueExistingPath();
                 animator.speedMultiplier = 1;
             }
         }, movementStaggerTime);
@@ -161,7 +162,7 @@ public abstract class Enemy : Script
         if (result == null)
             return false;
         Vector3 positionOnGround = result.Value.point;
-        return (navigationTargetPosition.Value - positionOnGround).Length() <= 1f;
+        return (navigationTargetPosition.Value - positionOnGround).Length() <= navigationArrivalDistance;
     }
     //Yo btw .enable/disable does not actually work???, so just set object inactive better
 
@@ -187,6 +188,28 @@ public abstract class Enemy : Script
         }
 
         navMeshAgent.enable = false;
+    }
+    public bool MoveToNavMeshPosition(Vector3 position)
+    {
+        navigationTargetPosition = null;
+        string[] layerMask = { "Floor" };
+        RayCastResult? sourceResult = PhysicsAPI.Raycast(gameObject.transform.position, Vector3.Down(), 1000f, layerMask);
+        if (sourceResult == null)
+            return false;
+        RayCastResult? targetResult = PhysicsAPI.Raycast(position, Vector3.Down(), 1000f, layerMask);
+        if (targetResult == null)
+            return false;
+        List<Vector3> path = NavigationAPI.CalculatePath("Humanoid", sourceResult.Value.point, targetResult.Value.point);
+        if (path.Count == 0 || (path[path.Count - 1] - targetResult.Value.point).Length() > navigationArrivalDistance)
+            return false;
+        navigationTargetPosition = path[path.Count - 1];
+        NavigationAPI.setDestination(gameObject, navigationTargetPosition);
+        return true;
+    }
+    public void ContinueExistingPath()
+    {
+        if(navigationTargetPosition.HasValue)
+            MoveToNavMeshPosition(navigationTargetPosition.Value);
     }
     /***********************************************************
         Shared Functions
@@ -231,7 +254,7 @@ public abstract class Enemy : Script
     {
         return player != null ? Vector3.Distance(player.transform.position, gameObject.transform.position) : 0f;
     }
-    protected bool HasLineOfSight(GameObject from)
+    protected bool HasLineOfSightToPlayer(GameObject from)
     {
         string[] layerMask = { "Wall","Floor" };
         float distance = Vector3.Distance(from.transform.position, playerHead.transform.position);
@@ -253,22 +276,9 @@ public abstract class Enemy : Script
 
     }
 
-    protected void MoveToNavMeshPosition(Vector3 position)
-    {
-        string[] layerMask = { "Floor" };
-        RayCastResult? result = PhysicsAPI.Raycast(position, Vector3.Down(), 1000f,layerMask);
-        if (result != null)
-        {
-            navigationTargetPosition = result.Value.point;
-            NavigationAPI.setDestination(gameObject, result.Value.point);
-        }       
-    }
+
     protected void StopNavMeshMovement()
     {
-        string[] layerMask = { "Floor" };
-        RayCastResult? result = PhysicsAPI.Raycast(gameObject.transform.position, Vector3.Down(), 1000f, layerMask);
-        if (result != null)
-            navigationTargetPosition = result.Value.point;
         NavigationAPI.stopAgent(gameObject);
     }
     protected void TriggerRecentlyDamageCountdown()

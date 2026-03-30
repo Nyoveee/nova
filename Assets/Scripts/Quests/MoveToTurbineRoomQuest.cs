@@ -6,6 +6,9 @@ using ScriptingAPI;
 class MoveToTurbineRoomQuest : MovementBasedQuest
 {
     [SerializableField]
+    private GameObject checkPointIndicator;
+
+    [SerializableField]
     private GameObject goddess;
     [SerializableField]
     private GameObject closedRangedexitDoor;
@@ -81,6 +84,13 @@ class MoveToTurbineRoomQuest : MovementBasedQuest
                 }
             }
         }
-
+    }
+    public override void OnSkip()
+    {
+        checkPointIndicator.SetActive(false);
+    }
+    public override void OnSuccess()
+    {
+        checkPointIndicator.SetActive(false);
     }
 }
