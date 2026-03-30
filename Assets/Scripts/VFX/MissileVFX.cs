@@ -53,12 +53,7 @@ class MissileVFX : Script
         if (timeElasped >= duration)
         {
             Destroy(this.gameObject);
-        
-        
         }
-
-
-    
     }
 
 
