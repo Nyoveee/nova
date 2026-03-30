@@ -11,8 +11,6 @@ class SwitchQuest : Quest
 
     private bool succeeded = false;
 
-    public override void OnSuccess() {}
-
     public override void UpdateQuest()
     {
         if (!succeeded && switchObject != null && switchObject.isSwitchActivated())

@@ -58,6 +58,7 @@ class SceneTransition : Script
     }
     public void BeginTransition()
     {
+        gameObject.SetActive(true);
         gameplayStatisticsManager?.CompleteLevel();
         transitionState = TransitionState.FadeIn;
         currentTransitionTime = transitionTime;

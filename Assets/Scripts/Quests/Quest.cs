@@ -33,6 +33,9 @@ public abstract class Quest : Script
     [SerializableField]
     protected Transform_? playerCheckpoint;
 
+    [SerializableField]
+    private float checkPointYaw;
+
     /***********************************************************
         Quest Types must inherit from this
     ***********************************************************/
@@ -40,8 +43,6 @@ public abstract class Quest : Script
     public virtual void OnSuccess() { }
     public virtual void OnSkip() { }
     public virtual void OnFail() { }
-    public virtual void OnRestart(){}
-
     public virtual void UpdateQuest() { }
 
     public QuestState GetQuestState() => questState;
@@ -53,9 +54,11 @@ public abstract class Quest : Script
         {
             QuestState oldState = questState;
             questState = newState;
-            OnQuestStateChanged.Invoke(this, new QuestStateChangedEventArgs(oldState, newState));
+            OnQuestStateChanged?.Invoke(this, new QuestStateChangedEventArgs(oldState, newState));
         }
     }
     public string GetQuestInformation() => questText;
     public Vector3 GetCheckpointPosition() => playerCheckpoint.position;
+    public float GetCheckPointTargetYaw() => checkPointYaw;
+    public bool HasCheckpoint () => (playerCheckpoint != null);
 }

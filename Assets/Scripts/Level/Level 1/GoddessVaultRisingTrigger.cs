@@ -32,7 +32,7 @@ class GoddessVaultRisingTrigger : Script
             goddessBehaviour?.SetFloatingSpeech(goddessVoiceOverText, goddessVoiceOverTime, goddessVoiceOverAudio);
             if(gameObjectToPoint!= null)
                 goddessBehaviour?.PointAt(gameObjectToPoint, timeToStartPointing);
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
             
     }

@@ -31,6 +31,9 @@ class ElevatorQuest : Quest
     [SerializableField]
     private float delayForDialogue = 3;
 
+    [SerializableField]
+    GameObject goddessVaultRisingTrigger;
+
     private DialogueScript dialogueScript;
 
     private GameObject playerBody;
@@ -42,7 +45,6 @@ class ElevatorQuest : Quest
         playerBody = GameObject.FindWithTag("Player");
         playerHead = GameObject.FindWithTag("PlayerHead");
     }
-
     public override void OnEnter()
     {
         elevator.OpenTutorialDoor();
@@ -63,13 +65,13 @@ class ElevatorQuest : Quest
     }
     public override void OnSkip()
     {
-        Destroy(checkPointIndicator);
+        goddessVaultRisingTrigger.SetActive(false);
+        checkPointIndicator.SetActive(false);
     }
     public override void OnSuccess()
     {
-        Destroy(checkPointIndicator);
+        checkPointIndicator.SetActive(false);
         elevator.CloseTutorialDoor();
-
         Invoke(() =>
         {
             dialogueScript?.BeginDialogueSequence(speaker, dialogues, timings, finalDialogueTime);
