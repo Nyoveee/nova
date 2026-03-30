@@ -109,13 +109,11 @@ class PlayerMotionAnimations : Script
 
 
         UpdateMotionVector();
-        //Debug.Log("Y velcoity: "+ rigidbody.GetVelocity().y);
-        currentOffset = CalculateSmoothDampPositionChange(currentOffset, gunMotionOffsetAmount * -directionVector, motionChangeDuration, Time.V_DeltaTime());
 
+        currentOffset = CalculateSmoothDampPositionChange(currentOffset, gunMotionOffsetAmount * -directionVector, motionChangeDuration, Time.V_DeltaTime());
 
         gunPosition.localPosition = gunPositionBasePosition + currentOffset;
         throwPosition.localPosition = throwPositionBasePosition + currentOffset;
-
     }
 
     protected override void fixedUpdate()
@@ -144,21 +142,21 @@ class PlayerMotionAnimations : Script
         //}
 
         Vector3 CalculateSmoothDampPositionChange(Vector3 currentPosition, Vector3 desiredPosition, float smoothTime, float deltaTime)
-    {
-        float omega = 2.0f / smoothTime;
-        float x = omega * deltaTime;
+        {
+            float omega = 2.0f / smoothTime;
+            float x = omega * deltaTime;
 
-        // This is the "Magic" formula that stays between 0 and 1
-        float exp = 1.0f / (1.0f + x + 0.48f * x * x + 0.235f * x * x * x);
+            // This is the "Magic" formula that stays between 0 and 1
+            float exp = 1.0f / (1.0f + x + 0.48f * x * x + 0.235f * x * x * x);
 
-        Vector3 velError = currentPosition - desiredPosition;
-        Vector3 temp = (velError + (omega * velError * deltaTime)) * deltaTime;
+            Vector3 velError = currentPosition - desiredPosition;
+            Vector3 temp = (velError + (omega * velError * deltaTime)) * deltaTime;
 
-        // Note: We subtract temp and multiply by our decay factor (exp)
-        Vector3 targetVel = desiredPosition + (velError - temp) * exp;
+            // Note: We subtract temp and multiply by our decay factor (exp)
+            Vector3 targetVel = desiredPosition + (velError - temp) * exp;
 
-        return targetVel; // Return the position
-    }
+            return targetVel; // Return the position
+        }
 
     void UpdateMotionVector()
     {

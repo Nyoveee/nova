@@ -185,6 +185,7 @@ void AnimatorController::displayRightPanel(Animator& animator, Controller& contr
 				.transitions = {},
 				.toLoop = true,
 				.blendFactor = 0.2f,
+				.previousFrameToAnimate = Controller::Node::Frame::Last,
 				.name = *namePtr,
 				.animationEvents = {}
 			}
@@ -604,6 +605,9 @@ void AnimatorController::displaySelectedNodeProperties([[maybe_unused]] Animator
 
 		if (nodeId != ENTRY_NODE) {
 			ImGui::SliderFloat("Blend factor", &node.blendFactor, 0.f, 1.f);
+			editor.displayEnumDropDownList<Controller::Node::Frame>(node.previousFrameToAnimate, "Previous Frame For Animation Blending", [&](auto newFrame) {
+				node.previousFrameToAnimate = newFrame;
+			});
 		}
 
 		if (node.transitions.empty()) {

@@ -10,6 +10,8 @@ class WeaponAnimationController : Script
     private PlayerController_V2? playerMovementController = null;
     [SerializableField]
     private PlayerWeaponController? playerWeaponController = null;
+    [SerializableField]
+    private Animator_ playerArmGun = null;
 
     // ===========================================
     // Parameters
@@ -127,8 +129,8 @@ class WeaponAnimationController : Script
             gameObject.transform.localPosition = baseWeaponPosition;
         }
 
+        //gunSequence.play();
 
-        gunSequence.play();
         weaponAnimationStates = WeaponAnimationStates.Recoil;
         this.recoilDuration = recoilDuration;
         recoilTimeElapsed = 0.0f;
@@ -163,13 +165,10 @@ class WeaponAnimationController : Script
     public void EnableThrow()
     {
         playerWeaponController.EnableWeaponArm();
-
-        Debug.Log("EnableThrow!!!");
     }
 
     public void DisableThrow()
     {
-        Debug.Log("DisableThrow!!!");
         playerWeaponController.DisableWeaponArm();
     }
 

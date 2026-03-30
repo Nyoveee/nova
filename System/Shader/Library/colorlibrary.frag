@@ -53,6 +53,7 @@ layout (binding = 3) uniform sampler2D depthTexture;
 layout (location = 20) uniform bool toUseNormalMap;
 layout (location = 30) uniform bool toUseEmissiveMap;
 layout (location = 31) uniform bool toUseAlphaMap;
+layout (location = 32) uniform bool toUsePackedMap;
 
 vec2 UVTileAndOffset(vec2 textureCoordinates, vec2 UVTiling, vec2 UVOffset) {
     return textureCoordinates * UVTiling + UVOffset;

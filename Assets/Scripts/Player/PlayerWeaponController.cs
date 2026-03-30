@@ -21,6 +21,7 @@ class PlayerWeaponController : Script
     public required Sniper sniper;
     public required MeshRenderer_ sniperMesh;
     public required GameObject playerCollider;
+    public required GameObject playerArmGun;
     public required Prefab thrownRiflePrefab;
     public required Prefab ammoTrailPrefab;
 
@@ -64,6 +65,11 @@ class PlayerWeaponController : Script
     const int SNIPER_BARREL_MATERIAL_INDEX = 1;
 
     private float lerpVariable = 0;
+
+    const string ThrowAnimationName = "PlayerHandThrowAnimation";
+    const string IdleAnimationName = "PlayerHandIdleAnimation_Gun";
+    const string FiringAnimationName = "PlayerHandFiringAnimation_Gun";
+    const string RetrieveAnimationName = "PlayerHandRetrieveAnimation";
 
     public enum WeaponControlStates
     {
@@ -118,9 +124,7 @@ class PlayerWeaponController : Script
                     }
                     else if (currentlyHeldGun.CurrentAmmo <= 0 && isArmingDisabled == false)
                     {
-
                         weaponControlStates = WeaponControlStates.ArmingThrow;
-
                     }
 
                     //player is trying to arm while weapon is busy with animation, now animation is over play arming
@@ -134,53 +138,24 @@ class PlayerWeaponController : Script
                 break;
             case WeaponControlStates.ArmingThrow:
                 {
-                    armTimeElapsed += Time.V_DeltaTime();
-
-                    //float t = armTimeElapsed / armingTime;
-                    lerpVariable = armTimeElapsed / armingTime;
-
-                    if (lerpVariable >= 1)
-                    {
-                        weaponControlStates = WeaponControlStates.ThrowReady;
-                        armTimeElapsed = armingTime;
-                        lerpVariable = 1;
-                    }
-                    else
-                    {
-                        // gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
-
-                    }
-
 
                 }
                 break;
             case WeaponControlStates.DisarmingFree:
                 {
-                    armTimeElapsed -= Time.V_DeltaTime();
-
-                    lerpVariable = armTimeElapsed / armingTime;
-
-                    if (lerpVariable <= 0)
+                    if(playerArmGun.getComponent<Animator_>().GetTimeElapsed() == 0)
                     {
                         weaponControlStates = WeaponControlStates.WeaponFree;
-                        armTimeElapsed = 0;
-                        lerpVariable = 0;
-                    }
-                    else
-                    {
-                        //  gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
+                        playerArmGun.getComponent<Animator_>().speedMultiplier = 1f;
+                        playerArmGun.getComponent<Animator_>().PlayAnimation(IdleAnimationName);
                     }
                 }
                 break;
             case WeaponControlStates.ThrowReady:
                 { }
-
-
                 break;
             case WeaponControlStates.AwaitWeaponReturn:
-                {
-
-                }
+                { }
                 break;
             case WeaponControlStates.WeaponRecieve:
                 break;
@@ -199,8 +174,8 @@ class PlayerWeaponController : Script
             float interval = glowTimeElapsed / glowChangeDuration;
             float glowIntensity = Mathf.Interpolate(initialGlowStrength, finalGlowStrength, interval, 1);
 
-            sniperMesh.setMaterialFloat(SNIPER_BARREL_MATERIAL_INDEX, "glowStrength", glowIntensity);
-            sniperMesh.setMaterialFloat(SNIPER_MATERIAL_MATERIAL_INDEX, "glowStrength", glowIntensity);
+            sniperMesh.setMaterialFloat(SNIPER_BARREL_MATERIAL_INDEX, "emissiveStrength", glowIntensity);
+            sniperMesh.setMaterialFloat(SNIPER_MATERIAL_MATERIAL_INDEX, "emissiveStrength", glowIntensity);
         }
 
         glowTimeElapsed += Time.V_DeltaTime();
@@ -212,8 +187,12 @@ class PlayerWeaponController : Script
         {
             weaponControlStates = WeaponControlStates.ArmingThrow;
 
-        }
+            playerArmGun.getComponent<Sequence_>().speedMultiplier = 1f;
+            playerArmGun.getComponent<Animator_>().speedMultiplier = 1f;
 
+            //playerArmGun.getComponent<Sequence_>().play();
+            playerArmGun.getComponent<Animator_>().PlayAnimation(ThrowAnimationName);
+        }
 
         if (isArmingDisabled)
         {
@@ -225,10 +204,11 @@ class PlayerWeaponController : Script
     {
         if (currentlyHeldGun.CurrentAmmo != 0 && (weaponControlStates == WeaponControlStates.ArmingThrow || weaponControlStates == WeaponControlStates.ThrowReady))
         {
-
             weaponControlStates = WeaponControlStates.DisarmingFree;
             isArmingRequest = false;
 
+            playerArmGun.getComponent<Sequence_>().speedMultiplier = -1f;
+            playerArmGun.getComponent<Animator_>().speedMultiplier = -1f;
         }
     }
 
@@ -250,10 +230,12 @@ class PlayerWeaponController : Script
 
         if (weaponControlStates == WeaponControlStates.WeaponFree && currentlyHeldGun.Fire())
         {
+            playerArmGun.getComponent<Animator_>().PlayAnimation(FiringAnimationName);
+
             // ---------------------------------------------------------------
             // The moment this gun fires, the brightness of the glow spikes.
-            sniperMesh.setMaterialFloat(SNIPER_BARREL_MATERIAL_INDEX, "glowStrength", peakGlowStrength);
-            sniperMesh.setMaterialFloat(SNIPER_MATERIAL_MATERIAL_INDEX, "glowStrength", peakGlowStrength);
+            sniperMesh.setMaterialFloat(SNIPER_BARREL_MATERIAL_INDEX, "emissiveStrength", peakGlowStrength);
+            sniperMesh.setMaterialFloat(SNIPER_MATERIAL_MATERIAL_INDEX, "emissiveStrength", peakGlowStrength);
 
             AnimateGunGlow();
             // ---------------------------------------------------------------
@@ -289,14 +271,14 @@ class PlayerWeaponController : Script
 
         if (weaponControlStates == WeaponControlStates.ThrowReady && currentlyHeldGun.gameObject.IsActive() == true)
         {
-            ThrowWeapon();
-
+            //playerArmGun.getComponent<Animator_>().SetFrame(30);
+            playerArmGun.getComponent<Animator_>().speedMultiplier = 1f;
+            weaponControlStates = WeaponControlStates.AwaitWeaponReturn;
         }
     }
 
-    private void ThrowWeapon()
+    public void ThrowWeapon()
     {
-
         GameObject thrownRifle = Instantiate(thrownRiflePrefab, throwPosition.position, throwPosition.rotation);
 
         if (thrownRifle == null)
@@ -310,35 +292,19 @@ class PlayerWeaponController : Script
 
         string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall" };
 
-        // RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front,500f,layerMask);
-
         RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 10000f, mask);
 
 
         //Do a raycast to objects
         if (result != null)
         {
-            Debug.Log("Hit: " + result.Value.point.ToString());
             Vector3 targetDirection = (result.Value.point - throwPosition.position);
             targetDirection.Normalize();
 
             thrownRifle.getScript<ThrowableRifle>().flightPath = targetDirection;
-
-            //thrownRifle.getScript<ThrowableRifle>().SeekTarget(playerCamera.position, result.Value.point);
-
-
         }
         else
         {
-            //thrownRifle.getScript<ThrowableRifle>().flightPath = playerCamera.front;
-
-            //Vector3 endPoint = (playerCamera.front - playerCamera.position) * 500f;
-
-            //endPoint += playerCamera.position;
-
-
-            //thrownRifle.getScript<ThrowableRifle>().SeekTarget(throwPosition.position,endPoint);
-
             thrownRifle.getScript<ThrowableRifle>().flightPath = playerCamera.front;
             Vector3 endPoint = playerCamera.position + playerCamera.front * 500f;
             thrownRifle.getScript<ThrowableRifle>().SeekTarget(playerCamera.position, endPoint);
@@ -347,7 +313,6 @@ class PlayerWeaponController : Script
         currentlyHeldGun.gameObject.SetActive(false);
         thrownRifle.getScript<ThrowableRifle>().InitWeapon();
 
-        weaponControlStates = WeaponControlStates.AwaitWeaponReturn;
         armTimeElapsed = 0;
     }
 
@@ -361,6 +326,9 @@ class PlayerWeaponController : Script
             gunHolder.localPosition = gunPosition.localPosition;
             lerpVariable = 0;
             weaponControlStates = WeaponControlStates.WeaponFree;
+
+            playerArmGun.getComponent<Animator_>().PlayAnimation(RetrieveAnimationName);
+            //playerArmGun.getComponent<Animator_>().SetFrame(30);
 
             AnimateGunGlow();
         }
@@ -388,92 +356,9 @@ class PlayerWeaponController : Script
         currentlyHeldGun.CurrentAmmo = currentlyHeldGun.MaxAmmo;
     }
 
-    //public GameObject SeekTarget(Vector3 origin, Vector3 end, float seekDistance)
-    //{
-    //    GameObject[] candidateEnemies = GameObject.FindGameObjectsWithTag("Enemy_WeakSpot");
-
-    //    Vector3 rayCast = end - origin;
-
-    //    GameObject candidateTarget = null;
-
-    //    float smallestDistance = float.PositiveInfinity;
-
-    //    foreach (var enemy in candidateEnemies)
-    //    {
-    //        Vector3 otherVector = enemy.transform.position - origin;
-
-    //        Vector3 pointOnLine = Vector3.Proj(otherVector, rayCast);
-
-    //        if (Vector3.Distance(pointOnLine + origin, enemy.transform.position) > seekDistance)
-    //        {
-    //            continue;
-    //        }
-
-    //        float t = Vector3.Dot(pointOnLine, rayCast);
-
-
-    //        //is on line segment?
-    //        if (t > 0 && pointOnLine.Length() < rayCast.Length())
-    //        {
-    //            float currentDistance = Vector3.Distance(pointOnLine + origin, enemy.transform.position);
-
-    //            if (currentDistance < smallestDistance)
-    //            {
-
-    //                smallestDistance = currentDistance;
-    //                candidateTarget = enemy;
-    //            }
-
-    //        }
-
-
-
-
-    //    }
-    //    if (candidateTarget != null)
-    //    {
-    //        return candidateTarget;
-    //    }
-    //    return null;
-
-    //}
-
-
-
-
-    private void SwapWeaponHandler(float scrollDelta)
+    public void ArmReady()
     {
-        //if (recentlySwappedWeapon)
-        //{
-        //    return;
-        //}
-
-        //recentlySwappedWeapon = true;
-        // since we only have 2 guns, the scroll delta doesnt really matter haha..
-        // in the future if we have more we need to account for it..
-
-        //if (currentlyHeldGun is Sniper)
-        //{
-        //    SwapWeapon(sniper, shotgun);
-        //}
-        //else
-        //{
-        //    SwapWeapon(shotgun, sniper);
-        //}
+        playerArmGun.getComponent<Animator_>().speedMultiplier = 0f;
+        weaponControlStates = WeaponControlStates.ThrowReady;   
     }
-
-    //private void SwapWeapon(Gun from, Gun to)
-    //{
-    //    currentlyHeldGun = to;
-    //    from.gameObject.SetActive(false);
-
-    //    // good old javascript syntax.
-    //    setWeaponActiveDelegate = () =>
-    //    {
-    //        to.gameObject.SetActive(true);
-    //        AudioAPI.PlaySound(gameObject, "Holster SFX");
-    //        if(gameUIManager!= null)
-    //            gameUIManager.SwapWeaponUI(from, to);
-    //    };
-    //}
 }

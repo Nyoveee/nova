@@ -384,6 +384,8 @@ void PlayAnimation(System::String^ name);
 
 void ClearExecutedAnimationEvents();
 void SetFrame(int frame);
+int GetCurrentFrame();
+float GetTimeElapsed();
 
 ManagedComponentEnd()
 

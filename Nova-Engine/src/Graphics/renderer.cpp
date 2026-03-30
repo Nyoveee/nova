@@ -217,6 +217,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	renderConfig					{ engine.dataManager.renderConfig },
 	resourceManager					{ engine.resourceManager },
 	registry						{ engine.ecs.registry },
+	sceneProperties					{ engine.ecs.sceneManager.currentSceneProperties },
 	basicShader						{ "System/Shader/basic.vert",						"System/Shader/basic.frag" },
 	standardShader					{ "System/Shader/standard.vert",					"System/Shader/basic.frag" },
 	textureShader					{ "System/Shader/standard.vert",					"System/Shader/image.frag" },
@@ -2815,8 +2816,8 @@ void Renderer::preparePBRUniforms() {
 	int ssao					= renderConfig.toEnableSSAO;
 	int directionalLightCaster	= hasDirectionalLightShadowCaster;
 	int ibl						= renderConfig.toEnableIBL;
-	float iblDiffuseStrength	= engine.ecs.sceneManager.iblDiffuseStrength * iblMultiplier;
-	float iblSpecularStrength	= engine.ecs.sceneManager.iblSpecularStrength * iblMultiplier;
+	float iblDiffuseStrength	= sceneProperties.iblDiffuseStrength * iblMultiplier;
+	float iblSpecularStrength	= sceneProperties.iblSpecularStrength * iblMultiplier;
 
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightSpaceMatrix), sizeof(glm::mat4x4), glm::value_ptr(directionalLightViewMatrix));
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightDir), sizeof(glm::vec3), glm::value_ptr(directionalLightDir));
@@ -3576,6 +3577,12 @@ void Renderer::hdrAndGammaCorrection(PairFrameBuffer& frameBuffers, bool toToneM
 	toneMappingShader.setBool("toGammaCorrect", p_toGammaCorrect);
 	toneMappingShader.setFloat("gamma", renderConfig.gamma);
 
+	toneMappingShader.setFloat("temperature", sceneProperties.temperature);
+	toneMappingShader.setFloat("tint", sceneProperties.tint);
+	toneMappingShader.setFloat("brightness", sceneProperties.brightness);
+	toneMappingShader.setFloat("contrast", sceneProperties.contrast);
+	toneMappingShader.setFloat("saturation", sceneProperties.saturation);
+	
 	// Bind the HDR texture from main framebuffer
 	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureId());
 	toneMappingShader.setImageUniform("hdrBuffer", 0);

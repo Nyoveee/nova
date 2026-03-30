@@ -342,9 +342,12 @@ void Engine::preloadAssets(ResourceID id)
 		Logger::error("Failed to load invalid scene w/ id {}", static_cast<std::size_t>(id));
 		return;
 	}
-	std::vector <Layer> layers;
-	NormalizedFloat tmpFloat;
-	Serialiser::deserialiseScene(tmpRegistry, layers, tmpFloat, tmpFloat, scene->getFilePath().string.c_str());
+
+	// unused.
+	std::vector <Layer> __;
+	SceneProperties ___;
+
+	Serialiser::deserialiseScene(tmpRegistry, __, ___, scene->getFilePath().string.c_str());
 
 	for (auto&& [id, meshRenderer] : tmpRegistry.view<MeshRenderer>().each()) {
 		resourceManager.getResource<Model>(meshRenderer.modelId);

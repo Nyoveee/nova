@@ -344,6 +344,7 @@ private:
 	ResourceManager& resourceManager;
 	entt::registry& registry;
 	RenderConfig& renderConfig;
+	SceneProperties const& sceneProperties;
 
 	// Main VAO and their related buffers
 	GLuint mainVAO;

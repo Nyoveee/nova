@@ -65,8 +65,14 @@ void GameConfigUI::update() {
 		editor.engine.physicsManager.setGravity(gravity);
 	}
 
-	DisplayProperty<NormalizedFloat>(editor, "IBL Diffuse Strength", editor.engine.ecs.sceneManager.iblDiffuseStrength);
-	DisplayProperty<NormalizedFloat>(editor, "IBL Specular Strength", editor.engine.ecs.sceneManager.iblSpecularStrength);
+	reflection::visit([&](auto&& fieldData) {
+		auto& dataMember = fieldData.get();
+		const char* dataMemberName = fieldData.name();
+		using DataMemberType = std::decay_t<decltype(dataMember)>;
+
+		// Generalization
+		DisplayProperty<DataMemberType>(editor, dataMemberName, dataMember);
+	}, editor.engine.ecs.sceneManager.currentSceneProperties);
 
     ImGui::Separator();
 

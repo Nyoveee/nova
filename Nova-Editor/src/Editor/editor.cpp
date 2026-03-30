@@ -781,7 +781,7 @@ void Editor::startSimulation() {
 	// We serialise everything, resources to current scene when starting a simulation..
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
-	Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, engine.ecs.sceneManager.iblDiffuseStrength, engine.ecs.sceneManager.iblSpecularStrength, filePath->string.c_str());
+	Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, engine.ecs.sceneManager.currentSceneProperties, filePath->string.c_str());
 
 #if 0
 	assetManager.serialiseResources();
@@ -939,7 +939,7 @@ void Editor::loadScene(ResourceID sceneId) {
 	AssetFilePath const* filePath = assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
 
 	if (filePath) {
-		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, engine.ecs.sceneManager.iblDiffuseStrength, engine.ecs.sceneManager.iblSpecularStrength, filePath->string.c_str());
+		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, engine.ecs.sceneManager.currentSceneProperties, filePath->string.c_str());
 	}
 
 	AssetFilePath const* newFilePath = assetManager.getFilepath(sceneId);
@@ -975,7 +975,7 @@ Editor::~Editor() {
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
 
 	if (filePath && !isInSimulationMode()) {
-		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, engine.ecs.sceneManager.iblDiffuseStrength, engine.ecs.sceneManager.iblSpecularStrength, filePath->string.c_str());
+		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, engine.ecs.sceneManager.currentSceneProperties, filePath->string.c_str());
 	}
 	if (!isInSimulationMode()) {
 		entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
