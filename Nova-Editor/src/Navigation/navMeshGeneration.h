@@ -35,6 +35,8 @@ struct BuildSettings
 {
 	//Agent Name
 	std::string agentName;
+	//Treat active and inactive objects
+	bool  excludeDisabledObjects;
 	// Cell size in world units
 	float cellSize;
 	// Cell height in world units
