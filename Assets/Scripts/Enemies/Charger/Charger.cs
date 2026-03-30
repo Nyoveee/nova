@@ -115,7 +115,9 @@ class Charger : Enemy
     ***********************************************************/
     public override void StaggerMovement()
     {
-        if (navMeshAgent.enable && (chargerState != ChargerState.StaggerWeak || chargerState != ChargerState.StaggerStrong))
+        if (chargerState == ChargerState.StaggerStrong)
+            return;
+        if (navMeshAgent.enable && chargerState != ChargerState.StaggerWeak)
         {
             base.StaggerMovement();
             ChargerState originalState = chargerState;
@@ -237,9 +239,8 @@ class Charger : Enemy
         physicsRigidbody.SetLinearDamping(0);
         if (IsTouchingGround())
         {
-            ActivateNavMeshAgent();
             chargerState = ChargerState.Idle;
-            gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0, gameObject.transform.position.z);
+            ActivateNavMeshAgent();
         }
     }
     private void Update_Idle(){
@@ -256,6 +257,13 @@ class Charger : Enemy
     }
     private void Update_Patrol()
     {
+        if (!MoveToNavMeshPosition(player.transform.position))
+        {
+            chargerState = ChargerState.Idle;
+            animator.PlayAnimation("ChargerIdle");
+            StopNavMeshMovement();
+            return;
+        }
         if (IsOnNavMeshOfflink())
         {
             chargerStateBeforeJumping = chargerState;
@@ -295,13 +303,8 @@ class Charger : Enemy
         }
         if (GetDistanceFromPlayer() > chargerstats.chasingRange || !HasLineOfSightToPlayer(gameObject))
         {
-            if(MoveToNavMeshPosition(player.transform.position))
-                chargerState = ChargerState.Patrol;
-            else
-            {
-                chargerState = ChargerState.Idle;
-                StopNavMeshMovement();
-            }
+            MoveToNavMeshPosition(player.transform.position);
+            chargerState = ChargerState.Patrol;
             return;
         }
         currentChargeCooldown -= Time.V_DeltaTime();
