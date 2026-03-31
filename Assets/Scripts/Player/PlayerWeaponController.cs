@@ -124,13 +124,13 @@ class PlayerWeaponController : Script
                     }
                     else if (currentlyHeldGun.CurrentAmmo <= 0 && isArmingDisabled == false)
                     {
-                        weaponControlStates = WeaponControlStates.ArmingThrow;
+                        SetArmingState();
                     }
 
                     //player is trying to arm while weapon is busy with animation, now animation is over play arming
                     if (isArmingRequest == true && isArmingDisabled == false)
                     {
-                        weaponControlStates = WeaponControlStates.ArmingThrow;
+                        SetArmingState();
                         isArmingRequest = false;
                     }
 
@@ -185,19 +185,23 @@ class PlayerWeaponController : Script
     {
         if (currentlyHeldGun.CurrentAmmo != 0 && (weaponControlStates == WeaponControlStates.WeaponFree || weaponControlStates == WeaponControlStates.DisarmingFree) && isArmingDisabled == false)
         {
-            weaponControlStates = WeaponControlStates.ArmingThrow;
-
-            playerArmGun.getComponent<Sequence_>().speedMultiplier = 1f;
-            playerArmGun.getComponent<Animator_>().speedMultiplier = 1f;
-
-            //playerArmGun.getComponent<Sequence_>().play();
-            playerArmGun.getComponent<Animator_>().PlayAnimation(ThrowAnimationName);
+            SetArmingState();
         }
 
         if (isArmingDisabled)
         {
             isArmingRequest = true;
         }
+    }
+
+    private void SetArmingState()
+    {
+        weaponControlStates = WeaponControlStates.ArmingThrow;
+
+        playerArmGun.getComponent<Sequence_>().speedMultiplier = 1f;
+        playerArmGun.getComponent<Animator_>().speedMultiplier = 1f;
+
+        playerArmGun.getComponent<Animator_>().PlayAnimation(ThrowAnimationName);
     }
 
     private void Disarming()
@@ -328,7 +332,7 @@ class PlayerWeaponController : Script
             weaponControlStates = WeaponControlStates.WeaponFree;
 
             playerArmGun.getComponent<Animator_>().PlayAnimation(RetrieveAnimationName);
-            //playerArmGun.getComponent<Animator_>().SetFrame(30);
+            playerArmGun.getComponent<Animator_>().SetFrame(35);
 
             AnimateGunGlow();
         }
