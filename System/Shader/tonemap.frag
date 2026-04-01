@@ -23,7 +23,7 @@ vec3 colorGrading(vec3 color) {
 
     // contrast
     vec3 midpoint = vec3(0.5);
-    color = mix(midpoint, color, contrast);
+    color = mix(midpoint, color, mix(0.8, 1.f, contrast));
 
     // saturation
     float luminance = dot(color, vec3(0.2126, 0.7152, 0.0722));

@@ -94,6 +94,7 @@ struct RenderQueue {
 	std::vector<TransparentEntry> depthTransparentMaterials;
 	std::vector<TransparentEntry> normalTransparentMaterials;
 	std::vector<TransparentEntry> oitTransparentMaterials;
+	std::vector<TransparentEntry> depthPrePassTransparentMaterials;
 
 	// we map material id to index of the respective vectors.. (layer)..
 	std::vector<std::unordered_map<ResourceID, int>> materialResourceIdToOpaqueIndex;

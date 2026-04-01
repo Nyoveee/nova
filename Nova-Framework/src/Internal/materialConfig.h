@@ -6,13 +6,15 @@ enum class BlendingConfig {
 	PureAdditiveBlending,
 	PremultipliedAlpha,
 	Disabled,
-	OIT
+	OIT,
+	AlphaBlendingPrePass,
 };
 
 enum class DepthTestingMethod {
 	DepthTest,
 	NoDepthWrite,
-	NoDepthWriteTest
+	NoDepthWriteTest,
+	DepthWriteNoPrePass
 };
 
 enum class CullingConfig {

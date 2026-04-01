@@ -490,6 +490,13 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// handle reflection probe deletion..
 	registry.on_destroy<ReflectionProbe>().connect<&Renderer::handleReflectionProbeDeletion>(*this);
+
+	glCreateTextures(GL_TEXTURE_2D, 1, &depthTextureCopy);
+	glTextureStorage2D(depthTextureCopy, 1, GL_DEPTH24_STENCIL8, gameWidth, gameHeight);
+	glTextureParameteri(depthTextureCopy, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTextureParameteri(depthTextureCopy, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTextureParameteri(depthTextureCopy, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTextureParameteri(depthTextureCopy, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 Renderer::~Renderer() {
@@ -498,7 +505,10 @@ Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &particleVAO);
 	glDeleteVertexArrays(1, &videoVAO);
 
-	if (ssaoNoiseTextureId != INVALID_ID) glDeleteTextures(1, &ssaoNoiseTextureId);
+	if (ssaoNoiseTextureId != INVALID_ID)	glDeleteTextures(1, &ssaoNoiseTextureId);
+	if (gameHistoryTexture != INVALID_ID)	glDeleteTextures(1, &gameHistoryTexture);
+	if (editorHistoryTexture != INVALID_ID) glDeleteTextures(1, &editorHistoryTexture);
+	if (depthTextureCopy != INVALID_ID)		glDeleteTextures(1, &depthTextureCopy);
 }
 
 GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
@@ -791,22 +801,25 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_EQUAL);
 
+	// make a copy of the current depth texture.. (for intersection shader)
+	copyDepthTexture(frameBuffers.getActiveFrameBuffer().depthStencilId());
+
 	// [Opaque pass] We render individual game objects..
 	// We provide the current depth texture as well, since we did a depth pre pass earlier..
-	renderModels(RenderPass::ColorPass, frameBuffers.getActiveFrameBuffer().depthStencilId());
+	renderModels(RenderPass::ColorPass, depthTextureCopy);
 
-	renderFog(frameBuffers);
+	// Render particles
+	renderParticles(false);
+	glBindVertexArray(mainVAO);
 
 	// Transparent depth test...
 	glDepthFunc(GL_LEQUAL);
 
 	renderTranslucentModels(frameBuffers);
 
-	// Render particles
-	renderParticles(false);
-
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
 	setBlendMode(BlendingConfig::Disabled);
 
 	// Resolve TAA for anti-aliasing..
@@ -1714,6 +1727,7 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 	renderQueue.normalTransparentMaterials.clear();
 	renderQueue.depthTransparentMaterials.clear();
 	renderQueue.materialResourceIdToOpaqueIndex.clear();
+	renderQueue.depthPrePassTransparentMaterials.clear();
 
 	// Let's start sorting all our game objects into these batches..
 	int layerIndex = 0;
@@ -1906,6 +1920,9 @@ void Renderer::createMaterialBatchEntry(Camera const& camera, Model const& model
 		if (material->materialData.blendingConfig == BlendingConfig::OIT) {
 			createTransparentMaterialEntry(renderQueue.oitTransparentMaterials, camera, model, *material, *customShader, shader, mesh, entity, meshType);
 		}
+		else if (material->materialData.blendingConfig == BlendingConfig::AlphaBlendingPrePass) {
+			createTransparentMaterialEntry(renderQueue.depthPrePassTransparentMaterials, camera, model, *material, *customShader, shader, mesh, entity, meshType);
+		}
 		else if (material->materialData.depthTestingMethod == DepthTestingMethod::DepthTest){
 			createTransparentMaterialEntry(renderQueue.depthTransparentMaterials, camera, model, *material, *customShader, shader, mesh, entity, meshType);
 		}
@@ -2082,6 +2099,8 @@ void Renderer::renderModels(RenderPass renderPass, std::optional<GLuint> depthTe
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
 
+	setDepthMode(DepthTestingMethod::DepthTest);
+
 	// for each material batch..
 	for (auto const& materialBatch : renderQueue.opaqueMaterials) {
 		// we set up the shader and uniforms of this particular material..
@@ -2104,16 +2123,53 @@ void Renderer::renderModels(RenderPass renderPass, std::optional<GLuint> depthTe
 			}
 		}
 	}
+
+	ResourceID previousMaterialId = INVALID_RESOURCE_ID;
+	entt::entity previousEntity = entt::null;
+
+	if (renderPass == RenderPass::DepthPrePass) {
+		for (auto const& materialBatch : renderQueue.depthPrePassTransparentMaterials) {
+			for (auto const& material : materialBatch.materials) {
+				// set the uniforms of the material.. if it's different..
+				if (previousMaterialId != material.material.get().id()) {
+					setupMaterialNormalPass(material.material, material.customShader, material.shader);
+					previousMaterialId = material.material.get().id();
+				}
+
+				// set the uniforms of the model.. if it's different..
+				if (previousEntity != materialBatch.entity) {
+					setupModelUniforms(materialBatch.entity, material.shader, materialBatch.model, materialBatch.meshType);
+					previousEntity = materialBatch.entity;
+				}
+
+				// for each mesh..
+				for (auto const& mesh : material.meshes) {
+					renderMesh(mesh);
+				}
+			}
+		}
+	}
 }
 
-void Renderer::renderTranslucentModels(PairFrameBuffer const& frameBuffers) {
+void Renderer::renderTranslucentModels(PairFrameBuffer& frameBuffers) {
 	// Disable SSAO for translucent models..
 	static constexpr int ssao = 0;
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toEnableSSAO), sizeof(int), &ssao);
 
 	renderNormalTranslucentModels();
 	renderOITTransculentModels(frameBuffers);
+
+	renderFog(frameBuffers);
+
 	renderDepthTranslucentModels(frameBuffers);
+}
+
+void Renderer::copyDepthTexture(GLuint fromDepthTexture) {
+	glCopyImageSubData(
+		fromDepthTexture, GL_TEXTURE_2D, 0, 0, 0, 0,
+		depthTextureCopy, GL_TEXTURE_2D, 0, 0, 0, 0,
+		gameWidth, gameHeight, 1
+	);
 }
 
 void Renderer::renderDepthTranslucentModels(PairFrameBuffer const& frameBuffers) {
@@ -2121,7 +2177,7 @@ void Renderer::renderDepthTranslucentModels(PairFrameBuffer const& frameBuffers)
 
 	// We cache the previous material and entity..
 	auto previousMaterialId = INVALID_RESOURCE_ID;
-	auto previousEntity = entt::null;
+	entt::entity previousEntity = entt::null;
 
 	setDepthMode(DepthTestingMethod::DepthTest);
 	setBlendMode(BlendingConfig::Disabled);
@@ -2146,13 +2202,14 @@ void Renderer::renderDepthTranslucentModels(PairFrameBuffer const& frameBuffers)
 			for (auto const& material : transparentEntry.materials) {
 				// set the uniforms of the material.. if it's different..
 				if (previousMaterialId != material.material.get().id()) {
-					setupMaterial(material.material, material.customShader, material.shader, DepthConfig::Ignore, BlendConfig::Ignore, std::nullopt);
+					setupMaterial(material.material, material.customShader, material.shader, DepthConfig::Ignore, BlendConfig::Ignore, depthTextureCopy);
 					previousMaterialId = material.material.get().id();
 				}
 
 				// set the uniforms of the model.. if it's different..
 				if (previousEntity != transparentEntry.entity) {
 					setupModelUniforms(transparentEntry.entity, material.shader, transparentEntry.model, transparentEntry.meshType);
+					previousEntity = transparentEntry.entity;
 				}
 
 				// for each mesh..
@@ -2186,17 +2243,17 @@ void Renderer::renderDepthTranslucentModels(PairFrameBuffer const& frameBuffers)
 }
 
 void Renderer::renderNormalTranslucentModels() {
-	// We cache the previous material and entity..
-	auto previousMaterialId = INVALID_RESOURCE_ID;
-	auto previousEntity = entt::null;
+	auto render = [&](std::vector<TransparentEntry> const& normalTransparentMaterials) {
+		// We cache the previous material and entity..
+		auto previousMaterialId = INVALID_RESOURCE_ID;
+		auto previousEntity = entt::null;
 
-	if (renderQueue.normalTransparentMaterials.size()) {
-		for (auto const& transparentEntry : renderQueue.normalTransparentMaterials) {
+		for (auto const& transparentEntry : normalTransparentMaterials) {
 			for (auto const& material : transparentEntry.materials) {
 
 				// set the uniforms of the material.. if it's different..
 				if (previousMaterialId != material.material.get().id()) {
-					setupMaterial(material.material, material.customShader, material.shader, DepthConfig::UseMaterial, BlendConfig::UseMaterial, std::nullopt);
+					setupMaterial(material.material, material.customShader, material.shader, DepthConfig::UseMaterial, BlendConfig::UseMaterial, depthTextureCopy);
 					previousMaterialId = material.material.get().id();
 				}
 
@@ -2211,7 +2268,14 @@ void Renderer::renderNormalTranslucentModels() {
 				}
 			}
 		}
-	}
+	};
+
+	// We cache the previous material and entity..
+	auto previousMaterialId = INVALID_RESOURCE_ID;
+	auto previousEntity = entt::null;
+
+	render(renderQueue.normalTransparentMaterials);
+	render(renderQueue.depthPrePassTransparentMaterials);
 }
 
 void Renderer::renderOITTransculentModels(PairFrameBuffer const& frameBuffers) {
@@ -2253,7 +2317,7 @@ void Renderer::renderOITTransculentModels(PairFrameBuffer const& frameBuffers) {
 			for (auto const& material : transparentEntry.materials) {
 				// set the uniforms of the material.. if it's different..
 				if (previousMaterialId != material.material.get().id()) {
-					setupMaterial(material.material, material.customShader, material.shader, DepthConfig::Ignore, BlendConfig::Ignore, frameBuffer.depthStencilId());
+					setupMaterial(material.material, material.customShader, material.shader, DepthConfig::Ignore, BlendConfig::Ignore, depthTextureCopy);
 					previousMaterialId = material.material.get().id();
 				}
 
@@ -2506,9 +2570,6 @@ void Renderer::renderParticles(bool toRenderUILayer)
 		particleShader.setUInt("textureIndex", textureIndex);
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, engine.particleSystem.MAX_PARTICLES_PER_TEXTURE);
 	}
-
-	// Renable Depth Writing for other rendering
-	glDepthMask(GL_TRUE);
 }
 
 Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh) {
@@ -2620,6 +2681,7 @@ void Renderer::setDepthMode(DepthTestingMethod configuration) {
 	switch (configuration) {
 		using enum DepthTestingMethod;
 	case DepthTest:
+	case DepthWriteNoPrePass:
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		break;
@@ -3820,7 +3882,7 @@ void Renderer::setupMaterialNormalPass(Material const& material, CustomShader co
 	// ===========================================================================
 
 	setBlendMode(material.materialData.blendingConfig);
-	setDepthMode(material.materialData.depthTestingMethod);
+	// setDepthMode(material.materialData.depthTestingMethod);
 	setCullMode(material.materialData.cullingConfig);
 
 	// ===========================================================================
