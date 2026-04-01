@@ -16,6 +16,7 @@ private:
 	void createGameObject();
 	void displayHierarchyWindow();
 	void displayLayerTable();
+	void displayAllEntityIds(const char* labelName, entt::entity selectedEntity, std::function<void(entt::entity)> const& onClickCallback);
 
 public:
 	bool isHovering = false;
@@ -27,4 +28,6 @@ private:
 	std::string searchQuery;
 	std::string uppercaseSearchQuery;
 	std::string uppercaseEntityName;
+
+	std::string entitySearchIdQuery;
 };

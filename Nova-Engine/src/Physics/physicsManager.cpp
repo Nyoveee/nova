@@ -550,7 +550,7 @@ JPH::ScaledShape* PhysicsManager::recreateScaledShape(entt::entity entity, Trans
 	// if have model use model scale, else init without model
 	if (meshRenderer != nullptr)
 	{
-		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
+		auto [model, _] = engine.resourceManager.getResource<Model, LoadingOption::LoadImmediately>(meshRenderer->modelId);
 
 		if (!model || model->maxDimension == 0) {
 			scale = transformScale;
@@ -583,7 +583,7 @@ JPH::ScaledShape* PhysicsManager::recreateScaledShape(entt::entity entity, Trans
 	else if (meshRenderer && meshCollider) {
 		rigidBody.offset = { 0.f, 0.f, 0.f };
 
-		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
+		auto [model, _] = engine.resourceManager.getResource<Model, LoadingOption::LoadImmediately>(meshRenderer->modelId);
 
 		if (model) {
 			unsigned int vertexOffset = 0;

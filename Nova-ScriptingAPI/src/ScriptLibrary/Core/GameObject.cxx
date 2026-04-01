@@ -150,5 +150,5 @@ void GameObject::attachSocket(int boneIndex) {
 		return;
 	}
 
-	entityData->attachedSocket = boneIndex;
+	entityData->attachedSocket = static_cast<BoneIndex>(boneIndex);
 }
