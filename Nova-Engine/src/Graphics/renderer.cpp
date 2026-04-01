@@ -885,6 +885,8 @@ void Renderer::renderToDefaultFBO() {
 		engine.window.getGameViewPort().gameHeight
 	);
 
+	glDisable(GL_DEPTH_TEST);
+
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
 	glBindTextureUnit(0, getGameFrameBufferTexture());

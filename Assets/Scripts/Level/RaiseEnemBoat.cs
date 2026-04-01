@@ -13,6 +13,15 @@ class RaiseEnemBoat : Script
     private GameObject waveManager;
     private bool waveStarted = false;
 
+    [SerializableField]
+    private GameObject stalacite;
+    [SerializableField]
+    private float driftSpeed = 20f;
+    [SerializableField]
+    private float hitThreshold = 100f;
+    [SerializableField]
+    private float stalactiteXOffset = 30f;
+
     private bool isRising = false;
     private float riseTimer = 0f;
     private float bobTimer = 0f;
@@ -33,6 +42,10 @@ class RaiseEnemBoat : Script
     private float swayAmplitude = 20f;
     private float swayFrequency = 0.8f;
     private float startX;
+
+    private bool isOutro = false;
+    private bool isDrifting = false;
+    private bool hitStalactite = false;
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
@@ -89,11 +102,44 @@ class RaiseEnemBoat : Script
             waveStarted = true;
         }
 
+        if (isDrifting && !hitStalactite)
+        {
+            Vector3 pos = this.gameObject.transform.position;
+            float targetX = stalacite.transform.position.x + stalactiteXOffset;
+
+            float step = driftSpeed * Time.V_DeltaTime();
+            float diff = targetX - pos.x;
+            if (Mathf.Abs(diff) <= step)
+                pos.x = targetX;
+            else if (diff > 0)
+                pos.x += step;
+            else
+                pos.x -= step;
+
+            this.gameObject.transform.position = pos;
+
+            float zDist = Mathf.Abs(pos.z - stalacite.transform.position.z);
+            if (zDist <= hitThreshold)
+            {
+                hitStalactite = true;
+                Sink();
+            }
+        }
+
         if (isSinking)
         {
             Vector3 pos = this.gameObject.transform.position;
             pos.y -= sinkSpeed * Time.V_DeltaTime();
+            pos.z = stalacite.transform.position.z;
             this.gameObject.transform.position = pos;
+
+            Quaternion tiltTarget = Quaternion.AngleAxis(-40f, new Vector3(1f, 0f, 0f))
+                                  * Quaternion.AngleAxis(25f, new Vector3(0f, 0f, 1f));
+            gameObject.transform.rotation = Quaternion.RotateTowards(
+                gameObject.transform.rotation,
+                tiltTarget,
+                40f * Time.V_DeltaTime()
+            );
 
             if (pos.y <= startY)
             {
@@ -118,5 +164,13 @@ class RaiseEnemBoat : Script
         isSinking = true;
         isRising = false;
         reachedTarget = false;
+    }
+
+    public void StartOutro()
+    {
+        isRising = false;
+        reachedTarget = false;
+        isOutro = true;
+        isDrifting = true;
     }
 }

@@ -22,7 +22,7 @@ class AssetViewerUI;
 
 // some assets are lazily loaded, meaning the asset is loaded in a separate thread..
 template<class T>
-concept LazyLoadResource = std::same_as<T, Texture>;
+concept LazyLoadResource = std::same_as<T, Texture> || std::same_as<T, Model>;
 
 class ResourceManager {
 public:
