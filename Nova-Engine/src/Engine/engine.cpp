@@ -330,27 +330,10 @@ float Engine::getDeltaTime() const {
 	return window.getDeltaTime();
 }
 
-void Engine::preloadAssets(ResourceID id) 
+ENGINE_DLL_API void Engine::preload()
 {
-	// local registry
-	entt::registry tmpRegistry;
-
-	// load scene into this
-	auto&& [scene, _] = resourceManager.getResource<Scene>(id);
-
-	if (!scene) {
-		Logger::error("Failed to load invalid scene w/ id {}", static_cast<std::size_t>(id));
-		return;
-	}
-	std::vector <Layer> layers;
-	NormalizedFloat tmpFloat;
-	Serialiser::deserialiseScene(tmpRegistry, layers, tmpFloat, tmpFloat, scene->getFilePath().string.c_str());
-
-	for (auto&& [id, meshRenderer] : tmpRegistry.view<MeshRenderer>().each()) {
-		resourceManager.getResource<Model>(meshRenderer.modelId);
-	}
-
-	for (auto&& [id, skinMeshRenderer] : tmpRegistry.view<SkinnedMeshRenderer>().each()) {
-		resourceManager.getResource<Model>(skinMeshRenderer.modelId);
-	}
+	for (ResourceID const& modelid : resourceManager.getAllResources<Model>())
+		resourceManager.getResource<Model>(modelid);
+	for (ResourceID const& textureid : resourceManager.getAllResources<Texture>())
+		resourceManager.getResource<Texture>(textureid);
 }

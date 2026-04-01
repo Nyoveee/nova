@@ -388,9 +388,9 @@ void Systems::Quit()
 	Interface::engine->quit();
 }
 
-void Systems::PreloadAssets(ScriptingAPI::Scene^ scene)
+void Systems::PreloadAssets()
 {
-	Interface::engine->preloadAssets(scene->resourceID);
+	Interface::engine->preload();
 }
 
 Vector3 Rotation::ToEuler(Quaternion quat) {

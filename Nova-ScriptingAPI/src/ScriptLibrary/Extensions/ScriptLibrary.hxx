@@ -200,7 +200,7 @@ public:
 
 	static void Restart();
 	static void Quit();
-	static void PreloadAssets(ScriptingAPI::Scene^ scene);
+	static void PreloadAssets();
 };
 
 public ref class PlayerPrefs {
