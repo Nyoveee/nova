@@ -189,6 +189,7 @@ class Grunt : Enemy
                     gruntState = GruntState.Death;
                     audioComponent.PlayRandomSound(deathSFX);
                     animator.PlayAnimation("Grunt Death");
+                    ActivateDeathFlicker();
                     DisablePhysicalInteraction();
                 }
             }

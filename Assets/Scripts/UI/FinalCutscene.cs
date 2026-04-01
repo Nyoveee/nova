@@ -9,8 +9,8 @@ class FinalCutscene : Script
     public List<GameObject> cutsceneShots;
     public List<CameraComponent_> cutsceneCameras;
     public List<float> cutsceneDuration;
-    public float fadeTransitionTime;
-    public float fadeStayTime;
+    public List<float> cutsceneFadeDuration;
+    public List<float> cutsceneFadeStayIn;
 
     bool isFading = false;
     bool hasFadedIn = false;
@@ -28,7 +28,7 @@ class FinalCutscene : Script
         Invoke(() =>
         {
             // We skip to fade out phase..
-            timeElapsed = fadeTransitionTime + fadeStayTime;
+            timeElapsed = cutsceneFadeDuration[0] + cutsceneFadeStayIn[0];
             hasFadedIn = true;
             isFading = true;
             fadeToBlackCallback = () => { };
@@ -52,28 +52,28 @@ class FinalCutscene : Script
         }
 
         // We begin fading to black.. 
-        if (timeElapsed < fadeTransitionTime)
+        if (timeElapsed < cutsceneFadeDuration[currentCutsceneIndex])
         {
-            float interval = timeElapsed / fadeTransitionTime;
+            float interval = timeElapsed / cutsceneFadeDuration[currentCutsceneIndex];
             blackOverlay.colorTint = new ColorAlpha(0f, 0f, 0f, Mathf.Interpolate(0f, 1f, interval, 1f));
         }
-        else if (timeElapsed < (fadeTransitionTime + fadeStayTime) && !hasFadedIn)
+        else if (timeElapsed < (cutsceneFadeDuration[currentCutsceneIndex] + cutsceneFadeStayIn[currentCutsceneIndex]) && !hasFadedIn)
         {
             blackOverlay.colorTint = new ColorAlpha(0f, 0f, 0f, 1f);
             hasFadedIn = true;
             fadeToBlackCallback();
         }
         // We begin fading from black..
-        else if (timeElapsed > (fadeTransitionTime + fadeStayTime))
+        else if (timeElapsed > (cutsceneFadeDuration[currentCutsceneIndex] + cutsceneFadeStayIn[currentCutsceneIndex]))
         {
-            float timeElapsedInRespect = timeElapsed - (fadeTransitionTime + fadeStayTime);
-            float interval = Mathf.Min(timeElapsedInRespect / fadeTransitionTime, 1f);
+            float timeElapsedInRespect = timeElapsed - (cutsceneFadeDuration[currentCutsceneIndex] + cutsceneFadeStayIn[currentCutsceneIndex]);
+            float interval = Mathf.Min(timeElapsedInRespect / cutsceneFadeDuration[currentCutsceneIndex], 1f);
 
             blackOverlay.colorTint = new ColorAlpha(0f, 0f, 0f, Mathf.Interpolate(1f, 0f, interval, 1f));
         }
 
         // Finished fading..
-        if (timeElapsed > (2 * fadeTransitionTime + fadeStayTime))
+        if (timeElapsed > (2 * cutsceneFadeDuration[currentCutsceneIndex] + cutsceneFadeStayIn[currentCutsceneIndex]))
         {
             finishedFadingCallback();
             isFading = false;

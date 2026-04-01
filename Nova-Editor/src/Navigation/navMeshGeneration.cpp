@@ -23,6 +23,7 @@ NavMeshGeneration::NavMeshGeneration(Editor& editor) :
 	resourceManager	{ editor.resourceManager }
 {
 	buildSettings.agentName				= "Humanoid";
+	buildSettings.excludeDisabledObjects = true;
 	buildSettings.cellSize				= 0.3f;
 	buildSettings.cellHeight			= 0.2f;
 	buildSettings.agentHeight			= 2.0f;
@@ -82,12 +83,19 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 	// =====================================================
 
 	// Gather all meshes
-	for (auto&& [entity, transform, meshRenderer] : ecs.registry.view<Transform, MeshRenderer>().each()) {
+	for (auto&& [entity, entityData ,transform, meshRenderer] : ecs.registry.view<EntityData,Transform, MeshRenderer>().each()) {
 		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
 		
 		if (!model) {
 			continue;
 		}
+
+		//if we want to exclude disabled objects, check if its active
+		if (buildSettings.excludeDisabledObjects && !entityData.isActive)
+		{
+			continue;
+		}
+
 
 		NavMeshModifier* navMeshModifier = nullptr;
 
@@ -582,6 +590,7 @@ void NavMeshGeneration::PrependAdditionalData(unsigned char** navData, int* data
 void NavMeshGeneration::ResetBuildSetting()
 {
 	buildSettings.agentName = std::string{ "Humanoid" };
+	buildSettings.excludeDisabledObjects = true;
 	buildSettings.cellSize = 0.3f;
 	buildSettings.cellHeight = 0.2f;
 	buildSettings.agentHeight = 2.0f;
@@ -596,6 +605,5 @@ void NavMeshGeneration::ResetBuildSetting()
 	buildSettings.detailSampleDist = 6.0f;
 	buildSettings.detailSampleMaxError = 1.0f;
 	buildSettings.partitionType = 0;
-
 
 }

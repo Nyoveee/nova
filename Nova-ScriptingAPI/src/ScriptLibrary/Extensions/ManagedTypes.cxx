@@ -241,7 +241,8 @@ void Transform_::rotate(Vector3 axis, float degrees) {
 	Transform* transform = nativeComponent();
 
 	if (transform) {
-		transform->rotation = glm::rotate(transform->rotation, static_cast<float>(toRadian(degrees)), axis.native());
+		glm::quat deltaRotation = glm::angleAxis(glm::radians(degrees), axis.native());
+		transform->rotation = deltaRotation * transform->rotation;
 	}
 }
 
@@ -249,7 +250,14 @@ void Transform_::rotate(Quaternion quartenion) {
 	nativeComponent()->rotation = quartenion.native() * nativeComponent()->rotation;
 }
 
+void Transform_::localRotate(Vector3 axis, float degrees) {
+	Transform* transform = nativeComponent();
 
+	if (transform) {
+		glm::quat deltaRotation = glm::angleAxis(glm::radians(degrees), axis.native());
+		transform->localRotation = deltaRotation * transform->localRotation;
+	}
+}
 
 void Transform_::setFront(Vector3 frontAxis) {
 	nativeComponent()->rotation = glm::quatLookAt(-frontAxis.native(), glm::vec3{ 0,1,0 });

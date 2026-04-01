@@ -112,8 +112,13 @@ class BossHomingMissile : Enemy
                         Destroy(gameObject);
                     }, 0.1f);
 
-                    Instantiate(destroyVFX, gameObject.transform.position, gameObject.transform.rotation);
-
+                    GameObject spawnedDestroyVFX = Instantiate(destroyVFX, gameObject.transform.position, gameObject.transform.rotation);
+                    foreach (GameObject emitter in spawnedDestroyVFX.GetChildren())
+                    {
+                        ParticleEmitter_? particleEmitter_ = emitter.getComponent<ParticleEmitter_>();
+                        if (particleEmitter_ != null)
+                            particleEmitter_.emit();
+                    }
 
                 }
                 break;
