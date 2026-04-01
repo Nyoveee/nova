@@ -24,6 +24,11 @@ class AssetViewerUI;
 template<class T>
 concept LazyLoadResource = std::same_as<T, Texture> || std::same_as<T, Model>;
 
+enum class LoadingOption {
+	LoadImmediately,
+	LoadOffThread // if possible
+};
+
 class ResourceManager {
 public:
 	enum class QueryResult {
@@ -54,7 +59,7 @@ public:
 public:
 	// main way all systems query for a specific resource.
 	// lazy loaded resources are loaded in a separate thread
-	template <ValidResource T>
+	template <ValidResource T, LoadingOption loadingOption = LoadingOption::LoadOffThread>
 	ResourceQuery<T> getResource(ResourceID id);
 
 	// loads the resource into memory. forces the resource to be loaded (no lazy loading) if not already loading

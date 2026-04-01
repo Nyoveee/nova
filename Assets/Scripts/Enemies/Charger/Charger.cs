@@ -12,6 +12,8 @@ class Charger : Enemy
     [SerializableField]
     private GameObject? attackHitbox = null;
     [SerializableField]
+    private GameObject chargerHead;
+    [SerializableField]
     private Prefab stompHitBoxPrefab;
     [SerializableField]
     private Transform_? stompHitBoxTransform;
@@ -246,7 +248,7 @@ class Charger : Enemy
     private void Update_Idle(){
         currentChargeCooldown -= Time.V_DeltaTime();
         if (GetDistanceFromPlayer() < chargerstats.chasingRange 
-            && HasLineOfSightToPlayer(gameObject)
+            && HasLineOfSightToPlayer(chargerHead)
             && MoveToNavMeshPosition(player.transform.position))
         {
             audioComponent.PlayRandomSound(spotSFX);
@@ -274,7 +276,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerJump");
             return;
         }
-        if (GetDistanceFromPlayer() <= chargerstats.chasingRange && HasLineOfSightToPlayer(gameObject))
+        if (GetDistanceFromPlayer() <= chargerstats.chasingRange && HasLineOfSightToPlayer(chargerHead))
         {
             //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
             if (Random.Range(0, 1) <= this.spotCallSFXChance)
@@ -285,7 +287,7 @@ class Charger : Enemy
             chargerState = ChargerState.Walk;
             return;
         }
-        if (IsTargetNavigationPositionReached() && !HasLineOfSightToPlayer(gameObject))
+        if (IsTargetNavigationPositionReached() && !HasLineOfSightToPlayer(chargerHead))
         {
             chargerState = ChargerState.Idle;
             animator.PlayAnimation("ChargerIdle");
@@ -301,7 +303,7 @@ class Charger : Enemy
             StopNavMeshMovement();
             return;
         }
-        if (GetDistanceFromPlayer() > chargerstats.chasingRange || !HasLineOfSightToPlayer(gameObject))
+        if (GetDistanceFromPlayer() > chargerstats.chasingRange || !HasLineOfSightToPlayer(chargerHead))
         {
             MoveToNavMeshPosition(player.transform.position);
             chargerState = ChargerState.Patrol;

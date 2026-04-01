@@ -75,6 +75,11 @@ class Admin : Script
                 sniper.CurrentSp += 17;
         });
 
+        MapKey(Key.G, () =>
+        {
+            playerBody?.ToggleGodMode();
+        });
+
         MapKey(Key._1, () => {
             PlayerPrefs.SetInt("CompletedLevel", 0);
             if (levelSelects.Count == 0)

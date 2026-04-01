@@ -213,7 +213,9 @@ private:
 	// render all models (normal and skinned).
 	void renderModels(RenderPass renderPass, std::optional<GLuint> depthTextureId);
 
-	void renderTranslucentModels(PairFrameBuffer const& frameBuffers);
+	void renderTranslucentModels(PairFrameBuffer& frameBuffers);
+	
+	void copyDepthTexture(GLuint fromDepthTexture);
 
 	void renderDepthTranslucentModels(PairFrameBuffer const& frameBuffers);
 	void renderNormalTranslucentModels();
@@ -338,7 +340,7 @@ private:
 
 	// Resolves TAA, for anti aliasing.. then update the history texture..
 	void resolveTAA(PairFrameBuffer& frameBuffers, GLuint historyTexture);
-	
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
@@ -392,6 +394,9 @@ private:
 
 	GLuint editorHistoryTexture;
 	GLuint gameHistoryTexture;
+
+	GLuint depthTextureCopy;
+
 	// Video quad geometry (shared across all VideoPlayer entities)
 	GLuint videoVAO;
 	BufferObject videoVBO;

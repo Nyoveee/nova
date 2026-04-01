@@ -237,6 +237,44 @@ void Hierarchy::displayLayerTable() {
 	}
 }
 
+void Hierarchy::displayAllEntityIds(const char* labelName, entt::entity selectedEntity, std::function<void(entt::entity)> const& onClickCallback) {
+	entt::registry& registry = editor.engine.ecs.registry;
+	
+	EntityData* selectedEntityData = registry.try_get<EntityData>(selectedEntity);
+	const char* selectedEntityName = selectedEntityData ? selectedEntityData->name.c_str() : "<None>";
+
+	if (ImGui::BeginCombo(labelName, selectedEntityName)) {
+		ImGui::InputText("Search", &entitySearchIdQuery);
+
+		ImGui::PushID(-1);
+
+		if (ImGui::Selectable("<None>", false)) {
+			onClickCallback(entt::null);
+		}
+
+		ImGui::PopID();
+
+		for (auto&& [entityId, entityData] : registry.view<EntityData>().each()) {
+			std::string entityIdName = std::to_string(static_cast<unsigned int>(entityId));
+
+			// attempt to find entity..
+			if (entityIdName.find(entitySearchIdQuery) == std::string::npos) {
+				continue;
+			}
+
+			ImGui::PushID(static_cast<int>(entityId));
+
+			if (ImGui::Selectable(entityIdName.c_str(), selectedEntity == entityId)) {
+				onClickCallback(entityId);
+			}
+
+			ImGui::PopID();
+		}
+
+		ImGui::EndCombo();
+	}
+}
+
 void Hierarchy::update() {
 	entt::registry& registry = ecs.registry;
 
@@ -284,6 +322,16 @@ void Hierarchy::update() {
 
 		if (ImGui::BeginTabItem("Layers")) {
 			displayLayerTable();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Debug")) {
+			entt::entity entity = editor.getSelectedEntities().size() ? editor.getSelectedEntities()[0] : entt::null;
+
+			displayAllEntityIds("Entity ID", entity, [&](entt::entity newId) {
+				editor.selectEntities({ newId });
+			});
+
 			ImGui::EndTabItem();
 		}
 

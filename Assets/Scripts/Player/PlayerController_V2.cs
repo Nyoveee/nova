@@ -60,6 +60,7 @@ class PlayerController_V2 : Script
     [SerializableField]
     private PlayerRotateController rotateController;
 
+    private bool adminGodMode;
     // ==================================
     // Events
     // ==================================
@@ -754,7 +755,7 @@ class PlayerController_V2 : Script
     public void TakeDamage(float damage)
     {
 
-        if (isIFrames == true)
+        if (isIFrames == true || adminGodMode)
         {
             return; //no damage taken
         }
@@ -929,5 +930,10 @@ class PlayerController_V2 : Script
         rigidbody.SetGravityFactor(baseGravityFactor);
         rigidbody.SetVelocityLimits(100000);
         currentStamina = 0;
+    }
+    
+    public void ToggleGodMode()
+    {
+        adminGodMode = !adminGodMode;
     }
 }

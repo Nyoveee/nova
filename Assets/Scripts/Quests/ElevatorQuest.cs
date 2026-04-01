@@ -8,6 +8,10 @@ class ElevatorQuest : Quest
 {
     [SerializableField]
     private GameObject checkPointIndicator;
+
+    [SerializableField]
+    GameObject playerOrientation;
+
     [SerializableField]
     private Elevator elevator;
 
@@ -81,6 +85,7 @@ class ElevatorQuest : Quest
             Vector3 elevatorCenter = new Vector3(elevator.gameObject.transform.position.x, playerBody.transform.position.y, elevator.gameObject.transform.position.z);
             playerBody.transform.position = elevatorCenter;
             playerHead.transform.localRotation = Quaternion.LookRotation(elevator.gameObject.transform.front);
+            playerOrientation.transform.localRotation = Quaternion.LookRotation(elevator.gameObject.transform.front);
         }, delayForDialogue + dialogueScript.GetFadeTransitionTime());
     }
 

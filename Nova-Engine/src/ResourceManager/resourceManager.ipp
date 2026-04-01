@@ -4,7 +4,7 @@
 #include "resourceManager.h"
 #include "assetIO.h"
 
-template <ValidResource T>
+template <ValidResource T, LoadingOption loadingOption>
 ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 	// Let's find our loaded resource in the map
 	auto iterator = loadedResources.find(id);
@@ -37,7 +37,7 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 	auto&& [_, resourceFilePath] = *filepathIterator;
 
 	// attempts to load the resource..
-	if constexpr (LazyLoadResource<T>) {
+	if constexpr (LazyLoadResource<T> && loadingOption == LoadingOption::LoadOffThread) {
 		// lazy load!
 
 		// we need to copy the "reference" into our lambda. to do that we use pointer.
