@@ -1,6 +1,32 @@
 {
     "entryNode": 1000,
     "nodes": {
+        "9868178887971946501": {
+            "id": 9868178887971946501,
+            "animation": 7295743889278828547,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
+            "name": "Gunner_Idle",
+            "animationEvents": null
+        },
+        "1221267603423068175": {
+            "id": 1221267603423068175,
+            "animation": 4413440127761711109,
+            "transitions": null,
+            "toLoop": false,
+            "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
+            "name": "Gunner_Jump",
+            "animationEvents": [
+                {
+                    "key": 10,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent3"
+                }
+            ]
+        },
         "1000": {
             "id": 1000,
             "animation": 18446744073709551615,
@@ -12,31 +38,8 @@
             ],
             "toLoop": true,
             "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
             "name": "Entry Node",
-            "animationEvents": null
-        },
-        "1221267603423068175": {
-            "id": 1221267603423068175,
-            "animation": 4413440127761711109,
-            "transitions": null,
-            "toLoop": false,
-            "blendFactor": 0.20000000298023224,
-            "name": "Gunner_Jump",
-            "animationEvents": [
-                {
-                    "key": 10,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent3"
-                }
-            ]
-        },
-        "9868178887971946501": {
-            "id": 9868178887971946501,
-            "animation": 7295743889278828547,
-            "transitions": null,
-            "toLoop": true,
-            "blendFactor": 0.20000000298023224,
-            "name": "Gunner_Idle",
             "animationEvents": null
         },
         "13903404154096713735": {
@@ -45,6 +48,7 @@
             "transitions": null,
             "toLoop": true,
             "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
             "name": "Gunner_Attack",
             "animationEvents": [
                 {
@@ -54,22 +58,24 @@
                 }
             ]
         },
-        "16209247163311652875": {
-            "id": 16209247163311652875,
-            "animation": 4680032117239234563,
-            "transitions": null,
-            "toLoop": false,
-            "blendFactor": 0.20000000298023224,
-            "name": "Gunner_Death",
-            "animationEvents": null
-        },
         "5832953621849931785": {
             "id": 5832953621849931785,
             "animation": 2684057870851440649,
             "transitions": null,
             "toLoop": true,
             "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
             "name": "Gunner_Walk",
+            "animationEvents": null
+        },
+        "16209247163311652875": {
+            "id": 16209247163311652875,
+            "animation": 4680032117239234563,
+            "transitions": null,
+            "toLoop": false,
+            "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
+            "name": "Gunner_Death",
             "animationEvents": null
         },
         "9291718135670767629": {
@@ -78,6 +84,7 @@
             "transitions": null,
             "toLoop": false,
             "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
             "name": "Gunner_Stagger",
             "animationEvents": [
                 {
@@ -93,6 +100,7 @@
             "transitions": null,
             "toLoop": true,
             "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
             "name": "Gunner_Run",
             "animationEvents": null
         }
