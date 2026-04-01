@@ -193,15 +193,16 @@ public abstract class Enemy : Script
     {
         navigationTargetPosition = null;
         string[] layerMask = { "Floor" };
-        RayCastResult? sourceResult = PhysicsAPI.Raycast(gameObject.transform.position, Vector3.Down(), 1000f, layerMask);
-        if (sourceResult == null)
-            return false;
+
         RayCastResult? targetResult = PhysicsAPI.Raycast(position, Vector3.Down(), 1000f, layerMask);
         if (targetResult == null)
             return false;
-        List<Vector3> path = NavigationAPI.CalculatePath("Humanoid", sourceResult.Value.point, targetResult.Value.point);
+        List<Vector3> path = NavigationAPI.CalculatePath("Humanoid", gameObject.transform.position, targetResult.Value.point);
         if (path.Count == 0 || (path[path.Count - 1] - targetResult.Value.point).Length() > navigationArrivalDistance)
+        {
             return false;
+        }
+        
         navigationTargetPosition = path[path.Count - 1];
         NavigationAPI.setDestination(gameObject, navigationTargetPosition);
         return true;

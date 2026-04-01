@@ -122,9 +122,13 @@ class Gunner : Enemy
             gunnerState = GunnerState.Stagger;
             Invoke(() => {
                 if (gunnerState != GunnerState.Death)
+                {
                     gunnerState = originalState;
-                if(gunnerState == GunnerState.Walk)
-                    MoveToNavMeshPosition(targetVantagePoint.transform.position);
+                    if (gunnerState == GunnerState.Walk)
+                        MoveToNavMeshPosition(targetVantagePoint.transform.position);
+                    if (gunnerState == GunnerState.Shoot)
+                        StopNavMeshMovement();
+                }
             }, movementStaggerTime);
         }
     }
@@ -284,7 +288,7 @@ class Gunner : Enemy
     private void Update_Shoot()
     {
         LookAt(player);
-        if (!HasLineOfSightToPlayer(gunnerHead) || GetDistanceFromPlayer() < gunnerStats.escapeRange)
+        if (!HasLineOfSightToPlayer(targetVantagePoint) || GetDistanceFromPlayer() < gunnerStats.escapeRange)
         {
             gunnerState = GunnerState.Idle;
             animator.PlayAnimation("Gunner_Idle");
