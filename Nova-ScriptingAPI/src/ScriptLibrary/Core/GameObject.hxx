@@ -31,8 +31,11 @@ public:
 	array<GameObject^>^ GetChildren();
 	System::UInt32 GetId();
 
-
 	bool IsActive();
+
+	void detachSocket();
+	void attachSocket(int boneIndex);
+
 internal:
 	std::string GetNameID();
 public:

@@ -15,10 +15,14 @@ class GunAnimationDelegate : Script
     [SerializableField]
     private string functionName3;
 
+    [SerializableField]
+    private string functionName4;
+
     public void TriggerEvent() { CallMethod(functionName); }
     public void TriggerEvent2() { CallMethod(functionName2); }
 
     public void TriggerEvent3() { CallMethod(functionName3); }
+    public void TriggerEvent4() { CallMethod(functionName4); }
 
     private void CallMethod(string method)
     {

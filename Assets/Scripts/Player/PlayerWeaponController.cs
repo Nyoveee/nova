@@ -24,7 +24,7 @@ class PlayerWeaponController : Script
     public required GameObject playerArmGun;
     public required Prefab thrownRiflePrefab;
     public required Prefab ammoTrailPrefab;
-
+    public required Sequence_ weaponOffset;
 
     public float armingTime = 0.3f;
     public float bulletSpeed;
@@ -143,7 +143,8 @@ class PlayerWeaponController : Script
                 break;
             case WeaponControlStates.DisarmingFree:
                 {
-                    if(playerArmGun.getComponent<Animator_>().GetTimeElapsed() == 0)
+                    // Transition to idle mode..
+                    if (playerArmGun.getComponent<Animator_>().GetTimeElapsed() == 0)
                     {
                         weaponControlStates = WeaponControlStates.WeaponFree;
                         playerArmGun.getComponent<Animator_>().speedMultiplier = 1f;
@@ -198,10 +199,11 @@ class PlayerWeaponController : Script
     {
         weaponControlStates = WeaponControlStates.ArmingThrow;
 
-        playerArmGun.getComponent<Sequence_>().speedMultiplier = 1f;
         playerArmGun.getComponent<Animator_>().speedMultiplier = 1f;
-
         playerArmGun.getComponent<Animator_>().PlayAnimation(ThrowAnimationName);
+
+        weaponOffset.speedMultiplier = 1f;
+        weaponOffset.play();
     }
 
     private void Disarming()
@@ -211,8 +213,10 @@ class PlayerWeaponController : Script
             weaponControlStates = WeaponControlStates.DisarmingFree;
             isArmingRequest = false;
 
-            playerArmGun.getComponent<Sequence_>().speedMultiplier = -1f;
             playerArmGun.getComponent<Animator_>().speedMultiplier = -1f;
+
+            weaponOffset.speedMultiplier = -1f;
+            weaponOffset.play();
         }
     }
 
@@ -226,7 +230,10 @@ class PlayerWeaponController : Script
 
         // The final glow strength scales with how low the ammo count is..
         finalGlowStrength = noAmmoGlowStrength * Mathf.Pow(1f - (float)currentlyHeldGun.CurrentAmmo / (float)currentlyHeldGun.MaxAmmo, ammoGlowScalePower);
+        sniperMesh.setMaterialFloat(SNIPER_BARREL_MATERIAL_INDEX, "emissiveStrength", finalGlowStrength);
+        sniperMesh.setMaterialFloat(SNIPER_MATERIAL_MATERIAL_INDEX, "emissiveStrength", finalGlowStrength);
     }
+
     private void Fire()
     {
         if (isShootingDisabled)
@@ -278,6 +285,9 @@ class PlayerWeaponController : Script
             //playerArmGun.getComponent<Animator_>().SetFrame(30);
             playerArmGun.getComponent<Animator_>().speedMultiplier = 1f;
             weaponControlStates = WeaponControlStates.AwaitWeaponReturn;
+
+            // restart immeidately 
+            weaponOffset.speedMultiplier = -1f;
         }
     }
 
@@ -334,7 +344,7 @@ class PlayerWeaponController : Script
             playerArmGun.getComponent<Animator_>().PlayAnimation(RetrieveAnimationName);
             playerArmGun.getComponent<Animator_>().SetFrame(35);
 
-            AnimateGunGlow();
+            finalGlowStrength = noAmmoGlowStrength * Mathf.Pow(1f - (float)currentlyHeldGun.CurrentAmmo / (float)currentlyHeldGun.MaxAmmo, ammoGlowScalePower);
         }
     }
 
@@ -364,5 +374,11 @@ class PlayerWeaponController : Script
     {
         playerArmGun.getComponent<Animator_>().speedMultiplier = 0f;
         weaponControlStates = WeaponControlStates.ThrowReady;   
+    }
+
+    public void MoveWeaponOffset()
+    {
+        weaponOffset.speedMultiplier = 1f;
+        weaponOffset.play();    
     }
 }
