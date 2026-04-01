@@ -88,7 +88,13 @@ class Gunner : Enemy
     /***********************************************************
        Helpers 
     ***********************************************************/
+    private bool IsWithinVantagePoint()
+    {
+        Vector3 vantagePoint = new Vector3(targetVantagePoint.transform.position.x, 0, targetVantagePoint.transform.position.z);
+        Vector3 gunnerPos = new Vector3(gameObject.transform.position.x, 0, gameObject.transform.position.z);
 
+        return Vector3.Distance(vantagePoint, gunnerPos) <= gunnerStats.targetDistanceFromVantagePoint;
+    }
     private void GetVantagePoint()
     {
         targetVantagePoint = null;
@@ -268,17 +274,13 @@ class Gunner : Enemy
             LookAt(GetTargetJumpPosition());
             return;
         }
-
-        Vector3 vantagePoint = new Vector3(targetVantagePoint.transform.position.x, 0, targetVantagePoint.transform.position.z);
-        Vector3 gunnerPos     = new Vector3(gameObject.transform.position.x,         0, gameObject.transform.position.z);
-      
-        if(HasLineOfSightToPlayer(gunnerHead) && GetDistanceFromPlayer() >= gunnerStats.shootingRange)
+        if (IsWithinVantagePoint())
         {
             gunnerState = GunnerState.Shoot;
             animator.PlayAnimation("Gunner_Attack");
             StopNavMeshMovement();
         }
-        else if (Vector3.Distance(vantagePoint, gunnerPos) <= gunnerStats.targetDistanceFromVantagePoint)
+        else if (HasLineOfSightToPlayer(gunnerHead) && GetDistanceFromPlayer() >= gunnerStats.shootingRange)
         {
             gunnerState = GunnerState.Shoot;
             animator.PlayAnimation("Gunner_Attack");
@@ -288,12 +290,23 @@ class Gunner : Enemy
     private void Update_Shoot()
     {
         LookAt(player);
-        if (!HasLineOfSightToPlayer(targetVantagePoint) || GetDistanceFromPlayer() < gunnerStats.escapeRange)
+        if(GetDistanceFromPlayer() < gunnerStats.escapeRange)
         {
             gunnerState = GunnerState.Idle;
             animator.PlayAnimation("Gunner_Idle");
             return;
         }
+        if (!IsWithinVantagePoint() && !HasLineOfSightToPlayer(gunnerHead))
+        {
+            gunnerState = GunnerState.Idle;
+            animator.PlayAnimation("Gunner_Idle");
+        }
+        if (IsWithinVantagePoint() && !HasLineOfSightToPlayer(targetVantagePoint))
+        {
+            gunnerState = GunnerState.Idle;
+            animator.PlayAnimation("Gunner_Idle");
+        }
+        
     }
     private void Update_Stagger(){
     
