@@ -21,8 +21,6 @@ class SplashScreen : Script
     private float delayTime;
     [SerializableField]
     private float fadeOutTime;
-    [SerializableField]
-    private List<Scene> levelScenes;
 
     private float currentFadeTime = 0;
     private int currentImageIndex = 0;
@@ -39,10 +37,7 @@ class SplashScreen : Script
         MapKey(Key.Escape, SkipCurrentLogo);
 
         // Preload necessary scene assets
-        foreach (Scene scene in levelScenes) {
-            Systems.PreloadAssets(scene);
-        }
-        Systems.PreloadAllTextures();
+        Systems.PreloadAssets();
     }
     protected override void update()
     {
