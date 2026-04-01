@@ -3577,11 +3577,11 @@ void Renderer::hdrAndGammaCorrection(PairFrameBuffer& frameBuffers, bool toToneM
 	toneMappingShader.setBool("toGammaCorrect", p_toGammaCorrect);
 	toneMappingShader.setFloat("gamma", renderConfig.gamma);
 
-	toneMappingShader.setFloat("temperature", sceneProperties.temperature);
-	toneMappingShader.setFloat("tint", sceneProperties.tint);
-	toneMappingShader.setFloat("brightness", sceneProperties.brightness);
-	toneMappingShader.setFloat("contrast", sceneProperties.contrast);
-	toneMappingShader.setFloat("saturation", sceneProperties.saturation);
+	toneMappingShader.setFloat("temperature", sceneProperties.temperature * 2.0f - 1.0f);
+	toneMappingShader.setFloat("tint", sceneProperties.tint * 2.0f - 1.0f);
+	toneMappingShader.setFloat("brightness", sceneProperties.brightness * 2.0f - 1.0f);
+	toneMappingShader.setFloat("contrast", sceneProperties.contrast * 2.0f);
+	toneMappingShader.setFloat("saturation", sceneProperties.saturation * 2.0f - 1.0f);
 	
 	// Bind the HDR texture from main framebuffer
 	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureId());

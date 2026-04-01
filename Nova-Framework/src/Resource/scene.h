@@ -30,8 +30,8 @@ struct SceneProperties {
 	NormalizedFloat contrast = 0.5f;
 	NormalizedFloat saturation = 0.5f;
 
-	float temperature = 6500.f;
-	float tint = 0.f;
+	NormalizedFloat temperature = 6500.f;
+	NormalizedFloat tint = 0.f;
 
 	NormalizedFloat iblDiffuseStrength = 1.f;
 	NormalizedFloat iblSpecularStrength = 1.f;
