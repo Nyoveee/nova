@@ -62,6 +62,7 @@ class Grunt : Enemy
     }
     // State machine
     private GruntState gruntState = GruntState.Spawning;
+    private GruntState gruntStateBeforeJumping;
     private Dictionary<GruntState, CurrentState> updateState = new Dictionary<GruntState, CurrentState>();
     Vector3 lastKnownPlayerPosition;
     // This function is first invoked when game starts.
@@ -247,7 +248,9 @@ class Grunt : Enemy
             Debug.LogWarning("Missing Reference Found : " + gameObject);
             return;
         }
-        if(GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSight(headPosition))
+        if(GetDistanceFromPlayer() <= gruntStats.chasingRadius 
+            && HasLineOfSightToPlayer(headPosition)
+            && MoveToNavMeshPosition(player.transform.position))
         {
             //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
             if(Random.Range(0, 1) <= this.spotCallSFXChance)
@@ -260,7 +263,17 @@ class Grunt : Enemy
     }
     private void Update_PatrolState()
     {
-        if (GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSight(headPosition))
+        if (IsOnNavMeshOfflink())
+        {
+            gruntStateBeforeJumping = gruntState;
+            gruntState = GruntState.PreJump;
+            animator.PlayAnimation("Grunt Jump");
+            StopNavMeshMovement();
+            LookAt(GetTargetJumpPosition());
+            return;
+        }
+        if (GetDistanceFromPlayer() <= gruntStats.chasingRadius 
+            && HasLineOfSightToPlayer(headPosition))
         {
             //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
             if (Random.Range(0, 1) <= this.spotCallSFXChance)
@@ -271,7 +284,7 @@ class Grunt : Enemy
             gruntState = GruntState.Chasing;
             return;
         }
-        if(IsTargetNavigationPositionReached() && !HasLineOfSight(headPosition))
+        if(IsTargetNavigationPositionReached() && !HasLineOfSightToPlayer(headPosition))
         {
             animator.PlayAnimation("Grunt Idle (Base)");
             gruntState = GruntState.Idle;
@@ -280,17 +293,25 @@ class Grunt : Enemy
     }
     private void Update_ChasingState()
     {
+        // Move Enemy 
+        if (!MoveToNavMeshPosition(player.transform.position))
+        {
+            animator.PlayAnimation("Grunt Idle (Base)");
+            gruntState = GruntState.Idle;
+            return;
+        }
         animator.SetFloat("Range", GetDistanceFromPlayer());
         HandleFootStep();
         if (IsOnNavMeshOfflink())
         {
+            gruntStateBeforeJumping = gruntState;
             gruntState = GruntState.PreJump;
             animator.PlayAnimation("Grunt Jump");
             StopNavMeshMovement();
             LookAt(GetTargetJumpPosition());
             return;
         }
-        if (GetDistanceFromPlayer() > gruntStats.chasingRadius || !HasLineOfSight(headPosition))
+        if (GetDistanceFromPlayer() > gruntStats.chasingRadius || !HasLineOfSightToPlayer(headPosition))
         {
             gruntState = GruntState.Patrol;
             MoveToNavMeshPosition(player.transform.position);
@@ -304,8 +325,7 @@ class Grunt : Enemy
             StopNavMeshMovement();
             return;
         }
-        // Move Enemy 
-        MoveToNavMeshPosition(player.transform.position);
+
     }
     private void Update_AttackState()
     {
@@ -323,10 +343,11 @@ class Grunt : Enemy
     {
         if (IsJumpFinished())
         {
-            gruntState = GruntState.Idle;
-            animator.PlayAnimation("Grunt Idle (Base)");
-            navMeshAgent.CompleteOffMeshLink();
+            gruntState = gruntStateBeforeJumping;
+            animator.PlayAnimation("Grunt Running");
             navMeshAgent.enable = true;
+            navMeshAgent.CompleteOffMeshLink();
+            ContinueExistingPath();
         }
     }
     private void Update_Stagger() { }
@@ -359,15 +380,6 @@ class Grunt : Enemy
     public void BeginSwing()
     {
         audioComponent.PlayRandomSound(attackSFX);
-        //if (hitboxPrefab == null)
-        //    return;
-        //hitbox = Instantiate(hitboxPrefab);
-        //if(hitbox!= null && hitboxPosition!= null){
-        //    hitbox.transform.localPosition = hitboxPosition.transform.position;
-        //    EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();
-        //    if (enemyHitBox != null && gruntStats != null)
-        //        enemyHitBox.SetDamage(gruntStats.damage);
-        //}
         if (attackHitbox != null)
         {
             //Debug.Log("Attack Hitbox Activated");

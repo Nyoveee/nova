@@ -97,7 +97,7 @@ class Gunner : Enemy
             return;
         foreach (GameObject vantagePoint in gameGlobalReferenceManager.vantagePoints)
         {
-            if (!HasLineOfSight(vantagePoint))
+            if (!HasLineOfSightToPlayer(vantagePoint))
                 continue;
             // Vantage point must be at a safe distance from the player that the gunner can shoot from
             if (Vector3.Distance(vantagePoint.transform.position, playerHead.transform.position) <= gunnerStats.safeVantageRange)
@@ -122,9 +122,13 @@ class Gunner : Enemy
             gunnerState = GunnerState.Stagger;
             Invoke(() => {
                 if (gunnerState != GunnerState.Death)
+                {
                     gunnerState = originalState;
-                if(gunnerState == GunnerState.Walk)
-                    MoveToNavMeshPosition(targetVantagePoint.transform.position);
+                    if (gunnerState == GunnerState.Walk)
+                        MoveToNavMeshPosition(targetVantagePoint.transform.position);
+                    if (gunnerState == GunnerState.Shoot)
+                        StopNavMeshMovement();
+                }
             }, movementStaggerTime);
         }
     }
@@ -243,7 +247,7 @@ class Gunner : Enemy
     }
     private void Update_Walk()
     {
-        if (!HasLineOfSight(targetVantagePoint) || Vector3.Distance(targetVantagePoint.transform.position, playerHead.transform.position) <= gunnerStats.escapeRange)
+        if (!HasLineOfSightToPlayer(targetVantagePoint) || Vector3.Distance(targetVantagePoint.transform.position, playerHead.transform.position) <= gunnerStats.escapeRange)
         {
             GetVantagePoint();
 
@@ -268,7 +272,7 @@ class Gunner : Enemy
         Vector3 vantagePoint = new Vector3(targetVantagePoint.transform.position.x, 0, targetVantagePoint.transform.position.z);
         Vector3 gunnerPos     = new Vector3(gameObject.transform.position.x,         0, gameObject.transform.position.z);
       
-        if(HasLineOfSight(playerHead) && GetDistanceFromPlayer() >= gunnerStats.shootingRange)
+        if(HasLineOfSightToPlayer(gunnerHead) && GetDistanceFromPlayer() >= gunnerStats.shootingRange)
         {
             gunnerState = GunnerState.Shoot;
             animator.PlayAnimation("Gunner_Attack");
@@ -284,7 +288,7 @@ class Gunner : Enemy
     private void Update_Shoot()
     {
         LookAt(player);
-        if (!HasLineOfSight(playerHead) || GetDistanceFromPlayer() < gunnerStats.escapeRange)
+        if (!HasLineOfSightToPlayer(targetVantagePoint) || GetDistanceFromPlayer() < gunnerStats.escapeRange)
         {
             gunnerState = GunnerState.Idle;
             animator.PlayAnimation("Gunner_Idle");

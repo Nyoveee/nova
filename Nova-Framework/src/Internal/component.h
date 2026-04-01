@@ -264,7 +264,9 @@ struct Animator {
 	ControllerNodeID currentNode = NO_CONTROLLER_NODE;
 	TypedResourceID<Model> currentAnimation;
 	TypedResourceID<Model> previousAnimation;
+
 	float blendFactor = 0.2f;
+	Controller::Node::Frame previousFrameBlending = Controller::Node::Frame::Last;
 
 	// this will be instantiated in runtime.
 	std::vector<Controller::Parameter> parameters;

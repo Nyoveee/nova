@@ -13,6 +13,12 @@ public class QuestManager : Script
 
     [SerializableField]
     private GameObject questContainer;
+
+    [SerializableField]
+    private GameObject playerHead;
+    [SerializableField]
+    private GameObject playerOrientation;
+
     protected override void init()
     {
         gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
@@ -55,11 +61,6 @@ public class QuestManager : Script
                 player.OnPlayerDeath += HandlePlayerDeath;
             }
         }
-
-        if (gameUIManager != null)
-        {
-            gameUIManager.RestartFromCheckpointButton += RestartQuest;
-        }
     }
 
     protected override void update()
@@ -68,14 +69,27 @@ public class QuestManager : Script
     }
     public void SkipCurrentQuest()
     {
-        if (currentQuest != null)
-        {
+        if (currentQuest == null)
+            return;
+        do{
             currentQuest.OnSkip();
-            MoveToNextQuest();
-            if (questIndex < quests.Count)
-                TeleportToCheckPoint();
+            questIndex = Mathf.Min(questIndex + 1, quests.Count);
+            if (questIndex == quests.Count)
+            {
+                currentQuest = null;
+                break;
+            }
+            currentQuest = quests[questIndex];
         }
-  
+        while (questIndex < quests.Count && !currentQuest.HasCheckpoint());
+     
+        if(questIndex < quests.Count)
+        {
+            StartCurrentQuest();
+            TeleportToCheckPoint();
+        }
+       
+
     }
     private void HandleQuestStateChanged(object sender, Quest.QuestStateChangedEventArgs e)
     {
@@ -128,27 +142,37 @@ public class QuestManager : Script
     {
         currentQuest?.SetQuestState(Quest.QuestState.Fail);
     }
-
-    private void RestartQuest()
+    public void SkipToQuest(int index)
     {
-        if (currentQuest != null)
-        {
-            currentQuest.OnRestart();
-            currentQuest.SetQuestState(Quest.QuestState.InProgress);
-        }
-
-        if (player != null)
-        {
+        for (int i = 0;i<index;++i)
+            quests[i].OnSkip();
+        questIndex = index;
+        currentQuest = quests[questIndex];
+        StartCurrentQuest();
+        if (questIndex < quests.Count)
             TeleportToCheckPoint();
-
-            foreach (GameObject hitbox in GameObject.FindGameObjectsWithTag("EnemyHitBox"))
-                Destroy(hitbox);
+    }
+    public int GetLastCheckpoint()
+    {
+        if (currentQuest == null)
+            return quests.Count - 1;
+        while (currentQuest != null && !currentQuest.HasCheckpoint())
+        {
+            questIndex = Mathf.Max(0, questIndex - 1);
+            currentQuest = quests[questIndex];
         }
-        
+        return questIndex;
     }
     private void TeleportToCheckPoint()
     {
         player.gameObject.transform.position = currentQuest.GetCheckpointPosition();
+        if (playerHead != null && playerOrientation != null)
+        {
+            float yaw = Mathf.Deg2Rad * currentQuest.GetCheckPointTargetYaw();
+            // Currently doing this as euler angles of the checkpoint gameobject somehow changes
+            playerHead.transform.localEulerAngles = new Vector3(0, yaw, 0);
+            playerOrientation.transform.localEulerAngles = new Vector3(0, yaw, 0);
+        }
         player.OnTeleport();
     }
 }

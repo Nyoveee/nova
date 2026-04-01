@@ -43,7 +43,7 @@ class CannonWaveManager : Script
         {
             waveActive = false;
             endofLevel.getScript<EndOfLevel2>().StartScroll();
-            boat.getScript<RaiseEnemBoat>().Sink();
+            boat.getScript<RaiseEnemBoat>().StartOutro();
         }
         else if(waveActive)
         {

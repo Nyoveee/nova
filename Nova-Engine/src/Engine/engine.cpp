@@ -330,7 +330,7 @@ float Engine::getDeltaTime() const {
 	return window.getDeltaTime();
 }
 
-ENGINE_DLL_API void Engine::preload()
+void Engine::preload()
 {
 	for (ResourceID const& modelid : resourceManager.getAllResources<Model>())
 		resourceManager.getResource<Model>(modelid);

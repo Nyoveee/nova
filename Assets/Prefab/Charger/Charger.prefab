@@ -1,5 +1,5 @@
 {
-    "RootEntity": 64,
+    "RootEntity": 108,
     "Entities": [
         {
             "EntityData": {
@@ -8,12 +8,12 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    65,
-                    69,
-                    70,
-                    71,
-                    72,
-                    81
+                    109,
+                    113,
+                    114,
+                    115,
+                    116,
+                    125
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -110,7 +110,7 @@
                             {
                                 "name": "attackHitbox",
                                 "data": {
-                                    "__variant_value": 68,
+                                    "__variant_value": 112,
                                     "__variant_type": 4
                                 }
                             },
@@ -124,21 +124,21 @@
                             {
                                 "name": "stompHitBoxTransform",
                                 "data": {
-                                    "__variant_value": 70,
+                                    "__variant_value": 114,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "emitter",
                                 "data": {
-                                    "__variant_value": 71,
+                                    "__variant_value": 115,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "chargeLines",
                                 "data": {
-                                    "__variant_value": 81,
+                                    "__variant_value": 125,
                                     "__variant_type": 4
                                 }
                             },
@@ -296,7 +296,7 @@
                             {
                                 "name": "rigidbody",
                                 "data": {
-                                    "__variant_value": 64,
+                                    "__variant_value": 108,
                                     "__variant_type": 4
                                 }
                             },
@@ -317,28 +317,28 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 69,
+                                    "__variant_value": 113,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "animator",
                                 "data": {
-                                    "__variant_value": 65,
+                                    "__variant_value": 109,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "renderer",
                                 "data": {
-                                    "__variant_value": 65,
+                                    "__variant_value": 109,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshAgent",
                                 "data": {
-                                    "__variant_value": 64,
+                                    "__variant_value": 108,
                                     "__variant_type": 4
                                 }
                             },
@@ -348,19 +348,19 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 66,
+                                                "__variant_value": 110,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 67,
+                                                "__variant_value": 111,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 68,
+                                                "__variant_value": 112,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 64,
+                                                "__variant_value": 108,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -387,14 +387,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 64,
+                                    "__variant_value": 108,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 67,
+                                    "__variant_value": 111,
                                     "__variant_type": 4
                                 }
                             },
@@ -423,6 +423,13 @@
                                 "name": "deathFlickerSpeed",
                                 "data": {
                                     "__variant_value": 0.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "deathFlickerDelay",
+                                "data": {
+                                    "__variant_value": 0.0,
                                     "__variant_type": 18
                                 }
                             },
@@ -621,7 +628,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 64,
+                                    "__variant_value": 108,
                                     "__variant_type": 4
                                 }
                             }
@@ -636,18 +643,18 @@
                 "agentRotationSpeed": 100.0,
                 "separationWeight": 10.0
             },
-            "id": 64
+            "id": 108
         },
         {
             "EntityData": {
                 "name": "Charger Model",
                 "tag": "Enemy",
-                "parent": 64,
+                "parent": 108,
                 "attachedSocket": 65535,
                 "children": [
-                    66,
-                    67,
-                    68
+                    110,
+                    111,
+                    112
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -815,13 +822,13 @@
                 "controllerId": 9182558606910275585,
                 "speedMultiplier": 1.0
             },
-            "id": 65
+            "id": 109
         },
         {
             "EntityData": {
                 "name": "Charger_WeakSpot",
                 "tag": "Enemy_WeakSpot",
-                "parent": 65,
+                "parent": 109,
                 "attachedSocket": 4,
                 "children": null,
                 "layerId": 0,
@@ -939,7 +946,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 64,
+                                    "__variant_value": 108,
                                     "__variant_type": 4
                                 }
                             }
@@ -947,13 +954,13 @@
                     }
                 ]
             },
-            "id": 66
+            "id": 110
         },
         {
             "EntityData": {
                 "name": "Charger_ArmouredBody",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 65,
+                "parent": 109,
                 "attachedSocket": 1,
                 "children": null,
                 "layerId": 0,
@@ -1076,7 +1083,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 64,
+                                    "__variant_value": 108,
                                     "__variant_type": 4
                                 }
                             }
@@ -1084,13 +1091,13 @@
                     }
                 ]
             },
-            "id": 67
+            "id": 111
         },
         {
             "EntityData": {
                 "name": "Basic_AttackColldier",
                 "tag": "EnemyHitBox",
-                "parent": 65,
+                "parent": 109,
                 "attachedSocket": 21,
                 "children": null,
                 "layerId": 0,
@@ -1213,13 +1220,13 @@
                     }
                 ]
             },
-            "id": 68
+            "id": 112
         },
         {
             "EntityData": {
                 "name": "IchorSpawnPoint",
                 "tag": "",
-                "parent": 64,
+                "parent": 108,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1304,13 +1311,13 @@
                     "z": 0.0
                 }
             },
-            "id": 69
+            "id": 113
         },
         {
             "EntityData": {
                 "name": "StompHitboxPosition",
                 "tag": "",
-                "parent": 64,
+                "parent": 108,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1395,13 +1402,13 @@
                     "z": 0.0
                 }
             },
-            "id": 70
+            "id": 114
         },
         {
             "EntityData": {
                 "name": "Emitter",
                 "tag": "",
-                "parent": 64,
+                "parent": 108,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1614,23 +1621,23 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 71
+            "id": 115
         },
         {
             "EntityData": {
                 "name": "Charge Lines",
                 "tag": "",
-                "parent": 64,
+                "parent": 108,
                 "attachedSocket": 65535,
                 "children": [
-                    73,
-                    74,
-                    75,
-                    76,
-                    77,
-                    78,
-                    79,
-                    80
+                    117,
+                    118,
+                    119,
+                    120,
+                    121,
+                    122,
+                    123,
+                    124
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -1714,13 +1721,13 @@
                     "z": 0.0
                 }
             },
-            "id": 72
+            "id": 116
         },
         {
             "EntityData": {
                 "name": "Charge Line 1",
                 "tag": "",
-                "parent": 72,
+                "parent": 116,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1933,13 +1940,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 73
+            "id": 117
         },
         {
             "EntityData": {
                 "name": "Charge Line 2",
                 "tag": "",
-                "parent": 72,
+                "parent": 116,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2152,13 +2159,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 74
+            "id": 118
         },
         {
             "EntityData": {
                 "name": "Charge Line 3",
                 "tag": "",
-                "parent": 72,
+                "parent": 116,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2371,13 +2378,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 75
+            "id": 119
         },
         {
             "EntityData": {
                 "name": "Charge Line 4",
                 "tag": "",
-                "parent": 72,
+                "parent": 116,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2590,13 +2597,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 76
+            "id": 120
         },
         {
             "EntityData": {
                 "name": "Charge Line 5",
                 "tag": "",
-                "parent": 72,
+                "parent": 116,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2809,13 +2816,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 77
+            "id": 121
         },
         {
             "EntityData": {
                 "name": "Charge Line 6",
                 "tag": "",
-                "parent": 72,
+                "parent": 116,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3028,13 +3035,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 78
+            "id": 122
         },
         {
             "EntityData": {
                 "name": "Charge Line 7",
                 "tag": "",
-                "parent": 72,
+                "parent": 116,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3247,13 +3254,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 79
+            "id": 123
         },
         {
             "EntityData": {
                 "name": "Charge Line 8",
                 "tag": "",
-                "parent": 72,
+                "parent": 116,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3466,13 +3473,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 80
+            "id": 124
         },
         {
             "EntityData": {
                 "name": "ChargeLines_New",
                 "tag": "",
-                "parent": 64,
+                "parent": 108,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3685,7 +3692,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 81
+            "id": 125
         }
     ]
 }

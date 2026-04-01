@@ -24,3 +24,25 @@ public:
 	FRAMEWORK_DLL_API Scene& operator=(Scene const& other)	= delete;
 	FRAMEWORK_DLL_API Scene& operator=(Scene&& other)		= default;
 };
+
+struct SceneProperties {
+	NormalizedFloat brightness = 0.5f;
+	NormalizedFloat contrast = 0.5f;
+	NormalizedFloat saturation = 0.5f;
+
+	float temperature = 6500.f;
+	float tint = 0.f;
+
+	NormalizedFloat iblDiffuseStrength = 1.f;
+	NormalizedFloat iblSpecularStrength = 1.f;
+
+	REFLECTABLE(
+		iblDiffuseStrength,
+		iblSpecularStrength,
+		brightness,
+		contrast,
+		saturation,
+		temperature,
+		tint
+	)
+};

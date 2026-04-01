@@ -604,6 +604,14 @@ void Animator_::SetFrame(int frame) {
 	Interface::engine->animationSystem.setAnimationFrame(*nativeComponent(), frame);
 }
 
+int Animator_::GetCurrentFrame() {
+	return Interface::engine->animationSystem.getAnimationFrame(*nativeComponent());
+}
+
+float Animator_::GetTimeElapsed() {
+	return nativeComponent()->timeElapsed;
+}
+
 // =================================================================
 // Text
 // =================================================================

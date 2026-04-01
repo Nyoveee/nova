@@ -26,6 +26,7 @@ class VoiceoverScript : Script
 
     public void TriggerVoiceOver(string speaker, string text, Audio audio, float voiceOverTime, bool shouldDisableWeapon)
     {
+        dialogueUI.gameObject.SetActive(true);
         audioComponent.PlaySound(audio);
         if (shouldDisableWeapon)
             playerWeaponController.DisableShooting();
@@ -41,11 +42,13 @@ class VoiceoverScript : Script
             if (shouldDisableWeapon)
                 playerWeaponController.EnableShooting();
             dialogueUI.alpha = 0f;
+            dialogueUI.gameObject.SetActive(false);
         }, voiceOverTime);
     }
 
     public void TriggerVoiceOverSequence(string speaker, List<string> text, Audio audio, List<float> voiceOverTimes, bool shouldDisableWeapon)
     {
+        dialogueUI.gameObject.SetActive(true);
         audioComponent.PlaySound(audio);
         if (shouldDisableWeapon)
             playerWeaponController.DisableShooting();
@@ -64,6 +67,7 @@ class VoiceoverScript : Script
                 if (shouldDisableWeapon)
                     playerWeaponController.EnableShooting();
                 dialogueUI.alpha = 0f;
+                dialogueUI.gameObject.SetActive(false);
                 return;
             }
             dialogueUI.alpha = 1f;

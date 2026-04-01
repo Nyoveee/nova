@@ -13,6 +13,7 @@ class GameplayStatisticsManager : Script
     }
     [SerializableField]
     private Level currentLevel;
+
     private float gameplayTime;
     protected override void init()
     {
@@ -28,7 +29,11 @@ class GameplayStatisticsManager : Script
     {
         gameplayTime += Time.V_DeltaTime();
     }
-
+    public float GetGameplayTime() => gameplayTime;
+    public void SetGameplayTime(float gameplayTime)
+    { 
+        this.gameplayTime = gameplayTime;
+    }
     public void CompleteLevel()
     {
         int completedLevels = PlayerPrefs.GetInt("CompletedLevel");

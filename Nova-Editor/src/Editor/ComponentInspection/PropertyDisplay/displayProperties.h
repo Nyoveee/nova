@@ -40,6 +40,7 @@ inline void DisplayProperty(Editor&, const char*, auto&) {};
 /***************************************************************************************
 	Partial constraints..
 ****************************************************************************************/
+
 template<IsTypedResourceID DataMemberType>
 inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& dataMember) {
 	// dataMember is of type TypedAssetID<T>
@@ -606,3 +607,14 @@ inline void DisplayProperty<serialized_field_list>(Editor& editor, const char* d
 		ImGui::TreePop();
 	}
 }
+
+//template <reflection::conceptReflectable T>
+//inline void DisplayProperty(Editor& editor, const char*, auto& dataMember) {
+//	reflection::visit([&](auto fieldData) {
+//		auto& dataMember = fieldData.get();
+//		constexpr const char* dataMemberName = fieldData.name();
+//		using DataMemberType = std::decay_t<decltype(dataMember)>;
+//
+//		DisplayProperty<DataMemberType>(editor, dataMemberName, dataMember);
+//	}, dataMember);
+//}
