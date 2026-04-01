@@ -26,10 +26,5 @@ class Teleporter : Script
             player.transform.position = destination.position;
             player.getScript<PlayerController_V2>().TakeDamage(10);
         }
-
-        if(other.tag == "Enemy")
-        {
-            other.getScript<Enemy>().TakeDamage(other.getScript<EnemyStats>().health, Enemy.EnemydamageType.WeaponShot, "Enemy_WeakSpot");
-        }
     }
 }
