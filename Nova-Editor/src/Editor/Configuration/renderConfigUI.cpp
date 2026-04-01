@@ -13,14 +13,23 @@ RenderConfigUI::RenderConfigUI(Editor& editor) :
 void RenderConfigUI::update() {
 	ImGui::Begin("Render Configuration");
 	
-	reflection::visit([&](auto&& fieldData) {
-		auto& dataMember = fieldData.get();
-		const char* dataMemberName = fieldData.name();
-		using DataMemberType = std::decay_t<decltype(dataMember)>;
+	DisplayProperty<bool>(editor, "Enable SSAO?",		renderConfig.toEnableSSAO);
+	DisplayProperty<bool>(editor, "Enable Fog?",		renderConfig.toEnableFog);
+	DisplayProperty<bool>(editor, "Enable Vsync?",		renderConfig.toEnableVsync);
+	DisplayProperty<bool>(editor, "Enable TAA?",		renderConfig.toEnableAntiAliasing);
+	DisplayProperty<bool>(editor, "Enable Shadows?",	renderConfig.toEnableShadows);
+	DisplayProperty<bool>(editor, "Enable IBL?",		renderConfig.toEnableIBL);
+	DisplayProperty<bool>(editor, "Fullscreen?",		renderConfig.fullScreen);
+	DisplayProperty<float>(editor, "Gamma",				renderConfig.gamma);
 
-		// Generalization
-		DisplayProperty<DataMemberType>(editor, dataMemberName, dataMember);
-	}, renderConfig);
+	//reflection::visit([&](auto&& fieldData) {
+	//	auto& dataMember = fieldData.get();
+	//	const char* dataMemberName = fieldData.name();
+	//	using DataMemberType = std::decay_t<decltype(dataMember)>;
+
+	//	// Generalization
+	//	DisplayProperty<DataMemberType>(editor, dataMemberName, dataMember);
+	//}, renderConfig.postProcessingOptions);
 
 	reflection::visit([&](auto&& fieldData) {
 		auto& dataMember = fieldData.get();

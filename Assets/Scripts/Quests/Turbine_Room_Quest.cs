@@ -6,7 +6,7 @@ using ScriptingAPI;
 class Turbine_Room_Quest : Quest
 {
     [SerializableField]
-    private List<Switch> switches = new List<Switch>();
+    private List<Switch> activeSwitches = new List<Switch>();
 
     [SerializableField]
     private Prefab gunnerPrefab;
@@ -43,7 +43,6 @@ class Turbine_Room_Quest : Quest
 
     private List<List<GameObject>> spawnLocations = new List<List<GameObject>>();
     private List<GameObject> spawnedEnemies = new List<GameObject>();
-    private List<Switch> activeSwitches = new List<Switch>();
     private VoiceoverScript voiceoverScript;
     private int weaverVoiceOverIndex = -1;
 
@@ -51,7 +50,9 @@ class Turbine_Room_Quest : Quest
     protected override void init()
     {
         voiceoverScript = GameObject.FindWithTag("Game UI Manager")?.getScript<VoiceoverScript>();
-        OnRestart();
+        spawnLocations.Add(gunnerSpawnLocations3);
+        spawnLocations.Add(gunnerSpawnLocations2);
+        spawnLocations.Add(gunnerSpawnLocations1);
     }
     public override void OnEnter()
     {
@@ -82,25 +83,9 @@ class Turbine_Room_Quest : Quest
 
         }, questCompleteDelay);
     }
-    public override void OnRestart()
+    public override void OnSkip()
     {
-        foreach (GameObject spawnEnemy in spawnedEnemies)
-        {
-            if (spawnEnemy != null)
-                Destroy(spawnEnemy);
-        }
-        spawnedEnemies.Clear();
-        spawnLocations.Clear();
-        spawnLocations.Add(gunnerSpawnLocations3);
-        spawnLocations.Add(gunnerSpawnLocations2);
-        spawnLocations.Add(gunnerSpawnLocations1);
-        activeSwitches.Clear();
-        foreach (Switch switch_ in switches)
-        { 
-            switch_.deactivateSwitch();
-            activeSwitches.Add(switch_);
-           
-        }
+        turbineExitDoor.LockDoor();
     }
     private bool IsAllEnemiesDead()
     {

@@ -40,6 +40,8 @@ void AnimationSystem::initialiseAnimator(Animator& animator) {
 	animator.currentAnimation = TypedResourceID<Model>{ INVALID_RESOURCE_ID };
 	animator.previousAnimation = animator.currentAnimation;
 	animator.blendFactor = 0.f;
+	animator.previousFrameBlending = Controller::Node::Frame::Last;
+
 	animator.executedAnimationEvents.clear();
 
 	auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
@@ -79,6 +81,7 @@ void AnimationSystem::handleTransition(Animator& animator, Controller::Node cons
 		animator.previousAnimation = animator.currentAnimation;
 		animator.currentAnimation = iterator->second.animation;
 		animator.blendFactor = iterator->second.blendFactor;
+		animator.previousFrameBlending = currentNode.previousFrameToAnimate;
 		animator.executedAnimationEvents.clear();
 		return;
 	}
@@ -130,11 +133,15 @@ void AnimationSystem::playAnimation(Animator& animator, std::string name) {
 		return;
 	}
 
+	auto previousNodeIterator = controller->data.nodes.find(animator.currentNode);
+	auto previousFrameBlending = previousNodeIterator != controller->data.nodes.end() ? previousNodeIterator->second.previousFrameToAnimate : Controller::Node::Frame::Last;
+
 	animator.currentNode = iterator->first;
 	animator.timeElapsed = 0;
 	animator.previousAnimation = animator.currentAnimation;
 	animator.currentAnimation = iterator->second.animation;
 	animator.blendFactor = iterator->second.blendFactor;
+	animator.previousFrameBlending = previousFrameBlending;
 	animator.executedAnimationEvents.clear();
 }
 
@@ -207,6 +214,19 @@ void AnimationSystem::setAnimationFrame(Animator& animator, int frame) {
 	};
 
 	animator.timeElapsed = seconds;
+}
+
+int AnimationSystem::getAnimationFrame(Animator& animator) const {
+	// retrieve the current animation based on current node..
+	auto&& [animation, __] = resourceManager.getResource<Model>(animator.currentAnimation);
+
+	if (!animation || animation->animations.empty()) {
+		Logger::warn("Invalid animation when attempting to get animation frame");
+		return 0;
+	}
+
+	int frame = static_cast<int>(animator.timeElapsed * animation->animations[0].ticksPerSecond);
+	return frame;
 }
 
 void AnimationSystem::clearExecutedAnimationEvents(Animator& animator) {
@@ -394,8 +414,16 @@ void AnimationSystem::calculateBoneMatrixes() {
 			}
 
 			if (animator->previousAnimation != animator->currentAnimation && animator->blendFactor != 0.f && previous_animation && previous_animation->animations.size()) {
-				previousAnimation = &previous_animation->animations[0];
-				previousAnimationTicks = std::min(animator->timeElapsed * previousAnimation->ticksPerSecond, previousAnimation->durationInTicks - 0.01f);
+				previousAnimation = &previous_animation->animations[0];	
+
+				switch (animator->previousFrameBlending) {
+				case Controller::Node::Frame::First:
+					previousAnimationTicks = 0;
+					break;
+				default:
+					previousAnimationTicks = previousAnimation->durationInTicks;
+					break;
+				}
 			}
 		}
 

@@ -10,6 +10,12 @@ uniform int toneMappingMethod; // 0 = Exposure, 1 = Reinhard, 2 = ACES, 3 = None
 uniform bool toGammaCorrect;
 uniform float gamma;
 
+uniform float temperature;
+uniform float tint;
+uniform float saturation;
+uniform float contrast;
+uniform float brightness;
+
 void main()
 {
     vec3 hdrColor = texture(hdrBuffer, textureCoords).rgb;
@@ -35,6 +41,16 @@ void main()
     }
     else {
         mapped = hdrColor;
+    }
+
+    if(toneMappingMethod != 3) {
+        // brightness..
+
+        // contrast..
+
+        // saturation..
+
+        
     }
 
     if(toGammaCorrect) {

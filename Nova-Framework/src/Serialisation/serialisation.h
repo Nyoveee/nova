@@ -17,8 +17,8 @@ using PrefabFileEntityID = entt::entity;
 
 namespace Serialiser {
 	// ======================================================================================================
-	FRAMEWORK_DLL_API void serialiseScene(entt::registry& registry, std::vector<Layer> const& layer, NormalizedFloat const& iblDiffuseStrength, NormalizedFloat const& iblSpecularStrength, const char* fileName);
-	FRAMEWORK_DLL_API void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, NormalizedFloat& iblDiffuseStrength, NormalizedFloat& iblSpecularStrength, const char* fileName);
+	FRAMEWORK_DLL_API void serialiseScene(entt::registry& registry, std::vector<Layer> const& layer, SceneProperties const& sceneProperties, const char* fileName);
+	FRAMEWORK_DLL_API void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, SceneProperties& sceneProperties, const char* fileName);
 
 	FRAMEWORK_DLL_API void serialiseEditorConfig(const char* fileName, bool consol, bool debugUi, bool hierarchy, bool componentInspector);
 	FRAMEWORK_DLL_API void deserialiseEditorConfig(const char* fileName);

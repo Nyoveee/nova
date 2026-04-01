@@ -132,3 +132,23 @@ bool GameObject::operator==(GameObject^ lhs, GameObject^ rhs) {
 bool GameObject::operator!=(GameObject^ lhs, GameObject^ rhs) {
 	return !(lhs == rhs);
 }
+
+void GameObject::detachSocket() {
+	EntityData* entityData = Interface::getNativeComponent<EntityData>(entityID);
+
+	if (!entityData) {
+		return;
+	}
+
+	entityData->attachedSocket = NO_BONE;
+}
+
+void GameObject::attachSocket(int boneIndex) {
+	EntityData* entityData = Interface::getNativeComponent<EntityData>(entityID);
+
+	if (!entityData) {
+		return;
+	}
+
+	entityData->attachedSocket = boneIndex;
+}

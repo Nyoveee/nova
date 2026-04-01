@@ -1,6 +1,27 @@
 {
     "entryNode": 1000,
     "nodes": {
+        "12652459175113703761": {
+            "id": 12652459175113703761,
+            "animation": 8907117950627463801,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "First",
+            "name": "PlayerHandThrowAnimation",
+            "animationEvents": [
+                {
+                    "key": 2,
+                    "scriptId": 12469043042845155193,
+                    "functionName": "TriggerEvent"
+                },
+                {
+                    "key": 24,
+                    "scriptId": 12469043042845155193,
+                    "functionName": "TriggerEvent2"
+                }
+            ]
+        },
         "1000": {
             "id": 1000,
             "animation": 18446744073709551615,
@@ -12,30 +33,54 @@
             ],
             "toLoop": true,
             "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
             "name": "Entry Node",
             "animationEvents": null
         },
         "4327053855273437121": {
             "id": 4327053855273437121,
             "animation": 7785818369076920323,
-            "transitions": null,
-            "toLoop": true,
+            "transitions": [
+                {
+                    "nextNode": 10091661378307688387,
+                    "conditions": null
+                }
+            ],
+            "toLoop": false,
             "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
             "name": "PlayerHandFiringAnimation_Gun",
-            "animationEvents": null
+            "animationEvents": [
+                {
+                    "key": 7,
+                    "scriptId": 12469043042845155193,
+                    "functionName": "TriggerEvent3"
+                }
+            ]
         },
         "10091661378307688387": {
             "id": 10091661378307688387,
             "animation": 15856268901324865541,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
+            "name": "PlayerHandIdleAnimation_Gun",
+            "animationEvents": null
+        },
+        "17264145193541026127": {
+            "id": 17264145193541026127,
+            "animation": 260206666076095095,
             "transitions": [
                 {
-                    "nextNode": 4327053855273437121,
+                    "nextNode": 10091661378307688387,
                     "conditions": null
                 }
             ],
             "toLoop": true,
-            "blendFactor": 0.20000000298023224,
-            "name": "PlayerHandIdleAnimation_Gun",
+            "blendFactor": 0.0,
+            "previousFrameToAnimate": "Last",
+            "name": "PlayerHandRetrieveAnimation",
             "animationEvents": null
         }
     },

@@ -22,12 +22,17 @@ class SceneTransition : Script
 
     private float currentTransitionTime;
     private GameplayStatisticsManager gameplayStatisticsManager;
+
+    //public float delay = 1f;
+
     protected override void init()
     {
-        if(transitionState == TransitionState.FadeOut)
-            currentTransitionTime = transitionTime;
+            if (transitionState == TransitionState.FadeOut)
+                currentTransitionTime = transitionTime;
+
         gameplayStatisticsManager = GameObject.FindWithTag("Gameplay Statistics Manager")?.getScript<GameplayStatisticsManager>();
     }
+
     // This function is invoked every update.
     protected override void update()
     {

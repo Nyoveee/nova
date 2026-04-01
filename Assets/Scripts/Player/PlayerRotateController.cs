@@ -39,11 +39,6 @@ class PlayerRotateController : Script
     protected override void update()
     {
         MoveToOrientation();
-        //Invoke(MoveToOrientation, 0);
-        //gameObject.transform.position = playerCameraPos.position;
-        //UpdateCamera();
-        //Invoke(MoveToOrientation,0);
-
     }
     
     public void SetMouseSensitivity(float sensitivity)
@@ -63,47 +58,10 @@ class PlayerRotateController : Script
         playerCameraPos.localEulerAngles = gameObject.transform.localEulerAngles;
     }
 
-    //private void CameraMovement(float deltaMouseX, float deltaMouseY)
-    //{
-    //    // We rotate our parent in the y axis..
-
-    //    // x is pitch, y is yaw
-    //    Vector3 euler = gameObject.transform.localEulerAngles;
-
-    //    euler.x -= cameraSensitivity * deltaMouseY * Time.V_DeltaTime();
-    //    euler.y -= cameraSensitivity * deltaMouseX * Time.V_DeltaTime();
-    //    euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
-
-
-    //    playerOrientation.localEulerAngles = new Vector3(0, euler.y, 0);
-
-    //    gameObject.transform.localEulerAngles = euler;
-
-    //}
-
-    private void UpdateCamera()
-    {
-        //Vector3 euler = gameObject.transform.localEulerAngles;
-
-        //euler.x -= cameraSensitivity * accumulateDifferenceY * Time.V_DeltaTime();
-        //euler.y -= cameraSensitivity * accumulateDifferenceX * Time.V_DeltaTime();
-        //euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
-        //playerOrientation.localEulerAngles = new Vector3(0, euler.y, 0);
-
-        //gameObject.transform.localEulerAngles = euler;
-
-
-        //accumulateDifferenceX = 0;
-        //accumulateDifferenceY = 0;
-    }
-
-
     private void CameraMovement(float deltaMouseX, float deltaMouseY)
     {
         if (rotationIsEnabled == false)
             return;
-        //accumulateDifferenceX += deltaMouseX;
-        //accumulateDifferenceY += deltaMouseY;
 
         Vector3 euler = gameObject.transform.localEulerAngles;
 
@@ -113,8 +71,5 @@ class PlayerRotateController : Script
         playerOrientation.localEulerAngles = new Vector3(0, euler.y, 0);
 
         gameObject.transform.localEulerAngles = euler;
-
-        //accumulateDifferenceX = 0;
-        //accumulateDifferenceY = 0;
     }
 }

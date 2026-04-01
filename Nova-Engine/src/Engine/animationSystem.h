@@ -43,6 +43,7 @@ public:
 	ENGINE_DLL_API void resetSequence(Sequence& sequence);
 
 	ENGINE_DLL_API void setAnimationFrame(Animator& animator, int frame);
+	ENGINE_DLL_API int  getAnimationFrame(Animator& animator) const;
 	ENGINE_DLL_API void clearExecutedAnimationEvents(Animator& animator);
 
 private:

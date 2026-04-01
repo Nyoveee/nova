@@ -63,6 +63,7 @@ public:
 					.transitions = {},
 					.toLoop = true,
 					.blendFactor = 0.2f,
+					.previousFrameToAnimate = Node::Frame::Last,
 					.name = "Entry Node",
 					.animationEvents = {}
 				}

@@ -30,8 +30,8 @@ public:
 
 public:
 	std::vector<Layer> layers;
-	NormalizedFloat iblDiffuseStrength;
-	NormalizedFloat iblSpecularStrength;
+
+	SceneProperties currentSceneProperties;
 
 private:
 	friend ECS;

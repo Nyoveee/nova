@@ -6,7 +6,7 @@
 #include <algorithm>
 
 namespace Serialiser {
-	void Serialiser::serialiseScene(entt::registry& registry, std::vector<Layer> const& layers, NormalizedFloat const& iblDiffuseStrength, NormalizedFloat const& iblSpecularStrength, const char* fileName) {
+	void Serialiser::serialiseScene(entt::registry& registry, std::vector<Layer> const& layers, SceneProperties const& sceneProperties, const char* fileName) {
 
 		Json js;
 		std::vector<Json> jsonVec;
@@ -17,8 +17,6 @@ namespace Serialiser {
 		}
 
 		std::reverse(jsonVec.begin(), jsonVec.end());
-		//std::sort(jsonVec.begin(), jsonVec.end(), [](Json& a, Json& b) {return a["id"] < b["id"]; });
-		
 
 		// save to output file
 		js["entities"] = jsonVec;
@@ -31,8 +29,26 @@ namespace Serialiser {
 
 		js["layers"] = layerJson;
 
-		js["iblDiffuseStrength"] = static_cast<float>(iblDiffuseStrength);
-		js["iblSpecularStrength"] = static_cast<float>(iblSpecularStrength);
+		reflection::visit([&](auto&& fieldData) {
+			auto& dataMember = fieldData.get();
+			const char* dataMemberName = fieldData.name();
+			using DataMemberType = std::decay_t<decltype(dataMember)>;
+
+			if constexpr (std::same_as<DataMemberType, NormalizedFloat>) {
+				js[dataMemberName] = static_cast<float>(dataMember);
+			}
+			else {
+				js[dataMemberName] = dataMember;
+			}
+		}, sceneProperties);
+
+		//js["iblDiffuseStrength"] = static_cast<float>(sceneProperties.iblDiffuseStrength);
+		//js["iblSpecularStrength"] = static_cast<float>(sceneProperties.iblSpecularStrength);
+		//js["brightness"] = static_cast<float>(sceneProperties.brightness);
+		//js["contrast"] = static_cast<float>(sceneProperties.contrast);
+		//js["saturation"] = static_cast<float>(sceneProperties.saturation);
+		//js["temperature"] = static_cast<float>(sceneProperties.temperature);
+		//js["tint"] = static_cast<float>(sceneProperties.tint);
 
 		std::ofstream file(fileName);
 
@@ -44,7 +60,16 @@ namespace Serialiser {
 		file << js.dump(4) << std::endl;
 	}
 
-	void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, NormalizedFloat& iblDiffuseStrength, NormalizedFloat& iblSpecularStrength, const char* fileName) {
+	void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, SceneProperties& p_sceneProperties, const char* fileName) {
+		SceneProperties sceneProperties;
+
+		auto getSceneProperty = [&]<typename T>(Json const& j, const char* name, T& dataMemeber) {
+			if (j.find(name) != j.end()) {
+				float value = j[name];
+				dataMemeber = value;
+			}
+		};
+
 		try {
 			std::ifstream file(fileName);
 
@@ -72,24 +97,21 @@ namespace Serialiser {
 			}
 
 			// diffuse strength
-			if (j.find("iblDiffuseStrength") != j.end()) {
-				float value = j["iblDiffuseStrength"];
-				iblDiffuseStrength = value;
-			}
-			else {
-				Logger::warn("No ibl diffuse strength found in scene. Creating a default value of 1..");
-				iblDiffuseStrength = 1.f;
-			}
+			reflection::visit([&](auto const& fieldData) {
+				auto& dataMember = fieldData.get();
+				const char* dataMemberName = fieldData.name();
+				using DataMemberType = std::decay_t<decltype(dataMember)>;
 
-			// specular strength
-			if (j.find("iblSpecularStrength") != j.end()) {
-				float value = j["iblSpecularStrength"];
-				iblSpecularStrength = value;
-			}
-			else {
-				Logger::warn("No ibl specular strength found in scene. Creating a default value of 1..");
-				iblSpecularStrength = 1.f;
-			}
+				getSceneProperty(j, dataMemberName, dataMember);
+			}, sceneProperties);
+
+			//getSceneProperty(j, "iblDiffuseStrength", sceneProperties.iblDiffuseStrength);
+			//getSceneProperty(j, "iblSpecularStrength", sceneProperties.iblSpecularStrength);
+			//getSceneProperty(j, "brightness", sceneProperties.brightness);
+			//getSceneProperty(j, "contrast", sceneProperties.contrast);
+			//getSceneProperty(j, "saturation", sceneProperties.saturation);
+			//getSceneProperty(j, "temperature", sceneProperties.temperature);
+			//getSceneProperty(j, "tint", sceneProperties.tint);
 
 			// deserialize entities & components..
 			for (const auto& en : j["entities"]) {
@@ -100,6 +122,8 @@ namespace Serialiser {
 		catch (std::exception const& ex) {
 			Logger::error("Failed to deserialise scene. {}", ex.what());
 		}
+
+		p_sceneProperties = sceneProperties;
 	}
 
 	template <typename ...Windows>

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 1,
+    "RootEntity": 25,
     "Entities": [
         {
             "EntityData": {
@@ -107,7 +107,7 @@
             },
             "ParticleEmitter": {
                 "texture": 8,
-                "startSize": 0.20000000298023224,
+                "startSize": 0.05000000074505806,
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 0.0,
@@ -135,9 +135,9 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "minLifeTimeOffset": 0.0,
-                "maxLifeTimeOffset": 0.5,
+                "maxLifeTimeOffset": 0.0,
                 "particleRate": 100.0,
                 "burstRate": 0.0,
                 "burstAmount": 30,
@@ -176,7 +176,7 @@
                 "particleColorSelection": {
                     "color": {
                         "r": 0.9241379499435425,
-                        "g": 0.823043167591095,
+                        "g": 0.6532039642333984,
                         "b": 0.3377883732318878,
                         "a": 1.0
                     },
@@ -190,7 +190,7 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "emissiveMultiplier": 10.0
+                    "emissiveMultiplier": 5.0
                 },
                 "sizeOverLifetime": {
                     "selected": true,
@@ -233,7 +233,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 1
+            "id": 25
         }
     ]
 }

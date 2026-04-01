@@ -7,9 +7,9 @@ class MovementBasedQuest : Quest
     private GameObject checkPointIndicator;
     public override void OnSkip()
     {
-        Destroy(checkPointIndicator);
+        checkPointIndicator.SetActive(false);
     }
     public override void OnSuccess(){
-        Destroy(checkPointIndicator);
+        checkPointIndicator.SetActive(false);
     }
 }

@@ -42,8 +42,16 @@ struct Node {
 	std::vector<Transition>		transitions			{};
 	bool						toLoop				= true;
 	float						blendFactor			= 0.2f;
+
+	enum class Frame {
+		First,
+		Last
+	} previousFrameToAnimate = Frame::Last;
+
 	std::string					name				{};
 	std::vector<AnimationEvent>	animationEvents		{};
+
+
 
 	REFLECTABLE(
 		id,
@@ -51,6 +59,7 @@ struct Node {
 		transitions,
 		toLoop,
 		blendFactor,
+		previousFrameToAnimate,
 		name,
 		animationEvents
 	)
