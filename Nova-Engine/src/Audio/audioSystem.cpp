@@ -65,7 +65,7 @@ AudioSystem::AudioSystem(Engine& engine) :
 		return;
 	}
 
-	result = fmodSystem->init(4095, FMOD_INIT_NORMAL, nullptr);
+	result = fmodSystem->init(4095, FMOD_INIT_NORMAL | FMOD_INIT_3D_RIGHTHANDED, nullptr);
 	result = fmodSystem->set3DSettings(1.0f, 1.0f, 1.0f);
 
 	if (result != FMOD_OK) {
@@ -150,20 +150,41 @@ void AudioSystem::updateListener() {
 	glm::vec3 listenerPos	= camera.getPos();
 	glm::vec3 listenerFront = camera.getFront();
 	glm::vec3 listenerRight = camera.getRight();
+	glm::vec3 listenerUP = camera.getUp();
 	
 	listenerFront = glm::normalize(listenerFront);
 	listenerRight = glm::normalize(listenerRight);
+	listenerUP = glm::normalize(listenerUP);
 
-	// Calculate up vector (perpendicular to front and right)
-	glm::vec3 listenerUp = glm::normalize(glm::cross(listenerFront, listenerRight));
 
 	// Set FMOD listener position and orientation
 	FMOD_VECTOR pos = { listenerPos.x, listenerPos.y, listenerPos.z };
-	FMOD_VECTOR forward = { listenerFront.x, listenerFront.y, listenerFront.z };
-	FMOD_VECTOR up = { listenerUp.x, listenerUp.y, listenerUp.z };
-	FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f }; 
+	FMOD_VECTOR forward = {listenerFront.x, listenerFront.y, listenerFront.z };
+	FMOD_VECTOR up = { listenerUP.x, listenerUP.y, listenerUP.z };
+	//FMOD_VECTOR right = { -listenerRight.x, listenerRight.y, listenerRight.z };
+
+	FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
 
 	fmodSystem->set3DListenerAttributes(0, &pos, &vel, &forward, &up);
+
+
+	//Debugging
+	//Logger::debug("--- AUDIO LISTENER STATE ---");
+	//glm::vec3 fFwd = { listenerFront.x, listenerFront.y, listenerFront.z };
+	//glm::vec3 fUp = { listenerUP.x, listenerUP.y, listenerUP.z };
+	//glm::vec3 fRight = glm::normalize(glm::cross(fFwd, fUp));
+	//Logger::debug("POS:     [ {:.2f}, {:.2f}, {:.2f} ] ", pos.x, pos.y, pos.z);
+	//Logger::debug("FORWARD: [ {:.2f}, {:.2f}, {:.2f} ] ", forward.x, forward.y, forward.z);
+	//Logger::debug("UP:      [ {:.2f}, {:.2f}, {:.2f} ] ", up.x, up.y, up.z);
+	//Logger::debug("RIGHT:   [ {:.2f}, {:.2f}, {:.2f} ] (Calculated)",  right.x, fRight.y, fRight.z);
+
+	//FMOD_VECTOR pos = { listenerPos.x, listenerPos.y, listenerPos.z };
+	//FMOD_VECTOR forward = { 0.0f, 0.0f, 1.0f };  // Looking down +X
+	//FMOD_VECTOR up = { 0.0f, 1.0f, 0.0f };
+
+
+
+
 }
 
 void AudioSystem::updatePositionalAudio() {
@@ -198,12 +219,14 @@ void AudioSystem::updatePositionalAudio() {
 			glm::vec3 sourcePos = transform->position;
 			float distance = glm::length(sourcePos - listenerPos);
 			float volumeMultiplier = 1.0f;
-			if (distance <= positionalAudio->innerRadius)
-				volumeMultiplier = 1.0f;
-			else if (distance >= positionalAudio->maxRadius)
-				volumeMultiplier = 0.0f;
-			else
-				volumeMultiplier = 1.0f - ((distance - positionalAudio->innerRadius) / (positionalAudio->maxRadius - positionalAudio->innerRadius));
+
+			//No need for manual attenuation
+			//if (distance <= positionalAudio->innerRadius)
+			//	volumeMultiplier = 1.0f;
+			//else if (distance >= positionalAudio->maxRadius)
+			//	volumeMultiplier = 0.0f;
+			//else
+			//	volumeMultiplier = 1.0f - ((distance - positionalAudio->innerRadius) / (positionalAudio->maxRadius - positionalAudio->innerRadius));
 
 
 			if (positionalAudioInstances[i].channel) {
@@ -214,7 +237,9 @@ void AudioSystem::updatePositionalAudio() {
 				// Set the MinMax Distance based on the values inputted inside the PositionalAudio Component inside the Editor 
 				positionalAudioInstances[i].channel->set3DMinMaxDistance(positionalAudio->innerRadius, positionalAudio->maxRadius);
 				float zipfMultiplier = 1.f / (static_cast<float>(i) + 1.f);
-				positionalAudioInstances[i].channel->setVolume(positionalAudioInstances[i].volume * volumeMultiplier * zipfMultiplier);
+				positionalAudioInstances[i].channel->setVolume(positionalAudioInstances[i].volume * zipfMultiplier);
+				positionalAudioInstances[i].channel->set3DSpread(45); //this help makes sound feel more realistic as such to help with positional audio
+
 			}
 		}
 	}
@@ -452,7 +477,7 @@ void AudioSystem::handleFinishedAudioInstance(FMOD::Channel* channel) {
 		return;
 	}
 
-	//stopAudioInstance(iterator->first);
+	stopAudioInstance(iterator->first);
 	iterator->second.toDelete = true;
 }
 
@@ -490,7 +515,9 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 	}
 
 	FMOD::Channel* channel = nullptr;
-	fmodSystem->playSound(audio, nullptr, false, &channel);
+
+	//Please dont remove set pause to false. some ahh ahh multithreading stuff will bug the audio.
+	fmodSystem->playSound(audio, nullptr, true, &channel);
 
 	if (channel) {
 		AudioInstanceID	audioInstanceId = getNewAudioInstanceId();
@@ -507,16 +534,19 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 		switch (audioComponent.audioGroup) {
 		case AudioComponent::AudioGroup::BGM:
 			channel->setChannelGroup(bgmChannelGroup);
+			//Logger::debug("Created BGM Audio Instance with ID: {}, Audio ID: {}, Entity: {}", static_cast<std::size_t>(audioInstance.id), static_cast<std::size_t>(audioInstance.audioId), static_cast<std::size_t>(audioInstance.entity));
 			break;
 		case AudioComponent::AudioGroup::SFX:
 		{
 			channel->setChannelGroup(sfxChannelGroup);
+			//Logger::debug("Created SFX Audio Instance with ID: {}, Audio ID: {}, Entity: {}", static_cast<std::size_t>(audioInstance.id), static_cast<std::size_t>(audioInstance.audioId), static_cast<std::size_t>(audioInstance.entity));
 			if(positionalAudio)
 				positionalAudioGroups[audioInstance.audioId].push_back(audioInstance);
 			break;
 		}
 		case AudioComponent::AudioGroup::UI:
 			channel->setChannelGroup(uiChannelGroup);
+			//Logger::debug("Created UI Audio Instance with ID: {}, Audio ID: {}, Entity: {}", static_cast<std::size_t>(audioInstance.id), static_cast<std::size_t>(audioInstance.audioId), static_cast<std::size_t>(audioInstance.entity));
 			break;
 		default:
 			channel->setChannelGroup(masterChannelGroup);

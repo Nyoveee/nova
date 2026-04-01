@@ -122,32 +122,23 @@ public class Boss : Enemy
     {
         //lets create our own ability deck :D
         AbilitySequence[] abilityStartSequences = {
-            new RushingMeleeAttack(this),
-            new RushingMeleeAttack(this),
-            //new MeleeAttack(this),
-            //new StationaryGroundSlam(this),
-            //new StationaryGroundSlam(this),
-            new MissileBarrage(this),
-            new MissileBarrage(this),
-            //new JumpSlash(this),
-            new TripleJumpSlam(this)
-            //new ArenaJump(this)
+            //new RushingMeleeAttack(this),
+            //new RushingMeleeAttack(this),
+            //new MissileBarrage(this),
+            //new MissileBarrage(this),
+            //new TripleJumpSlam(this)
 
         };
 
         AbilityDeckStart.AddRange(abilityStartSequences);
 
         AbilitySequence[] abilityStrongSequences = {
-            new RushingMeleeAttack(this),
-            new RushingMeleeAttack(this),
-            //new MeleeAttack(this),
-             //new StationaryGroundSlam(this),
-            //new StationaryGroundSlam(this),
-            new MissileBarrage(this),
-            new MissileBarrage(this),
-            //new JumpSlash(this),
-            new TripleJumpSlam(this),
-            new ArenaJump(this)
+            //new RushingMeleeAttack(this),
+            //new RushingMeleeAttack(this),
+            //new MissileBarrage(this),
+            //new MissileBarrage(this),
+            //new TripleJumpSlam(this),
+            //new ArenaJump(this)
            
         };
 
@@ -341,7 +332,7 @@ public class Boss : Enemy
 
                         if (angleRemaining > lookAngle)
                         {
-                            Debug.Log("Current Angle: " + angleRemaining);
+                            //Debug.Log("Current Angle: " + angleRemaining);
                             //if (isIdleAnimation == true)
                             //{
                             //    animator.PlayAnimation("Boss_Run");

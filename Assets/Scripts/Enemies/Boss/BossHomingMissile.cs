@@ -33,6 +33,9 @@ class BossHomingMissile : Enemy
     public float homingGravityFactor = 3.0f;
 
     [SerializableField]
+    public List<Audio> missileWhistleAudio;
+
+    [SerializableField]
     public Prefab destroyVFX = null;
 
 
@@ -112,13 +115,7 @@ class BossHomingMissile : Enemy
                         Destroy(gameObject);
                     }, 0.1f);
 
-                    GameObject spawnedDestroyVFX = Instantiate(destroyVFX, gameObject.transform.position, gameObject.transform.rotation);
-                    foreach (GameObject emitter in spawnedDestroyVFX.GetChildren())
-                    {
-                        ParticleEmitter_? particleEmitter_ = emitter.getComponent<ParticleEmitter_>();
-                        if (particleEmitter_ != null)
-                            particleEmitter_.emit();
-                    }
+                   
 
                 }
                 break;
@@ -325,13 +322,15 @@ class BossHomingMissile : Enemy
            other.gameObject.getComponent<Rigidbody_>().GetLayerName() == "Floor")
         {
              missileState = MissileState.Death;
+             Instantiate(destroyVFX, gameObject.transform.position, gameObject.transform.rotation);
         }
 
         if (other.tag == "Player")
         { 
             other.getScript<PlayerController_V2>().TakeDamage(damage);
             missileState = MissileState.Death;
-            Debug.Log("Hit Player");
+           // Debug.Log("Hit Player");
+            Instantiate(destroyVFX, gameObject.transform.position, gameObject.transform.rotation);
 
         }
 

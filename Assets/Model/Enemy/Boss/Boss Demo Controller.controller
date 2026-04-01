@@ -1,0 +1,29 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "id": 1000,
+            "animation": 18446744073709551615,
+            "transitions": [
+                {
+                    "nextNode": 2405864024614306437,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "name": "Entry Node",
+            "animationEvents": null
+        },
+        "2405864024614306437": {
+            "id": 2405864024614306437,
+            "animation": 11419818642480660481,
+            "transitions": null,
+            "toLoop": false,
+            "blendFactor": 0.20000000298023224,
+            "name": "Boss_Attack",
+            "animationEvents": null
+        }
+    },
+    "parameters": null
+}

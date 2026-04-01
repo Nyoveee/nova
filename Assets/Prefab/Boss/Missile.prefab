@@ -101,6 +101,11 @@
                 },
                 "scaleWithTransform": true
             },
+            "PositionalAudio": {
+                "toggleSphere": false,
+                "innerRadius": 40.0,
+                "maxRadius": 100.0
+            },
             "Scripts": {
                 "scriptDatas": [
                     {
@@ -167,6 +172,17 @@
                                 "data": {
                                     "__variant_value": 0.0,
                                     "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "missileWhistleAudio",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
                                 }
                             },
                             {
