@@ -118,9 +118,53 @@
                 "__variant_value": 1.0,
                 "__variant_type": 12
             }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "intersectionColor",
+            "value": {
+                "__variant_value": {
+                    "r": 0.02215220220386982,
+                    "g": 0.09310346841812134,
+                    "b": 0.057872474193573
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "threshold",
+            "value": {
+                "__variant_value": 10.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "foamScale",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "noiseOffsetScale",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "alphaStepSize",
+            "value": {
+                "__variant_value": 0.2680000066757202,
+                "__variant_type": 12
+            }
         }
     ],
-    "blendingConfig": "Disabled",
-    "depthTestingMethod": "DepthTest",
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "DepthWriteNoPrePass",
     "cullingConfig": "Enable"
 }
