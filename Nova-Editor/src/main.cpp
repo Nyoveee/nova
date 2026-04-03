@@ -48,6 +48,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
+	Logger::debug("Running nova-editor");
 	if (!skipRun) {
 		window.run(
 			// Fixed update loop
