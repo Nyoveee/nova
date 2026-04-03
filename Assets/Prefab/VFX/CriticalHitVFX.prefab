@@ -1,5 +1,5 @@
 {
-    "RootEntity": 77,
+    "RootEntity": 1,
     "Entities": [
         {
             "EntityData": {
@@ -8,12 +8,12 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    78,
-                    79,
-                    80,
-                    81,
-                    82,
-                    83
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -89,42 +89,42 @@
                             {
                                 "name": "initialBurst",
                                 "data": {
-                                    "__variant_value": 78,
+                                    "__variant_value": 2,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "initialPoint",
                                 "data": {
-                                    "__variant_value": 79,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "holdPoint",
                                 "data": {
-                                    "__variant_value": 80,
+                                    "__variant_value": 4,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "holdBurst",
                                 "data": {
-                                    "__variant_value": 81,
+                                    "__variant_value": 5,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sparkBlue",
                                 "data": {
-                                    "__variant_value": 82,
+                                    "__variant_value": 6,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sparkOrange",
                                 "data": {
-                                    "__variant_value": 83,
+                                    "__variant_value": 7,
                                     "__variant_type": 4
                                 }
                             }
@@ -132,13 +132,13 @@
                     }
                 ]
             },
-            "id": 77
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "InitialBurst",
                 "tag": "",
-                "parent": 77,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -321,13 +321,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 78
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "InitialPoint",
                 "tag": "",
-                "parent": 77,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -510,13 +510,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 79
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "HoldPoint",
                 "tag": "",
-                "parent": 77,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -699,13 +699,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 80
+            "id": 4
         },
         {
             "EntityData": {
-                "name": "InitialPoint",
+                "name": "HoldBurst",
                 "tag": "",
-                "parent": 3,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -761,8 +761,8 @@
                 }
             },
             "ParticleEmitter": {
-                "texture": 4238635379619037341,
-                "startSize": 0.0,
+                "texture": 1932792370405163011,
+                "startSize": 2.0,
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 0.0,
@@ -790,7 +790,7 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "lifeTime": 0.10000000149011612,
+                "lifeTime": 0.20000000298023224,
                 "minLifeTimeOffset": 0.0,
                 "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
@@ -848,17 +848,17 @@
                     "emissiveMultiplier": 2.0
                 },
                 "sizeOverLifetime": {
-                    "selected": true,
-                    "interpolationType": "Linear",
-                    "endSize": 2.0
-                },
-                "colorOverLifetime": {
                     "selected": false,
                     "interpolationType": "Linear",
+                    "endSize": 1.0
+                },
+                "colorOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Cubic",
                     "endColor": {
-                        "r": 0.0,
-                        "g": 0.0,
-                        "b": 0.0,
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
                         "a": 0.0
                     }
                 },
@@ -892,387 +892,9 @@
         },
         {
             "EntityData": {
-                "name": "HoldPoint",
-                "tag": "",
-                "parent": 3,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 11425729632279822471,
-                "entityGUID": 16613876402976505987,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": -0.8530256152153015,
-                    "y": 7.809749126434326,
-                    "z": -5.696991443634033
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "ParticleEmitter": {
-                "texture": 4238635379619037341,
-                "startSize": 2.0,
-                "minStartSizeOffset": 0.0,
-                "maxStartSizeOffset": 0.0,
-                "startSpeed": 0.0,
-                "minStartSpeed": 0.0,
-                "maxStartSpeed": 0.0,
-                "initialRotation": 0.0,
-                "velocityBasedInitialRotation": false,
-                "minInitialRotationOffset": 0.0,
-                "maxInitialRotationOffset": 0.0,
-                "initialAngularVelocity": 0.0,
-                "minAngularVelocityOffset": 0.0,
-                "maxAngularVelocityOffset": 0.0,
-                "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "minForceOffset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "maxForceOffset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "lifeTime": 0.20000000298023224,
-                "minLifeTimeOffset": 0.0,
-                "maxLifeTimeOffset": 0.0,
-                "particleRate": 0.0,
-                "burstRate": 0.0,
-                "burstAmount": 1,
-                "lightIntensity": 0.0,
-                "lightattenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "lightRadius": 0.0,
-                "looping": true,
-                "randomizedDirection": false,
-                "invertMovement": false,
-                "particleEmissionTypeSelection": {
-                    "emissionShape": "Point",
-                    "radiusEmitter": {
-                        "radius": 5.0
-                    },
-                    "cubeEmitter": {
-                        "min": {
-                            "x": -5.0,
-                            "y": -5.0,
-                            "z": -5.0
-                        },
-                        "max": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
-                        }
-                    },
-                    "coneEmitter": {
-                        "arc": 30.0,
-                        "distance": 5.0
-                    }
-                },
-                "particleColorSelection": {
-                    "color": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 1.0
-                    },
-                    "colorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "colorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "emissiveMultiplier": 2.0
-                },
-                "sizeOverLifetime": {
-                    "selected": false,
-                    "interpolationType": "Linear",
-                    "endSize": 1.0
-                },
-                "colorOverLifetime": {
-                    "selected": true,
-                    "interpolationType": "Cubic",
-                    "endColor": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 0.0
-                    }
-                },
-                "trails": {
-                    "selected": false,
-                    "trailTexture": 0,
-                    "distancePerEmission": 0.10000000149011612,
-                    "trailSize": 0.10000000149011612,
-                    "trailColor": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 1.0
-                    },
-                    "trailColorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailColorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailEmissiveMultiplier": 1.0
-                },
-                "renderAlignment": "View",
-                "renderOrder": 0
-            },
-            "id": 6
-        },
-        {
-            "EntityData": {
-                "name": "HoldBurst",
-                "tag": "",
-                "parent": 77,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 11425729632279822471,
-                "entityGUID": 16613876402976505987,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": -0.8530256152153015,
-                    "y": 7.809749126434326,
-                    "z": -5.696991443634033
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "ParticleEmitter": {
-                "texture": 1932792370405163011,
-                "startSize": 2.0,
-                "minStartSizeOffset": 0.0,
-                "maxStartSizeOffset": 0.0,
-                "startSpeed": 0.0,
-                "minStartSpeed": 0.0,
-                "maxStartSpeed": 0.0,
-                "initialRotation": 0.0,
-                "velocityBasedInitialRotation": false,
-                "minInitialRotationOffset": 0.0,
-                "maxInitialRotationOffset": 0.0,
-                "initialAngularVelocity": 0.0,
-                "minAngularVelocityOffset": 0.0,
-                "maxAngularVelocityOffset": 0.0,
-                "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "minForceOffset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "maxForceOffset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "lifeTime": 0.20000000298023224,
-                "minLifeTimeOffset": 0.0,
-                "maxLifeTimeOffset": 0.0,
-                "particleRate": 0.0,
-                "burstRate": 0.0,
-                "burstAmount": 1,
-                "lightIntensity": 0.0,
-                "lightattenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "lightRadius": 0.0,
-                "looping": true,
-                "randomizedDirection": false,
-                "invertMovement": false,
-                "particleEmissionTypeSelection": {
-                    "emissionShape": "Point",
-                    "radiusEmitter": {
-                        "radius": 5.0
-                    },
-                    "cubeEmitter": {
-                        "min": {
-                            "x": -5.0,
-                            "y": -5.0,
-                            "z": -5.0
-                        },
-                        "max": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
-                        }
-                    },
-                    "coneEmitter": {
-                        "arc": 30.0,
-                        "distance": 5.0
-                    }
-                },
-                "particleColorSelection": {
-                    "color": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 1.0
-                    },
-                    "colorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "colorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "emissiveMultiplier": 2.0
-                },
-                "sizeOverLifetime": {
-                    "selected": false,
-                    "interpolationType": "Linear",
-                    "endSize": 1.0
-                },
-                "colorOverLifetime": {
-                    "selected": true,
-                    "interpolationType": "Cubic",
-                    "endColor": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 0.0
-                    }
-                },
-                "trails": {
-                    "selected": false,
-                    "trailTexture": 0,
-                    "distancePerEmission": 0.10000000149011612,
-                    "trailSize": 0.10000000149011612,
-                    "trailColor": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 1.0
-                    },
-                    "trailColorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailColorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailEmissiveMultiplier": 1.0
-                },
-                "renderAlignment": "View",
-                "renderOrder": 0
-            },
-            "id": 81
-        },
-        {
-            "EntityData": {
                 "name": "SparkBlue",
                 "tag": "",
-                "parent": 77,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1455,13 +1077,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 82
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "SparkOrange",
                 "tag": "",
-                "parent": 77,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1644,7 +1266,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 83
+            "id": 7
         }
     ]
 }
