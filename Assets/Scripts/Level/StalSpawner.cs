@@ -11,6 +11,8 @@ class StalSpawner : Script
     private Prefab stalactite2;
     [SerializableField]
     private Prefab stalactite3;
+    [SerializableField]
+    private GameObject scrollParent;
 
     [SerializableField]
     private GameObject boundsMin;
@@ -29,6 +31,8 @@ class StalSpawner : Script
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
+        string[] ceilingMask = { "Wall" };
+
         prefabs = new Prefab[] { stalactite1, stalactite2, stalactite3 };
         rng = new System.Random();
 
@@ -38,11 +42,21 @@ class StalSpawner : Script
         for (int i = 0; i < spawnCount; i++)
         {
             float x = min.x + (float)(rng.NextDouble() * (max.x - min.x));
-            float y = min.y + (float)(rng.NextDouble() * (max.y - min.y));
             float z = min.z + (float)(rng.NextDouble() * (max.z - min.z));
 
+            Vector3 rayOrigin = new Vector3(x, min.y, z);
+            var result = PhysicsAPI.Raycast(rayOrigin, Vector3.Up(), 1000, ceilingMask);
+
+            float y;
+            if (result != null)
+                y = result.Value.point.y;
+            else
+                y = max.y;
+
+            Vector3 parentPos = scrollParent.transform.position;
+
             Prefab chosen = prefabs[rng.Next(0, prefabs.Length)];
-            Instantiate(chosen, new Vector3(x, y, z), Quaternion.AngleAxis(0f, new Vector3(0f, 1f, 0f)));
+            Instantiate(chosen, new Vector3(x - parentPos.x, y - parentPos.y, z - parentPos.z), Quaternion.AngleAxis(0f, new Vector3(0f, 1f, 0f)), scrollParent);
         }
 
     }
