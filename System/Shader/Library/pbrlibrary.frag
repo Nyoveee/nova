@@ -242,7 +242,8 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
         SpotLight spotLight = spotLights[cluster.spotLightIndices[i]];
 
         vec3 directLight = microfacetModelSpot(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, spotLight);
-        directLight *= (1.0 - getShadowFactor(spotLight.shadowMapIndex));
+        float currentShadowFactor = getShadowFactor(spotLight.shadowMapIndex);
+        directLight *= (1.0 - currentShadowFactor);
 
         finalColor += directLight;
     }
