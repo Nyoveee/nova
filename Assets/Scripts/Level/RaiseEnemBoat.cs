@@ -27,7 +27,7 @@ class RaiseEnemBoat : Script
     private float bobTimer = 0f;
 
     private float riseSpeed = 2f;
-    private float riseHeight = 60f;
+    private float riseHeight = 50f;
     private float bobAmplitude = 5f;   // How much it shakes up/down
     private float bobFrequency = 1.5f;
 
@@ -104,6 +104,8 @@ class RaiseEnemBoat : Script
 
         if (isDrifting && !hitStalactite)
         {
+            riseTimer += Time.V_DeltaTime();
+
             Vector3 pos = this.gameObject.transform.position;
             float targetX = stalacite.transform.position.x + stalactiteXOffset;
 
@@ -116,6 +118,7 @@ class RaiseEnemBoat : Script
             else
                 pos.x -= step;
 
+            pos.y = targetY + Mathf.Sin(riseTimer * bobFrequency) * bobAmplitude;
             this.gameObject.transform.position = pos;
 
             float zDist = Mathf.Abs(pos.z - stalacite.transform.position.z);
