@@ -88,7 +88,7 @@
                 "position": {
                     "x": 0.10511958599090576,
                     "y": 3.0,
-                    "z": -2.589238405227661
+                    "z": -10.315197944641113
                 },
                 "scale": {
                     "x": 0.9997514486312866,
@@ -109,7 +109,7 @@
                 "localPosition": {
                     "x": 0.10511958599090576,
                     "y": 3.0,
-                    "z": -2.589238405227661
+                    "z": -10.315197944641113
                 },
                 "localScale": {
                     "x": 0.9997514486312866,
@@ -135,29 +135,6 @@
                 ],
                 "castShadow": false,
                 "shadowCullFrontFace": true
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "scriptId": 10172576669288726597,
-                        "fields": [
-                            {
-                                "name": "rotationAmount",
-                                "data": {
-                                    "__variant_value": 0.10000000149011612,
-                                    "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "speed",
-                                "data": {
-                                    "__variant_value": 0.0,
-                                    "__variant_type": 18
-                                }
-                            }
-                        ]
-                    }
-                ]
             },
             "CameraComponent": {
                 "camStatus": true,
@@ -238,39 +215,25 @@
             "AudioComponent": {
                 "volume": 0.699999988079071,
                 "loop": false,
-                "audioGroup": "SFX"
-            },
-            "PositionalAudio": {
-                "toggleSphere": false,
-                "innerRadius": 3.0,
-                "maxRadius": 10.0
+                "audioGroup": "BGM"
             },
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "scriptId": 14837496642663219913,
+                        "scriptId": 1206305640744599565,
                         "fields": [
+                            {
+                                "name": "audio",
+                                "data": {
+                                    "__variant_value": 2457065872651829249,
+                                    "__variant_type": 15
+                                }
+                            },
                             {
                                 "name": "timeStep",
                                 "data": {
                                     "__variant_value": 1.0,
                                     "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "footsteps",
-                                "data": {
-                                    "__variant_value": {
-                                        "list": [
-                                            {
-                                                "__variant_value": 1802029798340476949,
-                                                "__variant_type": 15
-                                            }
-                                        ],
-                                        "enumListType": "",
-                                        "index": 15
-                                    },
-                                    "__variant_type": 20
                                 }
                             }
                         ]
@@ -347,5 +310,10 @@
         }
     ],
     "iblDiffuseStrength": 1.0,
-    "iblSpecularStrength": 1.0
+    "iblSpecularStrength": 1.0,
+    "brightness": 0.5,
+    "contrast": 0.5,
+    "saturation": 0.5,
+    "temperature": 0.5,
+    "tint": 0.5
 }

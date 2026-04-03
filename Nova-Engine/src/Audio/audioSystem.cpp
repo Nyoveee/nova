@@ -358,6 +358,7 @@ void AudioSystem::playBGM(ResourceID id, float volume)
 	}
 
 	AudioInstance* audioInstance = createSoundInstance(id, volume);
+
 	// Update current BGM
 	if (audioInstance) {
 		currentBGM = audioInstance;
@@ -577,6 +578,11 @@ bool AudioSystem::playBGM(entt::entity entity, AudioComponent const& audioCompon
 	}
 
 	AudioInstance* audioInstance = createSoundInstance(audio, audioComponent, entity);
+
+	if (!audioInstance)
+		return false;
+
+	audioInstance->channel->setPaused(false);
 	// Update current BGM
 	if (audioInstance) {
 		currentBGM = audioInstance;
