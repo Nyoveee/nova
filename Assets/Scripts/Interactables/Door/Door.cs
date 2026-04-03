@@ -60,6 +60,9 @@ class Door : Script
     private float openOffset = 2f;
 
     [SerializableField]
+    private Vector3 openAxis = new Vector3(1, 0, 0);
+
+    [SerializableField]
     private float rotation = 90f;
 
     [SerializableField]
@@ -87,8 +90,8 @@ class Door : Script
     {
         leftStartClosed = leftDoor.localPosition;
         rightStartClosed = rightDoor.localPosition;
-        leftStartOpen = leftDoor.localPosition - new Vector3(openOffset, 0, 0);
-        rightStartOpen = rightDoor.localPosition + new Vector3(openOffset, 0, 0);
+        leftStartOpen = leftDoor.localPosition - openAxis * openOffset;
+        rightStartOpen = rightDoor.localPosition + openAxis * openOffset;
 
         leftStartRotation = leftDoor.localRotation;
         rightStartRotation = rightDoor.localRotation;
@@ -211,15 +214,16 @@ class Door : Script
     {
         doorState = DoorState.Opening;
         currentDoorMovingTime = 0;
-        audioComponent?.PlaySound(openSFX);
+        if(openSFX != null)
+            audioComponent?.PlaySound(openSFX);
 
-        Debug.Log(openOffset);
     }
 
     public void CloseDoor()
     {
         doorState = DoorState.Closing;
-        audioComponent?.PlaySound(closeSFX);
+        if(closeSFX != null)
+            audioComponent?.PlaySound(closeSFX);
     }
 
     public void LockDoor()

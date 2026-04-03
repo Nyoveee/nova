@@ -11,7 +11,7 @@ class DoorLockingMechanism : Script
         if(other.tag == "Player" && door.IsDoorUnlocked())
         {
             if (gameObject != null)
-                Destroy(gameObject);
+                gameObject.SetActive(false);
             door.LockDoor();
         }
     }
