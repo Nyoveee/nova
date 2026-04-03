@@ -72,7 +72,7 @@ class Admin : Script
         MapKey(Key.Y, () =>
         {
             if(sniper != null)
-                sniper.CurrentSp += 17;
+                sniper.CurrentSp += 100;
         });
 
         MapKey(Key.G, () =>
