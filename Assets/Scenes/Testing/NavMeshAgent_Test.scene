@@ -211,6 +211,7 @@
             },
             "CameraComponent": {
                 "camStatus": true,
+                "toRotateSideWays": false,
                 "fov": 45.0,
                 "nearPlane": 0.30000001192092896,
                 "farPlane": 1000.0
@@ -278,7 +279,7 @@
             },
             "NavMeshSurface": {
                 "label": "Humanoid",
-                "navMeshId": 2189198408433270785
+                "navMeshId": 11806925942418184929
             },
             "id": 2097154
         },
@@ -959,5 +960,12 @@
         {
             "name": "Default"
         }
-    ]
+    ],
+    "iblDiffuseStrength": 1.0,
+    "iblSpecularStrength": 1.0,
+    "brightness": 0.5,
+    "contrast": 0.5,
+    "saturation": 0.5,
+    "temperature": 0.5,
+    "tint": 0.5
 }

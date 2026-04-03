@@ -1,0 +1,319 @@
+{
+    "entities": [
+        {
+            "EntityData": {
+                "name": "Floor",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 16566878899568181951,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 2097208
+        },
+        {
+            "EntityData": {
+                "name": "EarCamera",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17719800404176798405,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.10511958599090576,
+                    "y": 3.0,
+                    "z": -10.315197944641113
+                },
+                "scale": {
+                    "x": 0.9997514486312866,
+                    "y": 1.0,
+                    "z": 0.9997514486312866
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.10511958599090576,
+                    "y": 3.0,
+                    "z": -10.315197944641113
+                },
+                "localScale": {
+                    "x": 0.9997514486312866,
+                    "y": 1.0,
+                    "z": 0.9997514486312866
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 1688568826965803029,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "CameraComponent": {
+                "camStatus": true,
+                "toRotateSideWays": true,
+                "fov": 45.0,
+                "nearPlane": 0.30000001192092896,
+                "farPlane": 1000.0
+            },
+            "id": 3145946
+        },
+        {
+            "EntityData": {
+                "name": "AudioSource",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 14261035890357207751,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -3.725290298461914e-09,
+                    "y": 3.0,
+                    "z": 1.4901161193847656e-08
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -3.725290298461914e-09,
+                    "y": 3.0,
+                    "z": 1.4901161193847656e-08
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "AudioComponent": {
+                "volume": 0.699999988079071,
+                "loop": false,
+                "audioGroup": "BGM"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 1206305640744599565,
+                        "fields": [
+                            {
+                                "name": "audio",
+                                "data": {
+                                    "__variant_value": 2457065872651829249,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "timeStep",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 4194521
+        },
+        {
+            "EntityData": {
+                "name": "Entity 1",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17090105696917274635,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 0
+        }
+    ],
+    "layers": [
+        {
+            "name": "Default"
+        }
+    ],
+    "iblDiffuseStrength": 1.0,
+    "iblSpecularStrength": 1.0,
+    "brightness": 0.5,
+    "contrast": 0.5,
+    "saturation": 0.5,
+    "temperature": 0.5,
+    "tint": 0.5
+}

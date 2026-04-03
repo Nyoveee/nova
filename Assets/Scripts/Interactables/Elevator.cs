@@ -77,7 +77,7 @@ class Elevator : Script
         if (t >= 1f)
         {
             elevatorState = ElevatorState.Idle;
-            hubDoor.OpenDoor();
+            hubDoor.UnlockDoor();
             b_reachedHub = true;
         }
     }
@@ -93,7 +93,6 @@ class Elevator : Script
 
     public void OpenTutorialDoor()
     {
-        Debug.Log("asd");
         tutorialDoor.OpenDoor();
     }
 }

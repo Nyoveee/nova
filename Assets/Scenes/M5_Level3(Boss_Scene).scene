@@ -14071,6 +14071,7 @@
                     "17237801994024849853": true,
                     "11935986701403193153": false,
                     "16861337649669213096": false,
+                    "14828643033174927893": true,
                     "6919815292445452220": true,
                     "13484132868097894827": true
                 },
@@ -14141,6 +14142,11 @@
                 "volume": 1.0,
                 "loop": false,
                 "audioGroup": "SFX"
+            },
+            "PositionalAudio": {
+                "toggleSphere": false,
+                "innerRadius": 100.0,
+                "maxRadius": 200.0
             },
             "Scripts": {
                 "scriptDatas": [
@@ -24051,6 +24057,6 @@
     "brightness": 0.5,
     "contrast": 0.5,
     "saturation": 0.5,
-    "temperature": 6500.0,
-    "tint": 0.0
+    "temperature": 0.5,
+    "tint": 0.5
 }

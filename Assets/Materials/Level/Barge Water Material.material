@@ -1,5 +1,5 @@
 {
-    "selectedShader": 14972877226300538881,
+    "selectedShader": 11553281709438255105,
     "uniformDatas": [
         {
             "glslType": "Color",
@@ -7,7 +7,7 @@
             "value": {
                 "__variant_value": {
                     "r": 0.12285373359918594,
-                    "g": 0.28619033098220825,
+                    "g": 0.27974289655685425,
                     "b": 0.43448275327682495
                 },
                 "__variant_type": 10
@@ -18,9 +18,9 @@
             "identifier": "edgeColor",
             "value": {
                 "__variant_value": {
-                    "r": 0.03529410809278488,
-                    "g": 0.1567004919052124,
-                    "b": 0.2980392277240753
+                    "r": 0.09197384864091873,
+                    "g": 0.13913533091545105,
+                    "b": 0.2931034564971924
                 },
                 "__variant_type": 10
             }
@@ -75,7 +75,7 @@
             "glslType": "float",
             "identifier": "waveAmplitude",
             "value": {
-                "__variant_value": 3.0,
+                "__variant_value": 1.5,
                 "__variant_type": 3
             }
         },
@@ -118,9 +118,53 @@
                 "__variant_value": 1.0,
                 "__variant_type": 12
             }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "intersectionColor",
+            "value": {
+                "__variant_value": {
+                    "r": 0.26378121972084045,
+                    "g": 0.5525377988815308,
+                    "b": 0.8137931227684021
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "threshold",
+            "value": {
+                "__variant_value": 15.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "foamScale",
+            "value": {
+                "__variant_value": 0.5,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "noiseOffsetScale",
+            "value": {
+                "__variant_value": -0.6000000238418579,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "alphaStepSize",
+            "value": {
+                "__variant_value": 0.5600000023841858,
+                "__variant_type": 12
+            }
         }
     ],
-    "blendingConfig": "Disabled",
-    "depthTestingMethod": "DepthTest",
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "DepthWriteNoPrePass",
     "cullingConfig": "Enable"
 }

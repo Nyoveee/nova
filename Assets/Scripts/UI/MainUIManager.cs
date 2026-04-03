@@ -81,6 +81,7 @@ class MainUIManager : Script
         initialCameraPosition = camera.transform.position;
         finalCameraPosition = cameraMainMenuPos.position;
 
+        darkOverlay.alpha = 1f;
 
         Invoke(() =>
         {
@@ -93,7 +94,14 @@ class MainUIManager : Script
             fadeOutTimeElasped = 0f;
             particleEmitter.SetActive(true);
 
-            fadeOutCallback = () => mainMenuUi.isInteractable = true;
+            fadeOutCallback = () => 
+            {
+                Invoke(() =>
+                {
+                    mainMenuUi.isInteractable = true;
+                }, 1f); 
+            };
+            
         }, initialLerpDuration);
 
         Invoke(() =>
