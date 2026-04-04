@@ -11,11 +11,11 @@
 #include "Material.h"
 #include "customShader.h"
 
-ResourceManager::ResourceManager() {
-	reload();
+ResourceManager::ResourceManager(bool b_JenkinsCompile) {
+	reload(b_JenkinsCompile);
 }
 
-void ResourceManager::reload() {
+void ResourceManager::reload(bool b_JenkinsCompile) {
 	resourceFilePaths.clear();
 	loadedResources.clear();
 	createdResourceInstances.clear();
@@ -25,7 +25,8 @@ void ResourceManager::reload() {
 		// ========================================
 		// 1. Load all system resources..
 		// ========================================
-		loadAllSystemResources();
+		if(!b_JenkinsCompile)
+			loadAllSystemResources();
 
 		// ========================================
 		// 3. Load all resources..
