@@ -18,12 +18,29 @@ class VoiceoverScript : Script
     private PlayerWeaponController playerWeaponController;
 
     private Delegate Callback;
+
+    private int totalRunningVoicelines;
+    private List<bool> voiceLineActiveStates = new List<bool>();
+
     protected override void init()
     {
         audioComponent = getComponent<AudioComponent_>();
         playerWeaponController = GameObject.FindWithTag("Player")?.getScript<PlayerWeaponController>();
     }
-
+    protected override void update()
+    {
+        bool b_HideUI = true;
+        foreach(bool voiceLineActiveState in voiceLineActiveStates)
+            if (voiceLineActiveState)
+                b_HideUI = false;
+        if (b_HideUI)
+        {
+            totalRunningVoicelines = 0;
+            voiceLineActiveStates.Clear();
+            dialogueUI.alpha = 0f;
+        }
+           
+    }
     public void TriggerVoiceOver(string speaker, string text, Audio audio, float voiceOverTime, bool shouldDisableWeapon)
     {
         dialogueUI.gameObject.SetActive(true);
@@ -35,14 +52,17 @@ class VoiceoverScript : Script
         voiceOverSpeakerUI?.SetText(speaker);
         voiceOverTextUI?.SetText(text);
 
+        // Set Active State
+        int currentVoicelineIndex = totalRunningVoicelines++;
+        voiceLineActiveStates.Add(true);
+
+        // Callback
         dialogueUI.alpha = 1f;
-        // Trigger fade out once done 
         Invoke(() =>
         {
             if (shouldDisableWeapon)
                 playerWeaponController.EnableShooting();
-            dialogueUI.alpha = 0f;
-            dialogueUI.gameObject.SetActive(false);
+            voiceLineActiveStates[currentVoicelineIndex] = false;
         }, voiceOverTime);
     }
 
@@ -56,18 +76,21 @@ class VoiceoverScript : Script
         // Set Text
         voiceOverSpeakerUI?.SetText(speaker);
 
-
         // Set Text Sequence
         int index = -1;
         Callback callbackRecursive = null;
-        
+
+        // Set Active State
+        int currentVoicelineIndex = totalRunningVoicelines++;
+        voiceLineActiveStates.Add(true);
+
+        // Callback
         Callback callback = () => {
             if (index == text.Count - 1)
             {
                 if (shouldDisableWeapon)
                     playerWeaponController.EnableShooting();
-                dialogueUI.alpha = 0f;
-                dialogueUI.gameObject.SetActive(false);
+                voiceLineActiveStates[currentVoicelineIndex] = false;
                 return;
             }
             dialogueUI.alpha = 1f;
