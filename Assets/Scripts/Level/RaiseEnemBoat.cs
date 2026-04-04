@@ -30,9 +30,17 @@ class RaiseEnemBoat : Script
     [SerializableField]
     private GameObject scatterExplosionEmitter;
     [SerializableField]
+    private GameObject waterExplosionEmitter;
+    [SerializableField]
     private GameObject smoke1;
     [SerializableField]
     private GameObject smoke2;
+    [SerializableField]
+    private GameObject smoke3;
+    [SerializableField]
+    private GameObject smoke4;
+    [SerializableField]
+    private GameObject blinded;
 
     private bool isRising = false;
     private float riseTimer = 0f;
@@ -143,11 +151,11 @@ class RaiseEnemBoat : Script
                 explosionEmitter.getComponent<ParticleEmitter_>().emit();
                 smallExplosionEmitter.getComponent<ParticleEmitter_>().emit();
                 scatterExplosionEmitter.getComponent<ParticleEmitter_>().emit();
-
-                smoke1.SetActive(true);
-                smoke2.SetActive(true);
+                waterExplosionEmitter.getComponent<ParticleEmitter_>().emit();
 
                 CameraAPI.shakeCamera(1f, 1f);
+
+                blinded.SetActive(true);
 
                 Sink();
             }
@@ -181,6 +189,14 @@ class RaiseEnemBoat : Script
                 tiltTarget,
                 2f * Time.V_DeltaTime()
             );
+
+            if(hasSunk)
+            {
+                smoke1.SetActive(true);
+                smoke2.SetActive(true);
+                smoke3.SetActive(true);
+                smoke4.SetActive(true);
+            }
         }
     }
 
