@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
 		// Jenkins Setup
 		Window			window{ inputManager };
 		ResourceManager resourceManager{};
-		Engine			engine{ window, inputManager, resourceManager, gameConfig, Engine::State::Editor };
+		Engine			engine{ window, inputManager, resourceManager};
 		AssetManager	assetManager{ resourceManager, engine };
 		std::cout << "Skipping window.run().\n";
 	}
