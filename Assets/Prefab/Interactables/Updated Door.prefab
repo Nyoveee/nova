@@ -1,0 +1,323 @@
+{
+    "RootEntity": 7,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Door_Frame",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    8,
+                    9
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 17166367828547904895,
+                "entityGUID": 13909878242079753273,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -775.4911499023438,
+                    "y": -426.3128662109375,
+                    "z": -381.8001708984375
+                },
+                "scale": {
+                    "x": 1.000176191329956,
+                    "y": 1.0,
+                    "z": 1.000176191329956
+                },
+                "rotation": {
+                    "w": 0.7071067094802856,
+                    "x": 0.0,
+                    "y": -0.7071068286895752,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.570451021194458,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 8.4656982421875,
+                    "y": -17.48468017578125,
+                    "z": -161.34271240234375
+                },
+                "localScale": {
+                    "x": 1.0001801252365112,
+                    "y": 1.0,
+                    "z": 1.0001801252365112
+                },
+                "localRotation": {
+                    "w": 0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.7071068286895752,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 1.570451021194458,
+                    "z": 3.1415927410125732
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 14486338994382619697,
+                "materialIds": [
+                    2132094347630641163
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "AudioComponent": {
+                "volume": 0.30000001192092896,
+                "loop": false,
+                "audioGroup": "SFX"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 8255212936417148929,
+                        "fields": [
+                            {
+                                "name": "doorType",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "DoorType",
+                                        "Value": "Automatic"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            },
+                            {
+                                "name": "doorOpeningMode",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "DoorOpeningMode",
+                                        "Value": "Rotation"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            },
+                            {
+                                "name": "automaticDoordetectionRange",
+                                "data": {
+                                    "__variant_value": 40.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "leftDoor",
+                                "data": {
+                                    "__variant_value": 9,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "rightDoor",
+                                "data": {
+                                    "__variant_value": 8,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "openSFX",
+                                "data": {
+                                    "__variant_value": 3614315193721291897,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "closeSFX",
+                                "data": {
+                                    "__variant_value": 732011432204158071,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "openOffset",
+                                "data": {
+                                    "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "openAxis",
+                                "data": {
+                                    "__variant_value": {
+                                        "x": 1.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "__variant_type": 1
+                                }
+                            },
+                            {
+                                "name": "rotation",
+                                "data": {
+                                    "__variant_value": 90.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "doorMovingDuration",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "lerpPower",
+                                "data": {
+                                    "__variant_value": 0.5,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 7
+        },
+        {
+            "EntityData": {
+                "name": "Door_R",
+                "tag": "",
+                "parent": 7,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 17166367828547904895,
+                "entityGUID": 15639260498990007351,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -774.8419799804688,
+                    "y": -426.3122863769531,
+                    "z": -381.8004150390625
+                },
+                "scale": {
+                    "x": 1.000098466873169,
+                    "y": 1.0,
+                    "z": 1.000098466873169
+                },
+                "rotation": {
+                    "w": 0.7071067094802856,
+                    "x": 0.0,
+                    "y": -0.7071068286895752,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.570451021194458,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": -0.000244140625,
+                    "y": 0.0006103515625,
+                    "z": -0.6490478515625
+                },
+                "localScale": {
+                    "x": 0.9999223351478577,
+                    "y": 1.0,
+                    "z": 0.9999223351478577
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 12180495985168925747,
+                "materialIds": [
+                    2132094347630641163
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 8
+        },
+        {
+            "EntityData": {
+                "name": "Door_L",
+                "tag": "",
+                "parent": 7,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 17166367828547904895,
+                "entityGUID": 16215721251293414453,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -759.470703125,
+                    "y": -426.3122863769531,
+                    "z": -381.8009338378906
+                },
+                "scale": {
+                    "x": 1.000098466873169,
+                    "y": 1.0,
+                    "z": 1.000098466873169
+                },
+                "rotation": {
+                    "w": 0.7071067094802856,
+                    "x": 0.0,
+                    "y": -0.7071068286895752,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.570451021194458,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": -0.000762939453125,
+                    "y": 0.0006103515625,
+                    "z": -16.01763916015625
+                },
+                "localScale": {
+                    "x": 0.9999223351478577,
+                    "y": 1.0,
+                    "z": 0.9999223351478577
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 11604035232865502255,
+                "materialIds": [
+                    2132094347630641163
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 9
+        }
+    ]
+}

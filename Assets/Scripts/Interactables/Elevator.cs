@@ -10,6 +10,10 @@ class Elevator : Script
     [SerializableField]
     private float moveHeight;
     [SerializableField]
+    private float moveFrontDistance = 0f;
+    [SerializableField]
+    private float moveRightDistance = 0f;
+    [SerializableField]
     private float elevatorMoveDuration = 2f;
     [SerializableField]
     private Door tutorialDoor;
@@ -23,6 +27,7 @@ class Elevator : Script
     **********************************************************************/
     Vector3 topPosition;
     Vector3 bottomPosition;
+    
     private enum ElevatorState
     {
         Idle,
@@ -39,7 +44,8 @@ class Elevator : Script
         updateState.Add(ElevatorState.Idle, Update_Idle);
         updateState.Add(ElevatorState.MovingDown, Update_MovingDown);
         topPosition = elevatorTransform.position;
-        bottomPosition = topPosition - new Vector3(0, moveHeight, 0);
+
+        bottomPosition = topPosition - new Vector3(0, moveHeight, 0) + gameObject.transform.front * moveFrontDistance + gameObject.transform.right * moveRightDistance;
 
         playerBody = GameObject.FindWithTag("Player");
         
@@ -71,7 +77,7 @@ class Elevator : Script
         
         if(playerBody != null)
         {
-            playerBody.getComponent<Transform_>().position += distanceMoved;
+           //playerBody.getComponent<Transform_>().position += distanceMoved;
         }
 
         if (t >= 1f)

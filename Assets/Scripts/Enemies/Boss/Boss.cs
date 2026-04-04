@@ -122,24 +122,24 @@ public class Boss : Enemy
     {
         //lets create our own ability deck :D
         AbilitySequence[] abilityStartSequences = {
-            //new RushingMeleeAttack(this),
-            //new RushingMeleeAttack(this),
-            //new MissileBarrage(this),
-            //new MissileBarrage(this),
-            //new TripleJumpSlam(this)
+            new RushingMeleeAttack(this),
+            new RushingMeleeAttack(this),
+            new MissileBarrage(this),
+            new MissileBarrage(this),
+            new TripleJumpSlam(this)
 
         };
 
         AbilityDeckStart.AddRange(abilityStartSequences);
 
         AbilitySequence[] abilityStrongSequences = {
-            //new RushingMeleeAttack(this),
-            //new RushingMeleeAttack(this),
-            //new MissileBarrage(this),
-            //new MissileBarrage(this),
-            //new TripleJumpSlam(this),
-            //new ArenaJump(this)
-           
+            new RushingMeleeAttack(this),
+            new RushingMeleeAttack(this),
+            new MissileBarrage(this),
+            new MissileBarrage(this),
+            new TripleJumpSlam(this),
+            new ArenaJump(this)
+
         };
 
 

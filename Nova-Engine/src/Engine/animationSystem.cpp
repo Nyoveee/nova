@@ -170,7 +170,7 @@ void AnimationSystem::resetSequence(Sequence& sequence) {
 
 void AnimationSystem::setAnimationFrame(Animator& animator, int frame) {
 	// retrieve the current animation based on current node..
-	auto&& [animation, __] = resourceManager.getResource<Model>(animator.currentAnimation);
+	auto&& [animation, __] = resourceManager.getResource<Model, LoadingOption::LoadImmediately>(animator.currentAnimation);
 
 	// Get controller resource..
 	auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
@@ -218,7 +218,7 @@ void AnimationSystem::setAnimationFrame(Animator& animator, int frame) {
 
 int AnimationSystem::getAnimationFrame(Animator& animator) const {
 	// retrieve the current animation based on current node..
-	auto&& [animation, __] = resourceManager.getResource<Model>(animator.currentAnimation);
+	auto&& [animation, __] = resourceManager.getResource<Model, LoadingOption::LoadImmediately>(animator.currentAnimation);
 
 	if (!animation || animation->animations.empty()) {
 		Logger::warn("Invalid animation when attempting to get animation frame");

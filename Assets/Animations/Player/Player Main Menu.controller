@@ -1,6 +1,16 @@
 {
     "entryNode": 1000,
     "nodes": {
+        "1589164367421512737": {
+            "id": 1589164367421512737,
+            "animation": 5624389633542012929,
+            "transitions": null,
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
+            "name": "Player_MainMenu_Idle",
+            "animationEvents": null
+        },
         "1000": {
             "id": 1000,
             "animation": 18446744073709551615,
@@ -12,16 +22,8 @@
             ],
             "toLoop": true,
             "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
             "name": "Entry Node",
-            "animationEvents": null
-        },
-        "1589164367421512737": {
-            "id": 1589164367421512737,
-            "animation": 5624389633542012929,
-            "transitions": null,
-            "toLoop": true,
-            "blendFactor": 0.20000000298023224,
-            "name": "Player_MainMenu_Idle",
             "animationEvents": null
         }
     },

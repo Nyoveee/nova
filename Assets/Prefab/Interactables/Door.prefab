@@ -1,5 +1,5 @@
 {
-    "RootEntity": 17,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,9 +8,9 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    18,
-                    19,
-                    20
+                    1,
+                    2,
+                    3
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -69,7 +69,8 @@
             },
             "AudioComponent": {
                 "volume": 1.0,
-                "loop": false
+                "loop": false,
+                "audioGroup": "SFX"
             },
             "Scripts": {
                 "scriptDatas": [
@@ -87,6 +88,16 @@
                                 }
                             },
                             {
+                                "name": "doorOpeningMode",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "DoorOpeningMode",
+                                        "Value": "Translation"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            },
+                            {
                                 "name": "automaticDoordetectionRange",
                                 "data": {
                                     "__variant_value": 25.0,
@@ -96,14 +107,14 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 19,
+                                    "__variant_value": 2,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 18,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
@@ -129,9 +140,34 @@
                                 }
                             },
                             {
+                                "name": "openAxis",
+                                "data": {
+                                    "__variant_value": {
+                                        "x": 1.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "__variant_type": 1
+                                }
+                            },
+                            {
+                                "name": "rotation",
+                                "data": {
+                                    "__variant_value": 90.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
                                 "name": "doorMovingDuration",
                                 "data": {
                                     "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "lerpPower",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
                                     "__variant_type": 18
                                 }
                             }
@@ -139,13 +175,13 @@
                     }
                 ]
             },
-            "id": 17
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "DoorR",
                 "tag": "",
-                "parent": 17,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -154,8 +190,8 @@
                 "entityGUID": 9181397647453476195,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": true,
                     "10106385962890515953": true,
+                    "6919815292445452220": true,
                     "11935986701403193153": true,
                     "9059764703561530457": true
                 },
@@ -233,13 +269,13 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 18
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "DoorL",
                 "tag": "",
-                "parent": 17,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -248,8 +284,8 @@
                 "entityGUID": 4569711629026088293,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": true,
                     "10106385962890515953": true,
+                    "6919815292445452220": true,
                     "11935986701403193153": true,
                     "17421316227555880647": false,
                     "9059764703561530457": true
@@ -328,13 +364,13 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 19
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "DoorLockingMechanism",
                 "tag": "",
-                "parent": 17,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -431,7 +467,7 @@
                             {
                                 "name": "door",
                                 "data": {
-                                    "__variant_value": 17,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -439,7 +475,7 @@
                     }
                 ]
             },
-            "id": 20
+            "id": 3
         }
     ]
 }
