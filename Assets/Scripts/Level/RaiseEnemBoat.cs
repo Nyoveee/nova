@@ -23,6 +23,16 @@ class RaiseEnemBoat : Script
     private float stalactiteXOffset = 30f;
     [SerializableField] 
     private float scrollSpeed = 50f;
+    [SerializableField] 
+    private GameObject explosionEmitter;
+    [SerializableField]
+    private GameObject smallExplosionEmitter;
+    [SerializableField]
+    private GameObject scatterExplosionEmitter;
+    [SerializableField]
+    private GameObject smoke1;
+    [SerializableField]
+    private GameObject smoke2;
 
     private bool isRising = false;
     private float riseTimer = 0f;
@@ -129,6 +139,16 @@ class RaiseEnemBoat : Script
             if (zDist <= hitThreshold)
             {
                 hitStalactite = true;
+
+                explosionEmitter.getComponent<ParticleEmitter_>().emit();
+                smallExplosionEmitter.getComponent<ParticleEmitter_>().emit();
+                scatterExplosionEmitter.getComponent<ParticleEmitter_>().emit();
+
+                smoke1.SetActive(true);
+                smoke2.SetActive(true);
+
+                CameraAPI.shakeCamera(1f, 1f);
+
                 Sink();
             }
         }

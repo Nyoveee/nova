@@ -808,14 +808,14 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	// We provide the current depth texture as well, since we did a depth pre pass earlier..
 	renderModels(RenderPass::ColorPass, depthTextureCopy);
 
-	// Render particles
-	renderParticles(false);
-	glBindVertexArray(mainVAO);
-
 	// Transparent depth test...
 	glDepthFunc(GL_LEQUAL);
 
 	renderTranslucentModels(frameBuffers);
+
+	// Render particles
+	renderParticles(false);
+	glBindVertexArray(mainVAO);
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -2549,9 +2549,9 @@ void Renderer::renderParticles(bool toRenderUILayer)
 	EBO.uploadData(squareIndices);
 
 	// render texture by texture
-	//std::sort(engine.particleSystem.usedTextures.begin(), engine.particleSystem.usedTextures.end(), [&](auto const& lhs, auto const& rhs) {
-	//	return lhs.layer < rhs.layer;
-	//});
+	std::sort(engine.particleSystem.usedTextures.begin(), engine.particleSystem.usedTextures.end(), [&](auto const& lhs, auto const& rhs) {
+		return lhs.layer < rhs.layer;
+	});
 
 	for (auto const& textureLayer : engine.particleSystem.usedTextures) {
 		auto&& [renderOrder, textureId, textureIndex, _] = textureLayer;
