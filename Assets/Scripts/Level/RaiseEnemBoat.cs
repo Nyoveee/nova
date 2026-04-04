@@ -41,7 +41,14 @@ class RaiseEnemBoat : Script
     private GameObject smoke4;
     [SerializableField]
     private GameObject blinded;
+    [SerializableField]
+    private Vector3 offsetAmp;
+    [SerializableField]
+    private float durationShake;
 
+    private Vector3 stalacitePos;
+    private bool isShaking = false;
+    private float shakeTimer = 0f;
     private bool isRising = false;
     private float riseTimer = 0f;
     private float bobTimer = 0f;
@@ -80,11 +87,30 @@ class RaiseEnemBoat : Script
         startX = this.gameObject.transform.position.x;
 
         targetY = startY + riseHeight;
+        stalacitePos = stalacite.transform.localPosition;
     }
 
     // This function is invoked every update.
     protected override void update()
     {
+        if(isShaking)
+        {
+            shakeTimer += Time.V_DeltaTime();
+            if (shakeTimer >= durationShake)
+            {
+                isShaking = false;
+                shakeTimer = 0f;
+            }
+            else
+            {
+                Vector3 amp = Vector3.Lerp(offsetAmp, Vector3.Zero(), Mathf.Pow(shakeTimer / durationShake, 3.0f));
+
+                Vector3 offset = amp * Mathf.Sin(shakeTimer * 1000);
+                offset *= Random.Range(0f, 1f);
+                stalacite.transform.localPosition = stalacitePos + offset;
+            }
+        }
+
         if (furthestDistance.position.z < distance && isSinking == false && !hasSunk)
         {
             isRising = true;
@@ -147,6 +173,7 @@ class RaiseEnemBoat : Script
             if (zDist <= hitThreshold)
             {
                 hitStalactite = true;
+                isShaking = true;
 
                 explosionEmitter.getComponent<ParticleEmitter_>().emit();
                 smallExplosionEmitter.getComponent<ParticleEmitter_>().emit();
