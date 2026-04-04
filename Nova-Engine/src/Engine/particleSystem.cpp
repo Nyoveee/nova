@@ -26,6 +26,7 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, particleVerticesBO.id());
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, particlesSSBO.id());
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, particleLightsSSBO.id());
+
 	// Intialize buffer values
 	int maxParticles{ getMaxParticles() };
 
@@ -36,6 +37,7 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 	interpolationType[InterpolationType::Linear] = 1.0f;
 	interpolationType[InterpolationType::Quadractic] = 2.0f;
 	interpolationType[InterpolationType::Cubic] = 3.0f;
+	
 	// Intialize all particles to inactive
 	reset();
 }
@@ -60,10 +62,12 @@ void ParticleSystem::update(float dt)
 		
 		burstGeneration(transform, emitter, dt);
 	}
+
 	particleUpdateComputeShader.use();
 	particleUpdateComputeShader.setFloat("dt", dt);
+	
 	// Update the particles over life span
-	int numTextures{ static_cast<int>(usedTextures.size()) };
+	int numTextures{ static_cast<int>( usedTextures.size()) };
 	if (numTextures != 0) {
 		glDispatchCompute((numTextures * MAX_PARTICLES_PER_TEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -337,10 +341,15 @@ void ParticleSystem::addParticleToList(ParticleLifespanData& particleLifeSpanDat
 	
 	if (iter == std::end(usedTextures)) {
 		textureIndex = static_cast<int>(usedTextures.size());
-		usedTextures.push_back(TextureLayer{ renderOrder, texture, textureIndex, 0 });
+		usedTextures.push_back(TextureLayer{ 
+			.layer = renderOrder, 
+			.texture = texture, 
+			.textureIndex = textureIndex, 
+			.counter = 0 
+		});
 	}
 	else {
-		textureIndex = static_cast<int>(iter - std::begin(usedTextures));
+		textureIndex = usedTextures[static_cast<int>(iter - std::begin(usedTextures))].textureIndex;
 	}
 
 	int offset = (textureIndex * MAX_PARTICLES_PER_TEXTURE + usedTextures[textureIndex].counter);

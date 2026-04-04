@@ -23,7 +23,7 @@ class SplashScreen : Script
     private float fadeOutTime;
 
     private float currentFadeTime = 0;
-    private int currentImageIndex = 0;
+    private int currentImageIndex = -1;
     private SplashScreenState currentFadeState = SplashScreenState.FadeIn;
     private List<Image_> images = new List<Image_>();
     protected override void init()
@@ -34,13 +34,24 @@ class SplashScreen : Script
             images.Add(image);
             image.colorTint = new ColorAlpha(1f, 1f, 1f, 0);
         }
-        MapKey(Key.Escape, SkipCurrentLogo);
 
         // Preload necessary scene assets
         Systems.PreloadAssets();
+
+        Invoke(() =>
+        {
+            MapKey(Key.Escape, SkipCurrentLogo);
+            currentImageIndex = 0;
+        }, 2f);
+
     }
     protected override void update()
     {
+        if(currentImageIndex == -1)
+        {
+            return;
+        }
+
         currentFadeTime += Time.V_DeltaTime();
         switch (currentFadeState)
         {

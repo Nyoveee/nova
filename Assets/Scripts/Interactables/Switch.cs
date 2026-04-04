@@ -63,6 +63,11 @@ class Switch : Script
     // This function is invoked every update.
     protected override void update()
     {
+        if(player == null)
+        {
+            return;
+        }
+
         if(isAnimating)
         {
             animate();

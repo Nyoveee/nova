@@ -35,6 +35,7 @@ class ResourceManager;
 
 class Renderer {
 public:
+	Renderer(Engine& engine);
 	Renderer(Engine& engine, int gameWidth, int gameHeight);
 
 	~Renderer();

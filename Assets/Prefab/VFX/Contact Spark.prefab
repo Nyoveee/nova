@@ -1,5 +1,5 @@
 {
-    "RootEntity": 87,
+    "RootEntity": 93,
     "Entities": [
         {
             "EntityData": {
@@ -18,9 +18,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -3.8255276679992676,
-                    "y": 6.37125825881958,
-                    "z": 38.17927932739258
+                    "x": 3.808958053588867,
+                    "y": 8.839649200439453,
+                    "z": -12.996684074401855
                 },
                 "scale": {
                     "x": 1.0,
@@ -39,9 +39,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -3.8255276679992676,
-                    "y": 6.37125825881958,
-                    "z": 38.17927932739258
+                    "x": 3.808958053588867,
+                    "y": 8.839649200439453,
+                    "z": -12.996684074401855
                 },
                 "localScale": {
                     "x": 1.0,
@@ -64,28 +64,36 @@
                 "scriptDatas": [
                     {
                         "scriptId": 14639373361379885057,
-                        "fields": null
+                        "fields": [
+                            {
+                                "name": "lifetime",
+                                "data": {
+                                    "__variant_value": 0.5,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
                     }
                 ]
             },
             "ParticleEmitter": {
                 "texture": 5391556884225917121,
-                "startSize": 0.20000000298023224,
+                "startSize": 0.10000000149011612,
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 10.0,
                 "minStartSpeed": 0.0,
                 "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
-                "velocityBasedInitialRotation": false,
-                "minInitialRotationOffset": -5.712823164193892e+19,
-                "maxInitialRotationOffset": 6.58610278232664e-43,
+                "velocityBasedInitialRotation": true,
+                "minInitialRotationOffset": 0.0,
+                "maxInitialRotationOffset": 0.0,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -12.0,
                     "z": 0.0
                 },
                 "minForceOffset": {
@@ -95,15 +103,15 @@
                 },
                 "maxForceOffset": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 2.0,
                     "z": 0.0
                 },
-                "lifeTime": 0.4000000059604645,
+                "lifeTime": 2.0,
                 "minLifeTimeOffset": 0.0,
                 "maxLifeTimeOffset": 0.0,
                 "particleRate": 0.0,
-                "burstRate": 0.0,
-                "burstAmount": 60,
+                "burstRate": 1.0,
+                "burstAmount": 20,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -138,9 +146,9 @@
                 },
                 "particleColorSelection": {
                     "color": {
-                        "r": 0.7529411911964417,
-                        "g": 0.7529411911964417,
-                        "b": 0.7529411911964417,
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
                         "a": 1.0
                     },
                     "colorOffsetMin": {
@@ -153,7 +161,7 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "emissiveMultiplier": 50.0
+                    "emissiveMultiplier": 5.0
                 },
                 "sizeOverLifetime": {
                     "selected": true,
@@ -161,7 +169,7 @@
                     "endSize": 0.0
                 },
                 "colorOverLifetime": {
-                    "selected": false,
+                    "selected": true,
                     "interpolationType": "Linear",
                     "endColor": {
                         "r": 0.0,
@@ -196,7 +204,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 87
+            "id": 93
         }
     ]
 }

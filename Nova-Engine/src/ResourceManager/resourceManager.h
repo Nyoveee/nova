@@ -48,7 +48,7 @@ public:
 	};
 
 public:
-	ENGINE_DLL_API ResourceManager();
+	ENGINE_DLL_API ResourceManager(bool b_JenkinsCompile);
 
 	ENGINE_DLL_API ~ResourceManager()											= default;
 	ENGINE_DLL_API ResourceManager(ResourceManager const& other)				= delete;
@@ -92,7 +92,7 @@ public:
 
 public:
 	// Reloads all resources..
-	ENGINE_DLL_API void reload();
+	ENGINE_DLL_API void reload(bool b_JenkinsCompile);
 
 	ENGINE_DLL_API void update();
 	ENGINE_DLL_API bool doesResourceExist(ResourceID id) const;

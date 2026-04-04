@@ -1,5 +1,5 @@
 {
-    "RootEntity": 20,
+    "RootEntity": 42,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    21,
-                    22,
-                    23,
-                    24,
-                    25
+                    43,
+                    44,
+                    45,
+                    46,
+                    47
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -20,8 +20,8 @@
                 "entityGUID": 17346872410203392115,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "17237801994024849853": false,
+                    "11935986701403193153": false,
                     "6919815292445452220": true,
                     "17421316227555880647": true
                 },
@@ -209,7 +209,7 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 21,
+                                    "__variant_value": 43,
                                     "__variant_type": 4
                                 }
                             },
@@ -240,11 +240,11 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 20,
+                                                "__variant_value": 42,
                                                 "__variant_type": 4
                                             },
                                             {
-                                                "__variant_value": 22,
+                                                "__variant_value": 44,
                                                 "__variant_type": 4
                                             }
                                         ],
@@ -271,14 +271,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 42,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 42,
                                     "__variant_type": 4
                                 }
                             },
@@ -424,13 +424,13 @@
                     }
                 ]
             },
-            "id": 20
+            "id": 42
         },
         {
             "EntityData": {
                 "name": "IchorSpawnPoint",
                 "tag": "",
-                "parent": 20,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -439,32 +439,32 @@
                 "entityGUID": 12735186391796074621,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": false,
                     "394579324703252227": false,
                     "10106385962890515953": false,
+                    "6919815292445452220": false,
+                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
-                    "11935986701403193153": false,
                     "9059764703561530457": false,
                     "452538415452204233": false,
-                    "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": false,
                     "6152912775364972041": false,
-                    "17464486586416021590": false,
+                    "13953638462837156301": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -515,13 +515,13 @@
                     "z": -1.5707954168319702
                 }
             },
-            "id": 21
+            "id": 43
         },
         {
             "EntityData": {
                 "name": "MissleHitBox",
                 "tag": "Enemy_WeakSpot",
-                "parent": 20,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -530,32 +530,32 @@
                 "entityGUID": 5693491715082256695,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": true,
                     "394579324703252227": false,
                     "10106385962890515953": false,
+                    "6919815292445452220": true,
+                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
-                    "11935986701403193153": false,
                     "9059764703561530457": false,
                     "452538415452204233": false,
-                    "17421316227555880647": true,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": true,
                     "6152912775364972041": false,
-                    "17464486586416021590": false,
+                    "13953638462837156301": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -644,7 +644,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 42,
                                     "__variant_type": 4
                                 }
                             }
@@ -652,13 +652,13 @@
                     }
                 ]
             },
-            "id": 22
+            "id": 44
         },
         {
             "EntityData": {
                 "name": "MissileMesh",
                 "tag": "",
-                "parent": 20,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -667,32 +667,32 @@
                 "entityGUID": 12877260887080179109,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": true,
                     "394579324703252227": false,
                     "10106385962890515953": false,
+                    "6919815292445452220": true,
+                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
-                    "11935986701403193153": false,
                     "9059764703561530457": true,
                     "452538415452204233": false,
-                    "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": false,
                     "6152912775364972041": false,
-                    "17464486586416021590": false,
+                    "13953638462837156301": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -751,13 +751,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 23
+            "id": 45
         },
         {
             "EntityData": {
                 "name": "Fire Particle Emitter",
                 "tag": "",
-                "parent": 20,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -940,13 +940,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 24
+            "id": 46
         },
         {
             "EntityData": {
                 "name": "Smoke Particle Emitter",
                 "tag": "",
-                "parent": 20,
+                "parent": 42,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1129,7 +1129,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 25
+            "id": 47
         }
     ]
 }

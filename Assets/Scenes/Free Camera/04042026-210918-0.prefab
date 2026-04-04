@@ -1,17 +1,17 @@
 {
-    "RootEntity": 41,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
-                "name": "PushField",
+                "name": "Free Camera",
                 "tag": "",
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 4823971543555702789,
-                "entityGUID": 5200048500196564591,
+                "prefabID": 619359947094989647,
+                "entityGUID": 16150058446268834073,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -63,26 +63,26 @@
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "scriptId": 13846959784749145713,
+                        "scriptId": 3365852032153771881,
                         "fields": [
                             {
-                                "name": "duration",
+                                "name": "cameraSensitivity",
                                 "data": {
-                                    "__variant_value": 1.0,
+                                    "__variant_value": 0.0010000000474974513,
                                     "__variant_type": 18
                                 }
                             },
                             {
-                                "name": "force",
+                                "name": "maxSpeed",
                                 "data": {
-                                    "__variant_value": 200.0,
+                                    "__variant_value": 10.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
-                                "name": "distance",
+                                "name": "deceleration",
                                 "data": {
-                                    "__variant_value": 20.0,
+                                    "__variant_value": 0.9200000166893005,
                                     "__variant_type": 18
                                 }
                             }
@@ -90,7 +90,14 @@
                     }
                 ]
             },
-            "id": 41
+            "CameraComponent": {
+                "camStatus": true,
+                "toRotateSideWays": false,
+                "fov": 45.0,
+                "nearPlane": 0.30000001192092896,
+                "farPlane": 1000.0
+            },
+            "id": 0
         }
     ]
 }

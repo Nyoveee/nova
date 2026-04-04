@@ -22,22 +22,9 @@ int main(int argc, char* argv[]) {
 		Logger::error("Failed to initialize COM {}.", static_cast<unsigned int>(hr));
 		return -1;
 	}
-
-	GameConfig		gameConfig		= Serialiser::deserialiseConfig<GameConfig>("gameConfig.json");
-
 	// Nova Engine base applications.
+	GameConfig		gameConfig		= Serialiser::deserialiseConfig<GameConfig>("gameConfig.json");
 	InputManager	inputManager	{};
-	Window			window			{ "Nova Editor", {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
-	
-	ResourceManager resourceManager {};
-	Engine			engine			{ window, inputManager, resourceManager, gameConfig, Engine::State::Editor };
-
-	AssetManager	assetManager	{ resourceManager, engine };
-
-	// Start up scene
-	engine.ecs.sceneManager.loadScene(gameConfig.sceneStartUp);
-
-	Editor			editor			{ window, engine, inputManager, assetManager, resourceManager };
 
 	// Check for command line argument
 	bool skipRun = false;
@@ -49,6 +36,15 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (!skipRun) {
+		Window			window{ "Nova Editor", {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant };
+		ResourceManager resourceManager{false};
+		Engine			engine{ window, inputManager, resourceManager, gameConfig, Engine::State::Editor };
+		AssetManager	assetManager{ resourceManager, engine };
+
+		// Start up scene
+		engine.ecs.sceneManager.loadScene(gameConfig.sceneStartUp);
+
+		Editor			editor{ window, engine, inputManager, assetManager, resourceManager };
 		window.run(
 			// Fixed update loop
 			[&](float fixedDt) {
@@ -74,6 +70,11 @@ int main(int argc, char* argv[]) {
 			}
 		);
 	} else {
+		// Jenkins Setup
+		Window			window{ inputManager };
+		ResourceManager resourceManager{true};
+		Engine			engine{ window, inputManager, resourceManager};
+		AssetManager	assetManager{ resourceManager, engine };
 		std::cout << "Skipping window.run().\n";
 	}
 }
