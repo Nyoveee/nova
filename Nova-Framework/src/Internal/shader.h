@@ -23,6 +23,7 @@ public:
 	} shaderCompileStatus;
 
 public:
+	FRAMEWORK_DLL_API Shader();
 	FRAMEWORK_DLL_API Shader(const char* vertexPath, const char* fragmentPath);
 	FRAMEWORK_DLL_API Shader(std::string vertexCode, std::string fragmentCode);
 	FRAMEWORK_DLL_API ~Shader();

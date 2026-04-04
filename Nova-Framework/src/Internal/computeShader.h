@@ -17,6 +17,7 @@ public:
 	} shaderCompileStatus;
 
 public:
+	FRAMEWORK_DLL_API ComputeShader();
 	FRAMEWORK_DLL_API ComputeShader(const char* computeShaderPath);
 	FRAMEWORK_DLL_API ~ComputeShader();
 
