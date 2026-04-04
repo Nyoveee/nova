@@ -42,6 +42,7 @@ public:
 	};
 
 public:
+	ENGINE_DLL_API Window(InputManager& inputManager);
 	ENGINE_DLL_API Window(const char* name, Dimension dimension, GameConfig gameConfig, Configuration config, InputManager& inputManager, Viewport viewportConfig);
 
 	ENGINE_DLL_API ~Window();

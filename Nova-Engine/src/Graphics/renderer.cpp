@@ -210,6 +210,88 @@ static constexpr int RenderOutputDepthTransparency = 3;
 
 #pragma warning( pop )
 
+Renderer::Renderer(Engine& engine) : 
+	engine{ engine },
+	gameWidth{ 0 },
+	gameHeight{ 0 },
+	renderConfig{ engine.dataManager.renderConfig },
+	resourceManager{ engine.resourceManager },
+	registry{ engine.ecs.registry },
+	sceneProperties{ engine.ecs.sceneManager.currentSceneProperties },
+	basicShader{  },
+	standardShader{ },
+	textureShader{ },
+	colorShader{ },
+	bloomDownSampleShader{ },
+	bloomUpSampleShader{ },
+	bloomFinalShader{ },
+	postprocessingShader{ },
+	fogShader{ },
+	gridShader{ },
+	outlineShader{ },
+	debugShader{ },
+	overlayShader{ },
+	objectIdShader{ },
+	uiImageObjectIdShader{ },
+	uiTextObjectIdShader{ },
+	skyboxShader{ },
+	skyboxCubemapShader{ },
+	bakeDiffuseIrradianceMapShader{ },
+	bakeSpecularIrradianceMapShader{ },
+	toneMappingShader{ },
+	particleShader{ },
+	textShader{ },
+	texture2dShader{ },
+	shadowMapShader{ },
+	ssaoShader{ },
+	TAAResolveShader{ },
+	gaussianBlurShader{ },
+	gammaCorrectionShader{},
+	videoShader{  },
+	weightedBlendingCompositeShader{ },
+	clusterBuildingCompute{ },
+	clusterLightCompute{ },
+	rayMarchingVolumetricFogCompute{ },
+	mainVAO{},
+	positionsVBO{ 0 },
+	textureCoordinatesVBO{ 0 },
+	normalsVBO{ 0 },
+	tangentsVBO{ 0 },
+	skeletalVBO{ 0 },
+	debugPhysicsVBO{ 0 },
+	debugPhysicsLineVBO{ 0 },
+	debugNavMeshVBO{ 0 },
+	debugParticleShapeVBO{ 0 },
+	textVBO{ 0},
+	videoVBO{ 0 },
+	EBO{ 0},
+	lightSSBO{ 0 },
+	clusterSSBO{ 0},
+	volumetricFogSSBO{ 0 },
+	cameraUBO{ 0 },
+	PBRUBO{ 0 },
+	reflectionProbesUBO{ 0 },
+	TAAUBO{ 0 },
+	bonesSSBO{ 0},
+	oldBonesSSBO{ 0},
+	shadowCasterMatrixes{ 0 },
+	editorMainFrameBuffer{ gameWidth, gameHeight, GL_RGBA16F,	{ GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8,		GL_RGBA16F } },
+	gameMainFrameBuffer{ gameWidth, gameHeight, GL_RGBA16F,	{ GL_RGB8_SNORM,	GL_RG16F,	GL_RGBA16F,		GL_R8,		GL_RGBA16F } },
+	uiMainFrameBuffer{ gameWidth, gameHeight, GL_RGBA8 },
+	physicsDebugFrameBuffer{ gameWidth, gameHeight, GL_RGBA8 },
+	objectIdFrameBuffer{ gameWidth, gameHeight, GL_R32UI },
+	uiObjectIdFrameBuffer{ gameWidth, gameHeight, GL_R32UI },
+	bloomFrameBuffer{ gameWidth, gameHeight, 5 },
+	ssaoFrameBuffer{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
+	cubeMapFrameBuffer{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, GL_RGBA16F },
+	diffuseIrradianceMapFrameBuffer{ DIFFUSE_IRRADIANCE_MAP_WIDTH, DIFFUSE_IRRADIANCE_MAP_HEIGHT, GL_RGBA16F },
+	directionalLightShadowFBO{ DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT },
+	shadowFBO{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
+	spotlightShadowMaps{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT32F, MAX_SPOTLIGHT_SHADOW_CASTER },
+	loadedReflectionProbesMap{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, MAX_REFLECTION_PROBES, 5 }
+{
+}
+
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine							{ engine },
 	gameWidth						{ gameWidth },
@@ -808,14 +890,14 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	// We provide the current depth texture as well, since we did a depth pre pass earlier..
 	renderModels(RenderPass::ColorPass, depthTextureCopy);
 
-	// Render particles
-	renderParticles(false);
-	glBindVertexArray(mainVAO);
-
 	// Transparent depth test...
 	glDepthFunc(GL_LEQUAL);
 
 	renderTranslucentModels(frameBuffers);
+
+	// Render particles
+	renderParticles(false);
+	glBindVertexArray(mainVAO);
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -2549,9 +2631,9 @@ void Renderer::renderParticles(bool toRenderUILayer)
 	EBO.uploadData(squareIndices);
 
 	// render texture by texture
-	//std::sort(engine.particleSystem.usedTextures.begin(), engine.particleSystem.usedTextures.end(), [&](auto const& lhs, auto const& rhs) {
-	//	return lhs.layer < rhs.layer;
-	//});
+	std::sort(engine.particleSystem.usedTextures.begin(), engine.particleSystem.usedTextures.end(), [&](auto const& lhs, auto const& rhs) {
+		return lhs.layer < rhs.layer;
+	});
 
 	for (auto const& textureLayer : engine.particleSystem.usedTextures) {
 		auto&& [renderOrder, textureId, textureIndex, _] = textureLayer;

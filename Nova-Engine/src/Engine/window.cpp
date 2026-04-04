@@ -39,6 +39,20 @@ constexpr bool vsync = false;
 constexpr float fixedFps = 60.f;
 constexpr int maxNumOfSteps = 4;
 
+Window::Window(InputManager& inputManager)
+	: inputManager{inputManager}
+	, glfwWindow{}
+	, deltaTime{}
+	, currentFps{}
+	, accumulatedTime{}
+	, windowWidth{}
+	, windowHeight{}
+	, gameConfig{}
+	, imGuiContext{}
+	, isFullScreen{} 
+	, gameViewPort{}
+{}
+
 Window::Window(const char* name, Dimension dimension, GameConfig gameConfig, Configuration config, InputManager& inputManager, Viewport viewportConfig) :
 	inputManager		{ inputManager },
 	glfwWindow			{},
@@ -49,7 +63,8 @@ Window::Window(const char* name, Dimension dimension, GameConfig gameConfig, Con
 	windowHeight		{ dimension.height },
 	gameConfig			{ gameConfig },
 	imGuiContext		{},
-	isFullScreen		{}
+	isFullScreen		{},
+	gameViewPort        {}
 {
 	// Set the global variable of window to this 1 instance of Window. 
 	// This is required because GLFW callbacks work in the global scope.

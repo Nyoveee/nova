@@ -38,6 +38,7 @@ public:
 	};
 
 public:
+	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager);
 	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, State state);
 
 	ENGINE_DLL_API ~Engine();

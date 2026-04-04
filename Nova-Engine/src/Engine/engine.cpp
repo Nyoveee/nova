@@ -13,6 +13,33 @@
 #include "ECS/SceneManager.h"
 
 
+Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager)
+	: window{ window },
+	resourceManager{ resourceManager },
+	inputManager{ inputManager },
+	renderer{ *this },
+	cameraSystem{ *this },
+	ecs{ *this },
+	scriptingAPIManager{ *this },
+	transformationSystem{ *this, ecs },
+	physicsManager{ *this },
+	audioSystem{ *this },
+	navigationSystem{ *this },
+	particleSystem{ *this },
+	animationSystem{ *this },
+	videoSystem{ *this },
+	uiSystem{ *this },
+	gameConfig{ },
+	inSimulationMode{ false },
+	toDebugRenderPhysics{ false },
+	prefabManager{ *this },
+	dataManager{ *this, gameConfig },
+	deltaTimeMultiplier{ 1.f },
+	isPaused{ false },
+	engineState{ State::Editor }
+{
+}
+
 Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, State state) :
 	window					{ window },
 	resourceManager			{ resourceManager },
@@ -92,11 +119,12 @@ void Engine::update(float dt) {
 	}
 	if(inSimulationMode && !isPaused)
 		videoSystem.update(dt);
+
 	transformationSystem.update();
-	cameraSystem.update(dt); // dt is only used in editor.
 	uiSystem.update(dt);
 	
 	renderer.update(dt * deltaTimeMultiplier);
+	cameraSystem.update(dt); // dt is only used in editor.
 
 	resourceManager.update();
 }
