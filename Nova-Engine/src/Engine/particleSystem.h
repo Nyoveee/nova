@@ -19,7 +19,7 @@ public:
 		// index in the SSBO.. partitioned into different sections for each texture layer..
 		// its a runtime value.
 		int textureIndex;
-		int counter; // a counter that increases for each texture added in, and loops back..
+		int counter = 0; // a counter that increases for each texture added in, and loops back..
 	};
 
 public:
@@ -28,10 +28,12 @@ public:
 	ENGINE_DLL_API ParticleSystem(ParticleSystem&& other) = delete;
 	ENGINE_DLL_API ParticleSystem& operator=(ParticleSystem const& other) = delete;
 	ENGINE_DLL_API ParticleSystem& operator=(ParticleSystem&& other) = delete;
+
 public:
 	ENGINE_DLL_API void emit(Transform const& transform, ParticleEmitter& emitter, int count);
 	ENGINE_DLL_API void populateParticleLights(int count);
 	ENGINE_DLL_API BufferObject const& getParticeVerticesBO();
+
 public:
 	void reset();
 	void update(float dt);
