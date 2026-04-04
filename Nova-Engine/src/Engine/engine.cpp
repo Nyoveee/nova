@@ -119,11 +119,12 @@ void Engine::update(float dt) {
 	}
 	if(inSimulationMode && !isPaused)
 		videoSystem.update(dt);
+
 	transformationSystem.update();
-	cameraSystem.update(dt); // dt is only used in editor.
 	uiSystem.update(dt);
 	
 	renderer.update(dt * deltaTimeMultiplier);
+	cameraSystem.update(dt); // dt is only used in editor.
 
 	resourceManager.update();
 }

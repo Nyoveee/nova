@@ -1,0 +1,103 @@
+{
+    "RootEntity": 0,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Free Camera",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 619359947094989647,
+                "entityGUID": 16150058446268834073,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 3365852032153771881,
+                        "fields": [
+                            {
+                                "name": "cameraSensitivity",
+                                "data": {
+                                    "__variant_value": 0.0010000000474974513,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxSpeed",
+                                "data": {
+                                    "__variant_value": 10.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "deceleration",
+                                "data": {
+                                    "__variant_value": 0.9200000166893005,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "CameraComponent": {
+                "camStatus": true,
+                "toRotateSideWays": false,
+                "fov": 45.0,
+                "nearPlane": 0.30000001192092896,
+                "farPlane": 1000.0
+            },
+            "id": 0
+        }
+    ]
+}
