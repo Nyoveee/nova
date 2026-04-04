@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 
 	if (!skipRun) {
 		Window			window{ "Nova Editor", {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant };
-		ResourceManager resourceManager{};
+		ResourceManager resourceManager{false};
 		Engine			engine{ window, inputManager, resourceManager, gameConfig, Engine::State::Editor };
 		AssetManager	assetManager{ resourceManager, engine };
 
@@ -72,8 +72,8 @@ int main(int argc, char* argv[]) {
 	} else {
 		// Jenkins Setup
 		Window			window{ inputManager };
-		ResourceManager resourceManager{};
-		Engine			engine{ window, inputManager, resourceManager, gameConfig, Engine::State::Editor };
+		ResourceManager resourceManager{true};
+		Engine			engine{ window, inputManager, resourceManager};
 		AssetManager	assetManager{ resourceManager, engine };
 		std::cout << "Skipping window.run().\n";
 	}

@@ -6,6 +6,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
 
+ComputeShader::ComputeShader()
+{
+}
+
 ComputeShader::ComputeShader(const char* computeShaderPath)
 	: shaderCompileStatus{ ShaderCompileStatus::Failed }
 	, computeShaderCode{}

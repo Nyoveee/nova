@@ -68,7 +68,7 @@ void AssetManager::reload() {
 	// ========================================
 	// 0. Clear all containers, reset all variables..
 	// ========================================
-	resourceManager.reload();
+	resourceManager.reload(false);
 
 	hasInitialised = false;
 	intermediaryAssetsToDescriptor.clear();

@@ -14,7 +14,11 @@
 
 #include <glad/glad.h>
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath) 
+Shader::Shader()
+{
+}
+
+Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	:	shaderCompileStatus	{ ShaderCompileStatus::Failed }	
 	,	vShaderCode			{}
 	,	fShaderCode			{}

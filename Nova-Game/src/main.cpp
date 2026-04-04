@@ -27,7 +27,7 @@ int main() {
 
 	Window			window			{ gameConfig.gameName.c_str(), {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::ChangeDuringResize};
 	
-	ResourceManager resourceManager	{};
+	ResourceManager resourceManager	{false};
 	Engine			engine			{ window, inputManager, resourceManager, gameConfig, Engine::State::Game };
 
 	if (engine.dataManager.renderConfig.fullScreen) {
