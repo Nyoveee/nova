@@ -21,14 +21,16 @@ class RaiseEnemBoat : Script
     private float hitThreshold = 100f;
     [SerializableField]
     private float stalactiteXOffset = 30f;
+    [SerializableField] 
+    private float scrollSpeed = 50f;
 
     private bool isRising = false;
     private float riseTimer = 0f;
     private float bobTimer = 0f;
 
     private float riseSpeed = 2f;
-    private float riseHeight = 50f;
-    private float bobAmplitude = 5f;   // How much it shakes up/down
+    private float riseHeight = 55f;
+    private float bobAmplitude = 3f;   // How much it shakes up/down
     private float bobFrequency = 1.5f;
 
     private float startY;
@@ -46,6 +48,8 @@ class RaiseEnemBoat : Script
     private bool isOutro = false;
     private bool isDrifting = false;
     private bool hitStalactite = false;
+    private Quaternion startRotation;
+    private bool rotationCaptured = false;
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
@@ -131,26 +135,32 @@ class RaiseEnemBoat : Script
 
         if (isSinking)
         {
-            Vector3 pos = this.gameObject.transform.position;
-            pos.y -= sinkSpeed * Time.V_DeltaTime();
-            pos.z = stalacite.transform.position.z;
-            this.gameObject.transform.position = pos;
-
-            Quaternion tiltTarget = Quaternion.AngleAxis(-40f, new Vector3(1f, 0f, 0f))
-                                  * Quaternion.AngleAxis(25f, new Vector3(0f, 0f, 1f));
-            gameObject.transform.rotation = Quaternion.RotateTowards(
-                gameObject.transform.rotation,
-                tiltTarget,
-                40f * Time.V_DeltaTime()
-            );
-
-            if (pos.y <= startY)
+            if (!rotationCaptured)
             {
-                pos.y = startY;
-                this.gameObject.transform.position = pos;
+                startRotation = gameObject.transform.rotation;
+                rotationCaptured = true;
+            }
+
+            Vector3 pos = this.gameObject.transform.position;
+            float newY = pos.y - sinkSpeed * Time.V_DeltaTime();
+            pos.z -= scrollSpeed * Time.V_DeltaTime();
+            if (newY <= startY + 20f)
+            {
+                newY = startY + 20f;
                 isSinking = false;
                 hasSunk = true;
             }
+            pos.y = newY;
+
+            this.gameObject.transform.position = pos;
+
+            Quaternion tiltTarget = startRotation
+                                    * Quaternion.AngleAxis(8f, new Vector3(0f, 0.707f, -0.707f));
+            gameObject.transform.rotation = Quaternion.RotateTowards(
+                gameObject.transform.rotation,
+                tiltTarget,
+                2f * Time.V_DeltaTime()
+            );
         }
     }
 

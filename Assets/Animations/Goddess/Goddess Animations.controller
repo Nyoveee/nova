@@ -1,21 +1,6 @@
 {
     "entryNode": 1000,
     "nodes": {
-        "1000": {
-            "id": 1000,
-            "animation": 18446744073709551615,
-            "transitions": [
-                {
-                    "nextNode": 192916516941922453,
-                    "conditions": null
-                }
-            ],
-            "toLoop": true,
-            "blendFactor": 0.20000000298023224,
-            "previousFrameToAnimate": "Last",
-            "name": "Entry Node",
-            "animationEvents": null
-        },
         "14425496410262296679": {
             "id": 14425496410262296679,
             "animation": 3811849094685065217,
@@ -31,6 +16,21 @@
                     "functionName": "StopPointing"
                 }
             ]
+        },
+        "1000": {
+            "id": 1000,
+            "animation": 18446744073709551615,
+            "transitions": [
+                {
+                    "nextNode": 192916516941922453,
+                    "conditions": null
+                }
+            ],
+            "toLoop": true,
+            "blendFactor": 0.20000000298023224,
+            "previousFrameToAnimate": "Last",
+            "name": "Entry Node",
+            "animationEvents": null
         },
         "192916516941922453": {
             "id": 192916516941922453,
