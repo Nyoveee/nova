@@ -117,7 +117,7 @@ class Turbine_Room_Quest : Quest
 
             ++weaverVoiceOverIndex;
             voiceoverScript.TriggerVoiceOver("Weaver", weaverVoiceOverText[weaverVoiceOverIndex], weaverVoiceOverAudio[weaverVoiceOverIndex], weaverVoiceOverTime[weaverVoiceOverIndex], false);
-            spawnLocations.RemoveAt(spawnLocations.Count-1);
+            //spawnLocations.RemoveAt(spawnLocations.Count-1);
             activeSwitches.RemoveAt(i);
         }
         if (activeSwitches.Count > 0)
