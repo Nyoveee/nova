@@ -1,5 +1,5 @@
 {
-    "RootEntity": 5,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,19 +8,19 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
+                    1,
+                    4,
+                    5,
                     6,
-                    9,
-                    10,
-                    11,
+                    7,
                     12,
-                    17,
+                    18,
                     23,
-                    28,
-                    31,
-                    34,
-                    37,
-                    64,
-                    77
+                    26,
+                    29,
+                    32,
+                    59,
+                    72
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -74,17 +74,17 @@
                     "z": 0.0
                 }
             },
-            "id": 5
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "Turbine_Bigger",
                 "tag": "",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    7,
-                    8
+                    2,
+                    3
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -140,13 +140,13 @@
                     "z": 0.0
                 }
             },
-            "id": 6
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "Turbine_BiggerFloor",
                 "tag": "Floor",
-                "parent": 6,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -232,13 +232,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 7
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "Turbine_BiggerCeiling",
                 "tag": "Wall",
-                "parent": 6,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -248,8 +248,8 @@
                 "overridenProperties": null,
                 "overridenComponents": {
                     "11935986701403193153": true,
-                    "10106385962890515953": false,
                     "16533173024327387273": true,
+                    "10106385962890515953": false,
                     "9059764703561530457": true
                 },
                 "inactiveComponents": null
@@ -329,13 +329,13 @@
             "NavMeshModifier": {
                 "Area_Type": "Exclude"
             },
-            "id": 8
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "[Grouped] Turbine_Props",
                 "tag": "Floor",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -423,13 +423,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 9
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Turbine Wall",
                 "tag": "Floor",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -516,13 +516,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 10
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Turbine_Floor",
                 "tag": "Floor",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -608,19 +608,19 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 11
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "Turbine Entrance Door",
                 "tag": "",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    13,
-                    14,
-                    15,
-                    16
+                    8,
+                    9,
+                    10,
+                    11
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -718,14 +718,14 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 14,
+                                    "__variant_value": 9,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 13,
+                                    "__variant_value": 8,
                                     "__variant_type": 4
                                 }
                             },
@@ -786,13 +786,13 @@
                     }
                 ]
             },
-            "id": 12
+            "id": 7
         },
         {
             "EntityData": {
                 "name": "Right Door",
                 "tag": "",
-                "parent": 12,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -801,8 +801,8 @@
                 "entityGUID": 9181397647453476195,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": true,
                     "6919815292445452220": true,
+                    "10106385962890515953": true,
                     "11935986701403193153": true,
                     "9059764703561530457": true
                 },
@@ -880,13 +880,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 13
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "Left Door",
                 "tag": "",
-                "parent": 12,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -895,8 +895,8 @@
                 "entityGUID": 4569711629026088293,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": true,
                     "6919815292445452220": true,
+                    "10106385962890515953": true,
                     "11935986701403193153": true,
                     "17421316227555880647": false,
                     "9059764703561530457": true
@@ -975,13 +975,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 14
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Door Frame",
                 "tag": "",
-                "parent": 12,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1066,13 +1066,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 15
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Door Locking Mechanism",
                 "tag": "",
-                "parent": 12,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1167,7 +1167,7 @@
                             {
                                 "name": "door",
                                 "data": {
-                                    "__variant_value": 12,
+                                    "__variant_value": 7,
                                     "__variant_type": 4
                                 }
                             }
@@ -1175,20 +1175,20 @@
                     }
                 ]
             },
-            "id": 16
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Turbine_Ceiling",
                 "tag": "Wall",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    18,
-                    19,
-                    20,
-                    21,
-                    22
+                    13,
+                    14,
+                    15,
+                    16,
+                    17
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -1276,13 +1276,13 @@
             "NavMeshModifier": {
                 "Area_Type": "Exclude"
             },
-            "id": 17
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "pipe_low",
                 "tag": "",
-                "parent": 17,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1345,13 +1345,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 18
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "pipe_low",
                 "tag": "",
-                "parent": 17,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1414,13 +1414,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 19
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "pipe_low",
                 "tag": "",
-                "parent": 17,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1483,13 +1483,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 20
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "pipe_low",
                 "tag": "",
-                "parent": 17,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1552,13 +1552,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 21
+            "id": 16
         },
         {
             "EntityData": {
                 "name": "pipe_low",
                 "tag": "",
-                "parent": 17,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1621,19 +1621,19 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 22
+            "id": 17
         },
         {
             "EntityData": {
                 "name": "Turbine Exit Door",
                 "tag": "",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    24,
-                    25,
-                    26,
-                    27
+                    19,
+                    20,
+                    21,
+                    22
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1730,14 +1730,14 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 25,
+                                    "__variant_value": 20,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 24,
+                                    "__variant_value": 19,
                                     "__variant_type": 4
                                 }
                             },
@@ -1798,13 +1798,13 @@
                     }
                 ]
             },
-            "id": 23
+            "id": 18
         },
         {
             "EntityData": {
                 "name": "Right Door",
                 "tag": "",
-                "parent": 23,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1813,8 +1813,8 @@
                 "entityGUID": 9181397647453476195,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": true,
                     "6919815292445452220": true,
+                    "10106385962890515953": true,
                     "11935986701403193153": true,
                     "9059764703561530457": true
                 },
@@ -1892,13 +1892,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 24
+            "id": 19
         },
         {
             "EntityData": {
                 "name": "Left Door",
                 "tag": "",
-                "parent": 23,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1907,8 +1907,8 @@
                 "entityGUID": 4569711629026088293,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": true,
                     "6919815292445452220": true,
+                    "10106385962890515953": true,
                     "11935986701403193153": true,
                     "17421316227555880647": false,
                     "9059764703561530457": true
@@ -1987,13 +1987,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 25
+            "id": 20
         },
         {
             "EntityData": {
                 "name": "Door Frame",
                 "tag": "",
-                "parent": 23,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2078,13 +2078,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 26
+            "id": 21
         },
         {
             "EntityData": {
                 "name": "Door Locking Mechanism",
                 "tag": "",
-                "parent": 23,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2177,7 +2177,7 @@
                             {
                                 "name": "door",
                                 "data": {
-                                    "__variant_value": 23,
+                                    "__variant_value": 18,
                                     "__variant_type": 4
                                 }
                             }
@@ -2185,17 +2185,17 @@
                     }
                 ]
             },
-            "id": 27
+            "id": 22
         },
         {
             "EntityData": {
                 "name": "Turbine Switch Ground",
                 "tag": "",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    29,
-                    30
+                    24,
+                    25
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -2290,7 +2290,7 @@
                             {
                                 "name": "switchMesh",
                                 "data": {
-                                    "__variant_value": 30,
+                                    "__variant_value": 25,
                                     "__variant_type": 4
                                 }
                             },
@@ -2312,13 +2312,13 @@
                     }
                 ]
             },
-            "id": 28
+            "id": 23
         },
         {
             "EntityData": {
                 "name": "Elevator Switch Stand",
                 "tag": "",
-                "parent": 28,
+                "parent": 23,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2382,13 +2382,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 29
+            "id": 24
         },
         {
             "EntityData": {
                 "name": "Elevator Switch Lever",
                 "tag": "",
-                "parent": 28,
+                "parent": 23,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2452,17 +2452,17 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 30
+            "id": 25
         },
         {
             "EntityData": {
                 "name": "Turbine Switch Center",
                 "tag": "",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    32,
-                    33
+                    27,
+                    28
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -2557,7 +2557,7 @@
                             {
                                 "name": "switchMesh",
                                 "data": {
-                                    "__variant_value": 33,
+                                    "__variant_value": 28,
                                     "__variant_type": 4
                                 }
                             },
@@ -2579,13 +2579,13 @@
                     }
                 ]
             },
-            "id": 31
+            "id": 26
         },
         {
             "EntityData": {
                 "name": "Elevator Switch Stand",
                 "tag": "",
-                "parent": 31,
+                "parent": 26,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2649,13 +2649,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 32
+            "id": 27
         },
         {
             "EntityData": {
                 "name": "Elevator Switch Lever",
                 "tag": "",
-                "parent": 31,
+                "parent": 26,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2719,17 +2719,17 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 33
+            "id": 28
         },
         {
             "EntityData": {
                 "name": "Turbine Switch Top",
                 "tag": "",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    35,
-                    36
+                    30,
+                    31
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -2824,7 +2824,7 @@
                             {
                                 "name": "switchMesh",
                                 "data": {
-                                    "__variant_value": 36,
+                                    "__variant_value": 31,
                                     "__variant_type": 4
                                 }
                             },
@@ -2846,13 +2846,13 @@
                     }
                 ]
             },
-            "id": 34
+            "id": 29
         },
         {
             "EntityData": {
                 "name": "Elevator Switch Stand",
                 "tag": "",
-                "parent": 34,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2916,13 +2916,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 35
+            "id": 30
         },
         {
             "EntityData": {
                 "name": "Elevator Switch Lever",
                 "tag": "",
-                "parent": 34,
+                "parent": 29,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2986,15 +2986,20 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 36
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "[Grouped] Turbine  Props",
                 "tag": "",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
+                    33,
+                    34,
+                    35,
+                    36,
+                    37,
                     38,
                     39,
                     40,
@@ -3015,12 +3020,7 @@
                     55,
                     56,
                     57,
-                    58,
-                    59,
-                    60,
-                    61,
-                    62,
-                    63
+                    58
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -3074,13 +3074,13 @@
                     "z": 0.0
                 }
             },
-            "id": 37
+            "id": 32
         },
         {
             "EntityData": {
                 "name": "Turbine Room Pipe",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3143,13 +3143,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 38
+            "id": 33
         },
         {
             "EntityData": {
                 "name": "Turbine Platform Support  2",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3232,13 +3232,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 39
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 2",
                 "tag": "Floor",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3321,13 +3321,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 40
+            "id": 35
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3410,13 +3410,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 41
+            "id": 36
         },
         {
             "EntityData": {
                 "name": "Turbine Platform Support  1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3502,13 +3502,13 @@
             "NavMeshModifier": {
                 "Area_Type": "Obstacle"
             },
-            "id": 42
+            "id": 37
         },
         {
             "EntityData": {
                 "name": "Turbine Center Platform",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3591,13 +3591,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 43
+            "id": 38
         },
         {
             "EntityData": {
                 "name": "Turbine Pillar",
                 "tag": "Wall",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3680,13 +3680,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 44
+            "id": 39
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3769,13 +3769,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 45
+            "id": 40
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3858,13 +3858,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 46
+            "id": 41
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3947,13 +3947,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 47
+            "id": 42
         },
         {
             "EntityData": {
                 "name": "Turbine Center Platform",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4036,13 +4036,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 48
+            "id": 43
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4125,13 +4125,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 49
+            "id": 44
         },
         {
             "EntityData": {
                 "name": "Turbine Platform Support  1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4217,13 +4217,13 @@
             "NavMeshModifier": {
                 "Area_Type": "Obstacle"
             },
-            "id": 50
+            "id": 45
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4306,13 +4306,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 51
+            "id": 46
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4395,13 +4395,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 52
+            "id": 47
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4484,13 +4484,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 53
+            "id": 48
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4573,13 +4573,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 54
+            "id": 49
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4662,13 +4662,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 55
+            "id": 50
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4751,13 +4751,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 56
+            "id": 51
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4840,13 +4840,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 57
+            "id": 52
         },
         {
             "EntityData": {
                 "name": "Turbine Platform Support  1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -4932,13 +4932,13 @@
             "NavMeshModifier": {
                 "Area_Type": "Obstacle"
             },
-            "id": 58
+            "id": 53
         },
         {
             "EntityData": {
                 "name": "Turbine Platform 1",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5021,13 +5021,13 @@
             "MeshCollider": {
                 "shapeScale": 1.0
             },
-            "id": 59
+            "id": 54
         },
         {
             "EntityData": {
                 "name": "Turbine Room Pipe",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5090,13 +5090,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 60
+            "id": 55
         },
         {
             "EntityData": {
                 "name": "Turbine Room Pipe",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5159,13 +5159,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 61
+            "id": 56
         },
         {
             "EntityData": {
                 "name": "Turbine Room Pipe",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5228,13 +5228,13 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 62
+            "id": 57
         },
         {
             "EntityData": {
                 "name": "Turbine Room Pipe",
                 "tag": "",
-                "parent": 37,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5297,27 +5297,27 @@
                 "castShadow": false,
                 "shadowCullFrontFace": true
             },
-            "id": 63
+            "id": 58
         },
         {
             "EntityData": {
                 "name": "Vantage Point Turbine",
                 "tag": "",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
+                    60,
+                    61,
+                    62,
+                    63,
+                    64,
                     65,
                     66,
                     67,
                     68,
                     69,
                     70,
-                    71,
-                    72,
-                    73,
-                    74,
-                    75,
-                    76
+                    71
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -5371,13 +5371,13 @@
                     "z": 0.0
                 }
             },
-            "id": 64
+            "id": 59
         },
         {
             "EntityData": {
                 "name": "Vantage Point",
                 "tag": "Vantage Point",
-                "parent": 64,
+                "parent": 59,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5414,6 +5414,311 @@
                     "x": 347.64678955078125,
                     "y": -139.29298400878906,
                     "z": -215.1156463623047
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 60
+        },
+        {
+            "EntityData": {
+                "name": "Vantage Point",
+                "tag": "Vantage Point",
+                "parent": 59,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10640564008992538625,
+                "entityGUID": 12037893673485164033,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 360.1954650878906,
+                    "y": -90.47950744628906,
+                    "z": -208.30657958984375
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 360.1954650878906,
+                    "y": -90.47950744628906,
+                    "z": -208.30657958984375
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 61
+        },
+        {
+            "EntityData": {
+                "name": "Vantage Point",
+                "tag": "Vantage Point",
+                "parent": 59,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10640564008992538625,
+                "entityGUID": 12037893673485164033,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 322.2078552246094,
+                    "y": -107.64717864990234,
+                    "z": -213.26036071777344
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 322.2078552246094,
+                    "y": -107.64717864990234,
+                    "z": -213.26036071777344
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 62
+        },
+        {
+            "EntityData": {
+                "name": "Vantage Point",
+                "tag": "Vantage Point",
+                "parent": 59,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10640564008992538625,
+                "entityGUID": 12037893673485164033,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 354.3075256347656,
+                    "y": -123.51372528076172,
+                    "z": -203.2578125
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 354.3075256347656,
+                    "y": -123.51372528076172,
+                    "z": -203.2578125
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 63
+        },
+        {
+            "EntityData": {
+                "name": "Vantage Point",
+                "tag": "Vantage Point",
+                "parent": 59,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10640564008992538625,
+                "entityGUID": 12037893673485164033,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 302.29254150390625,
+                    "y": -87.6612548828125,
+                    "z": -223.79505920410156
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 302.29254150390625,
+                    "y": -87.6612548828125,
+                    "z": -223.79505920410156
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 64
+        },
+        {
+            "EntityData": {
+                "name": "Vantage Point",
+                "tag": "Vantage Point",
+                "parent": 59,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10640564008992538625,
+                "entityGUID": 12037893673485164033,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 338.72186279296875,
+                    "y": -113.74071502685547,
+                    "z": -226.60060119628906
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 338.72186279296875,
+                    "y": -113.74071502685547,
+                    "z": -226.60060119628906
                 },
                 "localScale": {
                     "x": 1.0,
@@ -5438,7 +5743,7 @@
             "EntityData": {
                 "name": "Vantage Point",
                 "tag": "Vantage Point",
-                "parent": 64,
+                "parent": 59,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5451,9 +5756,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 360.1954650878906,
-                    "y": -90.47950744628906,
-                    "z": -208.30657958984375
+                    "x": 321.4229431152344,
+                    "y": -134.27420043945313,
+                    "z": -175.9648895263672
                 },
                 "scale": {
                     "x": 1.0,
@@ -5472,9 +5777,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 360.1954650878906,
-                    "y": -90.47950744628906,
-                    "z": -208.30657958984375
+                    "x": 321.4229431152344,
+                    "y": -134.27420043945313,
+                    "z": -175.9648895263672
                 },
                 "localScale": {
                     "x": 1.0,
@@ -5499,7 +5804,7 @@
             "EntityData": {
                 "name": "Vantage Point",
                 "tag": "Vantage Point",
-                "parent": 64,
+                "parent": 59,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5512,9 +5817,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 322.2078552246094,
-                    "y": -107.64717864990234,
-                    "z": -213.26036071777344
+                    "x": 332.6462707519531,
+                    "y": -107.64701843261719,
+                    "z": -184.8448944091797
                 },
                 "scale": {
                     "x": 1.0,
@@ -5533,9 +5838,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 322.2078552246094,
-                    "y": -107.64717864990234,
-                    "z": -213.26036071777344
+                    "x": 332.6462707519531,
+                    "y": -107.64701843261719,
+                    "z": -184.8448944091797
                 },
                 "localScale": {
                     "x": 1.0,
@@ -5560,7 +5865,7 @@
             "EntityData": {
                 "name": "Vantage Point",
                 "tag": "Vantage Point",
-                "parent": 64,
+                "parent": 59,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5573,9 +5878,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 354.3075256347656,
-                    "y": -123.51372528076172,
-                    "z": -203.2578125
+                    "x": 300.8782043457031,
+                    "y": -113.74061584472656,
+                    "z": -217.9453125
                 },
                 "scale": {
                     "x": 1.0,
@@ -5594,9 +5899,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 354.3075256347656,
-                    "y": -123.51372528076172,
-                    "z": -203.2578125
+                    "x": 300.8782043457031,
+                    "y": -113.74061584472656,
+                    "z": -217.9453125
                 },
                 "localScale": {
                     "x": 1.0,
@@ -5621,7 +5926,7 @@
             "EntityData": {
                 "name": "Vantage Point",
                 "tag": "Vantage Point",
-                "parent": 64,
+                "parent": 59,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5634,9 +5939,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 302.29254150390625,
-                    "y": -87.6612548828125,
-                    "z": -223.79505920410156
+                    "x": 308.6390380859375,
+                    "y": -91.17786407470703,
+                    "z": -169.3852996826172
                 },
                 "scale": {
                     "x": 1.0,
@@ -5655,9 +5960,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 302.29254150390625,
-                    "y": -87.6612548828125,
-                    "z": -223.79505920410156
+                    "x": 308.6390380859375,
+                    "y": -91.17786407470703,
+                    "z": -169.3852996826172
                 },
                 "localScale": {
                     "x": 1.0,
@@ -5682,7 +5987,7 @@
             "EntityData": {
                 "name": "Vantage Point",
                 "tag": "Vantage Point",
-                "parent": 64,
+                "parent": 59,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5695,9 +6000,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 338.72186279296875,
-                    "y": -113.74071502685547,
-                    "z": -226.60060119628906
+                    "x": 294.9307861328125,
+                    "y": -101.35089111328125,
+                    "z": -191.3365478515625
                 },
                 "scale": {
                     "x": 1.0,
@@ -5716,9 +6021,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 338.72186279296875,
-                    "y": -113.74071502685547,
-                    "z": -226.60060119628906
+                    "x": 294.9307861328125,
+                    "y": -101.35089111328125,
+                    "z": -191.3365478515625
                 },
                 "localScale": {
                     "x": 1.0,
@@ -5743,7 +6048,7 @@
             "EntityData": {
                 "name": "Vantage Point",
                 "tag": "Vantage Point",
-                "parent": 64,
+                "parent": 59,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -5756,9 +6061,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 321.4229431152344,
-                    "y": -134.27420043945313,
-                    "z": -175.9648895263672
+                    "x": 339.546875,
+                    "y": -92.49312591552734,
+                    "z": -230.54763793945313
                 },
                 "scale": {
                     "x": 1.0,
@@ -5777,9 +6082,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 321.4229431152344,
-                    "y": -134.27420043945313,
-                    "z": -175.9648895263672
+                    "x": 339.546875,
+                    "y": -92.49312591552734,
+                    "z": -230.54763793945313
                 },
                 "localScale": {
                     "x": 1.0,
@@ -5802,324 +6107,19 @@
         },
         {
             "EntityData": {
-                "name": "Vantage Point",
-                "tag": "Vantage Point",
-                "parent": 64,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 10640564008992538625,
-                "entityGUID": 12037893673485164033,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 332.6462707519531,
-                    "y": -107.64701843261719,
-                    "z": -184.8448944091797
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 332.6462707519531,
-                    "y": -107.64701843261719,
-                    "z": -184.8448944091797
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "id": 72
-        },
-        {
-            "EntityData": {
-                "name": "Vantage Point",
-                "tag": "Vantage Point",
-                "parent": 64,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 10640564008992538625,
-                "entityGUID": 12037893673485164033,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 300.8782043457031,
-                    "y": -113.74061584472656,
-                    "z": -217.9453125
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 300.8782043457031,
-                    "y": -113.74061584472656,
-                    "z": -217.9453125
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "id": 73
-        },
-        {
-            "EntityData": {
-                "name": "Vantage Point",
-                "tag": "Vantage Point",
-                "parent": 64,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 10640564008992538625,
-                "entityGUID": 12037893673485164033,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 308.6390380859375,
-                    "y": -91.17786407470703,
-                    "z": -169.3852996826172
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 308.6390380859375,
-                    "y": -91.17786407470703,
-                    "z": -169.3852996826172
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "id": 74
-        },
-        {
-            "EntityData": {
-                "name": "Vantage Point",
-                "tag": "Vantage Point",
-                "parent": 64,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 10640564008992538625,
-                "entityGUID": 12037893673485164033,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 294.9307861328125,
-                    "y": -101.35089111328125,
-                    "z": -191.3365478515625
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 294.9307861328125,
-                    "y": -101.35089111328125,
-                    "z": -191.3365478515625
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "id": 75
-        },
-        {
-            "EntityData": {
-                "name": "Vantage Point",
-                "tag": "Vantage Point",
-                "parent": 64,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 10640564008992538625,
-                "entityGUID": 12037893673485164033,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 339.546875,
-                    "y": -92.49312591552734,
-                    "z": -230.54763793945313
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 339.546875,
-                    "y": -92.49312591552734,
-                    "z": -230.54763793945313
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "id": 76
-        },
-        {
-            "EntityData": {
                 "name": "Turbine Navmesh Link",
                 "tag": "",
-                "parent": 5,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
+                    73,
+                    74,
+                    75,
+                    76,
+                    77,
                     78,
                     79,
-                    80,
-                    81,
-                    82,
-                    83,
-                    84,
-                    85
+                    80
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -6173,13 +6173,13 @@
                     "z": 0.0
                 }
             },
-            "id": 77
+            "id": 72
         },
         {
             "EntityData": {
                 "name": "Turbine Navmesh Link",
                 "tag": "",
-                "parent": 77,
+                "parent": 72,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6249,13 +6249,13 @@
                 "radius": 0.5,
                 "isBiDirectional": true
             },
-            "id": 78
+            "id": 73
         },
         {
             "EntityData": {
                 "name": "Turbine Navmesh Link 2",
                 "tag": "",
-                "parent": 77,
+                "parent": 72,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6325,13 +6325,13 @@
                 "radius": 0.5,
                 "isBiDirectional": true
             },
-            "id": 79
+            "id": 74
         },
         {
             "EntityData": {
                 "name": "Turbine Navmesh Link 3",
                 "tag": "",
-                "parent": 77,
+                "parent": 72,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6401,13 +6401,13 @@
                 "radius": 0.5,
                 "isBiDirectional": true
             },
-            "id": 80
+            "id": 75
         },
         {
             "EntityData": {
                 "name": "Turbine Navmesh Link 4",
                 "tag": "",
-                "parent": 77,
+                "parent": 72,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6477,13 +6477,13 @@
                 "radius": 0.5,
                 "isBiDirectional": true
             },
-            "id": 81
+            "id": 76
         },
         {
             "EntityData": {
                 "name": "Turbine Navmesh Link 5",
                 "tag": "",
-                "parent": 77,
+                "parent": 72,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6553,13 +6553,13 @@
                 "radius": 0.5,
                 "isBiDirectional": true
             },
-            "id": 82
+            "id": 77
         },
         {
             "EntityData": {
                 "name": "Turbine Navmesh Link 6",
                 "tag": "",
-                "parent": 77,
+                "parent": 72,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6629,13 +6629,13 @@
                 "radius": 0.5,
                 "isBiDirectional": true
             },
-            "id": 83
+            "id": 78
         },
         {
             "EntityData": {
                 "name": "Turbine Navmesh Link 7",
                 "tag": "",
-                "parent": 77,
+                "parent": 72,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6705,13 +6705,13 @@
                 "radius": 0.5,
                 "isBiDirectional": true
             },
-            "id": 84
+            "id": 79
         },
         {
             "EntityData": {
                 "name": "Turbine Navmesh Link 8",
                 "tag": "",
-                "parent": 77,
+                "parent": 72,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -6781,7 +6781,7 @@
                 "radius": 0.5,
                 "isBiDirectional": true
             },
-            "id": 85
+            "id": 80
         }
     ]
 }
