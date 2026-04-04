@@ -77,7 +77,7 @@ class Elevator : Script
         
         if(playerBody != null)
         {
-            playerBody.getComponent<Transform_>().position += distanceMoved;
+           //playerBody.getComponent<Transform_>().position += distanceMoved;
         }
 
         if (t >= 1f)
