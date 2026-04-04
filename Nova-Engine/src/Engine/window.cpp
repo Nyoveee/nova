@@ -86,6 +86,7 @@ Window::Window(const char* name, Dimension dimension, GameConfig gameConfig, Con
 		throw std::runtime_error("Failed to initialise GLAD.");
 	}
 
+#if 0
 	// Setting up debug context
 	int flags;
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
@@ -99,6 +100,7 @@ Window::Window(const char* name, Dimension dimension, GameConfig gameConfig, Con
 	else {
 		//logger.error("Failed to initialise OpenGL's debug context.\n");
 	}
+#endif
 
 	/*--
 		Registering callbacks..

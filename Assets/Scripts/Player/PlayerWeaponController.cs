@@ -242,6 +242,7 @@ class PlayerWeaponController : Script
         if (weaponControlStates == WeaponControlStates.WeaponFree && currentlyHeldGun.Fire())
         {
             playerArmGun.getComponent<Animator_>().PlayAnimation(FiringAnimationName);
+            currentlyHeldGun.getComponent<Sequence_>().play();
 
             // ---------------------------------------------------------------
             // The moment this gun fires, the brightness of the glow spikes.
@@ -282,7 +283,7 @@ class PlayerWeaponController : Script
 
         if (weaponControlStates == WeaponControlStates.ThrowReady && currentlyHeldGun.gameObject.IsActive() == true)
         {
-            //playerArmGun.getComponent<Animator_>().SetFrame(30);
+            playerArmGun.getComponent<Animator_>().SetFrame(15);
             playerArmGun.getComponent<Animator_>().speedMultiplier = 1f;
             weaponControlStates = WeaponControlStates.AwaitWeaponReturn;
 

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 153,
+    "RootEntity": 83,
     "Entities": [
         {
             "EntityData": {
@@ -8,7 +8,7 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    154
+                    84
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -79,30 +79,37 @@
                         "scriptId": 13123296379971174761,
                         "fields": [
                             {
+                                "name": "enemyPrefab",
+                                "data": {
+                                    "__variant_value": 3247368569598771203,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
                                 "name": "light",
                                 "data": {
-                                    "__variant_value": 157,
+                                    "__variant_value": 87,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "fireSmoke",
                                 "data": {
-                                    "__variant_value": 155,
+                                    "__variant_value": 85,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "fire",
                                 "data": {
-                                    "__variant_value": 157,
+                                    "__variant_value": 87,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "charge",
                                 "data": {
-                                    "__variant_value": 156,
+                                    "__variant_value": 86,
                                     "__variant_type": 4
                                 }
                             },
@@ -132,24 +139,10 @@
                                 }
                             },
                             {
-                                "name": "enemyPrefab",
-                                "data": {
-                                    "__variant_value": 3247368569598771203,
-                                    "__variant_type": 10
-                                }
-                            },
-                            {
                                 "name": "launchingVFXPrefab",
                                 "data": {
                                     "__variant_value": 5662740551944257769,
                                     "__variant_type": 10
-                                }
-                            },
-                            {
-                                "name": "cannonTurningTime",
-                                "data": {
-                                    "__variant_value": 5.0,
-                                    "__variant_type": 18
                                 }
                             },
                             {
@@ -167,6 +160,20 @@
                                 }
                             },
                             {
+                                "name": "minTurningTime",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxTurningTime",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
                                 "name": "cannonChargeTime",
                                 "data": {
                                     "__variant_value": 1.2999999523162842,
@@ -174,21 +181,14 @@
                                 }
                             },
                             {
-                                "name": "cannonMeshRenderer",
-                                "data": {
-                                    "__variant_value": 153,
-                                    "__variant_type": 4
-                                }
-                            },
-                            {
                                 "name": "cannonBarrelMeshRenderer",
                                 "data": {
-                                    "__variant_value": 154,
+                                    "__variant_value": 84,
                                     "__variant_type": 4
                                 }
                             },
                             {
-                                "name": "playerbody",
+                                "name": "firingPoint",
                                 "data": {
                                     "__variant_value": 4294967295,
                                     "__variant_type": 4
@@ -215,18 +215,18 @@
             "NavMeshModifier": {
                 "Area_Type": "Exclude"
             },
-            "id": 153
+            "id": 83
         },
         {
             "EntityData": {
                 "name": "Cannon Barrel",
                 "tag": "",
-                "parent": 153,
+                "parent": 83,
                 "attachedSocket": 65535,
                 "children": [
-                    155,
-                    156,
-                    157
+                    85,
+                    86,
+                    87
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -255,7 +255,7 @@
                 },
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -2.3841832330617763e-07,
+                    "y": -2.3841796803480975e-07,
                     "z": 3.1415927410125732
                 },
                 "localPosition": {
@@ -276,7 +276,7 @@
                 },
                 "localEulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -2.384183090953229e-07,
+                    "y": -2.3841796803480975e-07,
                     "z": 3.1415927410125732
                 }
             },
@@ -292,13 +292,13 @@
             "NavMeshModifier": {
                 "Area_Type": "Exclude"
             },
-            "id": 154
+            "id": 84
         },
         {
             "EntityData": {
                 "name": "Fire Smoke",
                 "tag": "",
-                "parent": 154,
+                "parent": 84,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -359,6 +359,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 50.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": -1.2876865352220179e-19,
@@ -367,6 +369,16 @@
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -469,13 +481,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 155
+            "id": 85
         },
         {
             "EntityData": {
                 "name": "Charge",
                 "tag": "",
-                "parent": 154,
+                "parent": 84,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -538,6 +550,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 100.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": -1.2869606842345026e-19,
@@ -546,6 +560,16 @@
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -648,13 +672,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 156
+            "id": 86
         },
         {
             "EntityData": {
                 "name": "Fire",
                 "tag": "",
-                "parent": 154,
+                "parent": 84,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -738,6 +762,8 @@
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
                 "startSpeed": 100.0,
+                "minStartSpeed": 0.0,
+                "maxStartSpeed": 0.0,
                 "initialRotation": 0.0,
                 "velocityBasedInitialRotation": false,
                 "minInitialRotationOffset": -2.035987989131015e+33,
@@ -746,6 +772,16 @@
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "minForceOffset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "maxForceOffset": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -848,7 +884,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 157
+            "id": 87
         }
     ]
 }

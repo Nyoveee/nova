@@ -1,6 +1,7 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
 using Windows.UI.Input.Inking.Analysis;
 
 class FinalCutscene : Script
@@ -11,6 +12,8 @@ class FinalCutscene : Script
     public List<float> cutsceneDuration;
     public List<float> cutsceneFadeDuration;
     public List<float> cutsceneFadeStayIn;
+
+    public Scene creditScene;
 
     bool isFading = false;
     bool hasFadedIn = false;
@@ -131,6 +134,8 @@ class FinalCutscene : Script
                     {
                         cutsceneShots[currentCutsceneIndex - 1]?.SetActive(false);
                         isFading = false; // dont fade out..
+
+                        SceneAPI.ChangeScene(creditScene);
                     },
                     () =>
                     {

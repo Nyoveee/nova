@@ -71,6 +71,7 @@ Frag{
     }
     else {
         _normal = normalize(fsIn.normal);
+        // _normal *= normalMultiplier;
     }
 
     vec3 emissiveColor = vec3(0);

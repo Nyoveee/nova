@@ -27,6 +27,8 @@ class BossIntroCutscene : Script
     [SerializableField] private MeshRenderer_ innerWallCollider;
     [SerializableField] private SimpleBGMManager simpleBGMManager;
 
+    [SerializableField] private GameObject entranceDoor;
+
     [SerializableField] private Boss boss;
     [SerializableField] private Animator_ bossAnimator;
 
@@ -208,8 +210,10 @@ class BossIntroCutscene : Script
                 cutsceneCameraTwo.camStatus = true;
 
                 cutsceneCameraTwo.gameObject.getComponent<Sequence_>().play();
-                boss.getComponent<Sequence_>().play();
-                bossAnimator.PlayAnimation("Boss_Run");
+                entranceDoor.SetActive(false);
+
+                //boss.getComponent<Sequence_>().play();
+                //bossAnimator.PlayAnimation("Boss_Run");
             }, durationBeforeCameraChange);
 
         }, initialCutsceneDelay);
@@ -237,7 +241,7 @@ class BossIntroCutscene : Script
         AnimatingCameraPanback();
         AnimatingCutsceneBars();
         AnimatingInnerWall();
-        AnimatingLight();
+        // AnimatingLight();
     }
 
     private void AnimatingInitialFadeOut()
@@ -391,6 +395,8 @@ class BossIntroCutscene : Script
             boss.GoToIdleState(); 
 
             simpleBGMManager.playBGM();
+
+            entranceDoor.SetActive(true);
         }
     }
 
@@ -477,7 +483,7 @@ class BossIntroCutscene : Script
     // Invoked by animation event.
     public void StartBossDrop()
     {
-        boss.getComponent<Sequence_>().pause();
+        //boss.getComponent<Sequence_>().pause();
         bossAnimator.PlayAnimation("Boss_Jump");
         bossAnimator.SetFrame(74);
         isAnimatingBossDrop = true;
