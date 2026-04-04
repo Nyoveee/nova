@@ -71,10 +71,10 @@ int main(int argc, char* argv[]) {
 		);
 	} else {
 		// Jenkins Setup
-		Window			window{ inputManager };
-		ResourceManager resourceManager{};
-		Engine			engine{ window, inputManager, resourceManager};
-		AssetManager	assetManager{ resourceManager, engine };
+		// Window			window{ inputManager };
+		// ResourceManager resourceManager{};
+		// Engine			engine{ window, inputManager, resourceManager};
+		// AssetManager	assetManager{ resourceManager, engine };
 		std::cout << "Skipping window.run().\n";
 	}
 }
