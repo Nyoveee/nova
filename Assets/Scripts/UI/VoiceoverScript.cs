@@ -29,6 +29,8 @@ class VoiceoverScript : Script
     }
     protected override void update()
     {
+        if (voiceLineActiveStates.Count == 0)
+            return;
         bool b_HideUI = true;
         foreach(bool voiceLineActiveState in voiceLineActiveStates)
             if (voiceLineActiveState)
