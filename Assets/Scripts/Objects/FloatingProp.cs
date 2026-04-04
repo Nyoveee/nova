@@ -15,7 +15,7 @@ class FloatingProp : Script
     protected override void init()
     {
         currentFloatingTime += Random.Range(0, Mathf.Deg2Rad * 360f);
-        floatingPosition = gameObject.transform.position;
+        floatingPosition = gameObject.transform.localPosition;
     }
 
     // This function is invoked every update.
@@ -23,7 +23,7 @@ class FloatingProp : Script
     {
         currentFloatingTime += Time.V_DeltaTime() * floatingSpeed;
         float yOffset = Mathf.Sin(currentFloatingTime) * floatingDistance;
-        gameObject.transform.position = floatingPosition + new Vector3(0, yOffset, 0);
+        gameObject.transform.localPosition = floatingPosition + new Vector3(0, yOffset, 0);
     }
 
 }
