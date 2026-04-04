@@ -135,7 +135,10 @@ class FinalCutscene : Script
                         cutsceneShots[currentCutsceneIndex - 1]?.SetActive(false);
                         isFading = false; // dont fade out..
 
-                        SceneAPI.ChangeScene(creditScene);
+                        Invoke(() =>
+                        {
+                            SceneAPI.ChangeScene(creditScene);
+                        }, 3f);
                     },
                     () =>
                     {
