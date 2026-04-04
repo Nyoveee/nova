@@ -39,7 +39,20 @@ class GunnerProjectile : Script
             if (gameObject != null)
                 Destroy(gameObject);
         }
-        if(other.tag == "Player")
+
+        if (other.getComponent<Rigidbody_>().GetLayerName() == "Floor")
+        {
+            if (gameObject != null)
+                Destroy(gameObject);
+        }
+
+        if (other.getComponent<Rigidbody_>().GetLayerName() == "Wall")
+        {
+            if (gameObject != null)
+                Destroy(gameObject);
+        }
+
+        if (other.tag == "Player")
         {
             PlayerController_V2 playerController = other.getScript<PlayerController_V2>();
             playerController.TakeDamage(damage);

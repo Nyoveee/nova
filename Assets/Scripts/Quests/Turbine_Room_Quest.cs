@@ -12,6 +12,9 @@ class Turbine_Room_Quest : Quest
     private Prefab gunnerPrefab;
 
     [SerializableField]
+    private Prefab gruntPrefab;
+
+    [SerializableField]
     private List<GameObject> gunnerSpawnLocations1;
 
     [SerializableField]
@@ -50,9 +53,9 @@ class Turbine_Room_Quest : Quest
     protected override void init()
     {
         voiceoverScript = GameObject.FindWithTag("Game UI Manager")?.getScript<VoiceoverScript>();
-        spawnLocations.Add(gunnerSpawnLocations3);
-        spawnLocations.Add(gunnerSpawnLocations2);
         spawnLocations.Add(gunnerSpawnLocations1);
+        spawnLocations.Add(gunnerSpawnLocations2);
+        spawnLocations.Add(gunnerSpawnLocations3);
     }
     public override void OnEnter()
     {
@@ -64,11 +67,57 @@ class Turbine_Room_Quest : Quest
         {
             if (!activeSwitches[i].isSwitchActivated())
                 continue;
-            foreach (GameObject spawnLocation in spawnLocations[spawnLocations.Count-1])
-                spawnedEnemies.Add(Instantiate(gunnerPrefab, spawnLocation.transform.position));
+
+            if (activeSwitches[i].gameObject.tag == "SwitchGround")
+            {
+                foreach (GameObject spawnLocation in spawnLocations[0])
+                {
+                    if (spawnLocation.tag == "Gunner")
+                    {
+                        spawnedEnemies.Add(Instantiate(gunnerPrefab, spawnLocation.transform.position));
+                    }
+                    else if (spawnLocation.tag == "Grunt")
+                    {
+                        spawnedEnemies.Add(Instantiate(gruntPrefab, spawnLocation.transform.position));
+                    }
+                }
+            }
+
+            if (activeSwitches[i].gameObject.tag == "SwitchCenter")
+            {
+                foreach (GameObject spawnLocation in spawnLocations[1])
+                {
+                    if (spawnLocation.tag == "Gunner")
+                    {
+                        spawnedEnemies.Add(Instantiate(gunnerPrefab, spawnLocation.transform.position));
+                    }
+                    else if (spawnLocation.tag == "Grunt")
+                    {
+                        spawnedEnemies.Add(Instantiate(gruntPrefab, spawnLocation.transform.position));
+                    }
+                }
+            }
+
+            if (activeSwitches[i].gameObject.tag == "SwitchTop")
+            {
+                foreach (GameObject spawnLocation in spawnLocations[2])
+                {
+                    if (spawnLocation.tag == "Gunner")
+                    {
+                        spawnedEnemies.Add(Instantiate(gunnerPrefab, spawnLocation.transform.position));
+                    }
+                    else if (spawnLocation.tag == "Grunt")
+                    {
+                        spawnedEnemies.Add(Instantiate(gruntPrefab, spawnLocation.transform.position));
+                    }
+                }
+            }
+
+
+
             ++weaverVoiceOverIndex;
             voiceoverScript.TriggerVoiceOver("Weaver", weaverVoiceOverText[weaverVoiceOverIndex], weaverVoiceOverAudio[weaverVoiceOverIndex], weaverVoiceOverTime[weaverVoiceOverIndex], false);
-            spawnLocations.RemoveAt(spawnLocations.Count-1);
+            //spawnLocations.RemoveAt(spawnLocations.Count-1);
             activeSwitches.RemoveAt(i);
         }
         if (activeSwitches.Count > 0)

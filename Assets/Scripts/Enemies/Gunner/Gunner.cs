@@ -234,6 +234,14 @@ class Gunner : Enemy
         physicsRigidbody.SetLinearDamping(0);
         if (IsTouchingGround())
         {
+           Vector3? samplePosition =  NavigationAPI.SampleNavMeshPosition("Humanoid", gameObject.transform.position, new Vector3(enemyStats.groundDetectionRayCast * 2, enemyStats.groundDetectionRayCast * 2, enemyStats.groundDetectionRayCast * 2));
+
+            if (samplePosition != null)
+            { 
+             gameObject.transform.position = samplePosition.Value;
+            }
+
+
             ActivateNavMeshAgent();
             gunnerState = GunnerState.Idle;
         }
