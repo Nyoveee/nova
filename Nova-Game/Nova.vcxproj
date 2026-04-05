@@ -249,6 +249,15 @@
       <Project>{532e8b6e-ff92-43e1-acd6-31c0eab9cccb}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Nova-Game.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Icon.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
