@@ -1,5 +1,5 @@
 {
-    "RootEntity": 26,
+    "RootEntity": 7,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    27,
-                    28,
-                    33,
-                    37,
-                    40
+                    8,
+                    9,
+                    14,
+                    18,
+                    21
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -94,7 +94,8 @@
             "AudioComponent": {
                 "volume": 1.0,
                 "loop": false,
-                "audioGroup": "SFX"
+                "audioGroup": "SFX",
+                "attenutationMode": "InverseRollOff"
             },
             "PositionalAudio": {
                 "toggleSphere": false,
@@ -134,7 +135,7 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 28,
+                                    "__variant_value": 9,
                                     "__variant_type": 4
                                 }
                             },
@@ -286,28 +287,28 @@
                             {
                                 "name": "absorbtionEmitters",
                                 "data": {
-                                    "__variant_value": 33,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "throwingEmitters",
                                 "data": {
-                                    "__variant_value": 37,
+                                    "__variant_value": 18,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "slicingEmitters",
                                 "data": {
-                                    "__variant_value": 30,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "jetStreamEmitters",
                                 "data": {
-                                    "__variant_value": 40,
+                                    "__variant_value": 21,
                                     "__variant_type": 4
                                 }
                             },
@@ -412,13 +413,13 @@
                     }
                 ]
             },
-            "id": 26
+            "id": 7
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 26,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -427,32 +428,32 @@
                 "entityGUID": 4911782886552208391,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
-                    "17237801994024849853": true,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
+                    "17237801994024849853": true,
+                    "11935986701403193153": false,
                     "6152912775364972041": false,
                     "13953638462837156301": false,
                     "6919815292445452220": false,
-                    "452538415452204233": false,
                     "9059764703561530457": false,
-                    "17421316227555880647": false,
+                    "452538415452204233": false,
                     "10599230719904143524": false,
-                    "10106385962890515953": false,
+                    "17421316227555880647": false,
                     "394579324703252227": false,
-                    "17464486586416021590": false,
+                    "10106385962890515953": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -536,7 +537,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 26,
+                                    "__variant_value": 7,
                                     "__variant_type": 4
                                 }
                             }
@@ -544,17 +545,17 @@
                     }
                 ]
             },
-            "id": 27
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 26,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": [
-                    29,
-                    30
+                    10,
+                    11
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -562,32 +563,32 @@
                 "entityGUID": 9523468904979596293,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "7111564935354361005": false,
-                    "13484132868097894827": true,
                     "452538415452204233": false,
                     "9059764703561530457": true,
-                    "17237801994024849853": true,
+                    "7111564935354361005": false,
+                    "13484132868097894827": true,
+                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
-                    "11935986701403193153": false,
+                    "17237801994024849853": true,
                     "6919815292445452220": true,
-                    "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": false,
                     "6152912775364972041": false,
-                    "10106385962890515953": false,
+                    "13953638462837156301": false,
                     "394579324703252227": false,
-                    "17464486586416021590": false,
+                    "10106385962890515953": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
+                    "13437837940854190620": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -653,13 +654,13 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 28
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Rifle Outline",
                 "tag": "",
-                "parent": 28,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -670,30 +671,30 @@
                 "overridenComponents": {
                     "9059764703561530457": false,
                     "452538415452204233": false,
-                    "6919815292445452220": false,
                     "394579324703252227": false,
                     "10106385962890515953": false,
+                    "6919815292445452220": false,
+                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
-                    "11935986701403193153": false,
-                    "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": false,
                     "6152912775364972041": false,
-                    "17464486586416021590": false,
+                    "13953638462837156301": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -753,17 +754,17 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 29
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "BladeSliceEmitter",
                 "tag": "",
-                "parent": 28,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": [
-                    31,
-                    32
+                    12,
+                    13
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -817,13 +818,13 @@
                     "z": 0.21420755982398987
                 }
             },
-            "id": 30
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "BlueSpark",
                 "tag": "",
-                "parent": 30,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1006,13 +1007,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 31
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Yellowpark",
                 "tag": "",
-                "parent": 30,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1195,18 +1196,18 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 32
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Abs_Emitter",
                 "tag": "",
-                "parent": 26,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": [
-                    34,
-                    35,
-                    36
+                    15,
+                    16,
+                    17
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1260,13 +1261,13 @@
                     "z": 0.0
                 }
             },
-            "id": 33
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Halo",
                 "tag": "",
-                "parent": 33,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1449,13 +1450,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 34
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "Star Shine",
                 "tag": "",
-                "parent": 33,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1638,13 +1639,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 35
+            "id": 16
         },
         {
             "EntityData": {
                 "name": "absorption effect",
                 "tag": "",
-                "parent": 33,
+                "parent": 14,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1827,17 +1828,17 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 36
+            "id": 17
         },
         {
             "EntityData": {
                 "name": "ThrowingEmitter",
                 "tag": "",
-                "parent": 26,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": [
-                    38,
-                    39
+                    19,
+                    20
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1845,32 +1846,32 @@
                 "entityGUID": 10188295215564964795,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": false,
                     "394579324703252227": false,
                     "10106385962890515953": false,
+                    "6919815292445452220": false,
+                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
-                    "11935986701403193153": false,
                     "9059764703561530457": false,
                     "452538415452204233": false,
-                    "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": false,
                     "6152912775364972041": false,
-                    "17464486586416021590": false,
+                    "13953638462837156301": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": false,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -1921,13 +1922,13 @@
                     "z": 0.0
                 }
             },
-            "id": 37
+            "id": 18
         },
         {
             "EntityData": {
                 "name": "SparkStream",
                 "tag": "",
-                "parent": 37,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1936,32 +1937,32 @@
                 "entityGUID": 964923178710909885,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": true,
                     "394579324703252227": false,
                     "10106385962890515953": false,
+                    "6919815292445452220": true,
+                    "11935986701403193153": false,
                     "15908289914940614865": false,
                     "16652763906952685383": false,
-                    "11935986701403193153": false,
                     "9059764703561530457": false,
                     "452538415452204233": false,
-                    "17421316227555880647": false,
                     "10599230719904143524": false,
-                    "13953638462837156301": false,
+                    "17421316227555880647": false,
                     "6152912775364972041": false,
-                    "17464486586416021590": false,
+                    "13953638462837156301": false,
                     "8055902242766887362": false,
+                    "17464486586416021590": false,
                     "16861337649669213096": false,
                     "14828643033174927893": false,
                     "17237801994024849853": false,
-                    "16533173024327387273": false,
                     "2785545264285399722": false,
+                    "16533173024327387273": false,
                     "11834285525760392891": false,
                     "3548010661223935717": true,
                     "9644886267844571682": false,
-                    "13437837940854190620": false,
                     "8302729333555196098": false,
-                    "13484132868097894827": false,
+                    "13437837940854190620": false,
                     "7111564935354361005": false,
+                    "13484132868097894827": false,
                     "9204931689134171219": false,
                     "17461210185115697313": false,
                     "16921322617277318829": false
@@ -2140,13 +2141,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 38
+            "id": 19
         },
         {
             "EntityData": {
                 "name": "ArcTrail",
                 "tag": "",
-                "parent": 37,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2329,21 +2330,21 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 39
+            "id": 20
         },
         {
             "EntityData": {
                 "name": "StreamLines_Emitter",
                 "tag": "",
-                "parent": 26,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": [
-                    41,
-                    42,
-                    43,
-                    44,
-                    45,
-                    46
+                    22,
+                    23,
+                    24,
+                    25,
+                    26,
+                    27
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -2397,13 +2398,13 @@
                     "z": 0.0
                 }
             },
-            "id": 40
+            "id": 21
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 40,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2586,13 +2587,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 41
+            "id": 22
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 40,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2775,13 +2776,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 42
+            "id": 23
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 40,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -2964,13 +2965,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 43
+            "id": 24
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 40,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3153,13 +3154,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 44
+            "id": 25
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 40,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3342,13 +3343,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 45
+            "id": 26
         },
         {
             "EntityData": {
                 "name": "jetStream_1",
                 "tag": "",
-                "parent": 40,
+                "parent": 21,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -3531,7 +3532,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 46
+            "id": 27
         }
     ]
 }

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 32,
+    "RootEntity": 28,
     "Entities": [
         {
             "EntityData": {
@@ -8,14 +8,14 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
+                    29,
+                    30,
+                    31,
+                    32,
                     33,
                     34,
                     35,
-                    36,
-                    37,
-                    38,
-                    39,
-                    40
+                    36
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -129,7 +129,8 @@
             "AudioComponent": {
                 "volume": 0.699999988079071,
                 "loop": false,
-                "audioGroup": "SFX"
+                "audioGroup": "SFX",
+                "attenutationMode": "InverseRollOff"
             },
             "Scripts": {
                 "scriptDatas": [
@@ -213,13 +214,13 @@
                     }
                 ]
             },
-            "id": 32
+            "id": 28
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 32,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -432,13 +433,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 33
+            "id": 29
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 32,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -651,13 +652,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 34
+            "id": 30
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 32,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -870,13 +871,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 35
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 32,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1089,13 +1090,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 36
+            "id": 32
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 32,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1308,13 +1309,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 37
+            "id": 33
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 32,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1527,13 +1528,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 38
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 32,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1746,13 +1747,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 39
+            "id": 35
         },
         {
             "EntityData": {
                 "name": "Particle Emitter",
                 "tag": "",
-                "parent": 32,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1965,7 +1966,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 40
+            "id": 36
         }
     ]
 }

@@ -1,6 +1,8 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+
 class MissileVFX : Script
 {
 
@@ -21,6 +23,12 @@ class MissileVFX : Script
     
     [SerializableField]
     private ParticleEmitter_ sparks2;
+
+
+    [SerializableField]
+    private List<Audio> missileAudio;
+
+
 
     // This function is invoked once before init when gameobject is active.
 
@@ -46,6 +54,7 @@ class MissileVFX : Script
             sparks1.emit();
             sparks2.emit();
 
+            getComponent<AudioComponent_>().PlayRandomSound(missileAudio);  
         }
 
         timeElasped += Time.V_DeltaTime();

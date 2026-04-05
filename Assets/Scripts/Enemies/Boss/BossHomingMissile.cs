@@ -80,6 +80,9 @@ class BossHomingMissile : Enemy
         rigidbody.SetVelocityLimits(flightSpeed);
         //Debug.Log("Now facing");
 
+        //Audio Stuff
+        getComponent<AudioComponent_>().PlayRandomSound(missileWhistleAudio);
+
     }
 
     // This function is invoked every update.
@@ -164,7 +167,10 @@ class BossHomingMissile : Enemy
 
     // This function is invoked when destroyed.
     protected override void exit()
-    {}
+    {
+        audioComponent.StopSound(missileWhistleAudio[0]);
+
+    }
 
     public override void TakeDamage(float damage, EnemydamageType damageType, string colliderTag)
     {
@@ -323,6 +329,8 @@ class BossHomingMissile : Enemy
         {
              missileState = MissileState.Death;
              Instantiate(destroyVFX, gameObject.transform.position, gameObject.transform.rotation);
+            //AudioAPI.SetMasterVolume(
+            audioComponent.StopSound(missileWhistleAudio[0]);
         }
 
         if (other.tag == "Player")
@@ -331,12 +339,14 @@ class BossHomingMissile : Enemy
             missileState = MissileState.Death;
            // Debug.Log("Hit Player");
             Instantiate(destroyVFX, gameObject.transform.position, gameObject.transform.rotation);
+            audioComponent.StopSound(missileWhistleAudio[0]);
 
         }
 
         //Debug.Log("Collided with " + other.gameObject.name);
 
     }
+
 
 
     public override bool IsEngagedInBattle()

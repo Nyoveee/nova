@@ -24,6 +24,9 @@ class BossAudio : Script
     public List<Audio> bossHitAudio;
 
     [SerializableField]
+    public Audio bossRageAudio;
+
+    [SerializableField]
     private string weaverVoiceoverText;
     [SerializableField]
     private float weaverVoiceoverTime;
