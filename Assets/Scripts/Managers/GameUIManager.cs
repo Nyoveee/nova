@@ -321,7 +321,7 @@ class GameUIManager : Script
         
         if(camera != null)
         {
-            camera.toRotateSideWays = false;
+            camera.toRotateSideWays = true;
             camera.ResetUp();
         }
         
