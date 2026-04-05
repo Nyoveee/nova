@@ -27,6 +27,8 @@ class StartBoatQuest : Quest
     private float objectPointTime;
     [SerializableField]
     private Switch boatSwitch;
+    [SerializableField]
+    private BoatAudio boatAudio;
 
     private VoiceoverScript voiceoverScript;
     protected override void init()
@@ -42,6 +44,7 @@ class StartBoatQuest : Quest
     }
     public override void OnSuccess()
     {
+        boatAudio.BeginBoatAudio();
         Invoke(() =>
         {
             voiceoverScript.TriggerVoiceOverSequence("Weaver", weaverVoiceoverTexts, weaverVoiceoverAudio, weaverVoiceoverTimes, false);
