@@ -948,9 +948,15 @@ void AudioComponent_::PlayBGM(ScriptingAPI::Audio^ audio) {
 	if (!Interface::engine->audioSystem.playBGM(Convert(gameObject), *Convert(this), audio->getId()))
 		Logger::error("{}Attempting to Play Audio that doesn't exist",gameObject->GetNameID());
 }
+
 void AudioComponent_::StopSound(ScriptingAPI::Audio^ audio) {
 	if(!Interface::engine->audioSystem.stopSound(Convert(gameObject), audio->getId()))
 		Logger::error("{}Attempting to Stop Audio that doesn't exist",gameObject->GetNameID());
+}
+
+
+void AudioComponent_::SetVolume(ScriptingAPI::Audio^ audio, float volume) {
+	Interface::engine->audioSystem.setVolume(Convert(gameObject), audio->getId(), volume);
 }
 
 bool VideoPlayer_::IsVideoFinished()

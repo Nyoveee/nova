@@ -43,6 +43,10 @@ class MainUIManager : Script
     [SerializableField] public float initialFadeOut = 1f;
     [SerializableField] public GameObject hubLights;
 
+    [SerializableField] private AudioComponent_ mainMenuBGM;
+    [SerializableField] private AudioComponent_ levelSelectBGM;
+    [SerializableField] private float audioFadeDuration = 2f;
+
     [SerializableField] private Audio mainMenuAudio;
     [SerializableField] private Audio levelSelectAudio;
 
@@ -73,7 +77,13 @@ class MainUIManager : Script
 
     private List<LightInfo> playerLightsRuntime = new List<LightInfo>();
 
-    private AudioComponent_ audioComponent_;
+    private bool isFadingAudio = false;
+    private float audioFadeTimeElapsed = 0f;
+
+    private AudioComponent_ audioComponentToStartPlaying;
+    private AudioComponent_ audioComponentToStopPlaying;
+    private Audio audioToStartPlaying;
+    private Audio audioToStopPlaying;
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
@@ -90,8 +100,6 @@ class MainUIManager : Script
 
         darkOverlay.alpha = 1f;
 
-        audioComponent_ = getComponent<AudioComponent_>();
-
         Invoke(() =>
         {
             canvasToFade = mainMenuUi;
@@ -105,8 +113,6 @@ class MainUIManager : Script
 
             fadeOutCallback = () => 
             {
-                audioComponent_.PlaySound(mainMenuAudio);
-
                 Invoke(() =>
                 {
                     mainMenuUi.isInteractable = true;
@@ -138,7 +144,9 @@ class MainUIManager : Script
 
     protected override void update()
     {
-        if(isCameraMoving)
+        FadingBGM();
+
+        if (isCameraMoving)
         {
             handleCameraMovement();
         }
@@ -178,6 +186,35 @@ class MainUIManager : Script
         }
 
         timeElapsed += Time.V_DeltaTime(); 
+    }
+
+    private void FadingBGM()
+    {
+        if(!isFadingAudio)
+        {
+            return;
+        }
+
+        if (audioFadeTimeElapsed > audioFadeDuration)
+        {
+            isFadingAudio = false;
+            audioComponentToStartPlaying.volume = 1f;
+        }
+
+        if (audioFadeTimeElapsed < audioFadeDuration / 2f)
+        {
+            float interval = audioFadeTimeElapsed / (audioFadeDuration / 2f);
+            audioComponentToStopPlaying.SetVolume(audioToStopPlaying, (1f - interval));
+        }
+        else
+        {
+            audioComponentToStopPlaying.volume = 0f;
+            float interval = (audioFadeTimeElapsed - (audioFadeDuration / 2f)) / (audioFadeDuration / 2f);
+            audioComponentToStartPlaying.volume = interval;
+            audioComponentToStartPlaying.SetVolume(audioToStartPlaying, interval);
+        }
+
+        audioFadeTimeElapsed += Time.V_DeltaTime();
     }
 
     private void handleCameraMovement()
@@ -261,6 +298,15 @@ class MainUIManager : Script
 
         fromCanvas = mainMenuUi;
         toCanvas = levelSelectUi;
+
+        audioComponentToStopPlaying = mainMenuBGM;
+        audioFadeTimeElapsed = 0f;
+        isFadingAudio = true;
+
+        audioComponentToStartPlaying = levelSelectBGM;
+        audioToStartPlaying = levelSelectAudio;
+        audioToStopPlaying = mainMenuAudio;
+        audioComponentToStopPlaying.SetVolume(levelSelectAudio, 0f);
     }
 
     public void GoToMainMenuUI()
@@ -282,5 +328,14 @@ class MainUIManager : Script
 
         fromCanvas = levelSelectUi;
         toCanvas = mainMenuUi;
+
+        audioComponentToStopPlaying = levelSelectBGM;
+        audioFadeTimeElapsed = 0f;
+        isFadingAudio = true;
+
+        audioComponentToStartPlaying = mainMenuBGM;
+        audioToStartPlaying = mainMenuAudio;
+        audioToStopPlaying = levelSelectAudio;
+        audioComponentToStopPlaying.SetVolume(mainMenuAudio, 0f);
     }
 }

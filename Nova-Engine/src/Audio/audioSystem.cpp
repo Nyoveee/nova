@@ -414,6 +414,18 @@ void AudioSystem::StopAudio(entt::entity entity, ResourceID audioId)
 	}
 }
 
+void AudioSystem::setVolume(entt::entity entity, ResourceID audioId, float volume) 
+{
+	for (auto& [instanceId, audioInstance] : audioInstances)
+	{
+		if (audioInstance.entity == entity && audioInstance.audioId == audioId && audioInstance.channel)
+		{
+			audioInstance.volume = volume;
+			audioInstance.channel->setVolume(volume);
+		}
+	}
+}
+
 void AudioSystem::AdjustVol(ResourceID audioId, float volume)
 {
 	for (auto& [instanceId, audioInstance] : audioInstances)

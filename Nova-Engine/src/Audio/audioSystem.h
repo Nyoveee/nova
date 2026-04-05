@@ -81,6 +81,8 @@ public:
 	// Stops all currently playing audio files with ResourceID audioId
 	ENGINE_DLL_API void StopAudio(entt::entity entity, ResourceID audioId);
 
+	ENGINE_DLL_API void setVolume(entt::entity entity, ResourceID audioId, float volume);
+
 	ENGINE_DLL_API void AdjustVol(ResourceID audioId, float volume);
 
 	ENGINE_DLL_API void AdjustGlobalVol(float volume);
