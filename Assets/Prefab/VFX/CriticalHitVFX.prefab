@@ -1,5 +1,5 @@
 {
-    "RootEntity": 55,
+    "RootEntity": 60,
     "Entities": [
         {
             "EntityData": {
@@ -8,12 +8,12 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    56,
-                    57,
-                    58,
-                    59,
-                    60,
-                    61
+                    61,
+                    62,
+                    63,
+                    64,
+                    65,
+                    66
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -89,42 +89,42 @@
                             {
                                 "name": "initialBurst",
                                 "data": {
-                                    "__variant_value": 56,
+                                    "__variant_value": 61,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "initialPoint",
                                 "data": {
-                                    "__variant_value": 57,
+                                    "__variant_value": 62,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "holdPoint",
                                 "data": {
-                                    "__variant_value": 58,
+                                    "__variant_value": 63,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "holdBurst",
                                 "data": {
-                                    "__variant_value": 59,
+                                    "__variant_value": 64,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sparkBlue",
                                 "data": {
-                                    "__variant_value": 60,
+                                    "__variant_value": 65,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sparkOrange",
                                 "data": {
-                                    "__variant_value": 61,
+                                    "__variant_value": 66,
                                     "__variant_type": 4
                                 }
                             }
@@ -132,13 +132,13 @@
                     }
                 ]
             },
-            "id": 55
+            "id": 60
         },
         {
             "EntityData": {
                 "name": "InitialBurst",
                 "tag": "",
-                "parent": 55,
+                "parent": 60,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -321,13 +321,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 56
+            "id": 61
         },
         {
             "EntityData": {
                 "name": "InitialPoint",
                 "tag": "",
-                "parent": 55,
+                "parent": 60,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -510,13 +510,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 57
+            "id": 62
         },
         {
             "EntityData": {
                 "name": "HoldPoint",
                 "tag": "",
-                "parent": 55,
+                "parent": 60,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -699,13 +699,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 58
+            "id": 63
         },
         {
             "EntityData": {
                 "name": "HoldBurst",
                 "tag": "",
-                "parent": 55,
+                "parent": 60,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -888,13 +888,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 59
+            "id": 64
         },
         {
             "EntityData": {
                 "name": "SparkBlue",
                 "tag": "",
-                "parent": 55,
+                "parent": 60,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1077,13 +1077,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 60
+            "id": 65
         },
         {
             "EntityData": {
                 "name": "SparkOrange",
                 "tag": "",
-                "parent": 55,
+                "parent": 60,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1266,7 +1266,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 61
+            "id": 66
         }
     ]
 }

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 11,
+    "RootEntity": 44,
     "Entities": [
         {
             "EntityData": {
@@ -8,8 +8,8 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    12,
-                    16
+                    45,
+                    49
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -66,7 +66,8 @@
             "AudioComponent": {
                 "volume": 1.0,
                 "loop": false,
-                "audioGroup": "SFX"
+                "audioGroup": "SFX",
+                "attenutationMode": "InverseRollOff"
             },
             "PositionalAudio": {
                 "toggleSphere": false,
@@ -81,28 +82,28 @@
                             {
                                 "name": "landing",
                                 "data": {
-                                    "__variant_value": 12,
+                                    "__variant_value": 45,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "air",
                                 "data": {
-                                    "__variant_value": 16,
+                                    "__variant_value": 49,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "light",
                                 "data": {
-                                    "__variant_value": 13,
+                                    "__variant_value": 46,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "landingFireEmitter",
                                 "data": {
-                                    "__variant_value": 13,
+                                    "__variant_value": 46,
                                     "__variant_type": 4
                                 }
                             },
@@ -130,18 +131,18 @@
                     }
                 ]
             },
-            "id": 11
+            "id": 44
         },
         {
             "EntityData": {
                 "name": "Landing",
                 "tag": "",
-                "parent": 11,
+                "parent": 44,
                 "attachedSocket": 65535,
                 "children": [
-                    13,
-                    14,
-                    15
+                    46,
+                    47,
+                    48
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -195,13 +196,13 @@
                     "z": 0.0
                 }
             },
-            "id": 12
+            "id": 45
         },
         {
             "EntityData": {
                 "name": "Landing Fire",
                 "tag": "",
-                "parent": 12,
+                "parent": 45,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -407,13 +408,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 13
+            "id": 46
         },
         {
             "EntityData": {
                 "name": "Landing Smoke Ring",
                 "tag": "",
-                "parent": 12,
+                "parent": 45,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -596,13 +597,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 14
+            "id": 47
         },
         {
             "EntityData": {
                 "name": "Landing Smoke",
                 "tag": "",
-                "parent": 12,
+                "parent": 45,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -785,18 +786,18 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 15
+            "id": 48
         },
         {
             "EntityData": {
                 "name": "Air",
                 "tag": "",
-                "parent": 11,
+                "parent": 44,
                 "attachedSocket": 65535,
                 "children": [
-                    17,
-                    18,
-                    19
+                    50,
+                    51,
+                    52
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -850,13 +851,13 @@
                     "z": 0.0
                 }
             },
-            "id": 16
+            "id": 49
         },
         {
             "EntityData": {
                 "name": "Smoke Trail",
                 "tag": "",
-                "parent": 16,
+                "parent": 49,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1039,13 +1040,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 17
+            "id": 50
         },
         {
             "EntityData": {
                 "name": "Fire Trail",
                 "tag": "",
-                "parent": 16,
+                "parent": 49,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1228,13 +1229,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 18
+            "id": 51
         },
         {
             "EntityData": {
                 "name": "Spark",
                 "tag": "",
-                "parent": 16,
+                "parent": 49,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1417,7 +1418,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 19
+            "id": 52
         }
     ]
 }
