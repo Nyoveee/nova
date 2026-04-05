@@ -232,7 +232,7 @@ class RaiseEnemBoat : Script
 
             if(hasSunk)
             {
-                Debug.Log("Called");
+                audioComponent.loop = true;
                 audioComponent.PlaySound(boatBurnSFX);
                 smoke1.SetActive(true);
                 smoke2.SetActive(true);
