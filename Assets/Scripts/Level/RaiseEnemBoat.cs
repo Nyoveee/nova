@@ -1,6 +1,7 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
 class RaiseEnemBoat : Script
 {
     [SerializableField]
@@ -23,6 +24,12 @@ class RaiseEnemBoat : Script
     private float stalactiteXOffset = 30f;
     [SerializableField] 
     private float scrollSpeed = 50f;
+
+    [SerializableField]
+    private Audio boatCrashSFX;
+    [SerializableField]
+    private Audio boatBurnSFX;
+
     [SerializableField] 
     private GameObject explosionEmitter;
     [SerializableField]
@@ -45,6 +52,8 @@ class RaiseEnemBoat : Script
     private Vector3 offsetAmp;
     [SerializableField]
     private float durationShake;
+
+    private AudioComponent_ audioComponent;
 
     private Vector3 stalacitePos;
     private bool isShaking = false;
@@ -88,6 +97,8 @@ class RaiseEnemBoat : Script
 
         targetY = startY + riseHeight;
         stalacitePos = stalacite.transform.localPosition;
+
+        audioComponent = getComponent<AudioComponent_>();
     }
 
     // This function is invoked every update.
@@ -175,6 +186,7 @@ class RaiseEnemBoat : Script
                 hitStalactite = true;
                 isShaking = true;
 
+                audioComponent.PlaySound(boatCrashSFX);
                 explosionEmitter.getComponent<ParticleEmitter_>().emit();
                 smallExplosionEmitter.getComponent<ParticleEmitter_>().emit();
                 scatterExplosionEmitter.getComponent<ParticleEmitter_>().emit();
@@ -204,6 +216,7 @@ class RaiseEnemBoat : Script
                 newY = startY + 20f;
                 isSinking = false;
                 hasSunk = true;
+
             }
             pos.y = newY;
 
@@ -219,6 +232,8 @@ class RaiseEnemBoat : Script
 
             if(hasSunk)
             {
+                audioComponent.loop = true;
+                audioComponent.PlaySound(boatBurnSFX);
                 smoke1.SetActive(true);
                 smoke2.SetActive(true);
                 smoke3.SetActive(true);
