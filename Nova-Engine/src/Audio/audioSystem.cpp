@@ -529,7 +529,8 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 		audioInstance.channel->setVolume(audioInstance.volume);
 		audioInstance.channel->setCallback(channelCallback);
 
-		audioInstance.channel->setMode((positionalAudio ? FMOD_3D : FMOD_2D) | (audioComponent.loop? FMOD_LOOP_NORMAL : FMOD_DEFAULT));
+		audioInstance.channel->setMode((positionalAudio ? FMOD_3D : FMOD_2D) | 
+										(audioComponent.loop? FMOD_LOOP_NORMAL : FMOD_DEFAULT));
 
 		// assign to proper sound group..
 		switch (audioComponent.audioGroup) {

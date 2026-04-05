@@ -73,11 +73,11 @@
             "EntityData": {
                 "name": "EarCamera",
                 "tag": "",
-                "parent": 4294967295,
+                "parent": 5243171,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
-                "isActive": true,
+                "isActive": false,
                 "prefabID": 18446744073709551615,
                 "entityGUID": 17719800404176798405,
                 "overridenProperties": null,
@@ -88,7 +88,7 @@
                 "position": {
                     "x": 0.10511958599090576,
                     "y": 3.0,
-                    "z": -10.315197944641113
+                    "z": -15.430083274841309
                 },
                 "scale": {
                     "x": 0.9997514486312866,
@@ -109,7 +109,7 @@
                 "localPosition": {
                     "x": 0.10511958599090576,
                     "y": 3.0,
-                    "z": -10.315197944641113
+                    "z": -15.430083274841309
                 },
                 "localScale": {
                     "x": 0.9997514486312866,
@@ -138,7 +138,7 @@
             },
             "CameraComponent": {
                 "camStatus": true,
-                "toRotateSideWays": true,
+                "toRotateSideWays": false,
                 "fov": 45.0,
                 "nearPlane": 0.30000001192092896,
                 "farPlane": 1000.0
@@ -162,9 +162,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -3.725290298461914e-09,
+                    "x": -5.960464477539063e-08,
                     "y": 3.0,
-                    "z": 1.4901161193847656e-08
+                    "z": 0.0
                 },
                 "scale": {
                     "x": 1.0,
@@ -183,9 +183,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -3.725290298461914e-09,
+                    "x": -5.960464477539063e-08,
                     "y": 3.0,
-                    "z": 1.4901161193847656e-08
+                    "z": 0.0
                 },
                 "localScale": {
                     "x": 1.0,
@@ -213,9 +213,14 @@
                 "shadowCullFrontFace": true
             },
             "AudioComponent": {
-                "volume": 0.699999988079071,
+                "volume": 1.5,
                 "loop": false,
                 "audioGroup": "BGM"
+            },
+            "PositionalAudio": {
+                "toggleSphere": false,
+                "innerRadius": 9.0,
+                "maxRadius": 30.0
             },
             "Scripts": {
                 "scriptDatas": [
@@ -225,14 +230,14 @@
                             {
                                 "name": "audio",
                                 "data": {
-                                    "__variant_value": 2457065872651829249,
+                                    "__variant_value": 17120777646194098201,
                                     "__variant_type": 15
                                 }
                             },
                             {
                                 "name": "timeStep",
                                 "data": {
-                                    "__variant_value": 1.0,
+                                    "__variant_value": 20.0,
                                     "__variant_type": 18
                                 }
                             }
@@ -250,7 +255,7 @@
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
-                "isActive": true,
+                "isActive": false,
                 "prefabID": 18446744073709551615,
                 "entityGUID": 17090105696917274635,
                 "overridenProperties": null,
@@ -302,6 +307,69 @@
                 }
             },
             "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Parent",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    3145946
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 7423023551667421795,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 5243171
         }
     ],
     "layers": [
