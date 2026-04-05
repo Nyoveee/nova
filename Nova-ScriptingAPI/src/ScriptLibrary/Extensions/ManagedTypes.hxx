@@ -500,6 +500,11 @@ ManagedComponentDeclaration(
 )
 
 //Warp to the nearest polygon given a point is that close by
+void setSpeed(float speed);
+
+void setAcceleration(float acceleration);
+
+
 bool Warp(Vector3^ newPosition);
 
 bool getIsUpdateRotation();

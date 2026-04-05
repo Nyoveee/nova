@@ -1,5 +1,5 @@
 {
-    "RootEntity": 48,
+    "RootEntity": 50,
     "Entities": [
         {
             "EntityData": {
@@ -8,10 +8,10 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    49,
-                    50,
                     51,
-                    52
+                    52,
+                    53,
+                    54
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -65,6 +65,17 @@
                     "z": 0.0
                 }
             },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false,
+                "audioGroup": "SFX",
+                "attenutationMode": "InverseRollOff"
+            },
+            "PositionalAudio": {
+                "toggleSphere": false,
+                "innerRadius": 50.0,
+                "maxRadius": 150.0
+            },
             "Scripts": {
                 "scriptDatas": [
                     {
@@ -80,42 +91,70 @@
                             {
                                 "name": "light",
                                 "data": {
-                                    "__variant_value": 52,
+                                    "__variant_value": 54,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "explosion",
                                 "data": {
-                                    "__variant_value": 49,
+                                    "__variant_value": 51,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sparks1",
                                 "data": {
-                                    "__variant_value": 50,
+                                    "__variant_value": 52,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sparks2",
                                 "data": {
-                                    "__variant_value": 51,
+                                    "__variant_value": 53,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "missileAudio",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 11171355439304916993,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 16360267470214234115,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14753977741687488517,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 10142291723260100615,
+                                                "__variant_type": 15
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
                                 }
                             }
                         ]
                     }
                 ]
             },
-            "id": 48
+            "id": 50
         },
         {
             "EntityData": {
                 "name": "explosion",
                 "tag": "",
-                "parent": 48,
+                "parent": 50,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -328,13 +367,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 49
+            "id": 51
         },
         {
             "EntityData": {
                 "name": "sparks",
                 "tag": "",
-                "parent": 48,
+                "parent": 50,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -547,13 +586,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 50
+            "id": 52
         },
         {
             "EntityData": {
                 "name": "sparks2",
                 "tag": "",
-                "parent": 48,
+                "parent": 50,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -766,13 +805,13 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 51
+            "id": 53
         },
         {
             "EntityData": {
                 "name": "light",
                 "tag": "",
-                "parent": 48,
+                "parent": 50,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -985,7 +1024,7 @@
                 "renderAlignment": "View",
                 "renderOrder": 0
             },
-            "id": 52
+            "id": 54
         }
     ]
 }
