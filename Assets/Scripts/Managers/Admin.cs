@@ -82,6 +82,10 @@ class Admin : Script
 
         MapKey(Key._1, () => {
             PlayerPrefs.SetInt("CompletedLevel", 0);
+            PlayerPrefs.SetFloat("LevelCompletionDuration0", 0f);
+            PlayerPrefs.SetFloat("LevelCompletionDuration1", 0f);
+            PlayerPrefs.SetFloat("LevelCompletionDuration2", 0f);
+
             if (levelSelects.Count == 0)
                 return;
             foreach (Level_Select_UI_Script levelSelect in levelSelects)
@@ -91,18 +95,14 @@ class Admin : Script
         MapKey(Key._2, () =>
         {
             PlayerPrefs.SetInt("CompletedLevel", 3);
+            PlayerPrefs.SetFloat("LevelCompletionDuration0", 0f);
+            PlayerPrefs.SetFloat("LevelCompletionDuration1", 0f);
+            PlayerPrefs.SetFloat("LevelCompletionDuration2", 0f);
+
             if (levelSelects.Count == 0)
                 return;
             foreach (Level_Select_UI_Script levelSelect in levelSelects)
                 levelSelect?.RefreshUI();
-        });
-        MapKey(Key._3, () =>
-        {
-            PlayerPrefs.SetFloat("LevelCompletionDuration0", 0f);
-            PlayerPrefs.SetFloat("LevelCompletionDuration1", 0f);
-            PlayerPrefs.SetFloat("LevelCompletionDuration2", 0f);
-            if (mainLevelselect != null)
-                mainLevelselect.RefreshUI();
         });
     }
 }

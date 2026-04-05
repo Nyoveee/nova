@@ -35,16 +35,21 @@ Mouse & LMB - Aim & Shoot
 RMB (Hold) - Prime weapon for throwing, LMB to throw
 F -> F to use player's ultimate
 E -> E to interact with the objects and environment
-P -> Pause
+ESC -> Pause
 
 Cheat codes 
-P -> Skip Cutscene Video in Level One
+
+ESC -> Skip Cutscene Video in Level One
 K to commit sudoku
 L to toggle speed hack
 O to skip quest (level 1 only)
 I to take 30 damage
 U to gain 10 health
-Y to gain 17 SP
+Y to gain 100 SP
+G to toggle god mode (you don't take damage)
+
+1 to reset all level progression
+2 to unlock all level progression
 
 Throwing: 
 Hold Right -> To arm the weapon.
@@ -69,14 +74,12 @@ Questline: Player has a questline, follow the quest line to complete the game.
 
 --------------------------------------------------------------------------------
 Known Bugs:
-- No game breaking or crashing bugs.
-- Minor visual bugs may happen like the enemy particle emitter still active when dead. (rarely happens when enemy falls out the boat in Level 2)
-- Mouse doesnt come back after credit screen
+- None.
 
 --------------------------------------------------------------------------------
 What's Implemented:
-- Alot of VFX.
-- Polished level 1 with more goddess dialogue, tutorial prompts, and elevator cutscene.  
-- Core implementation of level 2. (lighting, goddess dialogue, boat scripting, wave system, props)
-- Core implementation of boss level. (lighting, boss AI, boss attack VFX, level VFX, boss cutscene)
-- Polished UI (3D main menu with transition to level select, updated gameplay UI, settings, credit screen, controls page)
+- Improved boss mechanics
+- Additional SFX + VFX
+- Improved turbine room
+- Improved lighting
+- Polish and bug fixes
