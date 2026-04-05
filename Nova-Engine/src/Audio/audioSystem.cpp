@@ -478,7 +478,7 @@ void AudioSystem::handleFinishedAudioInstance(FMOD::Channel* channel) {
 		return;
 	}
 
-	stopAudioInstance(iterator->first);
+	// stopAudioInstance(iterator->first);
 	iterator->second.toDelete = true;
 }
 

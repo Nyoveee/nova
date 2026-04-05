@@ -28,7 +28,9 @@ class BoatAudio : Script
 
     public void BeginBoatAudio()
     {
+        audioComponent.StopSound(waterLoopSFX);
         audioComponent.PlaySound(boatStartSFX);
+        
         Invoke(() =>
         {
             audioComponent.StopSound(boatStartSFX);
