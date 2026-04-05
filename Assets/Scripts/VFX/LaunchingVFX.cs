@@ -1,6 +1,7 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
 class LaunchingVFX : Script
 {
     [SerializableField]
@@ -11,10 +12,18 @@ class LaunchingVFX : Script
     private Light_ light;
     [SerializableField]
     private ParticleEmitter_ landingFireEmitter;
+    [SerializableField]
+    private List<Audio> impactSFXs;
+
+    private AudioComponent_ audioComponent;
 
     private Enemy enemy;
 
     private float currentBurstEmittertime;
+    protected override void init()
+    {
+        audioComponent = getComponent<AudioComponent_>();
+    }
     protected override void update()
     {
         if (enemy.IsDead())
@@ -25,6 +34,7 @@ class LaunchingVFX : Script
         }
         if(enemy!= null && enemy.IsTouchingGround() && air.IsActive())
         {
+            audioComponent.PlayRandomSound(impactSFXs);
             air.SetActive(false);
             float longestBurstEmitterTime = 0;
             foreach (GameObject emitterGO in landing.GetChildren())
@@ -50,9 +60,4 @@ class LaunchingVFX : Script
         this.enemy = enemy;
         air.transform.localPosition += new Vector3(0, enemy.gameObject.transform.scale.y / 2f, 0);
     }
-
-    
-
-
-
 }
