@@ -486,16 +486,24 @@ struct AudioComponent
 {
 	float volume{ 1.f };
 	bool loop{};
-	//bool playWhenPaused = false;
+
 	enum class AudioGroup {
 		SFX,
 		BGM,
 		UI
-	}audioGroup = AudioGroup::SFX;
+	} audioGroup = AudioGroup::SFX;
+
+	enum class AttenutationFallOff {
+		InverseRollOff,
+		LinearRollOff,
+		LinearSquaredRollOff
+	} attenutationMode = AttenutationFallOff::InverseRollOff;
+
 	REFLECTABLE(
 		volume,
 		loop,
-		audioGroup
+		audioGroup,
+		attenutationMode
 	)
 };
 
