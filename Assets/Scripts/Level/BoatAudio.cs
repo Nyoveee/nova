@@ -14,32 +14,49 @@ class BoatAudio : Script
     private Audio boatLoopSFX;
     [SerializableField]
     private Audio boatEndSFX;
-    [SerializableField]
-    private float beginLoopTime;
 
-    private AudioComponent_ audioComponent;
+    [SerializableField]
+    private AudioComponent_ waterLoopAudioComponent;
+    [SerializableField]
+    private AudioComponent_ waterEndLoopAudioComponent;
+    [SerializableField]
+    private AudioComponent_ boatStartAudioComponent;
+    [SerializableField]
+    private AudioComponent_ boatLoopAudioComponent;
+    [SerializableField]
+    private AudioComponent_ boatEndAudioComponent;
+
+    [SerializableField]
+    private float midLoopTriggerTime;
+    [SerializableField]
+    private float endLoopTriggerTime;
+
 
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
-        audioComponent = getComponent<AudioComponent_>();
-        audioComponent.PlaySound(waterLoopSFX);
+        waterEndLoopAudioComponent.PlaySound(waterLoopSFX);
     }
 
     public void BeginBoatAudio()
     {
-        audioComponent.StopSound(waterLoopSFX);
-        audioComponent.PlaySound(boatStartSFX);
-        
+        boatStartAudioComponent.PlaySound(boatStartSFX);
         Invoke(() =>
         {
-            audioComponent.StopSound(boatStartSFX);
-            audioComponent.PlaySound(boatLoopSFX);
-        }, beginLoopTime);
+            boatStartAudioComponent.StopSound(boatStartSFX);
+            boatLoopAudioComponent.PlaySound(boatLoopSFX);
+        }, midLoopTriggerTime);
     }
     public void EndBoatAudio()
     {
-
+        Invoke(() =>
+        {
+            boatLoopAudioComponent.StopSound(boatLoopSFX);
+            waterLoopAudioComponent.StopSound(waterLoopSFX);
+            boatEndAudioComponent.PlaySound(boatEndSFX);
+            waterEndLoopAudioComponent.PlaySound(waterEndLoopSFX);
+        }, endLoopTriggerTime);
+        
     }
 
 }

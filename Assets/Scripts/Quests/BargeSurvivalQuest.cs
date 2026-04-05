@@ -19,6 +19,9 @@ class BargeSurvivalQuest : Quest
     [SerializableField]
     private Audio goddessVoiceoverAudio;
 
+    [SerializableField]
+    private BoatAudio boatAudio;
+
     private VoiceoverScript voiceoverScript;
     protected override void init()
     {
@@ -35,6 +38,7 @@ class BargeSurvivalQuest : Quest
     }
     public override void OnSuccess()
     {
+        boatAudio.EndBoatAudio();
         voiceoverScript.TriggerVoiceOver("Goddess", goddessVoiceoverText, goddessVoiceoverAudio, goddessVoiceoverTime, false);
     }
 }
