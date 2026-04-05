@@ -64,6 +64,7 @@ public:
 //--------------------For C# scripting API-------------------------------------------------------------//
 public:
 	//--------- IN Script Library -----//
+	
 	//Start navigation for a particular agent. Returns bool false when unable to set destination to targetPosition.
 	ENGINE_DLL_API bool setDestination(entt::entity entityID, glm::vec3 targetPosition );
 
@@ -80,6 +81,10 @@ public:
 	ENGINE_DLL_API std::vector<glm::vec3> FindPath(std::string agentMeshName, glm::vec3 startPosition, glm::vec3 endPosition);
 
 	//--------- IN Managed Types -----//
+	ENGINE_DLL_API void setAgentSpeed(NavMeshAgent& navMeshAgent, float speed);
+
+	ENGINE_DLL_API void setAgentAcceleration(NavMeshAgent& navMeshAgent, float acceleration);
+
 
 	//Warp the agent to this point, moves the transform as well, so it will turn
 	ENGINE_DLL_API bool warp(NavMeshAgent& navMeshAgent,  glm::vec3 targetPosition);

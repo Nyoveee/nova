@@ -824,6 +824,49 @@ ENGINE_DLL_API std::vector<glm::vec3> NavigationSystem::FindPath(std::string age
 	return wayPointList;
 }
 
+ENGINE_DLL_API void NavigationSystem::setAgentSpeed(NavMeshAgent& navMeshAgent, float speed)
+{
+	int dtIndex = GetDTCrowdIndex(navMeshAgent.agentName, navMeshAgent.agentIndex);
+
+	dtCrowdAgent* agent = crowdManager[navMeshAgent.agentName]->getEditableAgent(dtIndex);
+
+	if (agent)
+	{
+		dtCrowdAgentParams params = agent->params; // Copy existing params
+
+		params.maxSpeed = speed;
+
+		crowdManager[navMeshAgent.agentName]->updateAgentParameters(dtIndex, &params);
+	}
+	else
+	{
+		Logger::warn("Failed to set agent speed, agent not found in crowd manager");
+	}
+
+
+}
+
+ENGINE_DLL_API void NavigationSystem::setAgentAcceleration(NavMeshAgent& navMeshAgent, float acceleration)
+{
+	int dtIndex = GetDTCrowdIndex(navMeshAgent.agentName, navMeshAgent.agentIndex);
+
+	dtCrowdAgent* agent = crowdManager[navMeshAgent.agentName]->getEditableAgent(dtIndex);
+
+	if (agent)
+	{
+		dtCrowdAgentParams params = agent->params; 
+
+		params.maxSpeed = acceleration;
+
+		crowdManager[navMeshAgent.agentName]->updateAgentParameters(dtIndex, &params);
+	}
+	else
+	{
+		Logger::warn("Failed to set agent acceleration, agent not found in crowd manager");
+	}
+
+}
+
 void NavigationSystem::stopAgent(entt::entity entityID)
 {
 	//NavMeshAgent* agent = engine.ecs.registry.try_get<NavMeshAgent>(entityID);

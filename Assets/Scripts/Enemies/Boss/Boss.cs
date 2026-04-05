@@ -59,6 +59,12 @@ public class Boss : Enemy
     private Prefab pushFieldPrefab = null;
 
     /***********************************************************
+    References Prefabs
+    ***********************************************************/
+    [SerializableField]
+    private AudioComponent_ audioLoudComponent;
+
+    /***********************************************************
     Ability Prefabs
     ***********************************************************/
     [SerializableField]
@@ -85,6 +91,7 @@ public class Boss : Enemy
     Blackboard blackboard = new Blackboard(); //a blackboard helper class since i realised we gonna need to pass a lot of data around and i dont feel like creating 100 variables
     Vector3 halfExtent; //based on scaling values
     private AudioComponent_ audioComponent;
+
     private BossAudio bossAudioReferences;
     private BossUI bossUI;
     private float maxHealth;
@@ -126,8 +133,8 @@ public class Boss : Enemy
             new RushingMeleeAttack(this),
             new MissileBarrage(this),
             new MissileBarrage(this),
-            new TripleJumpSlam(this)
-
+            new TripleJumpSlam(this),
+            new TripleJumpSlam(this),
         };
 
         AbilityDeckStart.AddRange(abilityStartSequences);
@@ -138,6 +145,7 @@ public class Boss : Enemy
             new MissileBarrage(this),
             new MissileBarrage(this),
             new TripleJumpSlam(this),
+            new ArenaJump(this),
             new ArenaJump(this)
 
         };
@@ -173,13 +181,19 @@ public class Boss : Enemy
         maxHealth = enemyStats.health;
 
         //-------------Additional Parameters ----------------------------
-        blackboard.SetValue("MeleeRotationSpeed", 100f);
+        blackboard.SetValue("MeleeRotationSpeed", 200f);
         blackboard.SetValue("PlayerLeftAngle", 10f);
         blackboard.SetValue("JumpDuration", 1.5f);
         blackboard.SetValue("QuickJumpDuration", 0.6f);
         blackboard.SetValue("DisengageJump", 100f);
         blackboard.SetValue("EngageJump", 80f);
-        blackboard.SetValue("MeleeDistance", 90f);
+        blackboard.SetValue("MeleeDistance", 60f);
+
+        blackboard.SetValue("BaseMS", 60f);
+        blackboard.SetValue("BaseAcceleration", 120f);
+
+        blackboard.SetValue("RunningMS", 100f);
+        blackboard.SetValue("RunningAcceleration", 200f);
 
         //blackboard.SetValue("FootStepIndex", 0);
 
@@ -456,15 +470,16 @@ public class Boss : Enemy
     //A set of stats to check what type of deck to selects
     public void ResetDeck()
     {
-        if (bossStats.health > maxHealth / 2)
+        if (bossStats.health > maxHealth * 0.6)
         {
 
             currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart);
-            Debug.Log("Reset Deck!" + "CurrentStamina: " + currentStamina + "abilityCount " + currentAbilityDeck.Count());
+            Debug.Log("Reset Deck!" + "CurrentStamina: " + currentStamina + " abilityCount " + currentAbilityDeck.Count());
+            Debug.Log("Above 60% hp!!!!");
         }
         else
         {
-            currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStart);
+            currentAbilityDeck = new List<AbilitySequence>(AbilityDeckStrong);
 
         }
 
@@ -765,6 +780,7 @@ public class Boss : Enemy
     public void TriggerArenaJumpSequence()
     {
         int index = 0;
+        audioComponent.PlaySound(bossAudioReferences.bossRageAudio);
         blackboard.SetValue("MarkerIndex", index);
         AdvanceToNextSequence();
     }
@@ -850,10 +866,12 @@ public class Boss : Enemy
 
         float angle = 180;
         int count = 7;
+        //int count = 0;
 
         float angleStep = (count > 1) ? angle / (count - 1) : 0;
         float minimalAngle = -(angle / 2.0f);
-        audioComponent.PlayRandomSound(bossAudioReferences.meleeAttackAudio);
+        //audioComponent.PlayRandomSound(bossAudioReferences.meleeAttackAudio);
+        audioLoudComponent.PlayRandomSound(bossAudioReferences.meleeAttackAudio);
 
         for (int i = 0; i < count; i++)
         {
@@ -875,9 +893,16 @@ public class Boss : Enemy
 
     public void StartSwiftWalk()
     {
-        Debug.Log("Start Switft Walk");
+        navMeshAgent.enable = true;
+        //Debug.Log("Start Switft Walk");
         animator.PlayAnimation("Boss_Run");
-        animator.speedMultiplier = 1.5f;
+        blackboard.TryGetValue("RunningMS", out float bonusMovespeed);
+        blackboard.TryGetValue("RunningAcceleration", out float bonusAcceleration);
+
+        navMeshAgent.setSpeed(bonusMovespeed);
+        navMeshAgent.setAcceleration(bonusAcceleration);
+
+        animator.speedMultiplier = 2.0f;
         AdvanceToNextSequence();
     
     }
@@ -926,6 +951,13 @@ public class Boss : Enemy
     {
         animator.PlayAnimation("Boss_Idle");
         NavigationAPI.stopAgent(gameObject);
+
+        blackboard.TryGetValue("BaseMS", out float baseMovespeed);
+        blackboard.TryGetValue("BaseAcceleration", out float baseAcceleration);
+
+        navMeshAgent.setSpeed(baseMovespeed);
+        navMeshAgent.setAcceleration(baseAcceleration);
+
         animator.speedMultiplier = 1.0f;
         AdvanceToNextSequence();
 
@@ -937,7 +969,7 @@ public class Boss : Enemy
     {
         
         animator.PlayAnimation("Boss_Attack");
-        animator.speedMultiplier = 2.0f;
+        animator.speedMultiplier = 3.0f;
         AdvanceToNextSequence();
     }
 
@@ -1251,11 +1283,14 @@ public class Boss : Enemy
             sequence.Add(boss.TriggerMeleeAttackAnimation);
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(() => { boss.animator.speedMultiplier = 0.0f; boss.RotateToPlayerMelee(); });
-            sequence.Add(() => { boss.DelayedSequence(0.1f); });
-            sequence.Add(() => { boss.AnimationSpeedAdjustment(3.0f); });
+            sequence.Add(() => { boss.DelayedSequence(0.25f); });
+            sequence.Add(() => { boss.AnimationSpeedAdjustment(2.0f); });
             sequence.Add(boss.FannedMeleeAttack);
             sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.5f); });
             sequence.Add(boss.AwaitAnimation);
+            sequence.Add(boss.StartSwiftWalk);
+            sequence.Add(boss.SwitftWalk);
+            sequence.Add(boss.EndSwiftWalk);
             sequence.Add(boss.TriggerMeleeAttackAnimation);
             sequence.Add(boss.AwaitAnimation);
             sequence.Add(() => { boss.animator.speedMultiplier = 0.0f; boss.RotateToPlayerMelee(); });
@@ -1420,7 +1455,12 @@ public class Boss : Enemy
             sequence.Add(boss.CreateShockWave);
             sequence.Add(() => { boss.AnimationSpeedAdjustmentGoNext(1.0f); });
             sequence.Add(boss.AwaitAnimation);
-            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); boss.navMeshAgent.setIsUpdatePosition(true); });
+            sequence.Add(() => { boss.ReturnToIdle(); boss.AdvanceToNextSequence(); 
+                                boss.navMeshAgent.setIsUpdatePosition(true);
+                                Vector3? samplePosition = NavigationAPI.SampleNavMeshPosition("Boss", boss.gameObject.transform.position, new Vector3(100f, 50f, 1000f));
+                                boss.navMeshAgent.Warp(samplePosition.Value);
+
+            });
 
         }
         public override bool CheckConditions()

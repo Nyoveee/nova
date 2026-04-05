@@ -167,7 +167,10 @@ class BossHomingMissile : Enemy
 
     // This function is invoked when destroyed.
     protected override void exit()
-    {}
+    {
+        audioComponent.StopSound(missileWhistleAudio[0]);
+
+    }
 
     public override void TakeDamage(float damage, EnemydamageType damageType, string colliderTag)
     {
@@ -343,6 +346,7 @@ class BossHomingMissile : Enemy
         //Debug.Log("Collided with " + other.gameObject.name);
 
     }
+
 
 
     public override bool IsEngagedInBattle()

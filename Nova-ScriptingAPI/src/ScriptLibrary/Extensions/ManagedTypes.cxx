@@ -836,6 +836,24 @@ float SkinnedMeshRenderer_::getMaterialFloat(int index, System::String^ name) {
 // Navmesh Agent
 // =================================================================
 
+
+void NavMeshAgent_::setSpeed(float speed)
+{
+	NavMeshAgent* agent = nativeComponent();
+
+	Interface::engine->navigationSystem.setAgentAcceleration(*agent, speed);
+
+}
+
+void NavMeshAgent_::setAcceleration(float accleration)
+{
+	NavMeshAgent* agent = nativeComponent();
+
+	Interface::engine->navigationSystem.setAgentAcceleration(*agent, accleration );
+
+}
+
+
 bool NavMeshAgent_::Warp(Vector3^ newPosition)
 {
 	NavMeshAgent* agent = nativeComponent();
