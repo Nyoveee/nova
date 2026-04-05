@@ -529,8 +529,21 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 		audioInstance.channel->setVolume(audioInstance.volume);
 		audioInstance.channel->setCallback(channelCallback);
 
-		audioInstance.channel->setMode((positionalAudio ? FMOD_3D : FMOD_2D) | 
-										(audioComponent.loop? FMOD_LOOP_NORMAL : FMOD_DEFAULT));
+		FMOD_MODE mode = (positionalAudio ? FMOD_3D : FMOD_2D) | (audioComponent.loop ? FMOD_LOOP_NORMAL : FMOD_DEFAULT);
+
+		switch (audioComponent.attenutationMode) {
+		case AudioComponent::AttenutationFallOff::LinearRollOff:
+			mode |= FMOD_3D_LINEARROLLOFF;
+			break;
+		case AudioComponent::AttenutationFallOff::LinearSquaredRollOff:
+			mode |= FMOD_3D_LINEARSQUAREROLLOFF;
+			break;
+		default:
+			mode |= FMOD_3D_INVERSEROLLOFF;
+			break;
+		}
+
+		audioInstance.channel->setMode(mode);
 
 		// assign to proper sound group..
 		switch (audioComponent.audioGroup) {

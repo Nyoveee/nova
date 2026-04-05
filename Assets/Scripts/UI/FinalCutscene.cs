@@ -12,6 +12,7 @@ class FinalCutscene : Script
     public List<float> cutsceneDuration;
     public List<float> cutsceneFadeDuration;
     public List<float> cutsceneFadeStayIn;
+    public Audio finalCutsceneSfx;
 
     public Scene creditScene;
 
@@ -38,6 +39,8 @@ class FinalCutscene : Script
             finishedFadingCallback = () => { };
 
             SetupCutsceneArea();
+
+            getComponent<AudioComponent_>().PlaySound(finalCutsceneSfx);
         }, 1f);
     }
 

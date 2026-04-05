@@ -1,6 +1,8 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+
 struct LightInfo
 {
     public LightInfo(Light_ light, float initialIntensity)
@@ -41,6 +43,9 @@ class MainUIManager : Script
     [SerializableField] public float initialFadeOut = 1f;
     [SerializableField] public GameObject hubLights;
 
+    [SerializableField] private Audio mainMenuAudio;
+    [SerializableField] private Audio levelSelectAudio;
+
     private CameraComponent_ cameraComponent;
     private Sequence_ cameraSequence;
 
@@ -68,6 +73,8 @@ class MainUIManager : Script
 
     private List<LightInfo> playerLightsRuntime = new List<LightInfo>();
 
+    private AudioComponent_ audioComponent_;
+
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
     {}
@@ -77,11 +84,13 @@ class MainUIManager : Script
     {
         cameraComponent = camera.getComponent<CameraComponent_>();
         cameraSequence = camera.getComponent<Sequence_>();
-
+        
         initialCameraPosition = camera.transform.position;
         finalCameraPosition = cameraMainMenuPos.position;
 
         darkOverlay.alpha = 1f;
+
+        audioComponent_ = getComponent<AudioComponent_>();
 
         Invoke(() =>
         {
@@ -96,6 +105,8 @@ class MainUIManager : Script
 
             fadeOutCallback = () => 
             {
+                audioComponent_.PlaySound(mainMenuAudio);
+
                 Invoke(() =>
                 {
                     mainMenuUi.isInteractable = true;

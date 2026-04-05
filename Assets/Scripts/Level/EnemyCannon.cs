@@ -11,6 +11,10 @@ class EnemyCannon : Script
     [SerializableField]
     private Light_ light;
     [SerializableField]
+    private List<Audio> cannonBlastSFXs;
+    [SerializableField]
+    private List<Audio> cannonTrailSFXs;
+    [SerializableField]
     private ParticleEmitter_ fireSmoke;
     [SerializableField]
     private ParticleEmitter_ fire;
@@ -74,10 +78,14 @@ class EnemyCannon : Script
     private float yOffset;
     private int shotsQueued = 0;
 
+    // SFX
+    private AudioComponent_ audioComponent;
+
     protected override void init() 
     {
         yOffset = gameObject.transform.position.y - boat.transform.position.y;
         playerbody = GameObject.FindWithTag("Player")?.transform;
+        audioComponent = getComponent<AudioComponent_>();
     }
 
     protected override void update() {
@@ -197,6 +205,10 @@ class EnemyCannon : Script
         currentLightTime = fire.lifeTime;
         b_IsCharging = false;
         cannonBarrelMeshRenderer.setMaterialBool(1, "isActive", false);
+
+        // SFX
+        audioComponent.PlayRandomSound(cannonBlastSFXs);
+        audioComponent.PlayRandomSound(cannonTrailSFXs);
     }
     // Rotation may look slightly different close up but it's good enough for now
     private void EstimateCannonRotation()
