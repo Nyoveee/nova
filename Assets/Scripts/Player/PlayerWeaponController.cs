@@ -296,6 +296,8 @@ class PlayerWeaponController : Script
     {
         GameObject thrownRifle = Instantiate(thrownRiflePrefab, throwPosition.position, throwPosition.rotation);
 
+
+
         if (thrownRifle == null)
         {
             return;
@@ -311,18 +313,20 @@ class PlayerWeaponController : Script
 
 
         //Do a raycast to objects
-        if (result != null)
+        if (result == null)
         {
             Vector3 targetDirection = (result.Value.point - throwPosition.position);
             targetDirection.Normalize();
 
             thrownRifle.getScript<ThrowableRifle>().flightPath = targetDirection;
+
         }
         else
         {
             thrownRifle.getScript<ThrowableRifle>().flightPath = playerCamera.front;
             Vector3 endPoint = playerCamera.position + playerCamera.front * 500f;
             thrownRifle.getScript<ThrowableRifle>().SeekTarget(playerCamera.position, endPoint);
+            Debug.Log("Target Seek?");
         }
 
         currentlyHeldGun.gameObject.SetActive(false);

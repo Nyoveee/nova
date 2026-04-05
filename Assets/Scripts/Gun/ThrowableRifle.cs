@@ -615,11 +615,20 @@ class ThrowableRifle : Script
         }
 
 
+
         if (candidateTarget != null)
         {
             seekingFailed = false;
             targetObject = candidateTarget;
+            Debug.Log("Candidate Target: " + candidateTarget);
+
         }
+        else
+        {
+            Debug.Log("No Target Found");
+        }
+
+
 
     }
 
