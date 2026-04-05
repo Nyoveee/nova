@@ -45,6 +45,10 @@ class ShootTutorialQuest : Quest
         if (!succeeded && grunt != null && grunt.getScript<Grunt>().IsDead())
         {
             succeeded = true;
+            Invoke(() =>
+            {
+                gameUIManager.ToggleTutorial();
+            }, tutorialDelayTime);
 
             Invoke(() =>
             {
